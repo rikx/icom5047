@@ -1,6 +1,9 @@
 var express = require('express')
 var app = express()
 
+var pg = require('pg');
+var conString = "postgres://username:password@localhost/database";
+
 app.get('/', function (req, res) {
   res.send('Hello World! This is the reengineering SEA server')
 })
