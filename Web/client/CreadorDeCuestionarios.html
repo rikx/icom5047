@@ -1,0 +1,306 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+	<script src="http://stage-preview.gage.com/Creative/Microsoft/EZCourseDemo/scripts/jquery.jsPlumb-1.3.16-all-min.js"></script>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<style type="text/css">
+	.item_question {
+		position: absolute;
+		border: 1px solid black;
+		background-color: green;
+	}
+	#container_plumbjs {
+		border: 1px solid gray;
+		width: max-content;
+		height: 500px;
+		right: 50%;
+	}
+
+	.title_question {
+		padding: 10px;
+		cursor: move;
+	}
+
+	.connect_question {
+		width: 100%;
+		height: 20px;
+		background-color: white;
+		cursor: pointer;
+	}
+
+	.item_rec {
+		position: absolute;
+		border: 1px solid black;
+		background-color: yellow;
+	}
+
+	.title_rec {
+		padding: 10px;
+		cursor: move;
+	}
+
+	.connect_rec {
+		width: 100%;
+		height: 20px;
+		background-color: white;
+		cursor: pointer;
+	}
+	</style>
+
+	<title>Creador De Cuestionarios</title>
+</head>  
+
+<body>
+
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-7">
+				<div class="jumbotron">
+					<center><h2>Servicio De Extension Agricola</h2></center>
+					<center><h4>Creador De Cuestionarios</h4></center>
+				</div>
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+
+
+
+
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-7">
+				<div id="container_plumbjs"></div>
+
+				<br>
+				<button class="btn btn-lg btn-success btn-block" onclick="saveGraph()">Someter</button> 
+				<br>
+				<button class="btn btn-lg btn-success btn-block" onclick="loadGraph()">Load</button> 
+			
+			</div>
+			<div class="col-md-3">
+				<button class="btn btn-lg btn-success btn-block" onclick="AddQuestion()">Agregar Pregunta</button> 
+				<br> 
+				<button class="btn btn-lg btn-success btn-block" onclick="AddRecommendation()">Agregar Recomendación</button>  
+			</div>
+		</div>
+
+	</div> <!-- /container -->
+
+
+
+</body>
+
+<script type="text/javascript">
+var j =0;
+var array = [];
+var arrayConnection = [];
+var trigger = "yes";
+function AddQuestion() {
+
+	jsPlumb.ready(function() {
+		var newState = $('<div>').attr('id', 'state' + j).addClass('item_question');
+		var title = $('<div>').addClass('title_question');
+		var stateName = $('<input>').attr('type', 'text');
+		title.append(stateName);
+		var connect = $('<div>').addClass('connect_question');
+		newState.append(title);
+		newState.append(connect);
+		
+
+		$('#container_plumbjs').append(newState);
+
+
+		jsPlumb.makeTarget(newState, {
+			anchor: 'Continuous',
+			endpoint:'Blank'
+		});
+
+		jsPlumb.makeSource(connect, {
+			parent: newState,
+			anchor: 'Continuous',
+			connector: 'Flowchart',
+			endpoint:'Blank'
+
+
+		});   
+
+		jsPlumb.draggable(newState, {
+			containment: 'parent',
+			stop: function(event) {
+				if ($(event.target).find('select').length == 0) {
+					//saveState(event.target);
+					array.push(newState);
+					console.log(newState);		
+					console.log(array);
+				}
+			}
+		});
+
+
+
+
+
+		newState.dblclick(function(e) {
+			jsPlumb.detachAllConnections($(this));
+			$(this).remove();
+			e.stopPropagation();
+
+		}); 
+
+
+
+
+
+
+		
+
+		stateName.keyup(function(e) {
+			if (e.keyCode === 13) {
+
+      //var state = $(this).closest('.item');
+      //state.children('.title').text(this.value);
+      $(this).parent().text(this.value);
+  }
+});
+
+		stateName.focus();
+		j++; 
+	})
+}
+
+
+function AddRecommendation() {
+
+	jsPlumb.ready(function() {
+		var newState = $('<div>').attr('id', 'state' + j).addClass('item_rec');
+		var title = $('<div>').addClass('title_rec');
+		var stateName = $('<input>').attr('type', 'text');
+		title.append(stateName);
+		var connect = $('<div>').addClass('connect_rec');
+		newState.append(title);
+		newState.append(connect);
+
+
+		
+
+		$('#container_plumbjs').append(newState);
+
+
+		jsPlumb.makeTarget(newState, {
+			anchor: 'Continuous'
+			
+		});
+
+		jsPlumb.makeSource(connect, {
+			parent: newState,
+			anchor: 'Continuous',
+			connector: 'StateMachine',
+			paintStyle:{ strokeStyle:"blue"}
+			
+
+		});   
+
+		jsPlumb.draggable(newState, {
+			containment: 'parent'
+		});
+
+
+		newState.dblclick(function(e) {
+			jsPlumb.detachAllConnections($(this));
+			$(this).remove();
+			e.stopPropagation();
+
+		});   
+
+		stateName.keyup(function(e) {
+			if (e.keyCode === 13) {
+
+      //var state = $(this).closest('.item');
+      //state.children('.title').text(this.value);
+      $(this).parent().text(this.value);
+  }
+});
+
+		stateName.focus();
+		j++; 
+	})
+}
+
+
+$('#connect_item').dblclick(function(e) {
+	alert("hello world");
+	e.stopPropagation();
+
+}); 
+
+
+jsPlumb.bind("connection", function(info, originalEvent) {
+
+if(trigger == "yes"){
+//info.connection.setLabel("FOO");
+arrayConnection.push(info.sourceId);
+arrayConnection.push(info.targetId);
+
+console.log(info.connection.getOverlays());
+info.connection.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
+info.connection.addOverlay([ "Label", { location: [-.25, 1.1], id:"label", label:"foo"}]); 
+console.log(info.connection.getOverlays());
+}
+});
+
+
+function saveGraph()
+{
+
+	console.log(array);
+
+
+
+}
+
+function loadGraph()
+{
+var targetlol;
+var sourcelol;
+
+	var length = array.length;
+	var length2 = arrayConnection.length/2;
+	for (k = 0; k <= length - 1; k++) { 
+
+		$('#container_plumbjs').append(array.pop());
+
+	}
+
+
+	trigger = "no";
+
+
+	for (a = 0; a <= length2 - 1; a++) { 
+
+		targetlol = arrayConnection.pop();
+		sourcelol = arrayConnection.pop();
+		var temp = jsPlumb.connect({source: sourcelol, target:targetlol});
+		temp.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
+		temp.addOverlay([ "Label", { location: [-.25, 1.1], id:"label", label:"foo"}]); 
+
+	}
+
+	trigger = "yes";
+
+}
+
+function checkGraph(){
+
+
+console.log(arrayConnection);
+
+}
+
+
+</script>
+
+</html>
