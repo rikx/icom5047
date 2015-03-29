@@ -1,12 +1,19 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-
-  h1.
-  	User List
-  ul
-    each user, i in userlist
-      li
-        a(href="mailto:#{user.email}")= user.username
+	.container
+		.row
+			.col-md-4
+				.jumbotron
+					form(class=form-signin)
+						center
+							h2.form-signin-heading= title
+						br
+						label(for=inputEmail) Nombre de Usuario
+						input(class='form-control',	id='inputEmail',	type='email',	placeholder='Nombre de Usuario',	required='required',	autofocus='autofocus')
+						label(for=inputPassword) Contraseña
+						input(class='form-control',	id='inputPassword',	type='password',	placeholder='Contraseña', required='required')
+						br
+						button(class='btn btn-lg btn-success btn-block',	type='submit') Iniciar Sesión
+						a(href='https://chp.upr.edu/index.php?action=resetbyquestions') Olvide Mi Contraseña
+	script(src='/javascripts/login.js')
