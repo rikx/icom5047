@@ -6,8 +6,8 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Servicio De Extension Agricola',});
 });
 
-/* POST home (login) page. */
-router.post('/', function(req, res, next) {
+/* POST login */
+router.post('/login', function(req, res, next) {
   var db = req.db;
   db.connect(req.conString, function(err, client, done) {
   	if(err) {

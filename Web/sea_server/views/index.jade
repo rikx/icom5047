@@ -5,13 +5,13 @@ block content
 		.row
 			.col-md-4
 				.jumbotron
-					form(class=form-signin)
+					form#form-login(class='form-signin',	name='login',	method='post')
 						center
 							h2.form-signin-heading= title
 						br
-						label(for=inputEmail) Nombre de Usuario
+						label(for='inputEmail') Nombre de Usuario
 						input(class='form-control',	id='inputEmail',	type='email',	placeholder='Nombre de Usuario',	required='required',	autofocus='autofocus')
-						label(for=inputPassword) Contraseña
+						label(for='inputPassword') Contraseña
 						input(class='form-control',	id='inputPassword',	type='password',	placeholder='Contraseña', required='required')
 						br
 						button(class='btn btn-lg btn-success btn-block',	type='submit') Iniciar Sesión
