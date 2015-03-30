@@ -5,15 +5,19 @@ block content
 		.row
 			.col-md-4
 				.jumbotron
-					form#form-login(class='form-signin',	name='login',	method='post')
-						center
-							h2.form-signin-heading= title
-						br
+					center
+						h2.form-signin-heading= title
+					br
+					form#form-login(class='form-signin',	name='login' method="post",	action="http://localhost:3000/login")
 						label(for='inputEmail') Nombre de Usuario
-						input(class='form-control',	id='inputEmail',	type='email',	placeholder='Nombre de Usuario',	required='required',	autofocus='autofocus')
+						input(class='form-control',	id='input_username',	name='input_username',	type='email',	placeholder='Nombre de Usuario',	required='required',	autofocus='autofocus')
 						label(for='inputPassword') Contraseña
-						input(class='form-control',	id='inputPassword',	type='password',	placeholder='Contraseña', required='required')
+						input(class='form-control',	id='input_password',	name='input_password',	type='password',	placeholder='Contraseña', required='required')
 						br
-						button(class='btn btn-lg btn-success btn-block',	type='submit') Iniciar Sesión
+						button#btn-login(class='btn btn-lg btn-success btn-block',	type='submit') Iniciar Sesión
 						a(href='https://chp.upr.edu/index.php?action=resetbyquestions') Olvide Mi Contraseña
+	//	Latest compiled and minified JavaScript
+	script(src='//code.jquery.com/jquery-1.11.2.min.js')
+	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
 	script(src='/javascripts/login.js')
+	script(src='/javascripts/helpers.js')
