@@ -30,22 +30,23 @@ router.post('/login', function(req, res, next) {
   				res.statusCode = 404;
 					res.send("User not found.");
   			} else {
-  					console.log(result.rows);
+  					//TODO: password authentication
   					switch(get_user_type(result.rows)) {
   						case 'admin': {
-  							console.log('o hi there');
+
+  							//TODO: figure out the problem with the address still saying /users/admin isntead of just /admin
   							res.location('admin');
-  							res.redirect('users/admin');
+  							res.redirect('/users/admin');
   							break;
   						}
   						case 'agent': {
   							res.location("agent");
-  							res.redirect('users/agent');
+  							res.redirect('/users/agent');
   							break;
   						}
   						case 'specialist': {
   							res.location("specialist");
-  							res.redirect('users/specialist');
+  							res.redirect('/users/specialist');
   							break;
   						}
 						}
@@ -57,7 +58,6 @@ router.post('/login', function(req, res, next) {
 
 // TODO: this will have to be some account_type parameter in the final version
 function get_user_type(query_result){
-	console.log('well we got to get_user_type');
 	var id = query_result[0].user_id; 
 	if (id == 1) {
 		return 'admin';
