@@ -1,5 +1,42 @@
 extends layout
 
 block content
-	h1 Admin Home
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extension Agricola
+						h4 Página del Administrador
+			.col-md-2
+
+		.jumbotron
+			.row
+				.col-md-4
+					button(class='btn btn-lg btn-success btn-block',	type='button')	Manejar Entrevistas
+				.col-md-4
+					button(class='btn btn-lg btn-success btn-block',	type='button')	Manejar Ganaderos
+				.col-md-4
+					button(class='btn btn-lg btn-success btn-block',	type='button')	Manejar Reportes
+			br
+			.row
+				.col-md-4
+					button(class='btn btn-lg btn-success btn-block',	type='button')	Manejar Cuentas
+				.col-md-4
+					button(class='btn btn-lg btn-success btn-block',	type='button')	Manejar Localizaciones
+				.col-md-4
+					button(class='btn btn-lg btn-success btn-block',	type='button')	Ver Citas Pendientes
+
+		.row
+			.col-md-4
+			.col-md-4
+				button(class='btn btn-lg btn-primary btn-block',	type='button')	Terminar Sesión
+			.col-md-4
+
+	//	Latest compiled and minified JavaScript
+	script(src='//code.jquery.com/jquery-1.11.2.min.js')
+	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
 	script(src='/javascripts/admin.js')
+	script(src='/javascripts/helpers.js')
