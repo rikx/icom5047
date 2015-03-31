@@ -1,5 +1,5 @@
 {
-  "name": "sea_server",
+  "name": "RENeR_SEA_server",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "jade": "~1.9.2",
     "morgan": "~1.5.1",
     "serve-favicon": "~2.2.0",
-    "pg": "*"
+    "pg": "*",
+    "express-session": "*"
   }
 }

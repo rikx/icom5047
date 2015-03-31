@@ -12,6 +12,12 @@ router.get('/admin', function(req, res, next) {
   res.render('admin', { title: 'Admin Home'});
 });
 
+//TODO: add :id between /admin/ganaderos
+//TODO: fix it so you cant access it directly
+router.get('/admin/get_ganaderos', function(req, res, next) {
+	 res.send({redirect: '/users/admin/ganaderos'});
+});
+
 /* GET Manejar Ganaderos */
 router.get('/admin/ganaderos', function(req, res, next) {
 	res.render('manejar_ganaderos', { title: 'Manejar Ganaderos Home'});

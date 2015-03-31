@@ -2,9 +2,10 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var pg = require('pg');
+var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -19,7 +20,7 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Make our db accessible to our router
@@ -40,6 +41,13 @@ app.use(function(req,res,next){
  //req.conString = encodeURIComponent(conString); //to fix a problem with node-postgress not liking # characters
   next();
 });
+
+//TODO: finish session options
+/*app.use(session({
+  secret: 'Ramon2Enrique0Nelson1Ricardo5icom5047',
+  resave: false,
+  saveUninitialized: true
+}));*/
 
 app.use('/', routes);
 app.use('/users', users);
