@@ -1,0 +1,65 @@
+extends layout
+
+block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extencion Agricola
+						h4 Manejar Ganaderos
+			.col-md-2
+
+		.row
+			.col-md-2
+			.col-md-4
+				.dropdown
+					button#dropdown_menu_ganaderos(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Ordenar por
+						span(class='caret')
+					ul(class='dropdown-menu', role='menu', aria-labelledby='dropdown_menu_ganaderos')
+						li(role='presentation')
+							a(role='menuitem', tabindex='-1', href='#') Alfabético
+							a(role='menuitem', tabindex='-1', href='#') Localización
+							a(role='menuitem', tabindex='-1', href='#') Agente
+			.col-md-4
+				input#search_bar(class='form-control', type='text', placeholder='Buscar')
+			.col-md-2
+
+		.row
+			.col-md-2
+			.col-md-8
+				ul(class='list-group', style='overflow:auto; height:400px;')
+					.panel.panel-success
+						.panel-heading Ganaderos
+						table(class='table')
+							tr
+								td Ganadero 1
+								td
+									button(class='btn btn-sm btn-success btn-block', type='button') Editar
+								td
+									a(class='btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#')
+										i(class='glyphicon glyphicon-trash')
+							tr
+								td Ganadero 1
+								td
+									button(class='btn btn-sm btn-success btn-block', type='button') Editar
+								td
+									a(class='btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#')
+										i(class='glyphicon glyphicon-trash')
+			.col-md-2
+		
+		.row
+			.col-md-2
+			.col-md-2
+				button#btn_add_ganadero(class='btn btn-sm btn-default btn-block', type='button') Agregar Ganadero
+			.col-md-2
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Home
+
+	//	Latest compiled and minified JavaScript
+	script(src='//code.jquery.com/jquery-1.11.2.min.js')
+	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
+	script(src='/javascripts/manejar_ganaderos.js')
+	script(src='/javascripts/helpers.js')

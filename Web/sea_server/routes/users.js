@@ -12,4 +12,9 @@ router.get('/admin', function(req, res, next) {
   res.render('admin', { title: 'Admin Home'});
 });
 
+/* GET Manejar Ganaderos */
+router.get('/admin/ganaderos', function(req, res, next) {
+	res.render('manejar_ganaderos', { title: 'Manejar Ganaderos Home'});
+});
+
 module.exports = router;
