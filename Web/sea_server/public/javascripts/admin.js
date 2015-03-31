@@ -5,8 +5,9 @@ $(document).ready(function(){
         method: "GET",
      
         success: function( data ) {
-        	if (typeof data.redirect == 'string')
-              window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+        	if(typeof data.redirect == 'string') {
+            window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+        	}
         },
      
         // Code to run if the request fails; the raw request and
