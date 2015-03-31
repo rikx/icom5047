@@ -1,0 +1,77 @@
+<resources>
+	<string name="app_name">SEA</string>
+
+	<string name="action_settings">Settings</string>
+	<string name="preference_file_key">com.rener.myapplication.PREFERENCE_FILE_KEY</string>
+	<string name="username_hint">username</string>
+	<string name="password_hint">password</string>
+	<string name="button_login">Log In</string>
+	<string name="login_status_default">Enter credentials!</string>
+	<string name="main_credentials_default">You are not logged in.</string>
+	<string name="title_activity_main">Home</string>
+	<string name="key_saved_username">USERNAME</string>
+	<string name="no_username">No user</string>
+	<string name="key_saved_password">PASSWORD</string>
+	<string-array name="menu_list_strings">
+		<item>Reports</item>
+		<item>Locations</item>
+		<item>People</item>
+	</string-array>
+	<string-array name="dummy_reports_list_strings">
+		<item>Report 1</item>
+		<item>Report 2</item>
+		<item>Report 3</item>
+		<item>Report 4</item>
+		<item>Report 5</item>
+		<item>Report 6</item>
+		<item>Report 7</item>
+		<item>Report 8</item>
+		<item>Report 9</item>
+		<item>Report 10</item>
+		<item>Report 11</item>
+		<item>Report 12</item>
+		<item>Report 13</item>
+		<item>Report 14</item>
+		<item>Report 15</item>
+		<item>Report 16</item>
+		<item>Report 17</item>
+		<item>Report 18</item>
+		<item>Report 19</item>
+		<item>Report 20</item>
+		<item>Report 21</item>
+		<item>Report 22</item>
+		<item>Report 23</item>
+		<item>Report 24</item>
+		<item>Report 25</item>
+	</string-array>
+	<string-array name="dummy_locations_list_strings">
+		<item>Location 1</item>
+		<item>Location 2</item>
+		<item>Location 3</item>
+		<item>Location 4</item>
+		<item>Location 5</item>
+		<item>Location 6</item>
+		<item>Location 7</item>
+		<item>Location 8</item>
+		<item>Location 9</item>
+		<item>Location 10</item>
+		<item>Location 11</item>
+		<item>Location 12</item>
+		<item>Location 13</item>
+		<item>Location 14</item>
+		<item>Location 15</item>
+		<item>Location 16</item>
+		<item>Location 17</item>
+		<item>Location 18</item>
+		<item>Location 19</item>
+		<item>Location 20</item>
+		<item>Location 21</item>
+		<item>Location 22</item>
+		<item>Location 23</item>
+		<item>Location 24</item>
+		<item>Location 25</item>
+	</string-array>
+
+<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
