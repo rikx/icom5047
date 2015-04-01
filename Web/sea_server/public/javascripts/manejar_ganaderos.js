@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  //$('#info_panel').hide();
+  $('#edit_panel').hide();
   $('#btn_edit').hide();
 
   /* Button: Return home */
@@ -30,6 +30,11 @@ $(document).ready(function(){
     });
 	});
 
+  /* Button: Close edit panel */
+  $('#btn_close_edit_panel').click(function(){
+    $('#edit_panel').hide();
+  });
+
   /* Button: Close info panel */
   $('#btn_close_info_panel').click(function(){
     $('#info_panel').hide();
@@ -39,21 +44,37 @@ $(document).ready(function(){
   $('#btn_add_ganadero').click(function(){
     $('#btn_edit').hide();
     $('#btn_submit').show();
-    $('#info_panel').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
   });
 
-  /* Button: Open info panel */
+    /* Click: Show info panel */
+  $('.show_info_ganadero').click(function(){
+    $('#edit_panel').hide();
+    $('#info_panel').show();
+
+    // contains ganadero id
+    $(this).attr('data-id');
+
+    // ajax call for info
+  });
+
+  /* Button: Open edit panel */
   $('.btn_edit_ganadero').click(function(){
     $('#btn_edit').show();
     $('#btn_submit').hide();
-    $('#info_panel').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
 
+    // contains ganadero id
     $(this).attr('data-id');
-    //ajax call for info
+
+    // ajax call for info
   });
   
   $('.btn_delete_ganadero').click(function(){
 
+    // contains ganadero id
     $(this).attr('data-id');
 
   });
