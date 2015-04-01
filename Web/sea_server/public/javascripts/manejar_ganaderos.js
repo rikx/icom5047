@@ -1,4 +1,8 @@
 $(document).ready(function(){
+  //$('#info_panel').hide();
+  $('#btn_edit').hide();
+
+  /* Button: Return home */
 	$('#btn_home').click(function(){
     $.ajax({
         url: "http://localhost:3000/users/get_admin",
@@ -25,4 +29,33 @@ $(document).ready(function(){
         }*/
     });
 	});
+
+  /* Button: Close info panel */
+  $('#btn_close_info_panel').click(function(){
+    $('#info_panel').hide();
+  });
+
+  /* Button: Add ganadero */
+  $('#btn_add_ganadero').click(function(){
+    $('#btn_edit').hide();
+    $('#btn_submit').show();
+    $('#info_panel').show();
+  });
+
+  /* Button: Open info panel */
+  $('.btn_edit_ganadero').click(function(){
+    $('#btn_edit').show();
+    $('#btn_submit').hide();
+    $('#info_panel').show();
+
+    $(this).attr('data-id');
+    //ajax call for info
+  });
+  
+  $('.btn_delete_ganadero').click(function(){
+
+    $(this).attr('data-id');
+
+  });
+
 });
