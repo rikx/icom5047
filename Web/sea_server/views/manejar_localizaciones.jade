@@ -38,19 +38,23 @@ block content
 							table#localizaciones_list(class='table')
 								tr
 									td
-										a(class='show_info_localizacion list-group-item active', href='#') Localizacion 1
+										a(class='show_info_localizacion list-group-item active', href='#', data-id='1') Localizacion 1
+									td
+										button(class='btn_add_associates btn btn-sm btn-success btn-block', type='button', data-id='1') Agregar Ganadero/Agente
 									td
 										button(class='btn_edit_localizacion btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
 									td
-										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
+										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
 											i(class='glyphicon glyphicon-trash')
 								tr
 									td
-										a(class='show_info_localizacion list-group-item', href='#') Localizacion 2
+										a(class='show_info_localizacion list-group-item', href='#', data-id='2') Localizacion 2
+									td
+										button(class='btn_add_associates btn btn-sm btn-success btn-block', type='button', data-id='2') Agregar Ganadero/Agente
 									td
 										button(class='btn_edit_localizacion btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
 									td
-										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#')
+										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='2')
 											i(class='glyphicon glyphicon-trash')
 
 			#edit_panel.col-md-4(style="display:none")

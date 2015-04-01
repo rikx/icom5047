@@ -16,9 +16,9 @@ $(document).ready(function(){
   });
 
     /* Click: Show info panel */
-  $('#ganaderos_list tr td a').click(function(event){
+  $('#ganaderos_list tr td a').click(function(e){
     // prevents link from firing
-    event.preventDefault();
+    e.preventDefault();
 
     $('#edit_panel').hide();
     $('#info_panel').show();
@@ -87,7 +87,9 @@ $(document).ready(function(){
     });
   });
 
-  $('.btn_delete_ganadero').click(function(){
+  $('.btn_delete_ganadero').click(function(e){
+    // prevents link from firing
+    e.preventDefault();
 
     // contains ganadero id
     $(this).attr('data-id');
