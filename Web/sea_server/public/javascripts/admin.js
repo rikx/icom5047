@@ -1,29 +1,29 @@
 $(document).ready(function(){
+	$('#btn_manejar_cuestionarios').click(function(){
+		window.location.href = '/users/admin/cuestionarios'
+	});
+
 	$('#btn_manejar_ganaderos').click(function(){
-		 window.location.href = '/users/admin/ganaderos'
-/*    $.ajax({
-        url: "http://localhost:3000/users/admin/get_ganaderos",
-        method: "GET",
-     
-        success: function( data ) {
-        	if(typeof data.redirect == 'string') {
-            window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
-        	}
-        },
-     
-        // Code to run if the request fails; the raw request and
-        // status codes are passed to the function
-        error: function( xhr, status, errorThrown ) {
-            alert( "Sorry, there was a problem!" );
-            console.log( "Error: " + errorThrown );
-            console.log( "Status: " + status );
-            console.dir( xhr );
-        },
-     
-        // Code to run regardless of success or failure
-        complete: function( xhr, status ) {
-            alert( "The request is complete!" );
-        }
-    });*/
+		window.location.href = '/users/admin/ganaderos'
+	});
+
+	$('#btn_manejar_reportes').click(function(){
+		window.location.href = '/users/admin/reportes'
+	});
+
+	$('#btn_manejar_cuentas').click(function(){
+		window.location.href = '/users/admin/cuentas'
+	});
+
+	$('#btn_manejar_localizaciones').click(function(){
+		window.location.href = '/users/admin/localizaciones'
+	});
+
+	$('#btn_manejar_citas').click(function(){
+		window.location.href = '/users/admin/citas'
+	});
+
+	$('#btn_manejar_dispositivos').click(function(){
+		window.location.href = '/users/admin/dispositivos'
 	});
 });

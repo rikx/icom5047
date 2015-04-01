@@ -13,9 +13,39 @@ router.get('/admin', function(req, res, next) {
   res.render('admin', { title: 'Admin Home'});
 });
 
+/* GET Admin Manejar Cuestionarios */
+router.get('/admin/cuestionarios', function(req, res, next) {
+	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});
+});
+
 /* GET Admin Manejar Ganaderos */
 router.get('/admin/ganaderos', function(req, res, next) {
-	res.render('manejar_ganaderos', { title: 'Manejar Ganaderos Home'});
+	res.render('manejar_ganaderos', { title: 'Manejar Ganaderos'});
+});
+
+/* GET Admin Manejar Reportes */
+router.get('/admin/reportes', function(req, res, next) {
+	res.render('manejar_reportes', { title: 'Manejar Reportes'});
+});
+
+/* GET Admin Manejar Cuentas */
+router.get('/admin/cuentas', function(req, res, next) {
+	res.render('manejar_cuentas', { title: 'Manejar Cuentas'});
+});
+
+/* GET Admin Manejar Localizaciones */
+router.get('/admin/localizaciones', function(req, res, next) {
+	res.render('manejar_localizaciones', { title: 'Manejar Localizaciones'});
+
+/* GET Admin Manejar Citas */
+router.get('/admin/citas', function(req, res, next) {
+	res.render('manejar_citas', { title: 'Manejar Citas'});
+});
+
+/* GET Admin Manejar Dispositivos */
+router.get('/admin/dispositivos', function(req, res, next) {
+	res.render('manejar_dispositivos', { title: 'Manejar Dispositivos'});
+});
 });
 
 module.exports = router;

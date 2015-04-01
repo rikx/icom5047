@@ -1,5 +1,9 @@
 $(document).ready(function() {
 
+/*        if(typeof data.redirect == 'string') {
+          window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+        }*/
+        
 // $('#btn-login').click(function() {
 //     var form = $('#form-login');
 //     var formData = form.serializeArray();

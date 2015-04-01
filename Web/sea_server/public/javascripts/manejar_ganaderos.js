@@ -15,16 +15,11 @@ $(document).ready(function(){
     $('#info_panel').hide();
   });
 
-  /* Button: Add ganadero */
-  $('#btn_add_ganadero').click(function(){
-    $('#btn_edit, #heading_edit').hide();
-    $('#btn_submit, #heading_create').show();
-    $('#edit_panel').show();
-    $('#info_panel').hide();
-  });
-
     /* Click: Show info panel */
-  $('#ganaderos_list tr td a').click(function(){
+  $('#ganaderos_list tr td a').click(function(event){
+    // prevents link from firing
+    event.preventDefault();
+
     $('#edit_panel').hide();
     $('#info_panel').show();
 
@@ -41,6 +36,16 @@ $(document).ready(function(){
     // ajax call for info
   });
 
+    /* Button: Add ganadero */
+  $('#btn_add_ganadero').click(function(){
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
+
+    // ajax call to post new ganadero
+  });
+
   /* Button: Open edit panel */
   $('.btn_edit_ganadero').click(function(){
     $('#btn_edit, #heading_edit').show();
@@ -52,13 +57,97 @@ $(document).ready(function(){
     $(this).attr('data-id');
 
     // ajax call for info
+    $.ajax({
+      url: "http://localhost:3000/users/admin/ganadero_show",
+      method: "GET",
+   
+      success: function( data ) {
+
+      },
+   
+      // Code to run if the request fails; the raw request and
+      // status codes are passed to the function
+      error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+      },
+   
+      // Code to run regardless of success or failure
+      complete: function( xhr, status ) {
+          alert( "The request is complete!" );
+      }
+    });
   });
   
+  $('#btn_edit').click(function(){
+    //TODO: collect data to submit from edit form
+
+    $.ajax({
+      url: "http://localhost:3000/users/admin/ganadero_edit",
+      method: "PUT",
+   
+      success: function( data ) {
+
+      },
+   
+      // Code to run if the request fails; the raw request and
+      // status codes are passed to the function
+      error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+      },
+   
+      // Code to run regardless of success or failure
+      complete: function( xhr, status ) {
+          alert( "The request is complete!" );
+      }
+    });
+  });
+
   $('.btn_delete_ganadero').click(function(){
 
     // contains ganadero id
     $(this).attr('data-id');
 
+    $.ajax({
+      url: "http://localhost:3000/users/admin/ganadero_delete",
+      method: "DELETE",
+   
+      success: function( data ) {
+
+      },
+   
+      // Code to run if the request fails; the raw request and
+      // status codes are passed to the function
+      error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+      },
+   
+      // Code to run regardless of success or failure
+      complete: function( xhr, status ) {
+          alert( "The request is complete!" );
+      }
+    });
+
   });
+
+function populate_ganaderos(){
+
+};
+
+function populate_info(){
+
+};
+
+function populate_locations(){
+
+};
 
 });
