@@ -1,9 +1,129 @@
 extends layout
 
 block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extencion Agricola
+						h4 Manejar Localizaciones
+			.col-md-2
+
+		.row
+			.col-md-1
+			.col-md-2
+				.dropdown
+					button#dropdown_menu_ganaderos(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Ordenar por
+						span(class='caret')
+					ul(class='dropdown-menu', role='menu', aria-labelledby='dropdown_menu_ganaderos')
+						li(role='presentation')
+							a(role='menuitem', tabindex='-1', href='#') Alfabético
+							a(role='menuitem', tabindex='-1', href='#') Owner/Manager
+							a(role='menuitem', tabindex='-1', href='#') Agente Asignado
+			.col-md-4
+				input#search_bar(class='form-control', type='text', placeholder='Buscar')
+			.col-md-4
+			.col-md-1
+
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading Localizaciones
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table#localizaciones_list(class='table')
+								tr
+									td
+										a(class='show_info_localizacion list-group-item active', href='#') Localizacion 1
+									td
+										button(class='btn_edit_localizacion btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
+									td
+										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
+											i(class='glyphicon glyphicon-trash')
+								tr
+									td
+										a(class='show_info_localizacion list-group-item', href='#') Localizacion 2
+									td
+										button(class='btn_edit_localizacion btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
+									td
+										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#')
+											i(class='glyphicon glyphicon-trash')
+
+			#edit_panel.col-md-4(style="display:none")
+				.jumbotron
+					h4#heading_create Crear Localizaciones
+					h4#heading_edit Editar Localizaciones
+					form(role='form')
+						.form-group
+							label(for='localizacion_name') Nombre de Localizacion:
+							input#localizacion_name(class='form-control', name='localizacion_name', type='text', placeholder='Nombre')
+						.form-group
+							label(for='localizacion_license') Numero de Licencia:
+							input#localizacion_license(class='form-control', name='localizacion_license', type='text', placeholder='# de licencia')
+						.form-group
+							label(for='localizacion_contact') Información de Contacto
+							textarea#localizacion_contact(class='form-control', name='localizacion_contact', rows='3', placeholder='Información de Contacto')
+					.btn-group(role='group', aria-label='info panel buttons')
+						button#btn_close_edit_panel(class='btn btn-default') Cerrar
+						button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
+						button#btn_submit(class='btn btn-default btn-success', type='button') Someter
+
+			#info_panel.col-md-4
+				.panel.panel-success
+					.panel-heading
+						h3#info_panel_heading(class='panel-title') Localización 1
+					.panel-body
+						table#localizacion_info(class='table')
+							tr
+								td Nombre:
+								td#localizacion_info_name Localización 1
+							tr
+								td Numero de Licencia:
+								td#localizacion_info_license # de licencia
+							tr
+								td Información de Contacto:
+								td#localizacion_info_contact
+							tr
+								td
+									.panel.panel-info
+										.panel-heading Ganaderos Asociados
+										.panel-body
+											table#localizacion_ganaderos(class='table')
+												tr
+													td Owner: 
+													td Ganadero 1
+												tr
+													td Manager:
+													td Ganadero 2
+							tr
+								td
+									.panel.panel-info
+										.panel-heading Agentes Asignados
+										.panel-body
+											table#localizacion_agentes(class='table')
+												tr
+													td Agente 1
+												tr
+													td Agente 2
+												tr
+													td Agente 3
+						button#btn_close_info_panel(class='btn btn-default') Cerrar
+			.col-md-1
+
+		.row
+			.col-md-2
+			.col-md-2
+				button#btn_add_localizacion(class='btn btn-sm btn-default btn-block', type='button') Agregar Localizacion
+			.col-md-2
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
-	script(src='/javascripts/manejar_ganaderos.js')
+	script(src='/javascripts/manejar_localizaciones.js')
 	script(src='/javascripts/helpers.js')

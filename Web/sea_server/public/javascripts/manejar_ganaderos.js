@@ -57,28 +57,7 @@ $(document).ready(function(){
     $(this).attr('data-id');
 
     // ajax call for info
-    $.ajax({
-      url: "http://localhost:3000/users/admin/ganadero_show",
-      method: "GET",
-   
-      success: function( data ) {
 
-      },
-   
-      // Code to run if the request fails; the raw request and
-      // status codes are passed to the function
-      error: function( xhr, status, errorThrown ) {
-          alert( "Sorry, there was a problem!" );
-          console.log( "Error: " + errorThrown );
-          console.log( "Status: " + status );
-          console.dir( xhr );
-      },
-   
-      // Code to run regardless of success or failure
-      complete: function( xhr, status ) {
-          alert( "The request is complete!" );
-      }
-    });
   });
   
   $('#btn_edit').click(function(){
@@ -139,15 +118,36 @@ $(document).ready(function(){
   });
 
 function populate_ganaderos(){
-
+  $.getJSON();
 };
 
 function populate_info(){
+  $.ajax({
+    url: "http://localhost:3000/users/admin/ganadero_show",
+    method: "GET",
+ 
+    success: function( data ) {
 
+    },
+ 
+    // Code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+    },
+ 
+    // Code to run regardless of success or failure
+    complete: function( xhr, status ) {
+        alert( "The request is complete!" );
+    }
+  });
 };
 
 function populate_locations(){
-
+  $.getJSON();
 };
 
 });
