@@ -31,27 +31,31 @@ block content
 		.row
 			.col-md-1
 			.col-md-6
-				ul(class='list-group', style='overflow:auto; height:400px;')
-					.panel.panel-success
-						.panel-heading Ganaderos
-						table(class='table')
-							tr
-								td(class='name_ganadero show_info_ganadero') Ganadero 1
-								td
-									button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
-								td
-									a(class='btn_delete_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#')
-										i(class='glyphicon glyphicon-trash')
-							tr
-								td(class='name_ganadero show_info_ganadero') Ganadero 2
-								td
-									button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
-								td
-									a(class='btn_delete_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#')
-										i(class='glyphicon glyphicon-trash')
+				.panel.panel-success
+					.panel-heading Ganaderos
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table#ganaderos_list(class='table')
+								tr
+									td
+										a(class='list-group-item active show_info_ganadero', href='#') Gandero 1
+									td
+										button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
+									td
+										a(class='btn_delete_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
+											i(class='glyphicon glyphicon-trash')
+								tr
+									td
+										a(class='list-group-item show_info_ganadero', href='#') Ganadero 2
+									td
+										button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
+									td
+										a(class='btn_delete_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#')
+											i(class='glyphicon glyphicon-trash')
 			#edit_panel.col-md-4
 				.jumbotron
-					h4 Editar o Crear Ganaderos
+					h4#heading_create Crear Ganaderos
+					h4#heading_edit Editar Ganaderos
 					form(role='form')
 						.form-group
 							label(for='ganadero_name') Nombre de Ganadero:
@@ -71,10 +75,29 @@ block content
 					.panel-heading
 						h3#info_panel_heading(class='panel-title') Ganadero 1
 					.panel-body
-						.row
-						.col-md-9.col-lg-9
-							table(class='table table-user-information')
-							button#btn_close_info_panel(class='btn btn-default') Cerrar
+						table(class='table ganadero_info')
+							tr
+								td Nombre:
+								td#ganadero_info_name Ganadero 1
+							tr
+								td Numero de Licencia:
+								td#ganadero_info_license # de licencia
+							tr
+								td Información de Contacto:
+								td#ganadero_info_contact
+							tr
+								td
+									#ganadero_locations.panel.panel-info
+										.panel-heading Localizaciones Asignadas
+										.panel-body
+											table(class='table')
+												tr
+													td Loc 1
+												tr
+													td Loc 2
+												tr
+													td Loc 3
+						button#btn_close_info_panel(class='btn btn-default') Cerrar
 			.col-md-1
 		
 		.row

@@ -1,6 +1,5 @@
 $(document).ready(function(){
   $('#edit_panel').hide();
-  $('#btn_edit').hide();
 
   /* Button: Return home */
 	$('#btn_home').click(function(){
@@ -42,27 +41,34 @@ $(document).ready(function(){
 
   /* Button: Add ganadero */
   $('#btn_add_ganadero').click(function(){
-    $('#btn_edit').hide();
-    $('#btn_submit').show();
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
     $('#edit_panel').show();
     $('#info_panel').hide();
   });
 
     /* Click: Show info panel */
-  $('.show_info_ganadero').click(function(){
+  $('#ganaderos_list tr td a').click(function(){
     $('#edit_panel').hide();
     $('#info_panel').show();
 
+    // remove active from previous and add active to current clicked ganadero
+    $('#ganaderos_list tr td a.active').removeClass('active');
+    var $this = $(this);
+    if (!$this.hasClass('active')) {
+      $this.addClass('active');
+    }
+    
     // contains ganadero id
-    $(this).attr('data-id');
+    $this.attr('data-id');
 
     // ajax call for info
   });
 
   /* Button: Open edit panel */
   $('.btn_edit_ganadero').click(function(){
-    $('#btn_edit').show();
-    $('#btn_submit').hide();
+    $('#btn_edit, #heading_edit').show();
+    $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
     $('#info_panel').hide();
 
