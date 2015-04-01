@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	$('#btn_manejar_ganaderos').click(function(){
-    $.ajax({
+		 window.location.href = '/users/admin/ganaderos'
+/*    $.ajax({
         url: "http://localhost:3000/users/admin/get_ganaderos",
         method: "GET",
      
@@ -17,12 +18,12 @@ $(document).ready(function(){
             console.log( "Error: " + errorThrown );
             console.log( "Status: " + status );
             console.dir( xhr );
-        }/*,
+        },
      
         // Code to run regardless of success or failure
         complete: function( xhr, status ) {
             alert( "The request is complete!" );
-        }*/
-    });
+        }
+    });*/
 	});
 });
