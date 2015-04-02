@@ -39,7 +39,7 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 		}
 		// TODO: modify query to also give you account type
 	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-	  								person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+	  								person_id, first_name, middle_name, last_name1, last_name2, email, phone_number \
 									FROM person, location \
 									WHERE person_id = owner_id OR person_id = manager_id \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
