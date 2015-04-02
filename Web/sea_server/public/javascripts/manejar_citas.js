@@ -1,6 +1,6 @@
 $(document).ready(function(){
   /* Button: Return home */
-	$('#btn_home').click(function(){
-    window.location.href = '/users/admin'
+	$('#btn_home').on('click', function(){
+    window.location.href = '/users/admin';
 	});
 });

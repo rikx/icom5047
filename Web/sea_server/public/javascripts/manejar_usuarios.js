@@ -1,12 +1,12 @@
 $(document).ready(function(){
 
   /* Button: Return home */
-	$('#btn_home').click(function(){
-    window.location.href = '/users/admin'
+	$('#btn_home').on('click', function(){
+    window.location.href = '/users/admin';
 	});
   
-  /* Click: Show info panel */
-  $('#usuarios_list tr td a').click(function(e){
+  /* Show info panel */
+  $('#usuarios_list').on('click', 'tr td a.show_info_usuario', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -26,8 +26,8 @@ $(document).ready(function(){
     // ajax call for info
   });
 
-	/* Button: Open edit panel */
-  $('.btn_edit_usuario').click(function(){
+	/* Open edit panel */
+  $('#usuarios_list').on('click', 'tr td button.btn_edit_usuario', function(){
     $('#btn_edit, #heading_edit').show();
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();

@@ -31,7 +31,7 @@ router.get('/admin/ganaderos', function(req, res, next) {
 /* GET Ganaderos List data 
  * Responds with first 10 ganaderos, alphabetically ordered 
  */
-router.get('/admin/get_ganaderos', function(req, res, next) {
+router.get('/admin/list_ganaderos', function(req, res, next) {
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -64,6 +64,35 @@ router.get('/admin/reportes', function(req, res, next) {
 /* GET Admin Manejar Usuarios */
 router.get('/admin/usuarios', function(req, res, next) {
 	res.render('manejar_usuarios', { title: 'Manejar Usuarios'});
+});
+
+/* GET Ganaderos List data 
+ * Responds with first 10 ganaderos, alphabetically ordered 
+ */
+router.get('/admin/list_usuarios', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// TODO: modify query to also give you account type
+	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
+	  								person_id, first_name, middle_initial, last_name1, last_name2, email, location_id, location.name \
+									FROM person join location \
+									ON person_id = owner_id OR person_id = manager_id \
+									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+									LIMIT 10;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json(result.rows);
+	    }
+
+	  });
+	});
 });
 
 /* GET Admin Manejar Localizaciones */
