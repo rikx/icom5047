@@ -11,8 +11,8 @@ $(document).ready(function(){
 		window.location.href = '/users/admin/reportes'
 	});
 
-	$('#btn_manejar_cuentas').click(function(){
-		window.location.href = '/users/admin/cuentas'
+	$('#btn_manejar_usuarios').click(function(){
+		window.location.href = '/users/admin/usuarios'
 	});
 
 	$('#btn_manejar_localizaciones').click(function(){
@@ -26,4 +26,13 @@ $(document).ready(function(){
 	$('#btn_manejar_dispositivos').click(function(){
 		window.location.href = '/users/admin/dispositivos'
 	});
+
+	//logout function
+	$('#btn_logout').click(function(){
+
+	});
+	
+	function logout_helper(){
+
+	}
 });

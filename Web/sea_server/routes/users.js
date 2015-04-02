@@ -28,9 +28,9 @@ router.get('/admin/reportes', function(req, res, next) {
 	res.render('manejar_reportes', { title: 'Manejar Reportes'});
 });
 
-/* GET Admin Manejar Cuentas */
-router.get('/admin/cuentas', function(req, res, next) {
-	res.render('manejar_cuentas', { title: 'Manejar Cuentas'});
+/* GET Admin Manejar Usuarios */
+router.get('/admin/usuarios', function(req, res, next) {
+	res.render('manejar_usuarios', { title: 'Manejar Usuarios'});
 });
 
 /* GET Admin Manejar Localizaciones */
