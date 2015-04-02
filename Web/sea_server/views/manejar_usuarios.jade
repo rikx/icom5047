@@ -77,6 +77,17 @@ block content
 							.form-group
 								label(for='ganadero_contact') Información de Contacto
 								textarea#ganadero_contact(class='form-control', name='ganadero_contact', rows='3', placeholder='Información de Contacto')
+							#usuario_type.dropdown
+								center
+									button(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
+										span(class='caret')
+								ul(class='dropdown-menu', role='menu', aria-labelledby='tipo de usuario')
+									li(role='presentation')
+										a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
+									li(role='presentation')
+										a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
+									li(role='presentation')
+										a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
 						.btn-group(role='group', aria-label='info panel buttons')
 							button#btn_close_edit_panel(class='btn btn-default') Cerrar
 							button#btn_edit(class='btn btn-default btn-success', type='button') Guardar

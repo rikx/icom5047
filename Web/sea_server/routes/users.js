@@ -13,6 +13,11 @@ router.get('/admin', function(req, res, next) {
   res.render('admin', { title: 'Admin Home'});
 });
 
+/* GET Admin Crear Cuestionario */
+router.get('/admin/crear-cuestionario', function(req, res, next) {
+	res.render('crear-cuestionario', { title: 'Crear Cuestionario'});
+});
+
 /* GET Admin Manejar Cuestionarios */
 router.get('/admin/cuestionarios', function(req, res, next) {
 	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});

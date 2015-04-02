@@ -1,4 +1,8 @@
 $(document).ready(function(){
+	$('#btn_crear_cuestionario').click(function(){
+		window.location.href = '/users/admin/crear-cuestionario'
+	});
+
 	$('#btn_manejar_cuestionarios').click(function(){
 		window.location.href = '/users/admin/cuestionarios'
 	});
