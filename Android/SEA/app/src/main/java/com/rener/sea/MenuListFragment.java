@@ -21,13 +21,13 @@ public class MenuListFragment extends ListFragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-	super.onActivityCreated(savedInstanceState);
+		super.onActivityCreated(savedInstanceState);
 
-	//Populate menu list (currently a dummy list)
-	ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-			android.R.layout.simple_list_item_1,
-			getResources().getStringArray(R.array.menu_list_strings));
-	setListAdapter(adapter);
+		//Populate menu list (currently a dummy list)
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+				android.R.layout.simple_list_item_1,
+				getResources().getStringArray(R.array.menu_list_strings));
+		setListAdapter(adapter);
 
 	}
 
@@ -43,6 +43,11 @@ public class MenuListFragment extends ListFragment {
 		String selection = getListAdapter().getItem(position).toString();
 		Context context = getActivity().getApplicationContext();
 
+		//Highlight selected item
+		l.setItemChecked(position, true);
+		l.setSelection(position);
+		l.setSelected(true);
+
 		//Toast for selection feedback
 		String user = ((MainActivity) getActivity()).getCurrentUser();
 		Toast.makeText(context, user+" selected "+selection, Toast.LENGTH_SHORT).show();
@@ -53,14 +58,14 @@ public class MenuListFragment extends ListFragment {
 		if(selection.equalsIgnoreCase("REPORTS"))
 			fragment = new ReportsListFragment();
 		else if(selection.equalsIgnoreCase("PEOPLE"))
-			fragment = new PeopleListFragment();
+			fragment = PeopleListFragment.newInstance(-1);
 		else if(selection.equalsIgnoreCase("LOCATIONS"))
 			fragment = new LocationsListFragment();
 		else fragment = new Fragment();
 
 		//Replace the selected fragment
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.menu_selected_container, fragment);
+		transaction.replace(R.id.menu_selected_container, fragment, selection);
 		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		transaction.commit();
 

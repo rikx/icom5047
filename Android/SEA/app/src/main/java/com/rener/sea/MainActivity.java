@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
 	private String username = null;
+	private DBEmulator database;            //emulates dummy database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,11 +19,12 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
 		setActivityUser();
+	    populateData();
 
 		//Manage fragment transaction
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.menu_list_container, new MenuListFragment());
+        transaction.add(R.id.menu_list_container, new MenuListFragment(), "MAIN");
         transaction.commit();
 
     }
@@ -36,5 +39,29 @@ public class MainActivity extends FragmentActivity {
 		String key = getString(R.string.key_saved_username);
 		String saved = sharedPref.getString(key, "DEFAULT");
 		this.username = saved;
+	}
+
+    @Override
+    public void onBackPressed() {
+
+
+		// Check if the back stack should be popped
+	    FragmentManager manager = getFragmentManager();
+	    int count = manager.getBackStackEntryCount();
+	    if(count != 0) {
+		    manager.popBackStack();
+	    }
+
+	    //Toast for feedback
+	    String string = "BACK:count="+count;
+	    Toast.makeText(this.getApplicationContext(), string, Toast.LENGTH_SHORT).show();
+    }
+
+	private void populateData() {
+		database = new DBEmulator();
+	}
+
+	public DBEmulator getDB() {
+		return database;
 	}
 }

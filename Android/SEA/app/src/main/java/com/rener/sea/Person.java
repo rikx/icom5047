@@ -2,21 +2,26 @@ package com.rener.sea;
 
 public class Person {
 
-	public long id;
+	private long id;
 	private String first_name = "";
 	private String middle_initial = null;
 	private String last_name = "";
 	private String email = null;
+	private int phone_number;
+
+	public Person(long id, String first_name, String last_name) {
+		this.id = id;
+		this.first_name = first_name;
+		this.last_name = last_name;
+	}
 
 	public Person(String first_name, String last_name) {
 		this.first_name = first_name;
 		this.last_name = last_name;
 	}
 
-	public Person(String first_name, String middle_initial, String last_name) {
-		this.first_name = first_name;
-		this.middle_initial = middle_initial;
-		this.last_name = last_name;
+	public long getID() {
+		return id;
 	}
 
 	public String getFirstName() {
@@ -56,6 +61,18 @@ public class Person {
 
 	public String setEmail(String email) {
 		return this.email = email;
+	}
+
+	public int getPhone_number() {
+		return phone_number;
+	}
+
+	public boolean hasEmail() {
+		return email==null || email.equals("");
+	}
+
+	public int setPhone_number(int phone_number) {
+		return this.phone_number = phone_number;
 	}
 
 	public String toString() {

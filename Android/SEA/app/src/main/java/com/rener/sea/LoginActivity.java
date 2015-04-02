@@ -5,15 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class LoginActivity extends Activity {
 
-    public final static String EXTRA_USERNAME = "com.rener.myapplication.USERNAME";
-    public final static String EXTRA_PASSWORD = "com.rener.myapplication.PASSWORD";
+    public final static String EXTRA_USERNAME = "com.rener.sea.USERNAME";
+    public final static String EXTRA_PASSWORD = "com.rener.sea.PASSWORD";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,7 @@ public class LoginActivity extends Activity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.key_saved_username), username);
         editor.putString(getString(R.string.key_saved_password), password);
-        editor.commit();
+        editor.apply();
 
         //Verify saved credentials with a toast
 		sharedPref = this.getSharedPreferences(
