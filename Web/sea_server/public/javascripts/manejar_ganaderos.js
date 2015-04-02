@@ -19,7 +19,7 @@ $(document).ready(function(){
     $('#info_panel').hide();
   });
 
-    /* Click: Show info panel */
+  /* Click: Show info panel */
   $('#ganaderos_list tr td a').click(function(e){
     // prevents link from firing
     e.preventDefault();
@@ -46,8 +46,6 @@ $(document).ready(function(){
     $('#btn_submit, #heading_create').show();
     $('#edit_panel').show();
     $('#info_panel').hide();
-
-    // ajax call to post new ganadero
   });
 
   /* Button: Open edit panel */
@@ -63,7 +61,16 @@ $(document).ready(function(){
     // ajax call for info
 
   });
+
+  /* Click: POSTs new ganadero information */
+  $('#btn_submit').click(function(){
+      // ajax call to post new ganadero
+
+      // update ganadero list after posting 
+      populate_ganaderos();
+  });
   
+  /* Click: PUTs edited ganadero information */
   $('#btn_edit').click(function(){
     //TODO: collect data to submit from edit form
 
@@ -91,6 +98,7 @@ $(document).ready(function(){
     });
   });
 
+  /* Click: DELETEs ganadero information */
   $('.btn_delete_ganadero').click(function(e){
     // prevents link from firing
     e.preventDefault();
