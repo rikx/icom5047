@@ -1,6 +1,72 @@
 extends layout
 
 block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extencion Agricola
+						h4 Manejar Citas
+			.col-md-2
+		
+		.row
+			.col-md-1
+			.col-md-2
+			.col-md-4
+				.input-group
+					input#search_bar(class='form-control', type='text', placeholder='Buscar')
+					span(class='input-group-btn')
+						button#btn_search(class='btn btn-default', type='button')
+							i(class='glyphicon glyphicon-search')
+			.col-md-4
+			.col-md-1
+
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading Citas Pendientes
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table#citas_list(class='table')
+								thead
+									tr
+										th 
+											center
+												strong Localización
+										th 
+											center
+												strong Fecha y Hora
+								tbody
+									tr
+										td
+											a(class='list-group-item active show_info_cita', href='#', data-id='1') La granjita del pueblo
+										td
+											center
+												span#cita_date Mayo 5, 2015
+												span  at 
+												span#cita_time 2:30pm
+										td
+											button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
+									tr
+										td
+											a(class='list-group-item show_info_ganadero', href='#', data-id='2') Cita 2
+										td
+											center
+												span#cita_date Mayo 5, 2015
+												span  at 
+												span#cita_time 2:30pm
+										td
+											button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
+
+		.row
+			.col-md-3
+			.col-md-2
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

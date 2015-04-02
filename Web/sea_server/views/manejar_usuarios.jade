@@ -77,17 +77,18 @@ block content
 							.form-group
 								label(for='ganadero_contact') Información de Contacto
 								textarea#ganadero_contact(class='form-control', name='ganadero_contact', rows='3', placeholder='Información de Contacto')
-							#usuario_type.dropdown
-								center
-									button(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
-										span(class='caret')
-								ul(class='dropdown-menu', role='menu', aria-labelledby='tipo de usuario')
-									li(role='presentation')
-										a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
-									li(role='presentation')
-										a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
-									li(role='presentation')
-										a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
+							.form-group
+								#usuario_type.dropdown
+									center
+										button(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
+											span(class='caret')
+									ul(class='dropdown-menu', role='menu', aria-labelledby='tipo de usuario')
+										li(role='presentation')
+											a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
+										li(role='presentation')
+											a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
+										li(role='presentation')
+											a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
 						.btn-group(role='group', aria-label='info panel buttons')
 							button#btn_close_edit_panel(class='btn btn-default') Cerrar
 							button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
@@ -96,24 +97,30 @@ block content
 			#info_panel.col-md-4
 				.panel.panel-success
 					.panel-heading
-						h3#info_panel_heading(class='panel-title') Ganadero 1
+						h3#info_panel_heading(class='panel-title') Usuario 1
 					.panel-body
-						table#ganadero_info(class='table')
+						table#usuario_info(class='table')
 							tr
 								td Nombre:
-								td#ganadero_info_name Ganadero 1
+								td#usuario_info_name Usuario 1
 							tr
-								td Numero de Licencia:
-								td#ganadero_info_license # de licencia
+								td Appelido 1:
+								td#usuario_info_lastname_paternal Appelido Paterno
+							tr
+								td Appelido 2:
+								td#usuario_info_lastname_maternal Appelido Materno
+							tr
+								td Tipo de Cuenta:
+								td#usuario_info_type Agente
 							tr
 								td Información de Contacto:
-								td#ganadero_info_contact
+								td#usuario_info_contact 123-456-7890
 							tr
 								td
 									.panel.panel-info
 										.panel-heading Localizaciones Asignadas
 										.panel-body
-											table#ganadero_locations(class='table')
+											table#usuario_locations(class='table')
 												tr
 													td Loc 1
 												tr

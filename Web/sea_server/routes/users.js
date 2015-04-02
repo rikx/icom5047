@@ -41,6 +41,7 @@ router.get('/admin/usuarios', function(req, res, next) {
 /* GET Admin Manejar Localizaciones */
 router.get('/admin/localizaciones', function(req, res, next) {
 	res.render('manejar_localizaciones', { title: 'Manejar Localizaciones'});
+});
 
 /* GET Admin Manejar Citas */
 router.get('/admin/citas', function(req, res, next) {
@@ -51,6 +52,6 @@ router.get('/admin/citas', function(req, res, next) {
 router.get('/admin/dispositivos', function(req, res, next) {
 	res.render('manejar_dispositivos', { title: 'Manejar Dispositivos'});
 });
-});
+
 
 module.exports = router;
