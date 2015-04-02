@@ -56,9 +56,12 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 
 	  });
 
-	  client.query('SELECT person_id, location_id, location.name \
+	  client.query('WITH ganaderos AS (SELECT DISTINCT ON (person_id) person_id \
 									FROM person, location \
-									WHERE person_id = owner_id or person_id = manager_id', function(err, result){
+									WHERE person_id = owner_id OR person_id = manager_id) \
+								SELECT person_id, location_id, location.name AS location_name \
+								FROM ganaderos, location \
+								WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
 			done();
 			if(err) {
 	      return console.error('error running query', err);
