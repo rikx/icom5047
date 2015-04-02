@@ -1,6 +1,6 @@
 $(document).ready(function(){
   // store data for 10 ganaderos
-  var ganaderos_array;
+  var ganaderos_array, locations_array;
   // initial population of ganaderos list
   populate_ganaderos();
 
@@ -133,13 +133,14 @@ $(document).ready(function(){
 
 function populate_ganaderos(){
   $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
-    ganaderos_array = data;
+    ganaderos_array = data.ganaderos;
+    locations_array = data.locations;
 
     // contents of ganaderos list
     var table_content = '';
 
       // for each item in JSON, add table row and cells
-      $.each(data, function(i){
+      $.each(data.ganaderos, function(i){
         table_content += '<tr>';
         table_content += "<td><a class='list-group-item ";
         // if initial list item, set to active

@@ -32,6 +32,7 @@ router.get('/admin/ganaderos', function(req, res, next) {
  * Responds with first 10 ganaderos, alphabetically ordered 
  */
 router.get('/admin/list_ganaderos', function(req, res, next) {
+	var ganaderos_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -39,7 +40,7 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 		}
 		// TODO: modify query to also give you account type
 	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-	  								person_id, first_name, middle_name, last_name1, last_name2, email, phone_number \
+	  								person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
 									FROM person, location \
 									WHERE person_id = owner_id OR person_id = manager_id \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
@@ -50,10 +51,23 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	res.json(result.rows);
+	    	ganaderos_list = result.rows;
 	    }
 
 	  });
+
+	  client.query('SELECT person_id, location_id, location.name \
+									FROM person, location \
+									WHERE person_id = owner_id or person_id = manager_id', function(err, result){
+			done();
+			if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	locations_list = result.rows;
+	    	// response
+				res.json({ganaderos: ganaderos_list, locations: locations_list});
+	    }
+		});	
 	});
 });
 
