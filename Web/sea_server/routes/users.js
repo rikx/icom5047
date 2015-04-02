@@ -38,10 +38,11 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query('SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, location_id, location.name \
-									FROM person join location \
-									ON person_id = owner_id OR person_id = manager_id \
-									ORDER BY first_name ASC, last_name1 ASC \
+	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
+	  								person_id, first_name, middle_initial, last_name1, last_name2, email \
+									FROM person, location \
+									WHERE person_id = owner_id OR person_id = manager_id \
+									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
@@ -77,9 +78,9 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 		}
 		// TODO: modify query to also give you account type
 	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-	  								person_id, first_name, middle_initial, last_name1, last_name2, email, location_id, location.name \
-									FROM person join location \
-									ON person_id = owner_id OR person_id = manager_id \
+	  								person_id, first_name, middle_initial, last_name1, last_name2, email \
+									FROM person, location \
+									WHERE person_id = owner_id OR person_id = manager_id \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
