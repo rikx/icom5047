@@ -2,110 +2,112 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent">
-
-	<LinearLayout
-		android:id="@+id/show_person_layout"
+	
+	<ViewFlipper
+		android:id="@+id/person_flipper"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+		android:layout_height="match_parent">
 
-		<TextView
-			android:id="@+id/text_person_name"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/no_data"
+		<LinearLayout
+			android:id="@+id/show_person_layout"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/text_person_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+					/>
+	
+			<TextView
+				android:id="@+id/text_person_email"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+					/>
+	
+			<TextView
+				android:id="@+id/text_person_phone"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+					/>
+	
+			<Button
+				android:id="@+id/button_edit_person"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:text="@string/edit"
 				/>
-
-		<TextView
-			android:id="@+id/text_person_email"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/no_data"
-			android:visibility="gone"
+	
+		</LinearLayout>
+	
+		<LinearLayout
+			android:id="@+id/edit_person_layout"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+	
+			<EditText
+				android:id="@+id/person_edit_first_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_first_name"
+				android:inputType="textPersonName"
 				/>
+	
+			<EditText
+				android:id="@+id/person_edit_middle_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_middle_name"
+				android:inputType="textPersonName"
+				/>
+	
+			<EditText
+				android:id="@+id/person_edit_last_name1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_last_name1"
+				android:inputType="textPersonName"
+				/>
+	
+			<EditText
+				android:id="@+id/person_edit_last_name2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_last_name2"
+				android:inputType="textPersonName"
+				/>
+	
+			<EditText
+				android:id="@+id/person_edit_email"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_email"
+				android:inputType="textEmailAddress"
+				/>
+	
+			<EditText
+				android:id="@+id/person_edit_phone_number"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_phone_number"
+				android:inputType="phone"
+				/>
+	
+			<Button
+				android:id="@+id/button_save_person"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:text="@string/save"
+				/>
+		</LinearLayout>
 
-		<TextView
-			android:id="@+id/text_person_phone"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/no_data"
-			android:visibility="gone"
-			/>
-
-		<Button
-		android:id="@+id/edit_person"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:text="@string/edit"
-		android:onClick="editDetails"
-			/>
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:id="@+id/edit_person_layout"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical"
-		android:visibility="gone">
-
-		<EditText
-			android:id="@+id/person_edit_first_name"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:hint="@string/person_first_name"
-			android:inputType="textPersonName"
-			/>
-
-		<EditText
-			android:id="@+id/person_edit_middle_name"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:hint="@string/person_first_name"
-			android:inputType="textPersonName"
-			/>
-
-		<EditText
-			android:id="@+id/person_edit_last_name1"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:hint="@string/person_last_name1"
-			android:inputType="textPersonName"
-			/>
-
-		<EditText
-			android:id="@+id/person_edit_last_name2"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:hint="@string/person_last_name2"
-			android:inputType="textPersonName"
-			/>
-
-		<EditText
-			android:id="@+id/person_edit_email"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:hint="@string/person_last_name2"
-			android:inputType="textEmailAddress"
-			/>
-
-		<EditText
-			android:id="@+id/person_edit_phone_number"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:hint="@string/person_last_name2"
-			android:inputType="phone"
-			/>
-
-		<Button
-			android:id="@+id/save_person"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:text="@string/save"
-			android:onClick="saveDetails"
-			/>
-	</LinearLayout>
+	</ViewFlipper>
 
 </RelativeLayout>
