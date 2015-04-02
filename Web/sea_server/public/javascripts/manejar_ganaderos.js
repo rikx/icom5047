@@ -1,4 +1,8 @@
 $(document).ready(function(){
+  // store data for 10 ganaderos
+  var ganaderos_array;
+  // initial population of ganaderos list
+  populate_ganaderos();
 
   /* Button: Return home */
 	$('#btn_home').click(function(){
@@ -120,7 +124,24 @@ $(document).ready(function(){
   });
 
 function populate_ganaderos(){
-  $.getJSON();
+  $.getJSON('http://localhost:3000/users/admin/get_ganaderos', function(data) {
+    ganaderos_array = data;
+
+    // contents of ganaderos list
+    var table_content = '';
+
+      // for each item in JSON, add table row and cells
+      $.each(data, function(){
+        table_content += '<tr>';
+        table_content += "<td><a class='list-group-item active show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.first_name+' '+this.last_name1+"</a></td>";
+        table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
+        table_content += "<td><a class='btn_delete_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+        table_content += '</tr>';
+      });  
+
+      // inject content string into html
+      $('#ganaderos_list').html(table_content);
+  });
 };
 
 function populate_info(){
