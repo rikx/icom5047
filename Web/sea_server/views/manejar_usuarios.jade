@@ -16,7 +16,11 @@ block content
 			.col-md-1
 			.col-md-2
 			.col-md-4
-				input#search_bar(class='form-control', type='text', placeholder='Buscar')
+				.input-group
+					input#search_bar(class='form-control', type='text', placeholder='Buscar')
+					span(class='input-group-btn')
+						button#btn_search(class='btn btn-default', type='button')
+							i(class='glyphicon glyphicon-search')
 			.col-md-4
 			.col-md-1
 		
@@ -44,6 +48,70 @@ block content
 									td
 										a(class='btn_delete_usuario btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='2')
 											i(class='glyphicon glyphicon-trash')
+
+			#edit_panel.col-md-4(style="display:none")
+					.jumbotron
+						h4#heading_create Crear Usuario
+						h4#heading_edit Editar Usuario
+						form(role='form')
+							.form-group
+								label(for='usuario_name') Nombre:
+								input#usuario_name(class='form-control', name='usuario_name', type='text', placeholder='Nombre')
+							.form-group
+								.row
+									.col-md-6
+										label(for='usuario_lastname_paternal') Apellido 1:
+										input#usuario_lastname_paternal(class='form-control', name='usuario_lastname_paternal', type='text', placeholder='Appelido Paterno')
+									.col-md-6
+										label(for='usuario_lastname_maternal') Apellido 2:
+										input#usuario_lastname_maternal(class='form-control', name='usuario_lastname_maternal', type='text', placeholder='Appelido Materno')
+							.form-group
+								label(for='usuario_email') Correo Electrónico:
+								input#usuario_email(class='form-control', name='usuario_email', type='email', placeholder='Correo Electrónico')
+							.form-group
+								label(for='usuario_password') Contraseña:
+								input#usuario_password(class='form-control', name='usuario_password', type='password', placeholder='Contraseña')
+							.form-group
+								label(for='usuario_password_confirm') Confirmar Contraseña:
+								input#usuario_password_confirm(class='form-control', name='usuario_password_confirm', type='password', placeholder='Confirmar Contraseña')
+							.form-group
+								label(for='ganadero_contact') Información de Contacto
+								textarea#ganadero_contact(class='form-control', name='ganadero_contact', rows='3', placeholder='Información de Contacto')
+						.btn-group(role='group', aria-label='info panel buttons')
+							button#btn_close_edit_panel(class='btn btn-default') Cerrar
+							button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
+							button#btn_submit(class='btn btn-default btn-success', type='button') Someter
+
+			#info_panel.col-md-4
+				.panel.panel-success
+					.panel-heading
+						h3#info_panel_heading(class='panel-title') Ganadero 1
+					.panel-body
+						table#ganadero_info(class='table')
+							tr
+								td Nombre:
+								td#ganadero_info_name Ganadero 1
+							tr
+								td Numero de Licencia:
+								td#ganadero_info_license # de licencia
+							tr
+								td Información de Contacto:
+								td#ganadero_info_contact
+							tr
+								td
+									.panel.panel-info
+										.panel-heading Localizaciones Asignadas
+										.panel-body
+											table#ganadero_locations(class='table')
+												tr
+													td Loc 1
+												tr
+													td Loc 2
+												tr
+													td Loc 3
+						button#btn_close_info_panel(class='btn btn-default') Cerrar
+			.col-md-1
+
 		.row
 			.col-md-2
 			.col-md-2
