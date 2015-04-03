@@ -9,6 +9,14 @@ $(document).ready(function(){
     window.location.href = '/users/admin'
   });
 
+	/* Add dispositivo */
+	$('#btn_add_dispositivo').on('click', function(){
+	  $('#btn_edit, #heading_edit').hide();
+	  $('#btn_submit, #heading_create').show();
+	  $('#edit_panel').show();
+	  $('#info_panel').hide();
+	});
+
   function populate_dispositivos() {
 		$.getJSON('http://localhost:3000/users/admin/list_dispositivos', function(data) {
 			dispositivos_array = data.dispositivos;

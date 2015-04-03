@@ -1,9 +1,58 @@
 extends layout
 
 block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extencion Agricola
+						h4 Manejar Cuestionarios
+			.col-md-2
+
+		.row
+			.col-md-1
+			.col-md-2
+			.col-md-4
+				.input-group
+					input#search_bar(class='form-control', type='text', placeholder='Buscar')
+					span(class='input-group-btn')
+						button#btn_search(class='btn btn-default', type='button')
+							i(class='glyphicon glyphicon-search')
+			.col-md-4
+			.col-md-1
+
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading Cuestionarios
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table(class='table')
+								thead
+								tbody#cuestionarios_list
+
+			#info_panel.col-md-4
+				.panel.panel-success
+					.panel-heading
+						h3#info_panel_heading(class='panel-title') Cuestionario 1
+					.panel-body
+						table#cuestionario_info(class='table')
+							tr
+								td Nombre:
+								td#cuestionario_info_name 
+							tr
+								td Versión:
+								td#cuestionario_info_version 
+							tr
+								td  by:
+								td#localizacion_info_contact
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
-	script(src='/javascripts/manejar_ganaderos.js')
+	script(src='/javascripts/manejar_cuestionarios.js')
 	script(src='/javascripts/helpers.js')
