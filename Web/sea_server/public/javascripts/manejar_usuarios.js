@@ -1,6 +1,6 @@
 $(document).ready(function(){
   // store data for 10 usuarios
-  var ganaderos_array
+  var usuarios_array;
   // initial population of usuarios list
   populate_usuarios();
 
