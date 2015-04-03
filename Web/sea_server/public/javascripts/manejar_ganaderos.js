@@ -5,9 +5,9 @@ $(document).ready(function(){
   populate_ganaderos();
 
   /* Return home */
-	$('#btn_home').on('click', function(){
+  $('#btn_home').on('click', function(){
     window.location.href = '/users/admin'
-	});
+  });
 
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
@@ -23,7 +23,7 @@ $(document).ready(function(){
   $('#ganaderos_list').on('click', 'tr td a.show_info_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
-
+    var table_content = '';
     $('#edit_panel').hide();
     $('#info_panel').show();
 
@@ -35,71 +35,111 @@ $(document).ready(function(){
     }
 
     // contains ganadero id
-    $this.attr('data-id');
+    var myVar = $this.attr('data-id');
+    var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);
+    var thisUserObject = ganaderos_array[arrayPosition];
 
-    // ajax call for info
-  });
+    $('#info_panel_heading').text(thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
+    if(thisUserObject.middle_initial == null)
+    {
+      $('#ganadero_info_name').text(thisUserObject.first_name);
+    }
+    else
+    {
+     $('#ganadero_info_name').text(thisUserObject.first_name + " " + thisUserObject.middle_initial);
+   }
 
-  /* Add ganadero */
-  $('#btn_add_ganadero').on('click', function(){
-    $('#btn_edit, #heading_edit').hide();
-    $('#btn_submit, #heading_create').show();
-    $('#edit_panel').show();
-    $('#info_panel').hide();
-  });
+   $('#ganadero_info_apellidos').text(thisUserObject.last_name1 + " " + thisUserObject.last_name2);
+   $('#ganadero_info_contact').text(thisUserObject.email + " " + thisUserObject.phone_number);
+   
 
-    /* POSTs new ganadero information */
-  $('#btn_submit').on('click', function(){
+   $.each(locations_array, function(i){
+    if(myVar == this.person_id){
+      table_content += '<tr>';
+      table_content += "<td> ";
+      table_content += "" +this.location_name+"</td>";
+      table_content += '</tr>';
+    }
+  });  
+
+
+   $('#ganadero_locations').html(table_content);
+ });
+
+/* Add ganadero */
+$('#btn_add_ganadero').on('click', function(){
+  $('#btn_edit, #heading_edit').hide();
+  $('#btn_submit, #heading_create').show();
+  $('#edit_panel').show();
+  $('#info_panel').hide();
+});
+
+/* POSTs new ganadero information */
+$('#btn_submit').on('click', function(){
       // ajax call to post new ganadero
 
       // update ganadero list after posting 
       populate_ganaderos();
-  });
+    });
 
-  /* Open edit panel */
-  $('#ganaderos_list').on('click', 'tr td button.btn_edit_ganadero', function(){
-    $('#btn_edit, #heading_edit').show();
-    $('#btn_submit, #heading_create').hide();
-    $('#edit_panel').show();
-    $('#info_panel').hide();
+/* Open edit panel */
+$('#ganaderos_list').on('click', 'tr td button.btn_edit_ganadero', function(){
+  $('#btn_edit, #heading_edit').show();
+  $('#btn_submit, #heading_create').hide();
+  $('#edit_panel').show();
+  $('#info_panel').hide();
 
     // contains ganadero id
     $(this).attr('data-id');
 
-    // ajax call for info
+//LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-  });
-  
-  /* PUTs edited ganadero information */
-  $('#btn_edit').on('click', function(){
+var myVar =  $(this).attr('data-id');
+var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);
+var thisUserObject = ganaderos_array[arrayPosition];
+console.log(myVar);
+console.log(thisUserObject);
+
+
+$('#ganadero_name').attr("placeholder", thisUserObject.first_name);
+$('#ganadero_apellido1').attr("placeholder", thisUserObject.last_name1);
+$('#ganadero_apellido2').attr("placeholder", thisUserObject.last_name2);
+$('#ganadero_email').attr("placeholder", thisUserObject.email);
+$('#ganadero_telefono').attr("placeholder", thisUserObject.phone_number);
+  //thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
+
+});
+
+/* PUTs edited ganadero information */
+$('#btn_edit').on('click', function(){
     //TODO: collect data to submit from edit form
 
     $.ajax({
       url: "http://localhost:3000/users/admin/ganadero_edit",
       method: "PUT",
-   
+
       success: function( data ) {
 
       },
-   
+
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
       error: function( xhr, status, errorThrown ) {
-          alert( "Sorry, there was a problem!" );
-          console.log( "Error: " + errorThrown );
-          console.log( "Status: " + status );
-          console.dir( xhr );
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
       },
-   
+
       // Code to run regardless of success or failure
       complete: function( xhr, status ) {
-          alert( "The request is complete!" );
+        alert( "The request is complete!" );
       }
     });
   });
 
-  /* DELETEs ganadero information */
-  $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
+/* DELETEs ganadero information */
+$('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -109,23 +149,23 @@ $(document).ready(function(){
     $.ajax({
       url: "http://localhost:3000/users/admin/ganadero_delete",
       method: "DELETE",
-   
+
       success: function( data ) {
 
       },
-   
+
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
       error: function( xhr, status, errorThrown ) {
-          alert( "Sorry, there was a problem!" );
-          console.log( "Error: " + errorThrown );
-          console.log( "Status: " + status );
-          console.dir( xhr );
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
       },
-   
+
       // Code to run regardless of success or failure
       complete: function( xhr, status ) {
-          alert( "The request is complete!" );
+        alert( "The request is complete!" );
       }
     });
 
@@ -135,6 +175,11 @@ function populate_ganaderos(){
   $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
     ganaderos_array = data.ganaderos;
     locations_array = data.locations;
+    var firstElement = ganaderos_array[0];
+
+    console.log(ganaderos_array);
+    console.log(ganaderos_array[0]);
+
 
     // contents of ganaderos list
     var table_content = '';
@@ -155,30 +200,66 @@ function populate_ganaderos(){
 
       // inject content string into html
       $('#ganaderos_list').html(table_content);
-  });
+
+
+      //populate info panel with information regarding the first person on the list
+
+      $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);
+      if(firstElement.middle_initial == null)
+      {
+        $('#ganadero_info_name').text(firstElement.first_name);
+      }
+      else
+      {
+       $('#ganadero_info_name').text(firstElement.first_name + " " + firstElement.middle_initial);
+     }
+
+     $('#ganadero_info_apellidos').text(firstElement.last_name1 + " " + firstElement.last_name2);
+     $('#ganadero_info_contact').text(firstElement.email + " " + firstElement.phone_number);
+
+     table_content = '';
+
+     $.each(locations_array, function(i){
+      if(firstElement.person_id == this.person_id){
+        console.log(firstElement.person_id);
+        console.log(this.person_id);
+        table_content += '<tr>';
+        table_content += "<td> ";
+        table_content += "" +this.location_name+"</td>";
+        table_content += '</tr>';
+      }
+    });  
+
+     $('#ganadero_locations').html(table_content);
+
+   });
+
+
+
+
 };
 
 function populate_info(){
   $.ajax({
     url: "http://localhost:3000/users/admin/ganadero_show",
     method: "GET",
- 
+
     success: function( data ) {
 
     },
- 
+
     // Code to run if the request fails; the raw request and
     // status codes are passed to the function
     error: function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        console.dir( xhr );
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
     },
- 
+
     // Code to run regardless of success or failure
     complete: function( xhr, status ) {
-        alert( "The request is complete!" );
+      alert( "The request is complete!" );
     }
   });
 };

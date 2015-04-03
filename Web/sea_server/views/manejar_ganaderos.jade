@@ -44,11 +44,19 @@ block content
 							label(for='ganadero_name') Nombre de Ganadero:
 							input#ganadero_name(class='form-control', name='ganadero_name', type='text', placeholder='Nombre')
 						.form-group
-							label(for='ganadero_license') Numero de Licencia:
-							input#ganadero_license(class='form-control', name='ganadero_licence', type='text', placeholder='# de licencia')
+							label(for='ganadero_apellido1') Apellido Paterno:
+							input#ganadero_apellido1(class='form-control', name='ganadero_apellido1', type='text', placeholder='# de licencia')
 						.form-group
-							label(for='ganadero_contact') Información de Contacto
-							textarea#ganadero_contact(class='form-control', name='ganadero_contact', rows='3', placeholder='Información de Contacto')
+							label(for='ganadero_apellido2') Apellido Materno:
+							input#ganadero_apellido2(class='form-control', name='ganadero_apellido2', type='text', placeholder='# de licencia')
+						.form-group
+							label(for='ganadero_email') Correo Electronico
+							input#ganadero_email(class='form-control', name='ganadero_email', type='text', placeholder='# de licencia')
+						.form-group
+							label(for='ganadero_telefono') # Telefonico:
+							input#ganadero_telefono(class='form-control', name='ganadero_telefono', type='text', placeholder='# de licencia')
+
+
 					.btn-group(role='group', aria-label='info panel buttons')
 						button#btn_close_edit_panel(class='btn btn-default') Cerrar
 						button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
@@ -56,30 +64,22 @@ block content
 			#info_panel.col-md-4
 				.panel.panel-success
 					.panel-heading
-						h3#info_panel_heading(class='panel-title') Ganadero 1
+						h3#info_panel_heading(class='panel-title') 
 					.panel-body
 						table#ganadero_info(class='table')
 							tr
 								td Nombre:
-								td#ganadero_info_name Ganadero 1
+								td#ganadero_info_name 
 							tr
-								td Numero de Licencia:
-								td#ganadero_info_license # de licencia
+								td Apellidos:
+								td#ganadero_info_apellidos 
 							tr
 								td Información de Contacto:
 								td#ganadero_info_contact
-							tr
-								td
-									.panel.panel-info
+						.panel.panel-info
 										.panel-heading Localizaciones Asignadas
 										.panel-body
 											table#ganadero_locations(class='table')
-												tr
-													td Loc 1
-												tr
-													td Loc 2
-												tr
-													td Loc 3
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 			.col-md-1
 		
