@@ -82,14 +82,14 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 	  });
 
 	  client.query('WITH ganaderos AS (SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-									person_id, first_name, last_name1, last_name2 \
-								FROM person, location \
-								WHERE person_id = owner_id OR person_id = manager_id \
-								ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-								LIMIT 10) \
-								SELECT person_id, location_id, location.name AS location_name \
-								FROM ganaderos, location \
-								WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
+											person_id, first_name, last_name1, last_name2 \
+										FROM person, location \
+										WHERE person_id = owner_id OR person_id = manager_id \
+										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+										LIMIT 10) \
+									SELECT person_id, location_id, location.name AS location_name \
+									FROM ganaderos, location \
+									WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
 			done();
 			if(err) {
 	      return console.error('error running query', err);
@@ -116,14 +116,14 @@ router.get('/admin/usuarios', function(req, res, next) {
  * Responds with first 10 usuarios, alphabetically ordered 
  */
 router.get('/admin/list_usuarios', function(req, res, next) {
-	var usuarios_list;
+	var usuarios_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, person.spec_id, specialization.name AS specialization_name \
+	  client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, person.spec_id, specialization.name AS specialization_name \
 									FROM (users natural join person) LEFT OUTER JOIN specialization \
 									ON person.spec_id = specialization.spec_id \
 									ORDER BY email ASC \
@@ -139,7 +139,13 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 	  });
 
 	  // get locations associated with users
-	  client.query('', function(err, result){
+	  client.query('WITH usuarios AS (SELECT user_id, email \
+										FROM users natural join person \
+										ORDER BY email ASC \
+										LIMIT 10) \
+									SELECT user_id, location_id, location.name AS location_name \
+									FROM usuarios, location \
+									WHERE user_id = agent_id', function(err, result){
 	  	done();
 	  	if(err) {
 
