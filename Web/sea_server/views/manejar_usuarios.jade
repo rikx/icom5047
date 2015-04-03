@@ -32,22 +32,6 @@ block content
 					.panel-body
 						.list-group(style='overflow:auto; height:300px;')
 							table#usuarios_list(class='table')
-								tr
-									td
-										a(class='list-group-item active show_info_usuario', href='#', data-id='1') Usuario 1
-									td
-										button(class='btn_edit_usuario btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
-									td
-										a(class='btn_delete_usuario btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-											i(class='glyphicon glyphicon-trash')
-								tr
-									td
-										a(class='list-group-item show_info_usuario', href='#', data-id='2') Usuario 2
-									td
-										button(class='btn_edit_usuario btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
-									td
-										a(class='btn_delete_usuario btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='2')
-											i(class='glyphicon glyphicon-trash')
 
 			#edit_panel.col-md-4(style="display:none")
 					.jumbotron
@@ -115,18 +99,16 @@ block content
 							tr
 								td Información de Contacto:
 								td#usuario_info_contact 123-456-7890
-							tr
-								td
-									.panel.panel-info
-										.panel-heading Localizaciones Asignadas
-										.panel-body
-											table#usuario_locations(class='table')
-												tr
-													td Loc 1
-												tr
-													td Loc 2
-												tr
-													td Loc 3
+						.panel.panel-info
+							.panel-heading Localizaciones Asignadas
+							.panel-body
+								table#usuario_locations(class='table')
+									tr
+										td Loc 1
+									tr
+										td Loc 2
+									tr
+										td Loc 3
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 			.col-md-1
 

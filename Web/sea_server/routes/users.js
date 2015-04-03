@@ -53,7 +53,6 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 	    } else {
 	    	ganaderos_list = result.rows;
 	    }
-
 	  });
 
 	  client.query('WITH ganaderos AS (SELECT DISTINCT ON (person_id) person_id \
@@ -88,27 +87,24 @@ router.get('/admin/usuarios', function(req, res, next) {
  * Responds with first 10 ganaderos, alphabetically ordered 
  */
 router.get('/admin/list_usuarios', function(req, res, next) {
+	var usuarios_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-	  								person_id, first_name, middle_initial, last_name1, last_name2, email \
-									FROM person, location \
-									WHERE person_id = owner_id OR person_id = manager_id \
-									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-									LIMIT 10;', function(err, result) {
+	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, spec_id, phone_number \
+									FROM users natural join person', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	res.json(result.rows);
+	    	usuarios_list = result.rows;
+	    	res.json({usuarios: usuarios_list});
 	    }
-
 	  });
 	});
 });
