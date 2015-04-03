@@ -34,7 +34,7 @@ router.get('/admin/list_cuestionarios', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query('
+	  client.query(' \
 									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
@@ -81,9 +81,12 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 	    }
 	  });
 
-	  client.query('WITH ganaderos AS (SELECT DISTINCT ON (person_id) person_id \
-									FROM person, location \
-									WHERE person_id = owner_id OR person_id = manager_id) \
+	  client.query('WITH ganaderos AS (SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
+									person_id, first_name, last_name1, last_name2 \
+								FROM person, location \
+								WHERE person_id = owner_id OR person_id = manager_id \
+								ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+								LIMIT 10) \
 								SELECT person_id, location_id, location.name AS location_name \
 								FROM ganaderos, location \
 								WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
