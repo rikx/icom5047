@@ -1,6 +1,51 @@
 extends layout
 
 block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extencion Agricola
+						h4 Manejar Dispositivos
+			.col-md-2
+
+		.row
+			.col-md-1
+			.col-md-2
+			.col-md-4
+				.input-group
+					input#search_bar(class='form-control', type='text', placeholder='Buscar')
+					span(class='input-group-btn')
+						button#btn_search(class='btn btn-default', type='button')
+							i(class='glyphicon glyphicon-search')
+			.col-md-4
+			.col-md-1
+
+			#edit_panel.col-md-4(style="display:none")
+				.jumbotron
+					h4#heading_create Agregar Dispositivo
+					h4#heading_edit Editar Dispositivo
+					form(role='form')
+						.form-group
+							label(for='ganadero_name') Nombre de Ganadero:
+							input#ganadero_name(class='form-control', name='ganadero_name', type='text', placeholder='Nombre')
+						.form-group
+							label(for='ganadero_apellido1') Apellido Paterno:
+							input#ganadero_apellido1(class='form-control', name='ganadero_apellido1', type='text', placeholder='# de licencia')
+						.form-group
+							label(for='ganadero_apellido2') Apellido Materno:
+							input#ganadero_apellido2(class='form-control', name='ganadero_apellido2', type='text', placeholder='# de licencia')
+
+		.row
+			.col-md-2
+			.col-md-2
+				button#btn_add_dispositivo(class='btn btn-sm btn-default btn-block', type='button') Agregar Dispositivo
+			.col-md-2
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
