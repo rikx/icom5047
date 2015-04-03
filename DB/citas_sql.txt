@@ -1,0 +1,25 @@
+-- Table: appointments
+
+-- DROP TABLE appointments;
+
+CREATE TABLE appointments
+(
+  appointment_id bigserial NOT NULL,
+  date date,
+  "time" time with time zone,
+  location_id bigint NOT NULL,
+  report_id bigint NOT NULL,
+  purpose text,
+  CONSTRAINT "primary key" PRIMARY KEY (appointment_id),
+  CONSTRAINT "foreign location id" FOREIGN KEY (location_id)
+      REFERENCES location (location_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT "foreign report id" FOREIGN KEY (report_id)
+      REFERENCES report (report_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE appointments
+  OWNER TO postgres;

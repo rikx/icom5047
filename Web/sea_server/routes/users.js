@@ -38,7 +38,7 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-		// TODO: modify query to also give you account type
+	
 	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
 	  								person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
 									FROM person, location \
@@ -83,8 +83,8 @@ router.get('/admin/usuarios', function(req, res, next) {
 	res.render('manejar_usuarios', { title: 'Manejar Usuarios'});
 });
 
-/* GET Ganaderos List data 
- * Responds with first 10 ganaderos, alphabetically ordered 
+/* GET Usuarios List data 
+ * Responds with first 10 usuarios, alphabetically ordered 
  */
 router.get('/admin/list_usuarios', function(req, res, next) {
 	var usuarios_list;
@@ -96,7 +96,9 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 		// TODO: modify query to also give you account type
 	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, person.spec_id, specialization.name AS specialization_name \
 									FROM (users natural join person) LEFT OUTER JOIN specialization \
-									ON person.spec_id = specialization.spec_id;', function(err, result) {
+									ON person.spec_id = specialization.spec_id \
+									ORDER BY email ASC \
+									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -115,9 +117,81 @@ router.get('/admin/localizaciones', function(req, res, next) {
 	res.render('manejar_localizaciones', { title: 'Manejar Localizaciones'});
 });
 
+/* GET Localizaciones List data 
+ * Responds with first 10 localizaciones, alphabetically ordered 
+ */
+router.get('/admin/list_localizaciones', function(req, res, next) {
+	var localizaciones_list, agents_list, ganaderos_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// query for location data
+	  client.query('', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	localizaciones_list = result.rows;
+	    }
+	  });
+	  // query for associated agentes
+	  client.query('', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	agents_list = result.rows;
+	    }
+	  });
+	  // query for associated ganaderos
+	  client.query('', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	ganaderos_list = result.rows;
+	    	res.json({localizaciones : localizaciones_list, agentes : agentes_list, ganaderos : ganaderos_list});
+	    }
+	  });
+	});
+});
+
 /* GET Admin Manejar Citas */
 router.get('/admin/citas', function(req, res, next) {
 	res.render('manejar_citas', { title: 'Manejar Citas'});
+});
+
+/* GET Citas List data 
+ * Responds with first 10 citas, ordered by date and time
+ */
+router.get('/admin/list_citas', function(req, res, next) {
+	var citas_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		
+	  client.query('', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	citas_list = result.rows;
+	    	res.json({citas: citas_list});
+	    }
+	  });
+	});
 });
 
 /* GET Admin Manejar Dispositivos */

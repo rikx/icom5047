@@ -9,6 +9,17 @@ $(document).ready(function(){
     window.location.href = '/users/admin';
 	});
 
+	  /* Open edit panel */
+  $('#citas_list tbody').on('click', 'tr td button.btn_edit_cita', function(){
+    $('#edit_panel').show();
+
+    // contains ganadero id
+    var cita_id = $(this).attr('data-id');
+
+    // ramon work
+
+  });
+
 	function populate_citas(){
   $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
     citas_array = data.citas;
