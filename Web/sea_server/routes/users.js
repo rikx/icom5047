@@ -132,8 +132,18 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	usuarios_list = result.rows;
-	    	res.json({usuarios: usuarios_list});
 	    }
+	  });
+
+	  // get locations associated with users
+	  client.query('', function(err, result){
+	  	done();
+	  	if(err) {
+
+	  	} else {
+	  		locations_list = result.rows;
+	    	res.json({usuarios : usuarios_list, locations : locations_list});
+	  	}
 	  });
 	});
 });

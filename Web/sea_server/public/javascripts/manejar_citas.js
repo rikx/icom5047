@@ -9,7 +9,7 @@ $(document).ready(function(){
     window.location.href = '/users/admin';
 	});
 
-	  /* Open edit panel */
+	/* Open edit panel */
   $('#citas_list tbody').on('click', 'tr td button.btn_edit_cita', function(){
     $('#edit_panel').show();
 
