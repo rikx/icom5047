@@ -94,8 +94,9 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, spec_id, phone_number \
-									FROM users natural join person', function(err, result) {
+	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, person.spec_id, specialization.name AS specialization_name \
+									FROM (users natural join person) LEFT OUTER JOIN specialization \
+									ON person.spec_id = specialization.spec_id;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
