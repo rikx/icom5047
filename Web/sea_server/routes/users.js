@@ -23,6 +23,32 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});
 });
 
+/* GET Cuestionarios List data 
+ * Responds with first 10 cuestionarios, alphabetically ordered 
+ */
+router.get('/admin/list_cuestionarios', function(req, res, next) {
+	var cuestionarios_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// TODO: modify query to also give you account type
+	  client.query('
+									LIMIT 10;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	cuestionarios_list = result.rows;
+	    	res.json({cuestionarios: cuestionrios_list});
+	    }
+	  });
+	});
+});
+
 /* GET Admin Manejar Ganaderos */
 router.get('/admin/ganaderos', function(req, res, next) {
 	res.render('manejar_ganaderos', { title: 'Manejar Ganaderos'});
