@@ -1,5 +1,6 @@
 package com.rener.sea;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -44,16 +45,15 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
 
-
 		// Check if the back stack should be popped
 	    FragmentManager manager = getFragmentManager();
-	    int count = manager.getBackStackEntryCount();
-	    if(count != 0) {
-		    manager.popBackStack();
-	    }
+	    FragmentTransaction transaction = manager.beginTransaction();
+	    transaction.replace(R.id.menu_list_container, new MenuListFragment(), "MAIN");
+	    transaction.replace(R.id.menu_selected_container, new Fragment());
+	    transaction.commit();
 
 	    //Toast for feedback
-	    String string = "BACK:count="+count;
+	    String string = "BACK pressed";
 	    Toast.makeText(this.getApplicationContext(), string, Toast.LENGTH_SHORT).show();
     }
 

@@ -10,20 +10,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocationsListFragment extends ListFragment {
 
-	private List locationsList;
+	private List<Location> locationsList;
+	private int curPos = -1;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		//Populate the list with dummy reports
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-				android.R.layout.simple_list_item_1,
-				getResources().getStringArray(R.array.dummy_locations_list_strings));
+		locationsList = new ArrayList<Location>();
+		populateList();
+
+		//Set the list adapter
+		ArrayAdapter<Location> adapter = new ArrayAdapter<Location>(getActivity(),
+				android.R.layout.simple_list_item_1, locationsList);
 		setListAdapter(adapter);
 
 	}
@@ -44,4 +48,9 @@ public class LocationsListFragment extends ListFragment {
 
 		//TODO Do something with the selection
     }
+
+	private void populateList() {
+		//Define people list with dummy data
+		locationsList = ((MainActivity)getActivity()).getDB().getLocations();
+	}
 }

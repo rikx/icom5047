@@ -1,5 +1,7 @@
 package com.rener.sea;
 
+import android.provider.ContactsContract;
+
 public class Person {
 
 	private long id;
@@ -8,8 +10,7 @@ public class Person {
 	private String last_name1 = "";
 	private String last_name2 = "";
 	private String email = "";
-	public static final int DEFAULT_PHONE = 0;
-	private int phone_number = DEFAULT_PHONE;
+	private String phone_number = "";
 
 
 	public Person(long id, String first_name, String last_name) {
@@ -78,7 +79,7 @@ public class Person {
 		return this.email = email;
 	}
 
-	public int getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phone_number;
 	}
 
@@ -86,20 +87,12 @@ public class Person {
 		return email!=null || !email.equals("");
 	}
 
-	public int setPhoneNumber(int phone_number) {
+	public String setPhoneNumber(String phone_number) {
 		return this.phone_number = phone_number;
 	}
 
-	public int setPhoneNumber(String phone_number) {
-		try {
-			return this.phone_number = Integer.parseInt(phone_number);
-		} catch (NumberFormatException e) {
-			return this.phone_number = DEFAULT_PHONE;
-		}
-	}
-
 	public boolean hasPhoneNumber() {
-		return phone_number != DEFAULT_PHONE;
+		return phone_number != null || !phone_number.equals("");
 	}
 
 	public String toString() {

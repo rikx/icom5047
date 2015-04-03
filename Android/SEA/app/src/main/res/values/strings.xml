@@ -54,33 +54,6 @@
 		<item>Report 24</item>
 		<item>Report 25</item>
 	</string-array>
-	<string-array name="dummy_locations_list_strings">
-		<item>Location 1</item>
-		<item>Location 2</item>
-		<item>Location 3</item>
-		<item>Location 4</item>
-		<item>Location 5</item>
-		<item>Location 6</item>
-		<item>Location 7</item>
-		<item>Location 8</item>
-		<item>Location 9</item>
-		<item>Location 10</item>
-		<item>Location 11</item>
-		<item>Location 12</item>
-		<item>Location 13</item>
-		<item>Location 14</item>
-		<item>Location 15</item>
-		<item>Location 16</item>
-		<item>Location 17</item>
-		<item>Location 18</item>
-		<item>Location 19</item>
-		<item>Location 20</item>
-		<item>Location 21</item>
-		<item>Location 22</item>
-		<item>Location 23</item>
-		<item>Location 24</item>
-		<item>Location 25</item>
-	</string-array>
 
 <!-- TODO: Remove or change this placeholder text -->
 	<string name="hello_blank_fragment">Hello blank fragment</string>

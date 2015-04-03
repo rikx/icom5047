@@ -5,13 +5,18 @@ import android.location.Address;
 public class Location {
 
 	private long id;
-	private String name;
-	private Person manager;
-	private Person owner;
-	private Address address;
+	private String name = "";
+	private Person manager = null;
+	private Person owner = null;
+	private Address address = null;
 
-	public Location() {
+	public Location(String name) {
+		this.name = name;
+	}
 
+	public Location(long id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 
 	public long getID() {
@@ -34,6 +39,10 @@ public class Location {
 		this.manager = manager;
 	}
 
+	public boolean hasManager() {
+		return manager != null;
+	}
+
 	public Person getOwner() {
 		return owner;
 	}
@@ -42,11 +51,19 @@ public class Location {
 		this.owner = owner;
 	}
 
+	public boolean hasOwner() {
+		return owner != null;
+	}
+
 	public Address getAddress() {
 		return address;
 	}
 
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+
+	public String toString() {
+		return name;
 	}
 }

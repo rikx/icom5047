@@ -45,8 +45,6 @@ public class MenuListFragment extends ListFragment {
 
 		//Highlight selected item
 		l.setItemChecked(position, true);
-		l.setSelection(position);
-		l.setSelected(true);
 
 		//Toast for selection feedback
 		String user = ((MainActivity) getActivity()).getCurrentUser();

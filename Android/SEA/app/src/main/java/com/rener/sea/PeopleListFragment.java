@@ -20,11 +20,22 @@ public class PeopleListFragment extends ListFragment {
 
 	private List<Person> peopleList = null;
 	private int curPos = -1;
-	private boolean mDualPane;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		//Populate the list with dummy reports
+		peopleList = new ArrayList<Person>();
+		populateList();
+
+		//Set the adapter for the list fragment
+		ArrayAdapter<Person> adapter = new ArrayAdapter<Person>(getActivity(),
+				android.R.layout.simple_list_item_1, peopleList);
+		setListAdapter(adapter);
+
+		//Set the current position in the list
+		curPos = getArguments().getInt("index", -1);
 	}
 
 	@Override
@@ -37,22 +48,7 @@ public class PeopleListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		//Populate the list with dummy reports
-		peopleList = new ArrayList<Person>();
-		populateList();
-
-		//Set the adapter for the list fragment
-		ArrayAdapter<Person> adapter = new ArrayAdapter<Person>(getActivity(),
-				android.R.layout.simple_list_item_1, peopleList);
-		setListAdapter(adapter);
-
-		//Check if a details frame exists
-		View detailsFrame = getActivity().findViewById(R.id.menu_selected_container);
-		mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-		System.out.println("PeopleList created pos="+curPos);
-		curPos = getArguments().getInt("index", -1);
-		if (curPos != -1)
-			setSelection(curPos);
+		getListView().setItemChecked(curPos, true);
 	}
 
 	@Override
@@ -63,12 +59,17 @@ public class PeopleListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+
+	    //Highlight selected item
+	    l.setItemChecked(position, true);
+
+	    //Show the item's details
 	    showDetails(position);
     }
 
 	private void populateList() {
 
-		//Define people list with dummy data
+		//Set the list with data from DB
 		peopleList = ((MainActivity)getActivity()).getDB().getPeople();
 	}
 
@@ -82,11 +83,7 @@ public class PeopleListFragment extends ListFragment {
 
 		//Set the selected person
 		Person person = (Person) getListAdapter().getItem(index);
-		String selection = person.getID()+":"+person.toString();
 		getListView().setItemChecked(index, true);
-
-		//Show a toast for feedback
-		Toast.makeText(context, selection, Toast.LENGTH_SHORT).show();
 
 
 		//Check if a details fragment is shown, replace if needed or show a new one
@@ -99,12 +96,10 @@ public class PeopleListFragment extends ListFragment {
 			PeopleListFragment list = PeopleListFragment.newInstance(index);
 			transaction.replace(R.id.menu_list_container, list, "PEOPLE");
 			transaction.replace(R.id.menu_selected_container, details, "DETAILS");
-			transaction.addToBackStack("DETAILS_SHOW");
 		}
 		else if (curPos != index){
 			details = PersonDetailsFragment.newInstance(person);
 			transaction.replace(R.id.menu_selected_container, details);
-			transaction.addToBackStack("DETAILS_REPLACE");
 		}
 		curPos = index;
 		transaction.commit();

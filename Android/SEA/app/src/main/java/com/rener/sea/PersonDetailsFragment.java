@@ -113,7 +113,7 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 
 		//Set the phone fields if it exists
 		if(person.hasPhoneNumber()) {
-			String phone = Integer.toString(person.getPhoneNumber());
+			String phone = person.getPhoneNumber();
 			textPhoneNumber.setText(phone);
 			textPhoneNumber.setVisibility(TextView.VISIBLE);
 			editPhoneNumber.setText(phone);
