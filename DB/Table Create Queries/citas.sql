@@ -10,11 +10,11 @@ CREATE TABLE appointments
   location_id bigint NOT NULL,
   report_id bigint NOT NULL,
   purpose text,
-  CONSTRAINT "primary key" PRIMARY KEY (appointment_id),
-  CONSTRAINT "foreign location id" FOREIGN KEY (location_id)
+  CONSTRAINT appointments_pkey PRIMARY KEY (appointment_id),
+  CONSTRAINT appointments_location_fkey FOREIGN KEY (location_id)
       REFERENCES location (location_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT "foreign report id" FOREIGN KEY (report_id)
+  CONSTRAINT appointments_report_fkey FOREIGN KEY (report_id)
       REFERENCES report (report_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
