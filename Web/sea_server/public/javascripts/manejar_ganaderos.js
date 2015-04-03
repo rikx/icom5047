@@ -98,11 +98,11 @@ console.log(myVar);
 console.log(thisUserObject);
 
 
-$('#ganadero_name').attr("placeholder", thisUserObject.first_name);
-$('#ganadero_apellido1').attr("placeholder", thisUserObject.last_name1);
-$('#ganadero_apellido2').attr("placeholder", thisUserObject.last_name2);
-$('#ganadero_email').attr("placeholder", thisUserObject.email);
-$('#ganadero_telefono').attr("placeholder", thisUserObject.phone_number);
+$('#ganadero_name').attr("value", thisUserObject.first_name);
+$('#ganadero_apellido1').attr("value", thisUserObject.last_name1);
+$('#ganadero_apellido2').attr("value", thisUserObject.last_name2);
+$('#ganadero_email').attr("value", thisUserObject.email);
+$('#ganadero_telefono').attr("value", thisUserObject.phone_number);
   //thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
 
 });
