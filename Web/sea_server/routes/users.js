@@ -210,7 +210,8 @@ router.get('/admin/list_dispositivos', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		
-	  client.query('', function(err, result) {
+	  client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
+									FROM devices natural join users', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

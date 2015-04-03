@@ -24,6 +24,22 @@ block content
 			.col-md-4
 			.col-md-1
 
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading Dispositivos
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table(class='table')
+								thead
+									tr
+										th
+											center Device Name
+										th
+											center Last Sync Date
+								tbody#dispositivos_list
+
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
 					h4#heading_create Agregar Dispositivo

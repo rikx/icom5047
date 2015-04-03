@@ -6,7 +6,7 @@ CREATE TABLE appointments
 (
   appointment_id bigserial NOT NULL,
   date date,
-  "time" time with time zone,
+  "time" time without time zone,
   location_id bigint NOT NULL,
   report_id bigint NOT NULL,
   purpose text,
