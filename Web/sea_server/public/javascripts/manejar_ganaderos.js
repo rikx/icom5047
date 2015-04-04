@@ -94,8 +94,7 @@ $('#ganaderos_list').on('click', 'tr td button.btn_edit_ganadero', function(){
 var myVar =  $(this).attr('data-id');
 var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);
 var thisUserObject = ganaderos_array[arrayPosition];
-console.log(myVar);
-console.log(thisUserObject);
+
 
 
 $('#ganadero_name').attr("value", thisUserObject.first_name);
@@ -172,6 +171,7 @@ function populate_ganaderos(){
   $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
     ganaderos_array = data.ganaderos;
     locations_array = data.locations;
+    console.log(locations_array);
     var firstElement = ganaderos_array[0];
 
     // contents of ganaderos list

@@ -15,7 +15,7 @@ $(document).ready(function(){
     // prevents link from firing
     e.preventDefault();
     var table_content = '';
-    //AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+
     $('#edit_panel').hide();
     $('#info_panel').show();
 
@@ -28,7 +28,8 @@ $(document).ready(function(){
 
     // contains ganadero id
     var myVar = $this.attr('data-id');
-    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);
+    console.log("hello " + myVar);
+    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(myVar);
     var thisUserObject = usuarios_array[arrayPosition];
     
 
@@ -51,7 +52,8 @@ $(document).ready(function(){
 
 
    $.each(locations_array, function(i){
-    if(myVar == this.person_id){
+    if(myVar == this.user_id){
+      console.log(myVar == this.user_id);
       table_content += '<tr>';
       table_content += "<td> ";
       table_content += "" +this.location_name+"</td>";
@@ -75,7 +77,7 @@ $('#usuarios_list').on('click', 'tr td button.btn_edit_usuario', function(){
     // contains ganadero id
     
     var myVar = $(this).attr('data-id');
-    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);
+    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(myVar);
     var thisUserObject = usuarios_array[arrayPosition];
     
 
@@ -93,7 +95,9 @@ $('#usuarios_list').on('click', 'tr td button.btn_edit_usuario', function(){
 function populate_usuarios(){
   $.getJSON('http://localhost:3000/users/admin/list_usuarios', function(data) {
     usuarios_array = data.usuarios;
-    usuarios_locations = data.locations;
+    console.log(usuarios_array);
+    locations_array = data.locations;
+    console.log(locations_array);
     var firstElement = usuarios_array[0];
     //locations_array = data.locations;
     
@@ -110,9 +114,9 @@ function populate_usuarios(){
         if(i==0) {
           table_content +=  'active ';
         }
-        table_content += "show_info_usuario' href='#', data-id='"+this.person_id+"'>"+this.email+"</a></td>";
-        table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
-        table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+        table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.email+"</a></td>";
+        table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
+        table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
         table_content += '</tr>';
       });  
 
@@ -120,28 +124,28 @@ function populate_usuarios(){
       $('#usuarios_list').html(table_content);
 
 
-      $('#info_panel_heading').text(this.first_name + " " + this.last_name1 + " " + this.last_name2);
-      if(this.middle_initial == null)
+      $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);
+      if(firstElement.middle_initial == null)
       {
-        $('#usuario_info_name').text(this.first_name);
+        $('#usuario_info_name').text(firstElement.first_name);
       }
       else
       {
-       $('#usuario_info_name').text(this.first_name + " " + this.middle_initial);
+       $('#usuario_info_name').text(firstElement.first_name + " " + firstElement.middle_initial);
      }
 
-     $('#usuario_info_lastname_paternal').text(this.last_name1);
-     $('#usuario_info_lastname_maternal').text(this.last_name2);
+     $('#usuario_info_lastname_paternal').text(firstElement.last_name1);
+     $('#usuario_info_lastname_maternal').text(firstElement.last_name2);
      $('#usuario_info_contact').text(firstElement.email + " " + firstElement.phone_number);
      table_content = '';
 
 
-     alert("here 1");
+    
 
      $.each(locations_array, function(i){
-      if(firstElement.person_id == this.person_id){
-        console.log(firstElement.person_id);
-        console.log(this.person_id);
+      if(firstElement.user_id == this.user_id){
+        console.log(firstElement.user_id);
+        console.log(this.user_id);
         table_content += '<tr>';
         table_content += "<td> ";
         table_content += "" +this.location_name+"</td>";
@@ -149,7 +153,7 @@ function populate_usuarios(){
       }
     });  
 
-     alert("here 2");
+     
      $('#usuario_locations').html(table_content);
 
    });

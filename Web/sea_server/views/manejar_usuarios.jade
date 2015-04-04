@@ -53,18 +53,17 @@ block content
 								label(for='usuario_email') Correo Electrónico:
 								input#usuario_email(class='form-control', name='usuario_email', type='email', placeholder='Correo Electrónico')
 							.form-group
+								label(for='usuario_telefono') Telefono:
+								input#usuario_telefono(class='form-control', name='usuario_telefono', type='text', placeholder='Telefono')
+							.form-group
 								label(for='usuario_password') Contraseña:
 								input#usuario_password(class='form-control', name='usuario_password', type='password', placeholder='Contraseña')
 							.form-group
 								label(for='usuario_password_confirm') Confirmar Contraseña:
 								input#usuario_password_confirm(class='form-control', name='usuario_password_confirm', type='password', placeholder='Confirmar Contraseña')
 							.form-group
-								label(for='ganadero_contact') Información de Contacto
-								textarea#ganadero_contact(class='form-control', name='ganadero_contact', rows='3', placeholder='Información de Contacto')
-							.form-group
 								#usuario_type.dropdown
-									center
-										button(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
+									button(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
 											span(class='caret')
 									ul(class='dropdown-menu', role='menu', aria-labelledby='tipo de usuario')
 										li(role='presentation')
