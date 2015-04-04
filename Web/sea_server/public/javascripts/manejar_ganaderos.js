@@ -89,7 +89,7 @@ $('#ganaderos_list').on('click', 'tr td button.btn_edit_ganadero', function(){
   $('#edit_panel').show();
   $('#info_panel').hide();
 
-//LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
 // contains ganadero id
 var myVar =  $(this).attr('data-id');
 var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);

@@ -5,11 +5,35 @@ $(document).ready(function(){
   // initial population of usuarios list
   populate_usuarios();
 
-  /* Button: Return home */
   $('#btn_home').on('click', function(){
-    window.location.href = '/users/admin';
+    window.location.href = '/users/admin'
+  });
+
+  /* Close edit panel */
+  $('#btn_close_edit_panel').on('click', function(){
+    $('#edit_panel').hide();
+  });
+
+  /* Close info panel */
+  $('#btn_close_info_panel').on('click', function(){
+    $('#info_panel').hide();
   });
   
+  $('#btn_add_usuario').on('click', function(){
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
+
+
+    $('#usuario_name').attr("value", "");
+    $('#usuario_lastname_paternal').attr("value", "");
+    $('#usuario_lastname_maternal').attr("value", "");
+    $('#usuario_email').attr("value", "");
+    $('#usuario_telefono').attr("value", "");
+    $('#usuario_password').attr("value", "");
+  });
+
   /* Show info panel */
   $('#usuarios_list').on('click', 'tr td a.show_info_usuario', function(e){
     // prevents link from firing
@@ -73,6 +97,13 @@ $('#usuarios_list').on('click', 'tr td button.btn_edit_usuario', function(){
   $('#edit_panel').show();
   $('#info_panel').hide();
 
+//change dropdown value tu default
+  
+    $(".user_type_dropdown:first-child").text("Tipo de Cuenta");
+    $(".user_type_dropdown:first-child").val("Tipo de Cuenta");
+
+
+
 
     // contains ganadero id
     
@@ -86,10 +117,84 @@ $('#usuarios_list').on('click', 'tr td button.btn_edit_usuario', function(){
     $('#usuario_lastname_maternal').attr("value", thisUserObject.last_name2);
     $('#usuario_email').attr("value", thisUserObject.email);
     $('#usuario_telefono').attr("value", thisUserObject.phone_number);
-    $('#usuario_password').attr("value", "somepassword");
 
+    
+    //change dropdown selected value
+    $('#user_type li').on('click', function(){
+      $(".user_type_dropdown:first-child").text($(this).text());
+      $(".user_type_dropdown:first-child").val($(this).text());
+    });
     // ajax call for info
 
+  });
+
+$('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
+    // prevents link from firing
+    e.preventDefault();
+
+    // contains ganadero id
+    $(this).attr('data-id');
+
+    $.ajax({
+      url: "http://localhost:3000/users/admin/ganadero_delete",
+      method: "DELETE",
+
+      success: function( data ) {
+
+      },
+
+      // Code to run if the request fails; the raw request and
+      // status codes are passed to the function
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      },
+
+      // Code to run regardless of success or failure
+      complete: function( xhr, status ) {
+        alert( "The request is complete!" );
+      }
+    });
+
+  });
+
+/* POSTs new ganadero information */
+$('#btn_submit').on('click', function(){
+      // ajax call to post new ganadero
+
+      // update ganadero list after posting 
+      populate_ganaderos();
+    });
+
+
+/* PUTs edited ganadero information */
+$('#btn_edit').on('click', function(){
+    //TODO: collect data to submit from edit form
+
+    $.ajax({
+      url: "http://localhost:3000/users/admin/ganadero_edit",
+      method: "PUT",
+
+      success: function( data ) {
+
+      },
+
+      // Code to run if the request fails; the raw request and
+      // status codes are passed to the function
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      },
+
+      // Code to run regardless of success or failure
+      complete: function( xhr, status ) {
+        alert( "The request is complete!" );
+      }
+    });
   });
 
 function populate_usuarios(){
@@ -140,7 +245,7 @@ function populate_usuarios(){
      table_content = '';
 
 
-    
+
 
      $.each(locations_array, function(i){
       if(firstElement.user_id == this.user_id){

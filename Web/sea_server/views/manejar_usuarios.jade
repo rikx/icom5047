@@ -63,9 +63,9 @@ block content
 								input#usuario_password_confirm(class='form-control', name='usuario_password_confirm', type='password', placeholder='Confirmar Contraseña')
 							.form-group
 								#usuario_type.dropdown
-									button(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
+									button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
 											span(class='caret')
-									ul(class='dropdown-menu', role='menu', aria-labelledby='tipo de usuario')
+									ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
 										li(role='presentation')
 											a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
 										li(role='presentation')
