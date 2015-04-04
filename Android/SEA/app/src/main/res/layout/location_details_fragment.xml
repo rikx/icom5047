@@ -4,39 +4,53 @@
 				android:layout_height="match_parent">
 	
 	<ViewFlipper
-		android:id="@+id/person_flipper"
+		android:id="@+id/location_flipper"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
 		<LinearLayout
-			android:id="@+id/person_show_layout"
+			android:id="@+id/location_show_layout"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/person_text_name"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/no_data"
-					/>
-	
+			android:id="@+id/location_text_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/no_data"
+			/>
+
 			<TextView
-				android:id="@+id/person_text_email"
+				android:id="@+id/address_text_line1"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/no_data"
-					/>
-	
+				/>
+
 			<TextView
-				android:id="@+id/person_text_phone"
+				android:id="@+id/address_text_line2"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/no_data"
-					/>
+				/>
+
+			<TextView
+				android:id="@+id/address_text_city"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+				/>
+
+			<TextView
+				android:id="@+id/address_text_zip_code"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+				/>
 	
 			<Button
-				android:id="@+id/button_edit_person"
+				android:id="@+id/button_edit_location"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center_horizontal"
@@ -46,61 +60,53 @@
 		</LinearLayout>
 	
 		<LinearLayout
-			android:id="@+id/person_edit_layout"
+			android:id="@+id/location_edit_layout"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:orientation="vertical">
 	
 			<EditText
-				android:id="@+id/person_edit_first_name"
+				android:id="@+id/location_edit_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:hint="@string/person_first_name"
-				android:inputType="textPersonName"
+				android:hint="@string/location_name"
+				android:inputType="text"
 				/>
-	
+
 			<EditText
-				android:id="@+id/person_edit_middle_name"
+				android:id="@+id/address_edit_line1"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:hint="@string/person_middle_name"
-				android:inputType="textPersonName"
+				android:hint="@string/address_line1"
+				android:inputType="textPostalAddress"
 				/>
-	
+
 			<EditText
-				android:id="@+id/person_edit_last_name1"
+				android:id="@+id/address_edit_line2"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:hint="@string/person_last_name1"
-				android:inputType="textPersonName"
+				android:hint="@string/address_line2"
+				android:inputType="textPostalAddress"
 				/>
-	
+
 			<EditText
-				android:id="@+id/person_edit_last_name2"
+				android:id="@+id/address_edit_city"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:hint="@string/person_last_name2"
-				android:inputType="textPersonName"
+				android:hint="@string/address_city"
+				android:inputType="textPostalAddress"
 				/>
-	
+
 			<EditText
-				android:id="@+id/person_edit_email"
+				android:id="@+id/address_edit_zip_code"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:hint="@string/person_email"
-				android:inputType="textEmailAddress"
-				/>
-	
-			<EditText
-				android:id="@+id/person_edit_phone_number"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:hint="@string/person_phone_number"
-				android:inputType="phone"
+				android:hint="@string/address_zip_code"
+				android:inputType="number"
 				/>
 	
 			<Button
-				android:id="@+id/button_save_person"
+				android:id="@+id/button_save_location"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center_horizontal"

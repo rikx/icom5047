@@ -1,6 +1,7 @@
 package com.rener.sea;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
@@ -16,19 +17,12 @@ import java.util.List;
 
 public class MenuListFragment extends ListFragment {
 
-	private int currentPosition = 0;
-	private List menuItems;
+	private int curPos = -1;
+	private Fragment selectedFragment;
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		//Populate menu list (currently a dummy list)
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-				android.R.layout.simple_list_item_1,
-				getResources().getStringArray(R.array.menu_list_strings));
-		setListAdapter(adapter);
-
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -38,32 +32,32 @@ public class MenuListFragment extends ListFragment {
 	}
 
 	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+				android.R.layout.simple_list_item_1,
+				getResources().getStringArray(R.array.menu_list_strings));
+		setListAdapter(adapter);
+	}
+
+	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
 		String selection = getListAdapter().getItem(position).toString();
-		Context context = getActivity().getApplicationContext();
-
-		//Highlight selected item
-		l.setItemChecked(position, true);
-
-		//Toast for selection feedback
-		String user = ((MainActivity) getActivity()).getCurrentUser();
-		Toast.makeText(context, user+" selected "+selection, Toast.LENGTH_SHORT).show();
 
 		//Create new fragment to replace existing
-		Bundle args = new Bundle();
-		Fragment fragment = null;
 		if(selection.equalsIgnoreCase("REPORTS"))
-			fragment = new ReportsListFragment();
+			selectedFragment = new ReportsListFragment();
 		else if(selection.equalsIgnoreCase("PEOPLE"))
-			fragment = PeopleListFragment.newInstance(-1);
+			selectedFragment = PeopleListFragment.newInstance(-1);
 		else if(selection.equalsIgnoreCase("LOCATIONS"))
-			fragment = new LocationsListFragment();
-		else fragment = new Fragment();
+			selectedFragment = new LocationsListFragment();
+		else selectedFragment = new ListFragment();
 
 		//Replace the selected fragment
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.menu_selected_container, fragment, selection);
+		transaction.replace(R.id.menu_selected_container, selectedFragment, selection);
 		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		transaction.commit();
 

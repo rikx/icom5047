@@ -11,37 +11,17 @@ import android.widget.ViewFlipper;
 
 public class PersonDetailsFragment extends Fragment implements View.OnClickListener {
 
-	public static final int SHOW_PERSON_LAYOUT = 0;
-	public static final int EDIT_PERSON_LAYOUT = 1;
-	private long person_id;
+	public static final int SHOW_LAYOUT = 0;
+	public static final int EDIT_LAYOUT = 1;
 	private Person person;
 	private ViewFlipper flipper;
 	private TextView textName, textEmail, textPhoneNumber;
 	private EditText editFirstName, editMiddleName, editLastName1, editLastName2;
 	private EditText editEmail, editPhoneNumber;
 
-
-	public PersonDetailsFragment() {
-		this.person = null;
-	}
-
-	public long getPersonID() {
-		return person_id;
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		//Define the Person to show by finding it's ID
-		this.person_id = getArguments().getLong("person_id");
-		DBEmulator db = ((MainActivity)getActivity()).getDB();
-		this.person = db.findPersonByID(person_id);
 	}
 
 	@Override
@@ -53,28 +33,32 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		flipper = (ViewFlipper) view.findViewById(R.id.person_flipper);
 
 		//Set the name views
-		textName = (TextView) view.findViewById(R.id.text_person_name);
+		textName = (TextView) view.findViewById(R.id.person_text_name);
 		editFirstName = (EditText) view.findViewById(R.id.person_edit_first_name);
 		editMiddleName = (EditText) view.findViewById(R.id.person_edit_middle_name);
 		editLastName1 = (EditText) view.findViewById(R.id.person_edit_last_name1);
 		editLastName2 = (EditText) view.findViewById(R.id.person_edit_last_name2);
 
 		//Set the email views
-		textEmail = (TextView) view.findViewById(R.id.text_person_email);
+		textEmail = (TextView) view.findViewById(R.id.person_text_email);
 		editEmail = (EditText) view.findViewById(R.id.person_edit_email);
 
 		//Set the phone number views
-		textPhoneNumber = (TextView) view.findViewById(R.id.text_person_phone);
+		textPhoneNumber = (TextView) view.findViewById(R.id.person_text_phone);
 		editPhoneNumber = (EditText) view.findViewById(R.id.person_edit_phone_number);
-
-		//Populate the fields
-		setFields();
 
 		//Set the button listeners
 		view.findViewById(R.id.button_edit_person).setOnClickListener(this);
 		view.findViewById(R.id.button_save_person).setOnClickListener(this);
 
+		flipToShowLayout();
+
 		return view;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 	}
 
 	@Override
@@ -121,17 +105,14 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		else {
 			textPhoneNumber.setVisibility(TextView.GONE);
 		}
-
-		flipToShowLayout();
-
 	}
 
 	private void flipToEditLayout() {
-		flipper.setDisplayedChild(EDIT_PERSON_LAYOUT);
+		flipper.setDisplayedChild(EDIT_LAYOUT);
 	}
 
 	private void flipToShowLayout() {
-		flipper.setDisplayedChild(SHOW_PERSON_LAYOUT);
+		flipper.setDisplayedChild(SHOW_LAYOUT);
 	}
 
 	private void getFields() {
@@ -144,6 +125,8 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		String strEmail = editEmail.getText().toString();
 		String strPhone = editPhoneNumber.getText().toString();
 
+		//TODO validate input
+
 		//Set the person instance fields
 		person.setFirstName(strFirstName);
 		person.setMiddleName(strMiddleName);
@@ -153,12 +136,15 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		person.setPhoneNumber(strPhone);
 	}
 
-	public static PersonDetailsFragment newInstance(Person person) {
-		PersonDetailsFragment fragment = new PersonDetailsFragment();
-		Bundle args = new Bundle();
-		long id = person.getID();
-		args.putLong("person_id", id);
-		fragment.setArguments(args);
-		return fragment;
+	public Person setPerson(Person person) {
+		this.person = person;
+		if(getActivity() != null){
+			setFields();
+		}
+		return this.person;
+	}
+
+	public Person getPerson() {
+		return person;
 	}
 }

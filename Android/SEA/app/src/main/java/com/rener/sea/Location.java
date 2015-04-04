@@ -2,6 +2,8 @@ package com.rener.sea;
 
 import android.location.Address;
 
+import java.util.Locale;
+
 public class Location {
 
 	private long id;
@@ -9,6 +11,7 @@ public class Location {
 	private Person manager = null;
 	private Person owner = null;
 	private Address address = null;
+	public static String PUERTO_RICO = "Puerto Rico";
 
 	public Location(String name) {
 		this.name = name;
@@ -17,6 +20,7 @@ public class Location {
 	public Location(long id, String name) {
 		this.id = id;
 		this.name = name;
+		this.address = newAddress();
 	}
 
 	public long getID() {
@@ -65,5 +69,34 @@ public class Location {
 
 	public String toString() {
 		return name;
+	}
+
+	public String getAddressLine(int n) {
+		return address.getAddressLine(n-1);
+	}
+
+	public String setAddressLine(int n, String line) {
+		if (line == null || line.equals(""))
+			address.setAddressLine(n-1, null);
+		else
+			address.setAddressLine(n, line);
+		return address.getAddressLine(n-1);
+	}
+
+	public String getCity() {
+		return address.getLocality();
+	}
+
+	public boolean isMultiLineAddress() {
+		return address.getMaxAddressLineIndex() > 0;
+	}
+
+	private static Address newAddress() {
+		Address a = new Address(Locale.US);
+		a.setAddressLine(0, "");
+		a.setLocality("");
+		a.setCountryName(PUERTO_RICO);
+		a.setPostalCode("");
+		return a;
 	}
 }

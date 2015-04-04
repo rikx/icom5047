@@ -1,5 +1,6 @@
 package com.rener.sea;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -18,24 +19,21 @@ import java.util.List;
 
 public class PeopleListFragment extends ListFragment {
 
-	private List<Person> peopleList = null;
+	private List<Person> peopleList;
 	private int curPos = -1;
+	private PersonDetailsFragment personDetailsFragment;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
 
-		//Populate the list with dummy reports
-		peopleList = new ArrayList<Person>();
-		populateList();
+		FragmentManager manager = getFragmentManager();
+		personDetailsFragment = (PersonDetailsFragment) manager.findFragmentByTag("PERSON");
 
-		//Set the adapter for the list fragment
-		ArrayAdapter<Person> adapter = new ArrayAdapter<Person>(getActivity(),
-				android.R.layout.simple_list_item_1, peopleList);
-		setListAdapter(adapter);
-
-		//Set the current position in the list
-		curPos = getArguments().getInt("index", -1);
+		if(personDetailsFragment == null) {
+			personDetailsFragment = new PersonDetailsFragment();
+		}
 	}
 
 	@Override
@@ -48,13 +46,26 @@ public class PeopleListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		getListView().setItemChecked(curPos, true);
+			//Populate the list with dummy reports
+			peopleList = new ArrayList<Person>();
+			populateList();
+
+			//Set the adapter for the list fragment
+			ArrayAdapter<Person> adapter = new ArrayAdapter<Person>(getActivity(),
+					android.R.layout.simple_list_item_1, peopleList);
+			setListAdapter(adapter);
+
+			//Set current position
+			curPos = getArguments().getInt("index", -1);
+			ListView l = getListView();
+			l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+			l.setItemChecked(curPos, true);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
 		outState.putInt("index", curPos);
+		super.onSaveInstanceState(outState);
 	}
 
     @Override
@@ -77,9 +88,11 @@ public class PeopleListFragment extends ListFragment {
 		return peopleList;
 	}
 
+	public List setPeopleList(List list) {
+		return this.peopleList = list;
+	}
+
 	private void showDetails(int index) {
-		//Set the context
-		Context context = getActivity().getApplicationContext();
 
 		//Set the selected person
 		Person person = (Person) getListAdapter().getItem(index);
@@ -87,22 +100,24 @@ public class PeopleListFragment extends ListFragment {
 
 
 		//Check if a details fragment is shown, replace if needed or show a new one
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		PersonDetailsFragment details = (PersonDetailsFragment)getFragmentManager()
-				.findFragmentByTag("DETAILS");
-		if (details == null) {
-			//Create a new details fragment
-			details = PersonDetailsFragment.newInstance(person);
-			PeopleListFragment list = PeopleListFragment.newInstance(index);
+		FragmentManager manager = getFragmentManager();
+		personDetailsFragment = (PersonDetailsFragment) manager.findFragmentByTag("PERSON");
+
+		if(personDetailsFragment == null || curPos == -1) {
+			FragmentTransaction transaction = manager.beginTransaction();
+			personDetailsFragment = new PersonDetailsFragment();
+			personDetailsFragment.setPerson(person);
+			PeopleListFragment list = newInstance(curPos);
+			list.setPeopleList(peopleList);
 			transaction.replace(R.id.menu_list_container, list, "PEOPLE");
-			transaction.replace(R.id.menu_selected_container, details, "DETAILS");
+			transaction.replace(R.id.menu_selected_container, personDetailsFragment, "PERSON");
+			transaction.addToBackStack(null);
+			transaction.commit();
+
 		}
-		else if (curPos != index){
-			details = PersonDetailsFragment.newInstance(person);
-			transaction.replace(R.id.menu_selected_container, details);
+		else {
+			personDetailsFragment.setPerson(person);
 		}
-		curPos = index;
-		transaction.commit();
 	}
 
 	public static PeopleListFragment newInstance(int index) {

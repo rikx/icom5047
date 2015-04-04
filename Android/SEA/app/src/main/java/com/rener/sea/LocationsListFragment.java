@@ -1,14 +1,13 @@
 package com.rener.sea;
 
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,17 +39,54 @@ public class LocationsListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        String selection = getListAdapter().getItem(position).toString();
-        Context context = getActivity().getApplicationContext();
-
-		//Show a toast for feedback
-        Toast.makeText(context, selection + " selected!", Toast.LENGTH_SHORT).show();
-
-		//TODO Do something with the selection
+	    l.setItemChecked(position, true);
+		showDetails(position);
     }
 
 	private void populateList() {
 		//Define people list with dummy data
 		locationsList = ((MainActivity)getActivity()).getDB().getLocations();
+	}
+
+	private void showDetails(int index) {
+
+		//Set the selected object
+		Location location = (Location) getListAdapter().getItem(index);
+		getListView().setItemChecked(index, true);
+
+
+		//Check if a details fragment is shown, replace if needed or show a new one
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		LocationDetailsFragment details = (LocationDetailsFragment)getFragmentManager()
+				.findFragmentByTag("DETAILS");
+		if (details == null) {
+			//Create a new details fragment
+			details = LocationDetailsFragment.newInstance(location);
+			LocationsListFragment list = LocationsListFragment.newInstance(index);
+			transaction.replace(R.id.menu_list_container, list, "LOCATIONS");
+			transaction.replace(R.id.menu_selected_container, details, "DETAILS");
+		}
+		else if (curPos != index){
+			details = LocationDetailsFragment.newInstance(location);
+			transaction.replace(R.id.menu_selected_container, details);
+		}
+		curPos = index;
+		transaction.commit();
+	}
+
+	public static LocationsListFragment newInstance(int index) {
+		LocationsListFragment fragment = new LocationsListFragment();
+		Bundle args = new Bundle();
+		args.putInt("index", index);
+		fragment.setArguments(args);
+		return fragment;
+	}
+
+	public static LocationsListFragment newInstance() {
+		LocationsListFragment fragment = new LocationsListFragment();
+		Bundle args = new Bundle();
+		args.putInt("index", -1);
+		fragment.setArguments(args);
+		return fragment;
 	}
 }

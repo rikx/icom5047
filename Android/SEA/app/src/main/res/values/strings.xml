@@ -22,6 +22,11 @@
 	<string name="person_phone_number">phone number</string>
 	<string name="edit">Edit</string>
 	<string name="save">Save</string>
+	<string name="location_name">location name</string>
+	<string name="address_line1">address line 1</string>
+	<string name="address_line2">address line 2</string>
+	<string name="address_city">city</string>
+	<string name="address_zip_code">zip code</string>
 	<string-array name="menu_list_strings">
 		<item>Reports</item>
 		<item>Locations</item>
