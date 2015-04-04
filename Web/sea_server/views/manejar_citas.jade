@@ -66,14 +66,14 @@ block content
 					h4#heading_edit Editar Cita
 					form(role='form')
 						.form-group
-							label(for='ganadero_name') Nombre de Ganadero:
-							input#ganadero_name(class='form-control', name='ganadero_name', type='text', placeholder='Nombre')
+							label(for='cita_location') Localización:
+							input#cita_location(class='form-control', name='cita_location', type='text', placeholder='Localización')
 						.form-group
-							label(for='ganadero_license') Numero de Licencia:
-							input#ganadero_license(class='form-control', name='ganadero_licence', type='text', placeholder='# de licencia')
+							label(for='cita_date') Fecha:
+							input#cita_date(class='form-control', name='cita_date', type='date')
 						.form-group
-							label(for='ganadero_contact') Información de Contacto
-							textarea#ganadero_contact(class='form-control', name='ganadero_contact', rows='3', placeholder='Información de Contacto')
+							label(for='cita_time') Hora:
+							input#cita_time(class='form-control', name='cita_time', type='time')
 					.btn-group(role='group', aria-label='info panel buttons')
 						button#btn_close_edit_panel(class='btn btn-default') Cerrar
 						button#btn_edit(class='btn btn-default btn-success', type='button') Guardar

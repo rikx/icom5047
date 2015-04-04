@@ -166,7 +166,7 @@ router.get('/admin/localizaciones', function(req, res, next) {
  * Responds with first 10 localizaciones, alphabetically ordered 
  */
 router.get('/admin/list_localizaciones', function(req, res, next) {
-	var localizaciones_list, agents_list, ganaderos_list;
+	var localizaciones_list, agentes_list, ganaderos_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -191,7 +191,7 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	agents_list = result.rows;
+	    	agentes_list = result.rows;
 	    }
 	  });
 	  // query for associated ganaderos

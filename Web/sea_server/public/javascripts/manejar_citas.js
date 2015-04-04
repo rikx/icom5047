@@ -21,11 +21,11 @@ $(document).ready(function(){
   });
 
 	function populate_citas(){
-  $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
-    citas_array = data.citas;
+    $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
+      citas_array = data.citas;
 
-    // contents of ganaderos list
-    var table_content = '';
+      // contents of localizaciones list
+      var table_content = '';
 
       // for each item in JSON, add table row and cells
       $.each(data.citas, function(i){
@@ -43,6 +43,6 @@ $(document).ready(function(){
 
       // inject content string into html
       $('#citas_list tbody').html(table_content);
-  });
-};
+    });
+  };
 });
