@@ -14,12 +14,17 @@ router.get('/admin', function(req, res, next) {
 });
 
 /* GET Admin Crear Cuestionario */
-router.get('/admin/crear-cuestionario', function(req, res, next) {
-	res.render('crear-cuestionario', { title: 'Crear Cuestionario'});
+router.get('/admin/cuestionario/crear', function(req, res, next) {
+	res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
 });
 
 /* GET Admin Manejar Cuestionarios */
 router.get('/admin/cuestionarios', function(req, res, next) {
+	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});
+});
+
+/* GET Admin Manejar Cuestionarios */
+router.get('/admin/llenar-cuestionarios', function(req, res, next) {
 	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});
 });
 
@@ -43,7 +48,7 @@ router.get('/admin/list_cuestionarios', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	cuestionarios_list = result.rows;
-	    	res.json({cuestionarios: cuestionrios_list});
+	    	res.json({cuestionarios: cuestionarios_list});
 	    }
 	  });
 	});
@@ -106,6 +111,31 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 router.get('/admin/reportes', function(req, res, next) {
 	res.render('manejar_reportes', { title: 'Manejar Reportes'});
 });
+
+/* GET Admin Ver Reporte */
+router.get('/admin/reportes/:id', function(req, res, next) {
+	var reporte;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// TODO: modify query to also give you account type
+	  client.query('', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	reporte_details = result.rows;
+	    	res.json({reporte : reporte_details});
+	    }
+	  });
+	});
+	res.render('reporte', { title: 'Manejar Reportes'});
+});
+
 
 /* GET Admin Manejar Usuarios */
 router.get('/admin/usuarios', function(req, res, next) {
