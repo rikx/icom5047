@@ -208,7 +208,11 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 										FROM location natural join address \
 										ORDER BY location_name \
 										LIMIT 10) \
-										SELECT person_id, owner_id, manager_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) AS person_name \
+										SELECT person_id, location_id,\
+											CASE WHEN person_id = owner_id THEN 'owner' \
+											WHEN person_id = manager_id THEN 'manager' \
+											END AS relation_type, \
+											(first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
 										FROM locations, person \
 										WHERE person_id = owner_id or person_id = manager_id", function(err, result) {
 	  	//call `done()` to release the client back to the pool
