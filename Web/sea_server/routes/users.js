@@ -173,7 +173,10 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// query for location data
-	  client.query('', function(err, result) {
+	  client.query('SELECT location_id, location.name AS location_name, address_id, license, address_line1, address_line2, city, zipcode \
+									FROM location natural join address \
+									ORDER BY location_name \
+									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -184,7 +187,13 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 	    }
 	  });
 	  // query for associated agentes
-	  client.query('', function(err, result) {
+	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
+										FROM location natural join address \
+										ORDER BY location_name \
+										LIMIT 10) \
+									SELECT location_id, agent_id, username \
+									FROM locations,users \
+									WHERE user_id = agent_id;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -195,7 +204,13 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 	    }
 	  });
 	  // query for associated ganaderos
-	  client.query('', function(err, result) {
+	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
+										FROM location natural join address \
+										ORDER BY location_name \
+										LIMIT 10) \
+										SELECT person_id, owner_id, manager_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) AS person_name \
+										FROM locations, person \
+										WHERE person_id = owner_id or person_id = manager_id", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
