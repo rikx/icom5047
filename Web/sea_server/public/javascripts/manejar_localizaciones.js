@@ -3,6 +3,8 @@ $(document).ready(function(){
   var localizaciones_array;
   // initial population of localizaciones list
   populate_localizaciones();
+  // localizaciones list
+  $localizaciones_list = $('#localizaciones_list');
 
   /* Button: Return home */
 	$('#btn_home').on('click', function(){
@@ -40,7 +42,7 @@ $(document).ready(function(){
       });  
 
       // inject content string into html
-      $('#localizaciones_list').html(table_content);
+      $localizaciones_list.html(table_content);
     });
   };
 });

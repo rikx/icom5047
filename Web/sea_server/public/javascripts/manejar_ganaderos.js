@@ -3,6 +3,8 @@ $(document).ready(function(){
   var ganaderos_array, locations_array;
   // initial population of ganaderos list
   populate_ganaderos();
+  //ganaderos list
+  $ganaderos_list = $('#ganaderos_list');
 
   /* Return home */
   $('#btn_home').on('click', function(){
@@ -12,23 +14,26 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
+    remove_active_class($ganaderos_list);
   });
 
   /* Close info panel */
   $('#btn_close_info_panel').on('click', function(){
     $('#info_panel').hide();
+    remove_active_class($ganaderos_list);
   });
 
   /* Open info panel */
-  $('#ganaderos_list').on('click', 'tr td a.show_info_ganadero', function(e){
+  $ganaderos_list.on('click', 'tr td a.show_info_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
     var table_content = '';
     $('#edit_panel').hide();
     $('#info_panel').show();
 
-    // remove active from previous and add active to current clicked ganadero
-    $('#ganaderos_list tr td a.active').removeClass('active');
+    // remove active from previous clicked list item
+    remove_active_class($ganaderos_list);
+    // add active to current clicked list item
     var $this = $(this);
     if (!$this.hasClass('active')) {
       $this.addClass('active');
@@ -83,7 +88,7 @@ $('#btn_submit').on('click', function(){
     });
 
 /* Open edit panel */
-$('#ganaderos_list').on('click', 'tr td button.btn_edit_ganadero', function(){
+$ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
@@ -135,7 +140,7 @@ $('#btn_edit').on('click', function(){
   });
 
 /* DELETEs ganadero information */
-$('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
+$ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -192,7 +197,7 @@ function populate_ganaderos(){
     });  
 
     // inject content string into html
-    $('#ganaderos_list').html(table_content);
+    $ganaderos_list.html(table_content);
 
     //populate info panel with information regarding the first person on the list
     $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);

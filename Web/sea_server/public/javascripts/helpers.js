@@ -6,3 +6,9 @@ function ConverToJSON(formData){
 	});
 	return result;
 }
+
+  // remove active from previous clicked list item inside 'list' table
+  function remove_active_class(list){
+    $(list).find('tr td a.active').removeClass('active');
+  }
+

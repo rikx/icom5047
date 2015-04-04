@@ -1,9 +1,10 @@
 $(document).ready(function(){
   // store data for 10 usuarios
-  var usuarios_array;
-  var locations_array;
+  var usuarios_array, locations_array;
   // initial population of usuarios list
   populate_usuarios();
+  // usuarios list
+  $usuarios_list = $('#usuarios_list');
 
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin'
@@ -12,13 +13,15 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
+    remove_active_class($usuarios_list);
   });
 
   /* Close info panel */
   $('#btn_close_info_panel').on('click', function(){
     $('#info_panel').hide();
+    remove_active_class($usuarios_list);
   });
-  
+
   $('#btn_add_usuario').on('click', function(){
     $('#btn_edit, #heading_edit').hide();
     $('#btn_submit, #heading_create').show();
@@ -35,7 +38,7 @@ $(document).ready(function(){
   });
 
   /* Show info panel */
-  $('#usuarios_list').on('click', 'tr td a.show_info_usuario', function(e){
+  $usuarios_list.on('click', 'tr td a.show_info_usuario', function(e){
     // prevents link from firing
     e.preventDefault();
     var table_content = '';
@@ -43,8 +46,9 @@ $(document).ready(function(){
     $('#edit_panel').hide();
     $('#info_panel').show();
 
-    // remove active from previous and add active to current clicked ganadero
-    $('#usuarios_list tr td a.active').removeClass('active');
+    // remove active from previous list item 
+    remove_active_class($usuarios_list);
+    // add active to current clicked list item
     var $this = $(this);
     if (!$this.hasClass('active')) {
       $this.addClass('active');
@@ -87,11 +91,10 @@ $(document).ready(function(){
 
 
    $('#usuario_locations').html(table_content);
-    // ajax call for info
-  });
+});
 
 /* Open edit panel */
-$('#usuarios_list').on('click', 'tr td button.btn_edit_usuario', function(){
+$usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
@@ -226,7 +229,7 @@ function populate_usuarios(){
       });  
 
       // inject content string into html
-      $('#usuarios_list').html(table_content);
+      $usuarios_list.html(table_content);
 
 
       $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);
