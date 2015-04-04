@@ -63,8 +63,6 @@ public class LoginActivity extends Activity {
 				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String key = getString(R.string.key_saved_username);
         String saved = sharedPref.getString(key, "DEFAULT");
-        Context context = this.getApplicationContext();
-        Toast.makeText(context, saved+" logged successful", Toast.LENGTH_SHORT).show();
 
     }
 }

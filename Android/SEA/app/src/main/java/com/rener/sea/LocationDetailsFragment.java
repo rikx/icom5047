@@ -1,15 +1,23 @@
 package com.rener.sea;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-public class LocationDetailsFragment extends Fragment implements View.OnClickListener {
+import java.util.List;
+
+public class LocationDetailsFragment extends Fragment
+		implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
 	public static final int SHOW_LAYOUT = 0;
 	public static final int EDIT_LAYOUT = 1;
@@ -18,28 +26,14 @@ public class LocationDetailsFragment extends Fragment implements View.OnClickLis
 	private ViewFlipper flipper;
 	private TextView textName, textAddressLine1, textAddressLine2, textCity, textZipCode;
 	private EditText editName, editAddressLine1, editAddressLine2, editCity, editZipCode;
-
-	public LocationDetailsFragment() {
-		//Empty constructor
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-	}
+	private boolean viewCreated;
+	private PersonDetailsFragment ownerFragment, managerFragment;
+	private Spinner ownerSpinner, managerSpinner;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		setLocation();
-	}
-
-	private void setLocation() {
-
-		this.location_id = getArguments().getLong("location_id");
-		DBEmulator db = ((MainActivity)getActivity()).getDB();
-		this.location = db.findLocationByID(location_id);
+		setRetainInstance(true);
 	}
 
 	@Override
@@ -62,16 +56,41 @@ public class LocationDetailsFragment extends Fragment implements View.OnClickLis
 		textAddressLine2 = (TextView) view.findViewById(R.id.address_text_line2);
 		editAddressLine2 = (EditText) view.findViewById(R.id.address_edit_line2);
 
-		//Populate the fields
-		setFields();
+		//Set the city views
+		textCity = (TextView) view.findViewById(R.id.address_text_city);
+		editCity = (EditText) view.findViewById(R.id.address_edit_city);
 
-		//Set the button listeners
+		//Set the zip code views
+		textZipCode = (TextView) view.findViewById(R.id.address_text_zip_code);
+		editZipCode = (EditText) view.findViewById(R.id.address_edit_zip_code);
+
+		//Set the owner spinner
+		ownerSpinner = (Spinner) view.findViewById(R.id.location_owner_spinner);
+		ownerSpinner.setOnItemSelectedListener(this);
+
+		//Set the manager spinner
+		managerSpinner = (Spinner) view.findViewById(R.id.location_manager_spinner);
+		managerSpinner.setOnItemSelectedListener(this);
+
+		//Set the button views
 		view.findViewById(R.id.button_edit_location).setOnClickListener(this);
 		view.findViewById(R.id.button_save_location).setOnClickListener(this);
 
+		viewCreated = true;
+		setFields();
 		flipToShowLayout();
-
 		return view;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		List people = ((MainActivity)getActivity()).getData().getPeople();
+		ArrayAdapter adapter;
+		adapter = new ArrayAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, people);
+		ownerSpinner.setAdapter(adapter);
+		managerSpinner.setAdapter(adapter);
 	}
 
 	@Override
@@ -88,11 +107,58 @@ public class LocationDetailsFragment extends Fragment implements View.OnClickLis
 		}
 	}
 
+	@Override
+	public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+		switch (view.getId()) {
+			case R.id.location_owner_spinner :
+				Person owner = (Person) adapterView.getItemAtPosition(i);
+				location.setOwner(owner);
+				break;
+			case R.id.location_manager_spinner :
+				Person manager = (Person) adapterView.getItemAtPosition(i);
+				location.setManager(manager);
+				break;
+		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> adapterView) {
+
+	}
+
 	private void setFields() {
 
 		//Set the name fields
 		textName.setText(location.getName());
 		editName.setText(location.getName());
+
+		//Set the address fields
+		textAddressLine1.setText(location.getAddressLine(1));
+		editAddressLine1.setText(location.getAddressLine(1));
+		textAddressLine2.setText(location.getAddressLine(2));
+		editAddressLine2.setText(location.getAddressLine(2));
+		textCity.setText(location.getCity());
+		editCity.setText(location.getCity());
+		textZipCode.setText(location.getZipCode());
+		editZipCode.setText(location.getZipCode());
+
+		if(location.hasOwner()) {
+			FragmentManager manager= getFragmentManager();
+			FragmentTransaction transaction = manager.beginTransaction();
+			ownerFragment = new PersonDetailsFragment();
+			ownerFragment.setPerson(location.getOwner());
+			transaction.replace(R.id.location_owner_container, ownerFragment, "OWNER");
+			transaction.commit();
+		}
+
+		if(location.hasManager()) {
+			FragmentManager manager= getFragmentManager();
+			FragmentTransaction transaction = manager.beginTransaction();
+			managerFragment = new PersonDetailsFragment();
+			managerFragment.setPerson(location.getManager());
+			transaction.replace(R.id.location_manager_container, managerFragment, "MANAGER");
+			transaction.commit();
+		}
 
 
 	}
@@ -109,20 +175,25 @@ public class LocationDetailsFragment extends Fragment implements View.OnClickLis
 
 		//Get the text from the fields
 		String name = editName.getText().toString();
+		String line1 = editAddressLine1.getText().toString();
+		String line2 = editAddressLine2.getText().toString();
+		String city = editCity.getText().toString();
+		String zip = editZipCode.getText().toString();
 
 		//TODO validate input
 
 		//Set the instance fields
 		location.setName(name);
-
+		location.setAddressLine(1, line1);
+		location.setAddressLine(2, line2);
+		location.setCity(city);
+		location.setZipCode(zip);
 	}
 
-	public static LocationDetailsFragment newInstance(Location location) {
-		LocationDetailsFragment fragment = new LocationDetailsFragment();
-		Bundle args = new Bundle();
-		long id = location.getID();
-		args.putLong("location_id", id);
-		fragment.setArguments(args);
-		return fragment;
+	public Location setLocation(Location location) {
+		this.location = location;
+		if (viewCreated)
+			setFields();
+		return this.location;
 	}
 }

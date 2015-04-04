@@ -15,6 +15,7 @@ public class Location {
 
 	public Location(String name) {
 		this.name = name;
+		this.address = Location.newAddress();
 	}
 
 	public Location(long id, String name) {
@@ -79,7 +80,7 @@ public class Location {
 		if (line == null || line.equals(""))
 			address.setAddressLine(n-1, null);
 		else
-			address.setAddressLine(n, line);
+			address.setAddressLine(n-1, line);
 		return address.getAddressLine(n-1);
 	}
 
@@ -87,8 +88,18 @@ public class Location {
 		return address.getLocality();
 	}
 
-	public boolean isMultiLineAddress() {
-		return address.getMaxAddressLineIndex() > 0;
+	public String setCity(String city) {
+		address.setLocality(city);
+		return address.getLocality();
+	}
+
+	public String getZipCode() {
+		return address.getPostalCode();
+	}
+
+	public String setZipCode(String code) {
+		address.setPostalCode(code);
+		return address.getPostalCode();
 	}
 
 	private static Address newAddress() {

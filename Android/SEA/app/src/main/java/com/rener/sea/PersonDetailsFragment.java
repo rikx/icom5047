@@ -18,10 +18,12 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 	private TextView textName, textEmail, textPhoneNumber;
 	private EditText editFirstName, editMiddleName, editLastName1, editLastName2;
 	private EditText editEmail, editPhoneNumber;
+	private boolean viewCreated, editable;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
 	}
 
 	@Override
@@ -51,6 +53,8 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		view.findViewById(R.id.button_edit_person).setOnClickListener(this);
 		view.findViewById(R.id.button_save_person).setOnClickListener(this);
 
+		viewCreated= true;
+		setFields();
 		flipToShowLayout();
 
 		return view;
@@ -59,6 +63,11 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
 	}
 
 	@Override
@@ -138,13 +147,8 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 
 	public Person setPerson(Person person) {
 		this.person = person;
-		if(getActivity() != null){
+		if(viewCreated)
 			setFields();
-		}
 		return this.person;
-	}
-
-	public Person getPerson() {
-		return person;
 	}
 }

@@ -16,6 +16,7 @@ public class DBEmulator {
 		people.add(new Person(2, "Ricardo", "Fuentes"));
 		people.add(new Person(3, "Ramón", "Saldaña"));
 		people.add(new Person(4, "Gustavo", "Fring"));
+		people.add(new Person(5, "Dennis", "Markowski"));
 		findPersonByID(0).setEmail("nelson.reyes@upr.edu");
 
 		locations = new ArrayList<>();
@@ -23,6 +24,7 @@ public class DBEmulator {
 		locations.add(new Location(1, "Finca Alzamorra"));
 		locations.add(new Location(2, "Los Pollos Hermanos"));
 		findLocationByID(2).setOwner(findPersonByID(4));
+		findLocationByID(2).setManager(findPersonByID(5));
 	}
 
 	public List<Person> getPeople() {
