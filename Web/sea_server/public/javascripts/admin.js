@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$('#btn_crear_cuestionario').click(function(){
-		window.location.href = '/users/admin/crear-cuestionario'
+		window.location.href = '/users/admin/cuestionario/crear'
 	});
 
 	$('#btn_manejar_cuestionarios').click(function(){
@@ -33,10 +33,6 @@ $(document).ready(function(){
 
 	//logout function
 	$('#btn_logout').click(function(){
-
+		logout_helper();
 	});
-	
-	function logout_helper(){
-
-	}
 });
