@@ -112,15 +112,41 @@ router.get('/admin/reportes', function(req, res, next) {
 	res.render('manejar_reportes', { title: 'Manejar Reportes'});
 });
 
-/* GET Admin Ver Reporte */
-router.get('/admin/reportes/:id', function(req, res, next) {
-	var reporte;
+/* GET Admin Reportes List data 
+ * Responds with first 10 reportes, alphabetically ordered 
+ */
+router.get('/admin/list_reportes', function(req, res, next) {
+	var reportes_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
+	  client.query(' \
+									LIMIT 10;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	reportes_list = result.rows;
+	    	res.json({reportes : reportes_list});
+	    }
+	  });
+	});
+});
+
+/* GET Admin Ver Reporte */
+router.get('/admin/reportes/:id', function(req, res, next) {
+	var report_id = req.params.id;
+	var reporte_details;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
 	  client.query('', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
@@ -128,12 +154,12 @@ router.get('/admin/reportes/:id', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	reporte_details = result.rows;
-	    	res.json({reporte : reporte_details});
+	    	//reporte_details = result.rows;
+	    	reporte_details = {username : 'Test User Please Ignore', date_filed : '05-12-2015'}
+	    	res.render('reporte', { title: 'Reporte', reporte: reporte_details});
 	    }
 	  });
 	});
-	res.render('reporte', { title: 'Manejar Reportes'});
 });
 
 

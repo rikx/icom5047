@@ -1,6 +1,38 @@
 extends layout
 
 block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extencion Agricola
+						h3 Reporte 1
+			.col-md-2
+
+		.row
+			.col-md-6
+				center
+					h2 Entrevista Contestada
+			.col-md-6
+				center
+					h2 Información General
+						.jumbotron
+							p Usuario: 
+								= reporte.username
+							p Fecha: 
+								= reporte.date_filed
+							p Localización:
+								= reporte.location_name
+		.row
+			.col-md-2
+			.col-md-2
+				button#btn_reportes(class='btn btn-sm btn-default btn-block', type='button') Regresar a Reportes
+			.col-md-2
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
