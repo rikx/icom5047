@@ -9,30 +9,75 @@ block content
 				.jumbotron
 					center
 						h2 Servicio de Extencion Agricola
-						h3 Reporte 1
+						h3 
+							| Reporte 
+							= reporte.report_id
 			.col-md-2
 
 		.row
 			.col-md-6
 				center
 					h2 Entrevista Contestada
+				.jumbotron
 			.col-md-6
 				center
 					h2 Información General
-						.jumbotron
-							p Usuario: 
-								= reporte.username
-							p Fecha: 
-								= reporte.date_filed
-							p Localización:
-								= reporte.location_name
+				.jumbotron
+					p Usuario: 
+						= reporte.username
+					p Fecha: 
+						= reporte.date_filed
+					p Localización: 
+						= reporte.location_name
+					p Ganadero Entrevistado: 
+						= reporte.ganadero_name
+					p Tipo de Encuesta: 
+						= reporte.survey_type
+				// For use in phase 3
+				div(style="display:none")
+					center
+						h2 Micelania
+					.jumbotron
+						.row
+							.col-xs-6.col-md-3
+								a(class='thumbnail', href='#')
+									img(src='', alt='img1')
+						a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
+							i(class='glyphicon glyphicon-plus')
+				// For use in phase 3
+				div(style="display:none")
+				center
+					h2 Notas
+				.jumbotron
+					p 
+						= reporte.note
+					a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
+						i(class='glyphicon glyphicon-edit')
+
+		.row
+			.col-md-6
+				center
+					h2 Recomendaciones
+				.jumbotron
+					p 
+						= reporte.recomendation
+			.col-md-6
+				center
+					h2 Fecha de Seguimiento
+				.jumbotron
+					p 
+						= reporte.appointment_date
+					a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
+						i(class='glyphicon glyphicon-edit')
+
 		.row
 			.col-md-2
-			.col-md-2
+			.col-md-4
 				button#btn_reportes(class='btn btn-sm btn-default btn-block', type='button') Regresar a Reportes
-			.col-md-2
+			.col-md-4
 				// TODO: add home glyphicon
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+			.col-md-2
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
