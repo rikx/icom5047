@@ -155,7 +155,12 @@ router.get('/admin/reportes/:id', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	//reporte_details = result.rows;
-	    	reporte_details = {username : 'Test User Please Ignore', date_filed : '05-12-2015'}
+	    	reporte_details = {report_id : report_id, username : 'Test User Please Ignore', date_filed : '05-12-2015', note : 'Lorem ipsum dolor sit amet, ne quo dictas iracundia, vivendum elaboraret contentiones sit cu. No omnium argumentum has, eos ea laoreet perfecto elaboraret. Nonumy mnesarchum an vix. Nam ei munere praesent referrentur, ei exerci soleat torquatos nec. Est et minimum voluptatum, has ad nulla homero recteque, et nam alii eleifend hendrerit.\
+\
+Nominavi hendrerit ex mea, iudico sententiae inciderint pro ea, nec ex dictas virtute albucius. Lorem everti mandamus no vel. Ut habemus menandri instructior nam. Virtute principes in ius. Cum id probo admodum, pro et facer meliore singulis, ne aeque aeterno salutandi vix. In mea iudico decore forensibus, sit et movet iuvaret, sapientem consetetur est an.\
+\
+Sit alia intellegat at, in ferri rebum est. Maluisset honestatis mei ei. Lorem melius an vim, admodum deserunt sit id. Suas detraxit vis in, ullum error iisque his ex. Vel eius mollis albucius ad, quot eius et duo.\
+', recomendation : 'Lorem ipsum dolor sit amet, feugiat nulla commodo, luctus elit euismod. Neque nunc, lectus mi tellus, neque primis erat, eget euismod convallis. Justo laoreet id neque eget leo placerat, nulla id, viverra amet laoreet litora lorem, mollis elit volutpat vel turpis sed laborum, massa consectetuer facilisis. Donec vehicula egestas purus nulla ut est. Accumsan risus massa commodo vivamus placerat sit, ut felis turpis consectetuer, per litora lectus diam scelerisque libero, ante ac at nulla. Pellentesque fermentum nunc eros mattis.'}
 	    	res.render('reporte', { title: 'Reporte', reporte: reporte_details});
 	    }
 	  });
