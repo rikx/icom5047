@@ -3,6 +3,8 @@ $(document).ready(function(){
   var citas_array;
   // initial population of citas list
   populate_citas();
+  // citas list
+  $citas_list = $('#citas_list');
 
   /* Button: Return home */
 	$('#btn_home').on('click', function(){
@@ -10,10 +12,10 @@ $(document).ready(function(){
 	});
 
 	/* Open edit panel */
-  $('#citas_list tbody').on('click', 'tr td button.btn_edit_cita', function(){
+  $citas_list.on('click', 'tr td button.btn_edit_cita', function(){
     $('#edit_panel').show();
 
-    // contains ganadero id
+    // contains cita id
     var cita_id = $(this).attr('data-id');
 
     // ramon work
@@ -35,14 +37,15 @@ $(document).ready(function(){
         if(i==0) {
           table_content +=  'active ';
         }
-        table_content += "show_info_cita' href='#', data-id='"+this.person_id+"'>"+this.first_name+' '+this.last_name1+' '+this.last_name2+"</a></td>";
-        table_content += "<td><button class='btn_edit_cita btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
-        table_content += "<td><a class='btn_delete_cita btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+        table_content += "show_info_cita' href='#', data-id='"+this.appointment_id+"'>"+this.location_name+"</a></td>";
+        table_content += '<td><center>'+get_date_time(this.date, false)+' at '+this.time+'</center></td>';
+        table_content += "<td><button class='btn_edit_cita btn btn-sm btn-success btn-block' type='button' data-id='"+this.appointment_id+"'>Editar</button></td>";
+        table_content += "<td><a class='btn_delete_cita btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.appointment_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
         table_content += '</tr>';
       });  
 
       // inject content string into html
-      $('#citas_list tbody').html(table_content);
+      $citas_list.html(table_content);
     });
   };
 });

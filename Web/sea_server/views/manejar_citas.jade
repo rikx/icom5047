@@ -31,7 +31,7 @@ block content
 					.panel-heading Citas Pendientes
 					.panel-body
 						.list-group(style='overflow:auto; height:300px;')
-							table#citas_list(class='table')
+							table(class='table')
 								thead
 									tr
 										th 
@@ -40,27 +40,8 @@ block content
 										th 
 											center
 												strong Fecha y Hora
-								tbody
-									tr
-										td
-											a(class='list-group-item active show_info_cita', href='#', data-id='1') La granjita del pueblo
-										td
-											center
-												span#cita_date Mayo 5, 2015
-												span  at 
-												span#cita_time 2:30pm
-										td
-											button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
-									tr
-										td
-											a(class='list-group-item show_info_cita', href='#', data-id='2') Cita 2
-										td
-											center
-												span#cita_date Mayo 5, 2015
-												span  at 
-												span#cita_time 2:30pm
-										td
-											button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
+								tbody#citas_list
+
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
 					h4#heading_edit Editar Cita
@@ -81,21 +62,27 @@ block content
 			#info_panel.col-md-4
 				.panel.panel-success
 					.panel-heading
-						h3#info_panel_heading(class='panel-title') Dispositivo 1
+						h3#info_panel_heading(class='panel-title') Cita 1
 					.panel-body
-						table#dispositivo_info(class='table')
+						table#cita_info(class='table')
 							tr
-								td Nombre:
-								td#dispositivo_info_name 
+								td Localización:
+								td#cita_info_location 
 							tr
-								td Numero de Identificación:
-								td#dispositivo_info_id_num
+								td Fecha:
+								td#cita_info_date
 							tr
-								td Usuario Asignado:
-								td#dispositivo_info_usuario
+								td Hora: 
+								td#cita_info_hour
+							tr
+								td Propósito:
+								td#cita_info_purpose
+							tr
+								td Cita hecha por:
+								td#cita_info_agent
 							tr 
-								td Última Sincronicazión: 
-								td#dispositivo_info_last_sync
+								td Reporte Relacionado:
+								td#cita_info_report
 
 		.row
 			.col-md-3

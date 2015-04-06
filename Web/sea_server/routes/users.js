@@ -308,7 +308,10 @@ router.get('/admin/list_citas', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		
-	  client.query('', function(err, result) {
+	  client.query("SELECT appointment_id, appointments.date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
+									FROM (appointments natural join report natural join location), users \
+									WHERE user_id = agent_id \
+									LIMIT 10;", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -339,7 +342,8 @@ router.get('/admin/list_dispositivos', function(req, res, next) {
 		}
 		
 	  client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
-									FROM devices natural join users', function(err, result) {
+									FROM devices natural join users \
+									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
