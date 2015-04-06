@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -17,12 +18,23 @@ import java.util.List;
 
 public class MenuListFragment extends ListFragment {
 
+	public static String TYPE_PEOPLE = "PEOPLE";
+	public static String TYPE_REPORTS = "REPORTS";
+	public static String TYPE_LOCATIONS = "LOCATIONS";
+	public static String TYPE_MAIN = "MAIN";
 	private int curPos = -1;
-	private Fragment selectedFragment;
+	private String type;
+	private List list;
+	OnMenuItemSelectedListener mCallback;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		if(savedInstanceState != null) {
+			type = savedInstanceState.getString("type");
+			curPos = savedInstanceState.getInt("index");
+		}
 	}
 
 	@Override
@@ -35,31 +47,86 @@ public class MenuListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-				android.R.layout.simple_list_item_1,
-				getResources().getStringArray(R.array.menu_list_strings));
+		curPos = getArguments().getInt("index", -1);
+		type = getArguments().getString("type");
+		ArrayAdapter adapter = null;
+		if(type.equals(TYPE_MAIN)) {
+			adapter = new ArrayAdapter<>(getActivity(),
+					android.R.layout.simple_list_item_1,
+					getResources().getStringArray(R.array.menu_list_strings));
+		}
+		else if(type.equals(TYPE_PEOPLE)) {
+			list = ((MainActivity)getActivity()).getData().getPeople();
+			adapter = new ArrayAdapter<>(getActivity(),
+					android.R.layout.simple_list_item_1, list);
+		}
+		else if(type.equals(TYPE_LOCATIONS)) {
+			list = ((MainActivity)getActivity()).getData().getLocations();
+			adapter = new ArrayAdapter<>(getActivity(),
+					android.R.layout.simple_list_item_1, list);
+		}
+		else if(type.equals(TYPE_REPORTS)) {
+			adapter = new ArrayAdapter<>(getActivity(),
+					android.R.layout.simple_list_item_1,
+					getResources().getStringArray(R.array.dummy_reports_list_strings));
+		}
 		setListAdapter(adapter);
+		ListView l = getListView();
+		l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		if(curPos != -1)
+			l.setItemChecked(curPos, true);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putString("type", type);
+		savedInstanceState.putInt("index", curPos);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+
+	public interface OnMenuItemSelectedListener {
+		public void OnMenuItemSelectedListener(String type, ListView l, View v, int position);
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mCallback = (OnMenuItemSelectedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+				+ " must implement OnMenuItemSelectedListener");
+		}
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		if(curPos != position) {
+			mCallback.OnMenuItemSelectedListener(type, l, v, position);
+			super.onListItemClick(l, v, position, id);
+		}
+		getListView().setItemChecked(position, true);
+		curPos = position;
+	}
 
-		String selection = getListAdapter().getItem(position).toString();
+	public String getType() {
+		return type;
+	}
 
-		//Create new fragment to replace existing
-		if(selection.equalsIgnoreCase("REPORTS"))
-			selectedFragment = new ReportsListFragment();
-		else if(selection.equalsIgnoreCase("PEOPLE"))
-			selectedFragment = PeopleListFragment.newInstance(-1);
-		else if(selection.equalsIgnoreCase("LOCATIONS"))
-			selectedFragment = new LocationsListFragment();
-		else selectedFragment = new ListFragment();
+	public static MenuListFragment newInstance(String type) {
+		MenuListFragment fragment = new MenuListFragment();
+		Bundle args = new Bundle();
+		args.putString("type", type);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
-		//Replace the selected fragment
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.menu_selected_container, selectedFragment, selection);
-		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		transaction.commit();
-
+	public static MenuListFragment newInstance(String type, int index) {
+		MenuListFragment fragment = new MenuListFragment();
+		Bundle args = new Bundle();
+		args.putString("type", type);
+		args.putInt("index", index);
+		fragment.setArguments(args);
+		return fragment;
 	}
 }
