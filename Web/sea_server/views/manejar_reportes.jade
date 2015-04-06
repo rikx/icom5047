@@ -50,7 +50,7 @@ block content
 														| Reporte 
 														= report.report_id
 											td
-												center= report.location_name
+												center(data-id=report.location_id)= report.location_name
 											td
 												button(class='btn_edit_reporte btn btn-sm btn-success btn-block', type='button', data-id=report.report_id) Editar
 											td

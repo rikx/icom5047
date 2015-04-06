@@ -18,9 +18,31 @@ router.get('/admin/cuestionario/crear', function(req, res, next) {
 	res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
 });
 
-/* GET Admin Manejar Cuestionarios */
+/* GET Admin Manejar Cuestionarios
+ * Responds with first 10 cuestionarios, 
+ * alphabetically ordered by name
+ */
 router.get('/admin/cuestionarios', function(req, res, next) {
-	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+									FROM flowchart, users \
+									WHERE user_id = creator_id \
+									ORDER BY flowchart_name \
+									LIMIT 10;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios', cuestionarios: result.rows});
+	    }
+	  });
+	});
 });
 
 /* GET Admin Cuestionario */
@@ -30,7 +52,8 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 });
 
 /* GET Cuestionarios List data 
- * Responds with first 10 cuestionarios, alphabetically ordered 
+ * Responds with first 10 cuestionarios, 
+ * alphabetically ordered by name
  */
 router.get('/admin/list_cuestionarios', function(req, res, next) {
 	var cuestionarios_list;
@@ -39,10 +62,10 @@ router.get('/admin/list_cuestionarios', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-		// TODO: modify query to also give you account type
 	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 									FROM flowchart, users \
 									WHERE user_id = creator_id \
+									ORDER BY flowchart_name \
 									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
