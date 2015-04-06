@@ -38,6 +38,16 @@ $localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
 
  });
 
+$('#btn_close_info_panel').on('click', function(){
+    $('#info_panel').hide();
+    remove_active_class($localizaciones_list);
+  });
+
+ $('#btn_close_edit_panel').on('click', function(){
+    $('#edit_panel').hide();
+    remove_active_class($localizaciones_list);
+  });
+
   $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     
     $('#info_panel_heading').show();
