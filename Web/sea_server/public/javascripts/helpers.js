@@ -99,18 +99,29 @@
 			time += ' AM';
 		}
 		return time;
-	}
+	};
+
+	// given a collection of html elements
+	// injects formated date html into each element, 
+	// using its data-date contents as the date to be formated
+	function format_dates(elements){
+		$.each(elements, function(){
+			var date = $(this).attr('data-date');
+			var time = $(this).attr('data-time');
+			$(this).html(get_date_time(date, false)+' at '+time);
+		});
+	};
 
 	//
 	function populate_ganaderos(){
     $.getJSON('http://localhost:3000/ganaderos', function(data) {
     	return data.ganaderos;
     });
-  }
+  };
 
   //
   function populate_usuarios(){
     $.getJSON('http://localhost:3000/usuarios', function(data) {
     	return data.usuarios;
     });
-  }
+  };

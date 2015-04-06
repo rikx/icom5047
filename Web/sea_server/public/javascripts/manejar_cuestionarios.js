@@ -1,8 +1,6 @@
 $(document).ready(function(){
   // store data for 10 cuestionarios
   var cuestionarios_array;
-  // initial population of cuestionarios list
-  //populate_cuestionarios();
   // cuestionarios list
   $cuestionarios_list = $('#cuestionarios_list');
 

@@ -43,15 +43,15 @@ block content
 										tr
 											td
 												if i!=0
-													a(class='list-group-item show_info_report', href='#', data-id=cita.appointment_id)= cita.location_name
+													a(class='list-group-item show_info_cita', href='#', data-id=cita.appointment_id)= cita.location_name
 												else 
 													a(class='list-group-item active show_info_reporte', href='#', data-id=cita.appointment_id)= cita.location_name
 											td
-												center= cita.date
+												center(class='show_date_cita' data-date=cita.date, data-time=cita.time)
 											td
 												button(class='btn_edit_reporte btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
 											td
-												a(class='btn_delete_reporte btn btn-sm btn-success', data-toggle='tooltip', data-id=cita.appointment_id)
+												a(class='btn_delete_cita btn btn-sm btn-success', data-toggle='tooltip', data-id=cita.appointment_id)
 													i(class='glyphicon glyphicon-trash')
 
 			#edit_panel.col-md-4(style="display:none")

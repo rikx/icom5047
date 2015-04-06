@@ -350,7 +350,7 @@ router.get('/admin/citas', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		
-	  client.query("SELECT appointment_id, appointments.date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
+	  client.query("SELECT appointment_id, to_char(date, 'YYYY, MM, DD') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
 									FROM (appointments natural join report natural join location), users \
 									WHERE user_id = agent_id \
 									ORDER BY date ASC, time ASC \
