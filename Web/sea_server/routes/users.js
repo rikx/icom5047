@@ -110,9 +110,32 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 	});
 });
 
-/* GET Admin Manejar Reportes */
+/* GET Admin Manejar Reportes 
+ * Renders page and includes response with first 10 reportes, 
+ * alphabetically ordered by location name
+ */
 router.get('/admin/reportes', function(req, res, next) {
-	res.render('manejar_reportes', { title: 'Manejar Reportes'});
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+
+		}
+		client.query("SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, \
+										subject_id, (person.first_name||' '||person.last_name1||' '||person.last_name2) AS ganadero_name, \
+										report.flowchart_id, flowchart.name AS flowchart_name \
+									FROM report, location, person, flowchart, users \
+									WHERE report.creator_id = user_id and subject_id = person.person_id and report.location_id = location.location_id \
+									ORDER BY location_name ASC \
+									LIMIT 10;", function(err, result) {
+			done();
+
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.render('manejar_reportes', { title: 'Manejar Reportes', reports: result.rows});
+			}
+		});
+	});
 });
 
 /* GET Admin Reportes List data 
@@ -227,7 +250,8 @@ router.get('/admin/localizaciones', function(req, res, next) {
 });
 
 /* GET Localizaciones List data 
- * Responds with first 10 localizaciones, alphabetically ordered 
+ * Responds with first 10 localizaciones, 
+ * alphabetically ordered by location_name
  */
 router.get('/admin/list_localizaciones', function(req, res, next) {
 	var localizaciones_list, agentes_list, ganaderos_list;
@@ -298,7 +322,8 @@ router.get('/admin/citas', function(req, res, next) {
 });
 
 /* GET Citas List data 
- * Responds with first 10 citas, ordered by date and time
+ * Responds with first 10 citas, 
+ * ordered by date and time
  */
 router.get('/admin/list_citas', function(req, res, next) {
 	var citas_list;
@@ -311,6 +336,7 @@ router.get('/admin/list_citas', function(req, res, next) {
 	  client.query("SELECT appointment_id, appointments.date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
 									FROM (appointments natural join report natural join location), users \
 									WHERE user_id = agent_id \
+									ORDER BY date ASC, time ASC \
 									LIMIT 10;", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
@@ -331,7 +357,8 @@ router.get('/admin/dispositivos', function(req, res, next) {
 });
 
 /* GET Citas List data 
- * Responds with first 10 dispositivos, ordered by assigned person
+ * Responds with first 10 dispositivos, 
+ * ordered by assigned person
  */
 router.get('/admin/list_dispositivos', function(req, res, next) {
 	var dispositivos_list, usuarios_list;
@@ -343,6 +370,7 @@ router.get('/admin/list_dispositivos', function(req, res, next) {
 		
 	  client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
 									FROM devices natural join users \
+									ORDER BY username ASC \
 									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();

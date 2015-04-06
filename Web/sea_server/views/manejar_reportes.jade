@@ -33,7 +33,56 @@ block content
 						.list-group(style='overflow:auto; height:300px;')
 							table(class='table')
 								thead
+									th
+										center Reporte
+									th 
+										center Localización
 								tbody#reportes_list
+									each report, i in reports
+										tr
+											td
+												if i!=0
+													a(class='list-group-item show_info_report', href='#', data-id=report.report_id) 
+														| Reporte 
+														= report.report_id
+												else 
+													a(class='list-group-item active show_info_reporte', href='#', data-id=report.report_id)
+														| Reporte 
+														= report.report_id
+											td
+												center= report.location_name
+											td
+												button(class='btn_edit_reporte btn btn-sm btn-success btn-block', type='button', data-id=report.report_id) Editar
+											td
+												a(class='btn_delete_reporte btn btn-sm btn-success', data-toggle='tooltip', data-id=report.report_id)
+													i(class='glyphicon glyphicon-trash')
+
+			#info_panel.col-md-4
+				.panel.panel-success
+					.panel-heading
+						h3#info_panel_heading(class='panel-title') Reporte
+
+					.panel-body
+						table#reporte_info(class='table')
+							tr
+								td Reporte:
+								td#reporte_info_id 
+							tr
+								td Para Localización: 
+								td#reporte_info_location
+							tr
+								td Creado por:
+								td#reporte_info_creator
+							tr
+								td Fecha:
+								td#report_info_date
+							tr
+								td Persona entrevistada:
+								td#reporte_info_ganadero
+							tr
+								td Encuesta utilizada:
+								td#reporte_info_flowchart
+
 		.row
 			.col-md-3
 			.col-md-2
@@ -43,5 +92,5 @@ block content
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
-	script(src='/javascripts/manejar_ganaderos.js')
+	script(src='/javascripts/manejar_reportes.js')
 	script(src='/javascripts/helpers.js')

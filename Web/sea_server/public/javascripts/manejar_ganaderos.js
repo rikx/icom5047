@@ -176,7 +176,6 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
     $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
       ganaderos_array = data.ganaderos;
       locations_array = data.locations;
-      console.log(locations_array);
       var firstElement = ganaderos_array[0];
 
       // contents of ganaderos list
@@ -213,8 +212,6 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
 
       $.each(locations_array, function(i){
         if(firstElement.person_id == this.person_id){
-          console.log(firstElement.person_id);
-          console.log(this.person_id);
           table_content += '<tr>';
           table_content += "<td> ";
           table_content += "" +this.location_name+"</td>";

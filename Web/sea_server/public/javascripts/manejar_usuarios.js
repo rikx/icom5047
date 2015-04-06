@@ -7,7 +7,7 @@ $(document).ready(function(){
   $usuarios_list = $('#usuarios_list');
 
   $('#btn_home').on('click', function(){
-    window.location.href = '/users/admin'
+    window.location.href = '/users/admin';
   });
 
   /* Close edit panel */
@@ -56,7 +56,6 @@ $(document).ready(function(){
 
     // contains ganadero id
     var myVar = $this.attr('data-id');
-    console.log("hello " + myVar);
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(myVar);
     var thisUserObject = usuarios_array[arrayPosition];
     
@@ -81,7 +80,6 @@ $(document).ready(function(){
 
    $.each(locations_array, function(i){
     if(myVar == this.user_id){
-      console.log(myVar == this.user_id);
       table_content += '<tr>';
       table_content += "<td> ";
       table_content += "" +this.location_name+"</td>";
@@ -203,9 +201,7 @@ $('#btn_edit').on('click', function(){
 function populate_usuarios(){
   $.getJSON('http://localhost:3000/users/admin/list_usuarios', function(data) {
     usuarios_array = data.usuarios;
-    console.log(usuarios_array);
     locations_array = data.locations;
-    console.log(locations_array);
     var firstElement = usuarios_array[0];
     //locations_array = data.locations;
     
@@ -252,8 +248,6 @@ function populate_usuarios(){
 
      $.each(locations_array, function(i){
       if(firstElement.user_id == this.user_id){
-        console.log(firstElement.user_id);
-        console.log(this.user_id);
         table_content += '<tr>';
         table_content += "<td> ";
         table_content += "" +this.location_name+"</td>";
