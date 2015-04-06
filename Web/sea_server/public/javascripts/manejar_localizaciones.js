@@ -27,8 +27,23 @@ $(document).ready(function(){
  });
 
 
+$localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
+    $('#localizacion_info').hide();
+    $('#info_panel_heading').hide();
+    $('#edit_associates_heading').show();
+    $('#localizacion_associates').show();
+
+
+
+
+ });
+
   $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
-    // prevents link from firing
+    
+    $('#info_panel_heading').show();
+    $('#localizacion_info').show();
+    $('#edit_associates_heading').hide();
+    $('#localizacion_associates').hide();
     e.preventDefault();
     var table_content = '';
     
@@ -102,7 +117,7 @@ $(document).ready(function(){
     }
   }); 
    $('#localizacion_agentes').html(table_content);
-
+    //$('#localizacion_info').hide();
 
  });
 
@@ -139,6 +154,8 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
 
 function populate_localizaciones(){
   $.getJSON('http://localhost:3000/users/admin/list_localizaciones', function(data) {
+    $('#edit_associates_heading').hide();
+    $('#localizacion_associates').hide();
     localizaciones_array = data.localizaciones;
     agentes_array = data.agentes;
     ganaderos_array = data.ganaderos;
