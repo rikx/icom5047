@@ -14,10 +14,8 @@ router.get('/ganaderos', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query("WITH people AS (SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-									FROM person) \
-									SELECT * \
-									FROM people \
+	  client.query("SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+									FROM person \
 									WHERE person_id NOT IN ( \
 										SELECT person_id \
 										FROM person, location \
