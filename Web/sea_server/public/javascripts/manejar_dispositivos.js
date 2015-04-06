@@ -51,7 +51,7 @@ $(document).ready(function(){
     $('#info_panel_heading').text(thisUserObject.device_name);
     $('#dispositivo_info_name').text(thisUserObject.device_name);
     $('#dispositivo_info_id_num').text(thisUserObject.device_id);
-    $('#dispositivo_info_usuario').text(thisUserObject.assigned_user);
+    $('#dispositivo_info_usuario').text(thisUserObject.username);
     $('#dispositivo_info_last_sync').text(thisUserObject.latest_sync);
     var date_time = get_date_time(thisUserObject.latest_sync, true);
     console.log(date_time);
@@ -75,7 +75,7 @@ $dispositivos_list.on('click', 'tr td button.btn_edit_dispositivo', function(){
 
   $('#dispositivo_name').attr("value", thisUserObject.device_name);
   $('#dispositivo_id_num').attr("value", thisUserObject.device_id);
-  $('#dispositivo_usuario').attr("value", thisUserObject.assigned_user);
+  $('#dispositivo_usuario').attr("value", thisUserObject.username);
   var date_time = get_date_time(thisUserObject.latest_sync, true);
   $('#dispositivo_last_sync').attr("value", thisUserObject.phone_number);
 
@@ -146,7 +146,7 @@ function populate_dispositivos() {
       $('#info_panel_heading').text(firstElement.device_name);
       $('#dispositivo_info_name').text(firstElement.device_name);
       $('#dispositivo_info_id_num').text(firstElement.device_id);
-      $('#dispositivo_info_usuario').text(firstElement.assigned_user);
+      $('#dispositivo_info_usuario').text(firstElement.username);
       date_time = get_date_time(firstElement.latest_sync, true);
       $('#dispositivo_info_last_sync').text(date_time.date + " at " + date_time.time);
 
