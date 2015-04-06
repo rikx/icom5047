@@ -308,7 +308,9 @@ router.get('/admin/list_citas', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		
-	  client.query('', function(err, result) {
+	  client.query('SELECT appointment_id, appointments.date, appointments.time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
+									FROM (appointments natural join report natural join location), users \
+									WHERE user_id = agent_id', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

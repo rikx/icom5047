@@ -13,6 +13,28 @@ block content
 			.col-md-2
 
 		.row
+			.col-md-1
+			.col-md-2
+			.col-md-4
+				.input-group
+					input#search_bar(class='form-control', type='text', placeholder='Buscar')
+					span(class='input-group-btn')
+						button#btn_search(class='btn btn-default', type='button')
+							i(class='glyphicon glyphicon-search')
+			.col-md-4
+			.col-md-1
+
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading Reportes
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table(class='table')
+								thead
+								tbody#reportes_list
+		.row
 			.col-md-3
 			.col-md-2
 				// TODO: add home glyphicon
