@@ -51,9 +51,10 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 	res.render('cuestionario', { title: 'Cuestionario'});
 });
 
-/* GET Cuestionarios List data 
- * Responds with first 10 cuestionarios, 
+/* NOT USED YET; WILL REQUIRE MODIFICATION: GET Cuestionarios List data 
+ * Responds with 10 cuestionarios, 
  * alphabetically ordered by name
+ * for use to fill requested page in pagination
  */
 router.get('/admin/list_cuestionarios', function(req, res, next) {
 	var cuestionarios_list;
@@ -161,8 +162,10 @@ router.get('/admin/reportes', function(req, res, next) {
 	});
 });
 
-/* GET Admin Reportes List data 
- * Responds with first 10 reportes, alphabetically ordered 
+/* NOT USED YET; WILL REQUIRE MODIFICATION: GET Admin Reportes List data 
+ * Responds with 10 reportes, 
+ 	* alphabetically ordered by location_name
+	* for use to fill requested page in pagination
  */
 router.get('/admin/list_reportes', function(req, res, next) {
 	var reportes_list;
@@ -341,12 +344,33 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 
 /* GET Admin Manejar Citas */
 router.get('/admin/citas', function(req, res, next) {
-	res.render('manejar_citas', { title: 'Manejar Citas'});
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		
+	  client.query("SELECT appointment_id, appointments.date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
+									FROM (appointments natural join report natural join location), users \
+									WHERE user_id = agent_id \
+									ORDER BY date ASC, time ASC \
+									LIMIT 10;", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.render('manejar_citas', { title: 'Manejar Citas', citas: result.rows});
+	    }
+	  });
+	})
 });
 
-/* GET Citas List data 
+/* NOT USED YET; WILL REQUIRE MODIFICATION: GET Citas List data 
  * Responds with first 10 citas, 
  * ordered by date and time
+ * for use to fill requested page in pagination
  */
 router.get('/admin/list_citas', function(req, res, next) {
 	var citas_list;
@@ -379,7 +403,7 @@ router.get('/admin/dispositivos', function(req, res, next) {
 	res.render('manejar_dispositivos', { title: 'Manejar Dispositivos'});
 });
 
-/* GET Citas List data 
+/* GET Dispositivos List data 
  * Responds with first 10 dispositivos, 
  * ordered by assigned person
  */

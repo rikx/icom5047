@@ -2,7 +2,7 @@ $(document).ready(function(){
   // store data for 10 citas
   var citas_array;
   // initial population of citas list
-  populate_citas();
+  //populate_citas();
   // citas list
   $citas_list = $('#citas_list');
 
