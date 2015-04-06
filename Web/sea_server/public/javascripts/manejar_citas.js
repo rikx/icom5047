@@ -38,7 +38,7 @@ $(document).ready(function(){
           table_content +=  'active ';
         }
         table_content += "show_info_cita' href='#', data-id='"+this.appointment_id+"'>"+this.location_name+"</a></td>";
-        table_content += '<td><center>'+convert_date(this.date)+' at '+this.time+'</center></td>';
+        table_content += '<td><center>'+get_date_time(this.date, false)+' at '+this.time+'</center></td>';
         table_content += "<td><button class='btn_edit_cita btn btn-sm btn-success btn-block' type='button' data-id='"+this.appointment_id+"'>Editar</button></td>";
         table_content += "<td><a class='btn_delete_cita btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.appointment_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
         table_content += '</tr>';
