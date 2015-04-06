@@ -23,9 +23,10 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});
 });
 
-/* GET Admin Manejar Cuestionarios */
-router.get('/admin/llenar-cuestionarios', function(req, res, next) {
-	res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios'});
+/* GET Admin Cuestionario */
+router.get('/admin/cuestionarios/:id', function(req, res, next) {
+	var cuestionario_id = req.params.id;
+	res.render('cuestionario', { title: 'Cuestionario'});
 });
 
 /* GET Cuestionarios List data 
@@ -39,7 +40,9 @@ router.get('/admin/list_cuestionarios', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query(' \
+	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+									FROM flowchart, users \
+									WHERE user_id = creator_id \
 									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();

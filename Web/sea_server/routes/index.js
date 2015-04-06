@@ -6,6 +6,56 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Servicio De Extension Agricola',});
 });
 
+/* GET ganaderos */
+router.get('/ganaderos', function(req, res, next) {
+	var ganaderos_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	  client.query("SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+									FROM person \
+									WHERE person_id NOT IN ( \
+										SELECT person_id \
+										FROM person, location \
+										WHERE person_id = owner_id or person_id = manager_id)", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	ganaderos_list = result.rows;
+	    	res.json({ganaderos : ganaderos_list});
+	    }
+	  });
+	});
+});
+
+/* GET ganaderos */
+router.get('/usuarios', function(req, res, next) {
+	var usuarios_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	  client.query('SELECT user_id, username \
+									FROM users', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	usuarios_list = result.rows;
+	    	res.json({usuarios : usuarios_list});
+	    }
+	  });
+	});
+});
+
 /* POST login */
 router.post('/login', function(req, res, next) {
 	if(!req.body.hasOwnProperty('input_username') || !req.body.hasOwnProperty('input_password') ) {
