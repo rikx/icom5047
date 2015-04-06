@@ -1,27 +1,150 @@
 $(document).ready(function(){
   // store data for 10 localizaciones
   var localizaciones_array;
+  var agentes_array;
+  var ganaderos_array;
   // initial population of localizaciones list
   populate_localizaciones();
   // localizaciones list
   $localizaciones_list = $('#localizaciones_list');
 
   /* Button: Return home */
-	$('#btn_home').on('click', function(){
+  $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';
-	});
+  });
 
-		/* Add ganadero */
-	$('#btn_add_localizacion').on('click', function(){
-	  $('#btn_edit, #heading_edit').hide();
-	  $('#btn_submit, #heading_create').show();
-	  $('#edit_panel').show();
-	  $('#info_panel').hide();
-	});
 
-	function populate_localizaciones(){
-    $.getJSON('http://localhost:3000/users/admin/list_localizaciones', function(data) {
-      localizaciones_array = data.localizaciones;
+
+
+  /* Add ganadero */
+  $('#btn_add_localizacion').on('click', function(){
+   $('#btn_edit, #heading_edit').hide();
+   $('#btn_submit, #heading_create').show();
+   $('#edit_panel').show();
+   $('#info_panel').hide();
+
+
+ });
+
+
+  $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
+    // prevents link from firing
+    e.preventDefault();
+    var table_content = '';
+    
+
+    $('#edit_panel').hide();
+    $('#info_panel').show();
+
+    // remove active from previous list item 
+    remove_active_class($localizaciones_list);
+    // add active to current clicked list item
+    var $this = $(this);
+    if (!$this.hasClass('active')) {
+      $this.addClass('active');
+    }
+
+
+    var selectedGanaderos = [];
+    // contains ganadero id
+    var myVar = $this.attr('data-id');
+    var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
+    var thisUserObject = localizaciones_array[arrayPosition];
+    console.log(thisUserObject);
+    
+
+    //#info_panel_heading
+
+    $('#info_panel_heading').text(thisUserObject.location_name);
+    $('#localizacion_info_name').text(thisUserObject.location_name);
+    $('#localizacion_info_license').text(thisUserObject.license);
+    console.log(thisUserObject.address_line1);
+    console.log(thisUserObject.address_line2);
+    if(thisUserObject.address_line2 == null)
+    {
+     $('#localizacion_info_address').text(thisUserObject.address_line1);
+   }
+   else
+   {
+     $('#localizacion_info_address').text(thisUserObject.address_line1 + " " + thisUserObject.address_line2);
+
+   }
+   $('#localizacion_info_ciudad').text(thisUserObject.city);
+   $('#localizacion_info_zipcode').text(thisUserObject.zipcode);
+
+   $.each(ganaderos_array, function(i){
+    if(myVar == ganaderos_array[i].location_id){
+      selectedGanaderos.push(ganaderos_array[i]);
+      console.log(ganaderos_array[i]);
+    }
+  });  
+
+   //populate ganaderos table according to relation_type
+   for (j = 0; j < selectedGanaderos.length; j++) { 
+    if(selectedGanaderos[j].relation_type == "owner")
+    {
+      //$("#localizacion_ganaderos td:contains('Ganadero 1')").html(selectedGanaderos[j].person_name);
+      $('#owner').html(selectedGanaderos[j].person_name);
+    }
+    else
+    {
+       //$("#localizacion_ganaderos td:contains('Ganadero 2')").html(selectedGanaderos[j].person_name);
+       $('#manager').html(selectedGanaderos[j].person_name);
+     }
+   }
+
+   $.each(agentes_array, function(i){
+    if(myVar == agentes_array[i].location_id){
+      table_content += '<tr>';
+      table_content += "<td> ";
+      table_content += "" +agentes_array[i].username+"</td>";
+      table_content += '</tr>';
+    }
+  }); 
+   $('#localizacion_agentes').html(table_content);
+
+
+ });
+
+$localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(){
+  $('#btn_edit, #heading_edit').show();
+  $('#btn_submit, #heading_create').hide();
+  $('#edit_panel').show();
+  $('#info_panel').hide();
+
+    // contains ganadero id
+    
+    var myVar = $(this).attr('data-id');
+    var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
+    var thisUserObject = localizaciones_array[arrayPosition];
+    
+
+    $('#localizacion_name').attr("value", thisUserObject.location_name);
+    $('#localizacion_license').attr("value", thisUserObject.license);
+    $('#localizacion_address_line1').attr("value", thisUserObject.address_line1);
+    $('#localizacion_address_line2').attr("value", thisUserObject.address_line2);
+    $('#localizacion_address_city').attr("value", thisUserObject.city);
+    $('#localizacion_address_zipcode').attr("value", thisUserObject.zipcode);
+
+
+    
+    //change dropdown selected value
+    $('#user_type li').on('click', function(){
+      $(".user_type_dropdown:first-child").text($(this).text());
+      $(".user_type_dropdown:first-child").val($(this).text());
+    });
+    // ajax call for info
+
+  });
+
+function populate_localizaciones(){
+  $.getJSON('http://localhost:3000/users/admin/list_localizaciones', function(data) {
+    localizaciones_array = data.localizaciones;
+    agentes_array = data.agentes;
+    ganaderos_array = data.ganaderos;
+    console.log(data.agentes);
+    console.log(data.localizaciones);
+    console.log(data.ganaderos);
 
       // contents of localizaciones list
       var table_content = '';
@@ -44,5 +167,5 @@ $(document).ready(function(){
       // inject content string into html
       $localizaciones_list.html(table_content);
     });
-  };
+};
 });
