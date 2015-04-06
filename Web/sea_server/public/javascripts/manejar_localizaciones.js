@@ -112,30 +112,47 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
   $('#edit_panel').show();
   $('#info_panel').hide();
 
-    // contains ganadero id
-    
-    var myVar = $(this).attr('data-id');
-    var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
-    var thisUserObject = localizaciones_array[arrayPosition];
-    
+  // contains ganadero id
 
-    $('#localizacion_name').attr("value", thisUserObject.location_name);
-    $('#localizacion_license').attr("value", thisUserObject.license);
-    $('#localizacion_address_line1').attr("value", thisUserObject.address_line1);
-    $('#localizacion_address_line2').attr("value", thisUserObject.address_line2);
-    $('#localizacion_address_city').attr("value", thisUserObject.city);
-    $('#localizacion_address_zipcode').attr("value", thisUserObject.zipcode);
+  var myVar = $(this).attr('data-id');
+  var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
+  var thisUserObject = localizaciones_array[arrayPosition];
 
 
-    
-    //change dropdown selected value
-    $('#user_type li').on('click', function(){
-      $(".user_type_dropdown:first-child").text($(this).text());
-      $(".user_type_dropdown:first-child").val($(this).text());
-    });
-    // ajax call for info
+  $('#localizacion_name').attr("value", thisUserObject.location_name);
+  $('#localizacion_license').attr("value", thisUserObject.license);
+  $('#localizacion_address_line1').attr("value", thisUserObject.address_line1);
+  $('#localizacion_address_line2').attr("value", thisUserObject.address_line2);
+  $('#localizacion_address_city').attr("value", thisUserObject.city);
+  $('#localizacion_address_zipcode').attr("value", thisUserObject.zipcode);
 
+
+
+  //change dropdown selected value
+  $('#user_type li').on('click', function(){
+    $(".user_type_dropdown:first-child").text($(this).text());
+    $(".user_type_dropdown:first-child").val($(this).text());
   });
+});
+
+// RAMON READ: at the end of each of this functions you need to 
+// RAMON READ: create an object that contains the id(s) of the ganadero(s)
+// RAMON READ: you are assigning as owner and/or manager to this location
+var ganaderos = populate_ganaderos();
+$('#btn_add_ganadero').on('click', function(){
+  
+  // ajax POST call to assign ganadero as owner or manager of location
+});
+
+// RAMON READ: at the end of each of this functions you need to 
+// RAMON READ: create an object that contains the id of the usuario
+// RAMON READ: you are assigning to this location
+var usuarios = populate_usuarios();
+$('#btn_add_usuario').on('click', function(){
+  
+  //ajax POST call to assign a user to a location 
+});
+
 
 function populate_localizaciones(){
   $.getJSON('http://localhost:3000/users/admin/list_localizaciones', function(data) {
@@ -167,5 +184,5 @@ function populate_localizaciones(){
       // inject content string into html
       $localizaciones_list.html(table_content);
     });
-};
+  };
 });
