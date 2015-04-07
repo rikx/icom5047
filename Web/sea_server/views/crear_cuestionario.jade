@@ -26,7 +26,8 @@ block content
 			.col-md-1
 			.col-md-6
 				.panel.panel-success
-					.panel-heading Preguntas
+					.panel-heading
+						h3.panel-title Preguntas
 					.panel-body
 						.list-group(style='overflow:auto; height:300px;')
 							table(class='table')
@@ -40,27 +41,22 @@ block content
 					.panel-body
 						table#usuario_info(class='table')
 							tr
-								td Nombre:
-								td#usuario_info_name 
+								td Pregunta:
+								td#pregunta_info_name 
 							tr
-								td Appelido 1:
-								td#usuario_info_lastname_paternal 
-							tr
-								td Appelido 2:
-								td#usuario_info_lastname_maternal 
-							tr
-								td Tipo de Cuenta:
-								td#usuario_info_type 
-							tr
-								td Información de Contacto:
-								td#usuario_info_contact 
+								td Tipo de Pregunta:
+								td#pregunta_info_type
 						.panel.panel-info
-							.panel-heading Localizaciones Asignadas
+							.panel-heading Posibles Respuestas
 							.panel-body
-								table#usuario_locations(class='table')
+								table#pregunta_info_responses(class='table')
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 			.col-md-1
-
+		.row
+			.col-md-2
+			.col-md-3
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

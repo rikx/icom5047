@@ -4,6 +4,7 @@ $(document).ready(function(){
   $locations_list = $('#usuario_locations');
   
   // store data for 10 initial usuarios
+  var usuarios_array, locations_array;
   var usuarios_data = $usuarios_list.attr('data-usuarios');
   //var usuarios_array = JSON.parse(usuarios_data);
   // and their assigned locations
@@ -97,6 +98,15 @@ $(document).ready(function(){
    $('#usuario_locations').html(table_content);
 });
 
+/* Change user type dropdown selected value */
+$('#list_user_type').on('click', 'li a', function(e){
+  // prevents link from firing
+  e.preventDefault();
+
+  $('#btn_user_type_text').text($(this).text());
+  $('#btn_user_type').val($(this).attr('data-usario-type'));
+});
+
 /* Open edit panel */
 $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
   $('#btn_edit, #heading_edit').show();
@@ -104,36 +114,17 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
   $('#edit_panel').show();
   $('#info_panel').hide();
 
-//change dropdown value tu default
+  // contains usuario id
+  var myVar = $(this).attr('data-id');
+  var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(myVar);
+  var thisUserObject = usuarios_array[arrayPosition];
   
-    $(".user_type_dropdown:first-child").text("Tipo de Cuenta");
-    $(".user_type_dropdown:first-child").val("Tipo de Cuenta");
-
-
-
-
-    // contains ganadero id
-    
-    var myVar = $(this).attr('data-id');
-    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(myVar);
-    var thisUserObject = usuarios_array[arrayPosition];
-    
-
-    $('#usuario_name').attr("value", thisUserObject.first_name);
-    $('#usuario_lastname_paternal').attr("value", thisUserObject.last_name1);
-    $('#usuario_lastname_maternal').attr("value", thisUserObject.last_name2);
-    $('#usuario_email').attr("value", thisUserObject.email);
-    $('#usuario_telefono').attr("value", thisUserObject.phone_number);
-
-    
-    //change dropdown selected value
-    $('#user_type li').on('click', function(){
-      $(".user_type_dropdown:first-child").text($(this).text());
-      $(".user_type_dropdown:first-child").val($(this).text());
-    });
-    // ajax call for info
-
-  });
+  $('#usuario_name').attr("value", thisUserObject.first_name);
+  $('#usuario_lastname_paternal').attr("value", thisUserObject.last_name1);
+  $('#usuario_lastname_maternal').attr("value", thisUserObject.last_name2);
+  $('#usuario_email').attr("value", thisUserObject.email);
+  $('#usuario_telefono').attr("value", thisUserObject.phone_number);
+});
 
 $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing

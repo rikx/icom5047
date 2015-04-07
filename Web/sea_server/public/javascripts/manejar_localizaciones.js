@@ -14,42 +14,33 @@ $(document).ready(function(){
   });
 
 
-
-
   /* Add ganadero */
   $('#btn_add_localizacion').on('click', function(){
-   $('#btn_edit, #heading_edit').hide();
-   $('#btn_submit, #heading_create').show();
-   $('#edit_panel').show();
-   $('#info_panel').hide();
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
+  });
 
+  /* */
+  $localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
+    $('#edit_panel').hide();
+    $('#info_panel').hide();
+    $('#add_assosiates_panel').show();
+  });
 
- });
-
-
-$localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
-    $('#localizacion_info').hide();
-    $('#info_panel_heading').hide();
-    $('#edit_associates_heading').show();
-    $('#localizacion_associates').show();
-
-
-
-
- });
-
-$('#btn_close_info_panel').on('click', function(){
+  $('#btn_close_info_panel').on('click', function(){
     $('#info_panel').hide();
     remove_active_class($localizaciones_list);
   });
 
- $('#btn_close_edit_panel').on('click', function(){
+  $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
     remove_active_class($localizaciones_list);
   });
 
   $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
-    
+
     $('#info_panel_heading').show();
     $('#localizacion_info').show();
     $('#edit_associates_heading').hide();
@@ -75,60 +66,47 @@ $('#btn_close_info_panel').on('click', function(){
     var myVar = $this.attr('data-id');
     var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
     var thisUserObject = localizaciones_array[arrayPosition];
-    console.log(thisUserObject);
     
 
-    //#info_panel_heading
-
+    // Populate info panel with selected item's information
     $('#info_panel_heading').text(thisUserObject.location_name);
     $('#localizacion_info_name').text(thisUserObject.location_name);
     $('#localizacion_info_license').text(thisUserObject.license);
-    console.log(thisUserObject.address_line1);
-    console.log(thisUserObject.address_line2);
-    if(thisUserObject.address_line2 == null)
-    {
-     $('#localizacion_info_address').text(thisUserObject.address_line1);
-   }
-   else
-   {
-     $('#localizacion_info_address').text(thisUserObject.address_line1 + " " + thisUserObject.address_line2);
 
-   }
-   $('#localizacion_info_ciudad').text(thisUserObject.city);
-   $('#localizacion_info_zipcode').text(thisUserObject.zipcode);
-
-   $.each(ganaderos_array, function(i){
-    if(myVar == ganaderos_array[i].location_id){
-      selectedGanaderos.push(ganaderos_array[i]);
-      console.log(ganaderos_array[i]);
+    if(thisUserObject.address_line2 == null) {
+      $('#localizacion_info_address').text(thisUserObject.address_line1);
+    } else {
+      $('#localizacion_info_address').text(thisUserObject.address_line1 + " " + thisUserObject.address_line2);
     }
-  });  
+    $('#localizacion_info_ciudad').text(thisUserObject.city);
+    $('#localizacion_info_zipcode').text(thisUserObject.zipcode);
 
-   //populate ganaderos table according to relation_type
-   for (j = 0; j < selectedGanaderos.length; j++) { 
-    if(selectedGanaderos[j].relation_type == "owner")
-    {
+    $.each(ganaderos_array, function(i){
+      if(myVar == ganaderos_array[i].location_id){
+        selectedGanaderos.push(ganaderos_array[i]);
+      }
+    });  
+
+    //populate ganaderos table according to relation_type
+    for (j = 0; j < selectedGanaderos.length; j++) { 
+    if(selectedGanaderos[j].relation_type == "owner") {
       //$("#localizacion_ganaderos td:contains('Ganadero 1')").html(selectedGanaderos[j].person_name);
       $('#owner').html(selectedGanaderos[j].person_name);
-    }
-    else
-    {
+    } else {
        //$("#localizacion_ganaderos td:contains('Ganadero 2')").html(selectedGanaderos[j].person_name);
        $('#manager').html(selectedGanaderos[j].person_name);
      }
-   }
-
-   $.each(agentes_array, function(i){
-    if(myVar == agentes_array[i].location_id){
-      table_content += '<tr>';
-      table_content += "<td> ";
-      table_content += "" +agentes_array[i].username+"</td>";
-      table_content += '</tr>';
     }
-  }); 
-   $('#localizacion_agentes').html(table_content);
-    //$('#localizacion_info').hide();
 
+    $.each(agentes_array, function(i){
+      if(myVar == agentes_array[i].location_id){
+        table_content += '<tr>';
+        table_content += "<td> ";
+        table_content += "" +agentes_array[i].username+"</td>";
+        table_content += '</tr>';
+      }
+    }); 
+    $('#localizacion_agentes').html(table_content);
  });
 
 $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(){

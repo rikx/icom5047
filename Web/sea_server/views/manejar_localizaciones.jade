@@ -32,26 +32,6 @@ block content
 					.panel-body
 						.list-group(style='overflow:auto; height:300px;')
 							table#localizaciones_list(class='table')
-								tr
-									td
-										a(class='show_info_localizacion list-group-item active', href='#', data-id='1') Localizacion 1
-									td
-										button(class='btn_add_associates btn btn-sm btn-success btn-block', type='button', data-id='1') Agregar Ganadero/Agente
-									td
-										button(class='btn_edit_localizacion btn btn-sm btn-success btn-block', type='button', data-id='1') Editar
-									td
-										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-											i(class='glyphicon glyphicon-trash')
-								tr
-									td
-										a(class='show_info_localizacion list-group-item', href='#', data-id='2') Localizacion 2
-									td
-										button(class='btn_add_associates btn btn-sm btn-success btn-block', type='button', data-id='2') Agregar Ganadero/Agente
-									td
-										button(class='btn_edit_localizacion btn btn-sm btn-success btn-block', type='button', data-id='2') Editar
-									td
-										a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='2')
-											i(class='glyphicon glyphicon-trash')
 
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
@@ -132,58 +112,55 @@ block content
 													
 												tr
 													td Agente 3 
-													
-						table#localizacion_associates(class='table')
-							tr
-								td
-									.panel.panel-info
-										.panel-heading Ganaderos Asociados
-										.panel-body
-											table#localizacion_ganaderos(class='table')
-												tr
-													td 
-														strong Owner: 
-													td#owner Ganadero 1
-												tr
-													td 
-														strong Manager:
-													td#manager Ganadero 2
-							tr
-								td
-									.panel.panel-info
-										.panel-heading Agentes Asignados
-										.panel-body
-											table#localizacion_agentes(class='table')
-												tr
-													td Agente 1
-													td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-														i(class='glyphicon glyphicon-minus')
-												tr
-													td Agente 2
-													td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-														i(class='glyphicon glyphicon-minus')
-												tr
-													td Agente 3
-													td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-														i(class='glyphicon glyphicon-minus')
-												tr
-													td 
-														strong Agregar Nuevo
-													td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-														i(class='glyphicon glyphicon-plus')
-												tr
-													td#newdropdown
-														.form-group
-															#usuario_type.dropdown
-																button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Ganaderos
-																	span(class='caret')
-																ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
-																	li(role='presentation')
-																		a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
-																	li(role='presentation')
-																		a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
-																	li(role='presentation')
-																		a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
+			#add_assosiates_panel.col-md-4(style="display:none")
+				.jumbotron
+					h4#heading_create Añadir Ganaderos/Agente Asociados a esta localizacion		
+							.panel.panel-info
+								.panel-heading Ganaderos Asociados
+								.panel-body
+									table#localizacion_ganaderos(class='table')
+										tr
+											td 
+												strong Owner: 
+											td#owner Ganadero 1
+										tr
+											td 
+												strong Manager:
+											td#manager Ganadero 2
+							.panel.panel-info
+								.panel-heading Agentes Asignados
+								.panel-body
+									table#localizacion_agentes(class='table')
+										tr
+											td Agente 1
+											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+												i(class='glyphicon glyphicon-minus')
+										tr
+											td Agente 2
+											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+												i(class='glyphicon glyphicon-minus')
+										tr
+											td Agente 3
+											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+												i(class='glyphicon glyphicon-minus')
+										tr
+											td 
+												strong Agregar Nuevo
+											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+												i(class='glyphicon glyphicon-plus')
+										tr
+											td#newdropdown
+												.form-group
+													#usuario_type.dropdown
+														button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Ganaderos
+															span(class='caret')
+														ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
+															li(role='presentation')
+																a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
+															li(role='presentation')
+																a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
+															li(role='presentation')
+																a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
 													
 
 

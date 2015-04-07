@@ -1,19 +1,36 @@
 $(document).ready(function(){
-  // store data for 10 citas
-  var citas_array;
+
   // format dates in initial cita list population
   format_dates($('.show_date_cita'));
   // citas list
   $citas_list = $('#citas_list');
 
-  /* Button: Return home */
-	$('#btn_home').on('click', function(){
-    window.location.href = '/users/admin';
-	});
+// store data for 10 citas
 
-	/* Open edit panel */
-  $citas_list.on('click', 'tr td button.btn_edit_cita', function(){
-    $('#edit_panel').show();
+var citas_data = $citas_list.attr('data-citas');
+var citas_array = JSON.parse(citas_data);
+populate_info_panel();
+
+function populate_info_panel(){
+ var firstElement = [];
+ firstElement = citas_array[0]; 
+ $('#info_panel_heading').text("Cita");
+ $('#cita_info_location').text(firstElement.location_name);
+ $('#cita_info_date').text(firstElement.date);   
+ $('#cita_info_hour').text(firstElement.time);
+ $('#cita_info_purpose').text(firstElement.purpose);
+ $('#cita_info_agent').text(firstElement.username);   
+ $('#cita_info_report').text(firstElement.report_id);
+}
+
+/* Button: Return home */
+$('#btn_home').on('click', function(){
+  window.location.href = '/users/admin';
+});
+
+/* Open edit panel */
+$citas_list.on('click', 'tr td button.btn_edit_cita', function(){
+  $('#edit_panel').show();
 
     // contains cita id
     var cita_id = $(this).attr('data-id');
@@ -22,8 +39,19 @@ $(document).ready(function(){
 
   });
 
-  $citas_list.on('click', 'tr td a.show_info_cita', function(e){
-   
+$('#btn_close_edit_panel').on('click', function(){
+  $('#edit_panel').hide();
+  remove_active_class($citas_list);
+});
+
+$('#btn_close_info_panel').on('click', function(){
+  $('#info_panel').hide();
+  remove_active_class($citas_list);
+});
+
+$citas_list.on('click', 'tr td a.show_info_cita', function(e){
+
+
     // preveLnts link from firing
     e.preventDefault();
     var table_content = '';
@@ -39,49 +67,55 @@ $(document).ready(function(){
       $this.addClass('active');
     }
 
+
+
     // contains ganadero id
     var myVar = $this.attr('data-id');
-    console.log(myVar);
     var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(myVar);
     var thisUserObject = citas_array[arrayPosition];
-    
+    console.log(thisUserObject);
 
     //#info_panel_heading
+    $('#info_panel_heading').text("Cita");
+    $('#cita_info_location').text(thisUserObject.location_name);
+    $('#cita_info_date').text(thisUserObject.date);   
+    $('#cita_info_hour').text(thisUserObject.time);
+    $('#cita_info_purpose').text(thisUserObject.purpose);
+    $('#cita_info_agent').text(thisUserObject.username);   
+    $('#cita_info_report').text(thisUserObject.report_id);
+
+  });
+
+$citas_list.on('click', 'tr td button.btn_edit_cita', function(){
+  $('#btn_edit, #heading_edit').show();
+  $('#btn_submit, #heading_create').hide();
+  $('#edit_panel').show();
+  $('#info_panel').hide();
 
 
-    $('#info_panel_heading').text(thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
-    if(thisUserObject.middle_initial == null)
-    {
-      $('#usuario_info_name').text(thisUserObject.first_name);
-    }
-    else
-    {
-     $('#usuario_info_name').text(thisUserObject.first_name + " " + thisUserObject.middle_initial);
-   }
-
-   $('#usuario_info_lastname_paternal').text(thisUserObject.last_name1);
-   $('#usuario_info_lastname_maternal').text(thisUserObject.last_name2);
-   $('#usuario_info_contact').text(thisUserObject.email + " " + thisUserObject.phone_number);
+  var myVar = $(this).attr('data-id');
+  var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(myVar);
+  var thisUserObject = citas_array[arrayPosition];
 
 
-   $.each(locations_array, function(i){
-    if(myVar == this.user_id){
-      table_content += '<tr>';
-      table_content += "<td> ";
-      table_content += "" +this.location_name+"</td>";
-      table_content += '</tr>';
-    }
-  });  
-
-
-   $('#usuario_locations').html(table_content);
+  //date and time logic
+  var dateTimeObject = new Date(thisUserObject.date + " " + thisUserObject.time);
+  var day = ("0" + dateTimeObject.getDate()).slice(-2);
+  var month = ("0" + (dateTimeObject.getMonth() + 1)).slice(-2);
+  var hours = dateTimeObject.getHours();
+  var minutes = dateTimeObject.getMinutes();
+  var seconds = dateTimeObject.getSeconds();
+  var theDay = dateTimeObject.getFullYear()+"-"+(month)+"-"+(day);
+  var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+  $('#cita_proposito').attr("value", thisUserObject.purpose);
+  $('#cita_date').attr("value", theDay);
+  $('#cita_time').attr("value", theTime);
 });
 
-	function populate_citas(){
-    $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
-      citas_array = data.citas;
-      alert("lolking");
-      console.log(citas_array);
+function populate_citas(){
+  $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
+    citas_array = data.citas;
+    console.log(citas_array);
 
       // contents of localizaciones list
       var table_content = '';
@@ -104,5 +138,5 @@ $(document).ready(function(){
       // inject content string into html
       $citas_list.html(table_content);
     });
-  };
+};
 });

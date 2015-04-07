@@ -64,16 +64,19 @@ block content
 								label(for='usuario_password_confirm') Confirmar Contraseña:
 								input#usuario_password_confirm(class='form-control', name='usuario_password_confirm', type='password', placeholder='Confirmar Contraseña')
 							.form-group
-								#usuario_type.dropdown
-									button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Tipo de Cuenta
+								label(for='btn_user_type') Tipo de Cuenta:
+								.dropdown
+									.btn-group
+										button#btn_user_type(class='btn btn-default dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
+											span#btn_user_type_text Tipo de Cuenta 
 											span(class='caret')
-									ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
-										li(role='presentation')
-											a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
-										li(role='presentation')
-											a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
-										li(role='presentation')
-											a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
+										ul#list_user_type(class='dropdown-menu', role='menu')
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente
 						.btn-group(role='group', aria-label='info panel buttons')
 							button#btn_close_edit_panel(class='btn btn-default') Cerrar
 							button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
