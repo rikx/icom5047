@@ -1,8 +1,9 @@
 $(document).ready(function(){
-  // store data for 10 cuestionarios
-  var cuestionarios_array;
   // cuestionarios list
   $cuestionarios_list = $('#cuestionarios_list');
+
+  // store data for initial 10 cuestionarios
+  var cuestionarios_array = $cuestionarios_list.attr('data-cuestionarios');
 
   /* Button: Return home */
 	$('#btn_home').on('click', function(){

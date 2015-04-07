@@ -1,6 +1,26 @@
 extends layout
+block css
+	link(rel='stylesheet', href='/stylesheets/cuestionario_flowchart.css')
 
 block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extención Agrícola
+						h4 Creador de Cuestionarios
+			.col-md-2
+
+		.row
+			.col-md-8
+				#container_plumbjs
+			.col-md-4
+				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button') Agregar Pregunta
+				button#btn_add_recomendation(class='btn btn-lg btn-success btn-block', type='button') Agregar Recomendación
+				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

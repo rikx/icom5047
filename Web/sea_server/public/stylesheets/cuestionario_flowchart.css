@@ -1,0 +1,46 @@
+	.item_question {
+		position: absolute;
+		border: 1px solid black;
+		background-color: green;
+
+	}
+	
+	#container_plumbjs {
+		position:relative;
+		border: 1px solid gray;
+		width: max-content;
+		height: 500px;
+		
+		overflow:auto;
+	}
+
+	.title_question {
+		padding: 10px;
+		cursor: move;
+
+	}
+
+	.connect_question {
+		width: 100%;
+		height: 20px;
+		background-color: white;
+		cursor: pointer;
+	}
+
+	.item_rec {
+		position: absolute;
+		border: 1px solid black;
+		background-color: yellow;
+	}
+
+	.title_rec {
+		padding: 10px;
+		cursor: move;
+	}
+
+	.connect_rec {
+		width: 100%;
+		height: 20px;
+		background-color: white;
+		cursor: pointer;
+	}
