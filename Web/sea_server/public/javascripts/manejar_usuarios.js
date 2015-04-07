@@ -4,6 +4,7 @@ $(document).ready(function(){
   $locations_list = $('#usuario_locations');
   
   // store data for 10 initial usuarios
+  var usuarios_array, locations_array;
   var usuarios_data = $usuarios_list.attr('data-usuarios');
   //var usuarios_array = JSON.parse(usuarios_data);
   // and their assigned locations
