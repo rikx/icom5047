@@ -9,6 +9,19 @@ $(document).ready(function(){
 
 var citas_data = $citas_list.attr('data-citas');
 var citas_array = JSON.parse(citas_data);
+populate_info_panel();
+
+function populate_info_panel(){
+ var firstElement = [];
+ firstElement = citas_array[0]; 
+ $('#info_panel_heading').text("Cita");
+ $('#cita_info_location').text(firstElement.location_name);
+ $('#cita_info_date').text(firstElement.date);   
+ $('#cita_info_hour').text(firstElement.time);
+ $('#cita_info_purpose').text(firstElement.purpose);
+ $('#cita_info_agent').text(firstElement.username);   
+ $('#cita_info_report').text(firstElement.report_id);
+}
 
 /* Button: Return home */
 $('#btn_home').on('click', function(){
@@ -26,7 +39,18 @@ $citas_list.on('click', 'tr td button.btn_edit_cita', function(){
 
   });
 
+$('#btn_close_edit_panel').on('click', function(){
+  $('#edit_panel').hide();
+  remove_active_class($citas_list);
+});
+
+$('#btn_close_info_panel').on('click', function(){
+  $('#info_panel').hide();
+  remove_active_class($citas_list);
+});
+
 $citas_list.on('click', 'tr td a.show_info_cita', function(e){
+
 
     // preveLnts link from firing
     e.preventDefault();
@@ -52,8 +76,6 @@ $citas_list.on('click', 'tr td a.show_info_cita', function(e){
     console.log(thisUserObject);
 
     //#info_panel_heading
-
-
     $('#info_panel_heading').text("Cita");
     $('#cita_info_location').text(thisUserObject.location_name);
     $('#cita_info_date').text(thisUserObject.date);   
@@ -88,17 +110,11 @@ $citas_list.on('click', 'tr td button.btn_edit_cita', function(){
   $('#cita_proposito').attr("value", thisUserObject.purpose);
   $('#cita_date').attr("value", theDay);
   $('#cita_time').attr("value", theTime);
-
-
-
-
-
 });
 
 function populate_citas(){
   $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
     citas_array = data.citas;
-    alert("lolking");
     console.log(citas_array);
 
       // contents of localizaciones list
