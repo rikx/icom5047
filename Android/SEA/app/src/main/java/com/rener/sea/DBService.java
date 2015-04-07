@@ -7,7 +7,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +24,7 @@ public class DBService extends Service {
 	private List<Person> people;
 	private List<Location> locations;
 	private List<Report> reports;
+	private List<User> users;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -36,6 +36,7 @@ public class DBService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		setDummyData();
+		jsonTest();
 	}
 
 	@Override
@@ -59,9 +60,21 @@ public class DBService extends Service {
 		}
 	}
 
-	public boolean checkLogin(String username, String password) {
-		//TODO Authenticate login credentials
-		return true;
+	/**
+	 * Authenticates user credentials
+	 * TODO: hashing
+	 * @param username the username
+	 * @param password the password
+	 * @return true if credentials are OK
+	 */
+	public boolean authLogin(S tring username, String password) {
+		boolean ok = false;
+		for(User u : users) {
+			if(u.getUsername().equals(username)) {
+				if(u.getPassword().matches(password)) ok = true;
+			}
+		}
+		return ok;
 	}
 
 	public List<Person> getPeople() {
@@ -72,7 +85,7 @@ public class DBService extends Service {
 		Person person = null;
 		//Check if person is in memory
 		for(Person p : people) {
-			if(p.getID() == id) person = p;
+			if(p.getId() == id) person = p;
 		}
 		if(person != null) return person;
 		//TODO: Check if person is in local files
@@ -122,17 +135,32 @@ public class DBService extends Service {
 		people.add(new Person(6, "Betzabe", "Rodriguez"));
 		people.add(new Person(4, "Gustavo", "Fring"));
 		people.add(new Person(5, "Dennis", "Markowski"));
+		people.add(new Person(6, "Generic", "Person"));
+		people.add(new Person(7, "Generic", "Agent"));
 		findPersonById(0).setEmail("nelson.reyes@upr.edu");
 		findPersonById(0).setPhoneNumber("787-403-1082");
+		findPersonById(6).setEmail("generic.person@upr.edu");
+		findPersonById(6).setPhoneNumber("555-555-5555");
+		findPersonById(7).setEmail("generic.agent@upr.edu");
+		findPersonById(7).setPhoneNumber("555-555-5555");
 
 		locations = new ArrayList<>();
 		locations.add(new Location(0, "Recinto Universitario de Mayagüez"));
 		locations.add(new Location(1, "Finca Alzamorra"));
 		locations.add(new Location(2, "Los Pollos Hermanos"));
 		locations.add(new Location(3, "Betzabe's Office"));
+		locations.add(new Location(4, "Generic Location"));
 		findLocationById(2).setOwner(findPersonById(4));
 		findLocationById(2).setManager(findPersonById(5));
 		findLocationById(3).setOwner(findPersonById(6));
+
+		users = new ArrayList<>();
+		users.add(new User(0, "", "", findPersonById(6)));
+		users.add(new User(1, "nelson.reyes", "iamnelson", findPersonById(0)));
+		users.add(new User(2, "enrique.rodriguez2", "iamenrique", findPersonById(1)));
+		users.add(new User(3, "ricardo.fuentes", "iamricardo", findPersonById(2)));
+		users.add(new User(4, "ramon.saldana", "iamramon", findPersonById(3)));
+		users.add(new User(5, "betzabe.rodriguez", "iambetzabe", findPersonById(6)));
 
 		Log.i(this.toString(), "dummy data set");
 	}
@@ -141,7 +169,7 @@ public class DBService extends Service {
 		JSONObject object = new JSONObject();
 		for(Person p : people) {
 			String json = p.toJSON();
-			String sid = String.valueOf(p.getID());
+			String sid = String.valueOf(p.getId());
 			try {
 				object.put(sid, json);
 			} catch (JSONException e) {
@@ -166,6 +194,10 @@ public class DBService extends Service {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private void jsonTest() {
+
 	}
 
 }
