@@ -3,7 +3,8 @@ $(document).ready(function(){
   $cuestionarios_list = $('#cuestionarios_list');
 
   // store data for initial 10 cuestionarios
-  var cuestionarios_array = $cuestionarios_list.attr('data-cuestionarios');
+  var cuestionarios_data= $cuestionarios_list.attr('data-cuestionarios');
+  var cuestionarios_array = JSON.parse(cuestionarios_data);
 
   /* Button: Return home */
 	$('#btn_home').on('click', function(){

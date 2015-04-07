@@ -1,8 +1,10 @@
 $(document).ready(function(){
-	// cuestionarios list
+	// reportes list
   $reportes_list = $('#reportes_list');
-	// store data for initial 10 cuestionarios
-  var reportes_array = $reportes_list.attr('data-reportes');
+	
+	// store data for initial 10 reports
+	var reportes_data = $reportes_list.attr('data-reports');
+	var reportes_array = JSON.parse(reportes_data);
 
   /* Button: Return home */
 	$('#btn_home').on('click', function(){

@@ -1,10 +1,16 @@
 $(document).ready(function(){
-  // store data for 10 usuarios
-  var usuarios_array, locations_array;
-  // initial population of usuarios list
-  populate_usuarios();
   // usuarios list
   $usuarios_list = $('#usuarios_list');
+  $locations_list = $('#usuario_locations');
+  
+  // store data for 10 initial usuarios
+  var usuarios_data = $usuarios_list.attr('data-usuarios');
+  //var usuarios_array = JSON.parse(usuarios_data);
+  // and their assigned locations
+  var locations_data = $usuarios_list.attr('data-locations');
+  //var locations_array = JSON.parse(locations_data);
+  // initial population of usuarios list
+  populate_usuarios();
 
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';

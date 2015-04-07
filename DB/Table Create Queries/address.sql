@@ -5,9 +5,10 @@
 CREATE TABLE address
 (
   address_id bigserial NOT NULL,
-  street character varying,
+  address_line1 character varying,
   city character varying,
   zipcode integer,
+  address_line2 character varying,
   CONSTRAINT address_pkey PRIMARY KEY (address_id)
 )
 WITH (
