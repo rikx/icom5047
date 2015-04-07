@@ -29,14 +29,22 @@ $(document).ready(function(){
     $('#add_assosiates_panel').show();
   });
 
+  /* Close info panel */
   $('#btn_close_info_panel').on('click', function(){
     $('#info_panel').hide();
     remove_active_class($localizaciones_list);
   });
 
+  /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
     remove_active_class($localizaciones_list);
+  });
+
+  /* Close add panel */
+  $('#btn_close_info_panel').on('click', function(){
+    $('#info_panel').hide();
+    remove_active_class($usuarios_list);
   });
 
   $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
