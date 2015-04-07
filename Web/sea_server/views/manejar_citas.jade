@@ -38,7 +38,7 @@ block content
 											center Localización
 										th 
 											center Fecha y Hora
-								tbody#citas_list
+								tbody#citas_list(data-citas=citas)
 									each cita, i in citas
 										tr
 											td
@@ -49,7 +49,7 @@ block content
 											td
 												center(class='show_date_cita' data-date=cita.date, data-time=cita.time)
 											td
-												button(class='btn_edit_reporte btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
+												button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
 											td
 												a(class='btn_delete_cita btn btn-sm btn-success', data-toggle='tooltip', data-id=cita.appointment_id)
 													i(class='glyphicon glyphicon-trash')
@@ -59,8 +59,8 @@ block content
 					h4#heading_edit Editar Cita
 					form(role='form')
 						.form-group
-							label(for='cita_location') Localización:
-							input#cita_location(class='form-control', name='cita_location', type='text', placeholder='Localización')
+							label(for='cita_proposito') Proposito:
+							input#cita_proposito(class='form-control', name='cita_location', type='text', placeholder='Proposito')
 						.form-group
 							label(for='cita_date') Fecha:
 							input#cita_date(class='form-control', name='cita_date', type='date')
