@@ -84,89 +84,74 @@ block content
 							tr
 								td ZipCode:
 								td#localizacion_info_zipcode
-							tr
-								td
-									.panel.panel-info
-										.panel-heading Ganaderos Asociados
-										.panel-body
-											table#localizacion_ganaderos(class='table')
-												tr
-													td 
-														strong Owner: 
-													td#owner Ganadero 1
-												tr
-													td 
-														strong Manager:
-													td#manager Ganadero 2
-							tr
-								td
-									.panel.panel-info
-										.panel-heading Agentes Asignados
-										.panel-body
-											table#localizacion_agentes(class='table')
-												tr
-													td Agente 1
-													
-												tr
-													td Agente 2
-													
-												tr
-													td Agente 3 
-			#add_assosiates_panel.col-md-4(style="display:none")
-				.jumbotron
-					h4#heading_create Añadir Ganaderos/Agente Asociados a esta localizacion		
-							.panel.panel-info
-								.panel-heading Ganaderos Asociados
-								.panel-body
-									table#localizacion_ganaderos(class='table')
-										tr
-											td 
-												strong Owner: 
-											td#owner Ganadero 1
-										tr
-											td 
-												strong Manager:
-											td#manager Ganadero 2
-							.panel.panel-info
-								.panel-heading Agentes Asignados
-								.panel-body
-									table#localizacion_agentes(class='table')
-										tr
-											td Agente 1
-											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-												i(class='glyphicon glyphicon-minus')
-										tr
-											td Agente 2
-											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-												i(class='glyphicon glyphicon-minus')
-										tr
-											td Agente 3
-											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-												i(class='glyphicon glyphicon-minus')
-										tr
-											td 
-												strong Agregar Nuevo
-											td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-												i(class='glyphicon glyphicon-plus')
-										tr
-											td#newdropdown
-												.form-group
-													#usuario_type.dropdown
-														button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Ganaderos
-															span(class='caret')
-														ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
-															li(role='presentation')
-																a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
-															li(role='presentation')
-																a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
-															li(role='presentation')
-																a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
-													
-
-
-						
+						.panel.panel-info
+							.panel-heading Ganaderos Asociados
+							.panel-body
+								table#localizacion_ganaderos(class='table')
+									tr
+										td 
+											strong Owner: 
+										td#owner 
+									tr
+										td 
+											strong Manager:
+										td#manager 
+						.panel.panel-info
+							.panel-heading Agentes Asignados
+							.panel-body
+								table#localizacion_agentes(class='table')
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 
+			#add_assosiates_panel.col-md-4(style="display:none")
+				.jumbotron
+					h4#heading_create Editar Ganaderos/Agente Asociados		
+					.panel.panel-info
+						.panel-heading Ganaderos Asociados
+						.panel-body
+							table#localizacion_ganaderos(class='table')
+								tr
+									td 
+										strong Owner: 
+									td#owner Ganadero 1
+								tr
+									td 
+										strong Manager:
+									td#manager Ganadero 2
+					.panel.panel-info
+						.panel-heading Agentes Asignados
+						.panel-body
+							table#localizacion_agentes(class='table')
+								tr
+									td Agente 1
+									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+										i(class='glyphicon glyphicon-minus')
+								tr
+									td Agente 2
+									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+										i(class='glyphicon glyphicon-minus')
+								tr
+									td Agente 3
+									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+										i(class='glyphicon glyphicon-minus')
+								tr
+									td 
+										strong Agregar Nuevo
+									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
+										i(class='glyphicon glyphicon-plus')
+								tr
+									td#newdropdown
+										.form-group
+											#usuario_type.dropdown
+												button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Ganaderos
+													span(class='caret')
+												ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
+													li(role='presentation')
+														a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
+													li(role='presentation')
+														a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
+													li(role='presentation')
+														a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
+					button#btn_close_info_panel(class='btn btn-default') Cerrar
 			.col-md-1
 
 		.row
