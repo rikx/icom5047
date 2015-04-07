@@ -9,9 +9,11 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DBService extends Service {
@@ -66,11 +68,15 @@ public class DBService extends Service {
 		return people;
 	}
 
-	public Person findPersonByID(long id) {
+	public Person findPersonById(long id) {
 		Person person = null;
+		//Check if person is in memory
 		for(Person p : people) {
 			if(p.getID() == id) person = p;
 		}
+		if(person != null) return person;
+		//TODO: Check if person is in local files
+		//TODO: Query the server database
 		return person;
 	}
 
@@ -86,24 +92,24 @@ public class DBService extends Service {
 		return locations.add(location);
 	}
 
-	public Location findLocationByID(long id) {
+	public Location findLocationById(long id) {
 		Location location = null;
 		for(Location l : locations) {
-			if(l.getID() == id) location = l;
+			if(l.getId() == id) location = l;
 		}
 		return location;
 	}
 
-	public void writeDataToFile() {
-		String filename = "people";
-		String string = "";
+	public boolean writeJSONToFile(String filename, String json) {
 		FileOutputStream outputStream;
 		try {
 			outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-			outputStream.write(string.getBytes());
+			outputStream.write(json.getBytes());
 			outputStream.close();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -116,45 +122,50 @@ public class DBService extends Service {
 		people.add(new Person(6, "Betzabe", "Rodriguez"));
 		people.add(new Person(4, "Gustavo", "Fring"));
 		people.add(new Person(5, "Dennis", "Markowski"));
-		findPersonByID(0).setEmail("nelson.reyes@upr.edu");
-		findPersonByID(0).setPhoneNumber("787-403-1082");
+		findPersonById(0).setEmail("nelson.reyes@upr.edu");
+		findPersonById(0).setPhoneNumber("787-403-1082");
 
 		locations = new ArrayList<>();
 		locations.add(new Location(0, "Recinto Universitario de Mayagüez"));
 		locations.add(new Location(1, "Finca Alzamorra"));
 		locations.add(new Location(2, "Los Pollos Hermanos"));
 		locations.add(new Location(3, "Betzabe's Office"));
-		findLocationByID(2).setOwner(findPersonByID(4));
-		findLocationByID(2).setManager(findPersonByID(5));
-		findLocationByID(3).setOwner(findPersonByID(6));
+		findLocationById(2).setOwner(findPersonById(4));
+		findLocationById(2).setManager(findPersonById(5));
+		findLocationById(3).setOwner(findPersonById(6));
 
 		Log.i(this.toString(), "dummy data set");
 	}
 
 	public static String peopleToJSON(List<Person> people) {
-		JSONArray array = new JSONArray();
+		JSONObject object = new JSONObject();
 		for(Person p : people) {
-			String s = p.toJSON();
-			array.put(s);
+			String json = p.toJSON();
+			String sid = String.valueOf(p.getID());
+			try {
+				object.put(sid, json);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
-		Log.i("JSON-List<Person>", array.toString());
-		return array.toString();
+		Log.i("JSON-List<Person>", object.toString());
+		return object.toString();
 	}
 
 	public static List<Person> peopleFromJSON(String json) {
 		try {
-			JSONArray array = new JSONArray(json);
-			List list = new ArrayList<Person>(array.length());
-			for(int i=0; i<array.length(); i++) {
-				String s = array.getString(i);
-				list.add(new Person(s));
-				return list;
+			JSONObject object = new JSONObject(json);
+			Iterator<String> iterator = object.keys();
+			List list = new ArrayList<Person>();
+			while(iterator.hasNext()) {
+				Person p = new Person(iterator.next());
+				list.add(p);
 			}
+			return list;
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
 		}
-		return null;
 	}
 
 }

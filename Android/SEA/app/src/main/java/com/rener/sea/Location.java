@@ -28,7 +28,7 @@ public class Location {
 		this.address = newAddress();
 	}
 
-	public long getID() {
+	public long getId() {
 		return id;
 	}
 
