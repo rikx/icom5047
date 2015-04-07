@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class LoginActivity extends Activity {
@@ -78,15 +79,22 @@ public class LoginActivity extends Activity {
         String password = editPassword.getText().toString();
 
 		//Check login credentials
-		if(dbService.checkLogin(username, password)) {
+		Context context = getApplicationContext();
+		if(dbService.authLogin(username, password)) {
 			//Successful login
 			saveLogin(username, password);
 			startActivity(new Intent(this, MainActivity.class));
+			String s = getResources().getString(R.string.login_ak);
+			Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
 			Log.i(this.toString(), "login successful");
 			finish();
 		}
 		else {
-			//TODO failed login
+			//Failed login
+			editUsername.setText("");
+			editPassword.setText("");
+			String s = getResources().getString(R.string.login_nak);
+			Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
 			Log.i(this.toString(), "login failed");
 		}
     }

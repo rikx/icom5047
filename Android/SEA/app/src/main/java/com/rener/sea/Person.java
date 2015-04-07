@@ -39,7 +39,7 @@ public class Person {
 
 	public Person(String json) {
 		Person p = Person.fromJSON(json);
-		this.id = p.getID();
+		this.id = p.getId();
 		this.first_name = p.getFirstName();
 		this.middle_name = p.getMiddleName();
 		this.last_name1 = p.getLastName1();
@@ -48,7 +48,7 @@ public class Person {
 		this.phone_number = p.getPhoneNumber();
 	}
 
-	public long getID() {
+	public long getId() {
 		return id;
 	}
 
@@ -148,7 +148,7 @@ public class Person {
 	public static String toJSON(Person person) {
 		JSONObject json = new JSONObject();
 		try {
-			json.put(PERSON_ID, person.getID());
+			json.put(PERSON_ID, person.getId());
 			json.put(FIRST_NAME, person.getFirstName());
 			json.put(MIDDLE_NAME, person.getMiddleName());
 			json.put(LAST_NAME1, person.getLastName1());

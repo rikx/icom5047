@@ -62,6 +62,13 @@
 				android:layout_height="wrap_content"
 				android:text="@string/no_data"
 				/>
+
+			<TextView
+				android:id="@+id/location_text_agent"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+				/>
 	
 			<Button
 				android:id="@+id/button_edit_location"
@@ -127,6 +134,12 @@
 
 			<Spinner
 				android:id="@+id/location_manager_spinner"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+			</Spinner>
+
+			<Spinner
+				android:id="@+id/location_agent_spinner"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content">
 			</Spinner>

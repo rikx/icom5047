@@ -22,10 +22,10 @@ public class LocationDetailsFragment extends Fragment
 	private Location location;
 	private ViewFlipper flipper;
 	private TextView textName, textAddressLine1, textAddressLine2, textCity, textZipCode;
-	private TextView textOwner, textManager;
+	private TextView textOwner, textManager, textAgent;
 	private EditText editName, editAddressLine1, editAddressLine2, editCity, editZipCode;
 	private boolean viewCreated;
-	private Spinner ownerSpinner, managerSpinner;
+	private Spinner ownerSpinner, managerSpinner, agentSpinner;
 	private List peopleList;
 
 	@Override
@@ -68,6 +68,9 @@ public class LocationDetailsFragment extends Fragment
 		//Set the manager text
 		textManager = (TextView) view.findViewById(R.id.location_text_manager);
 
+		//Set the agent text
+		textAgent = (TextView) view.findViewById(R.id.location_text_agent);
+
 		//Set the owner spinner
 		ownerSpinner = (Spinner) view.findViewById(R.id.location_owner_spinner);
 		ownerSpinner.setOnItemSelectedListener(this);
@@ -76,12 +79,17 @@ public class LocationDetailsFragment extends Fragment
 		managerSpinner = (Spinner) view.findViewById(R.id.location_manager_spinner);
 		managerSpinner.setOnItemSelectedListener(this);
 
+		//Set the agent spinner
+		agentSpinner = (Spinner) view.findViewById(R.id.location_agent_spinner);
+		agentSpinner.setOnItemSelectedListener(this);
+
 		peopleList = ((MainActivity)getActivity()).getDataFromDB().getPeople();
 		ArrayAdapter adapter;
 		adapter = new ArrayAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, peopleList);
 		ownerSpinner.setAdapter(adapter);
 		managerSpinner.setAdapter(adapter);
+		agentSpinner.setAdapter(adapter);
 
 		//Set the button views
 		view.findViewById(R.id.button_edit_location).setOnClickListener(this);
@@ -119,6 +127,8 @@ public class LocationDetailsFragment extends Fragment
 			location.setOwner(owner);
 			Person manager = (Person) managerSpinner.getSelectedItem();
 			location.setManager(manager);
+			Person agent = (Person) agentSpinner.getSelectedItem();
+			location.setAgent(agent);
 		}
 	}
 
@@ -146,7 +156,7 @@ public class LocationDetailsFragment extends Fragment
 		if(location.hasOwner()) {
 			for(int i=0; i<peopleList.size(); i++) {
 				Person item = (Person) ownerSpinner.getAdapter().getItem(i);
-				if(location.getOwner().getID() == item.getID())
+				if(location.getOwner().getId() == item.getId())
 					ownerSpinner.setSelection(i);
 			}
 			String label = getResources().getString(R.string.owner_label);
@@ -160,7 +170,7 @@ public class LocationDetailsFragment extends Fragment
 		if(location.hasManager()) {
 			for(int i=0; i<peopleList.size(); i++) {
 				Person item = (Person) ownerSpinner.getAdapter().getItem(i);
-				if(location.getManager().getID() == item.getID())
+				if(location.getManager().getId() == item.getId())
 					managerSpinner.setSelection(i);
 			}
 			String label = getResources().getString(R.string.manager_label);
@@ -169,6 +179,20 @@ public class LocationDetailsFragment extends Fragment
 		}
 		else {
 			textManager.setText(R.string.no_manager);
+		}
+
+		if(location.hasAgent()) {
+			for(int i=0; i<peopleList.size(); i++) {
+				Person item = (Person) agentSpinner.getAdapter().getItem(i);
+				if(location.getManager().getId() == item.getId())
+					agentSpinner.setSelection(i);
+			}
+			String label = getResources().getString(R.string.agent_label);
+			String assigned = location.getAgent().toString();
+			textAgent.setText(label+" "+assigned);
+		}
+		else {
+			textAgent.setText(R.string.no_agent);
 		}
 	}
 

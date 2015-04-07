@@ -13,6 +13,7 @@ public class Location {
 	private String name = "";
 	private Person manager = null;
 	private Person owner = null;
+	private Person agent = null;
 	private Address address = null;
 	private long address_id;
 	public static String PUERTO_RICO = "Puerto Rico";
@@ -44,8 +45,8 @@ public class Location {
 		return manager;
 	}
 
-	public void setManager(Person manager) {
-		this.manager = manager;
+	public Person setManager(Person manager) {
+		return this.manager = manager;
 	}
 
 	public boolean hasManager() {
@@ -56,12 +57,24 @@ public class Location {
 		return owner;
 	}
 
-	public void setOwner(Person owner) {
-		this.owner = owner;
+	public Person setOwner(Person owner) {
+		return this.owner = owner;
 	}
 
 	public boolean hasOwner() {
 		return owner != null;
+	}
+
+	public Person getAgent() {
+		return agent;
+	}
+
+	public Person setAgent(Person agent) {
+		return this.agent = agent;
+	}
+
+	public boolean hasAgent() {
+		return agent != null;
 	}
 
 	public String toString() {
@@ -107,13 +120,18 @@ public class Location {
 		return a;
 	}
 
+	/**
+	 * TODO: finish this
+	 * @return
+	 */
 	public String toJSON() {
 		JSONObject json = new JSONObject();
 		try {
 			json.put("location_id", id);
 			json.put("name", name);
-			json.put("manager_id", manager.getID());
-			json.put("owner_id", owner.getID());
+			json.put("manager_id", manager.getId());
+			json.put("owner_id", owner.getId());
+			json.put("agent_id", agent.getId());
 			json.put("address_line1", this.getAddressLine(1));
 			json.put("address_line2", this.getAddressLine(2));
 			json.put("city", this.getCity());

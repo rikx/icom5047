@@ -29,8 +29,12 @@
 	<string name="address_zip_code">zip code</string>
 	<string name="no_owner">No owner on file</string>
 	<string name="no_manager">No manager on file</string>
+	<string name="no_agent">No agent on file</string>
 	<string name="owner_label">Owned by:</string>
 	<string name="manager_label">Managed by:</string>
+	<string name="agent_label">Assigned agent:</string>
+	<string name="login_ak">Login successful</string>
+	<string name="login_nak">Wrong username or password</string>
 	<string-array name="menu_list_strings">
 		<item>Reports</item>
 		<item>Locations</item>
