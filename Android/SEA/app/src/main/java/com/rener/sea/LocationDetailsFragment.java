@@ -1,8 +1,6 @@
 package com.rener.sea;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +19,14 @@ public class LocationDetailsFragment extends Fragment
 
 	public static final int SHOW_LAYOUT = 0;
 	public static final int EDIT_LAYOUT = 1;
-	private long location_id;
 	private Location location;
 	private ViewFlipper flipper;
 	private TextView textName, textAddressLine1, textAddressLine2, textCity, textZipCode;
+	private TextView textOwner, textManager;
 	private EditText editName, editAddressLine1, editAddressLine2, editCity, editZipCode;
 	private boolean viewCreated;
-	private PersonDetailsFragment ownerFragment, managerFragment;
 	private Spinner ownerSpinner, managerSpinner;
+	private List peopleList;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +62,12 @@ public class LocationDetailsFragment extends Fragment
 		textZipCode = (TextView) view.findViewById(R.id.address_text_zip_code);
 		editZipCode = (EditText) view.findViewById(R.id.address_edit_zip_code);
 
+		//Set the owner text
+		textOwner = (TextView) view.findViewById(R.id.location_text_owner);
+
+		//Set the manager text
+		textManager = (TextView) view.findViewById(R.id.location_text_manager);
+
 		//Set the owner spinner
 		ownerSpinner = (Spinner) view.findViewById(R.id.location_owner_spinner);
 		ownerSpinner.setOnItemSelectedListener(this);
@@ -71,6 +75,13 @@ public class LocationDetailsFragment extends Fragment
 		//Set the manager spinner
 		managerSpinner = (Spinner) view.findViewById(R.id.location_manager_spinner);
 		managerSpinner.setOnItemSelectedListener(this);
+
+		peopleList = ((MainActivity)getActivity()).getDataFromDB().getPeople();
+		ArrayAdapter adapter;
+		adapter = new ArrayAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, peopleList);
+		ownerSpinner.setAdapter(adapter);
+		managerSpinner.setAdapter(adapter);
 
 		//Set the button views
 		view.findViewById(R.id.button_edit_location).setOnClickListener(this);
@@ -85,12 +96,6 @@ public class LocationDetailsFragment extends Fragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		List people = ((MainActivity)getActivity()).getData().getPeople();
-		ArrayAdapter adapter;
-		adapter = new ArrayAdapter(getActivity(),
-				android.R.layout.simple_list_item_1, people);
-		ownerSpinner.setAdapter(adapter);
-		managerSpinner.setAdapter(adapter);
 	}
 
 	@Override
@@ -108,16 +113,12 @@ public class LocationDetailsFragment extends Fragment
 	}
 
 	@Override
-	public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-		switch (view.getId()) {
-			case R.id.location_owner_spinner :
-				Person owner = (Person) adapterView.getItemAtPosition(i);
-				location.setOwner(owner);
-				break;
-			case R.id.location_manager_spinner :
-				Person manager = (Person) adapterView.getItemAtPosition(i);
-				location.setManager(manager);
-				break;
+	public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+		if(view != null) {
+			Person owner = (Person) ownerSpinner.getSelectedItem();
+			location.setOwner(owner);
+			Person manager = (Person) managerSpinner.getSelectedItem();
+			location.setManager(manager);
 		}
 	}
 
@@ -143,24 +144,32 @@ public class LocationDetailsFragment extends Fragment
 		editZipCode.setText(location.getZipCode());
 
 		if(location.hasOwner()) {
-			FragmentManager manager= getFragmentManager();
-			FragmentTransaction transaction = manager.beginTransaction();
-			ownerFragment = new PersonDetailsFragment();
-			ownerFragment.setPerson(location.getOwner());
-			transaction.replace(R.id.location_owner_container, ownerFragment, "OWNER");
-			transaction.commit();
+			for(int i=0; i<peopleList.size(); i++) {
+				Person item = (Person) ownerSpinner.getAdapter().getItem(i);
+				if(location.getOwner().getID() == item.getID())
+					ownerSpinner.setSelection(i);
+			}
+			String label = getResources().getString(R.string.owner_label);
+			String owned = location.getOwner().toString();
+			textOwner.setText(label+" "+owned);
+		}
+		else {
+			textOwner.setText(R.string.no_owner);
 		}
 
 		if(location.hasManager()) {
-			FragmentManager manager= getFragmentManager();
-			FragmentTransaction transaction = manager.beginTransaction();
-			managerFragment = new PersonDetailsFragment();
-			managerFragment.setPerson(location.getManager());
-			transaction.replace(R.id.location_manager_container, managerFragment, "MANAGER");
-			transaction.commit();
+			for(int i=0; i<peopleList.size(); i++) {
+				Person item = (Person) ownerSpinner.getAdapter().getItem(i);
+				if(location.getManager().getID() == item.getID())
+					managerSpinner.setSelection(i);
+			}
+			String label = getResources().getString(R.string.manager_label);
+			String managed = location.getManager().toString();
+			textManager.setText(label+" "+managed);
 		}
-
-
+		else {
+			textManager.setText(R.string.no_manager);
+		}
 	}
 
 	private void flipToEditLayout() {

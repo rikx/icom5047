@@ -1,5 +1,13 @@
 package com.rener.sea;
 
+import android.content.Context;
+import android.content.res.Resources;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +59,12 @@ public class DBEmulator {
 		return location;
 	}
 
-	public void commit() {
-
+	public String peopleToJSON() {
+		JSONArray array = new JSONArray();
+		for(Person p : people) {
+			array.put(p.toJSON());
+		}
+		return array.toString();
 	}
 
 }

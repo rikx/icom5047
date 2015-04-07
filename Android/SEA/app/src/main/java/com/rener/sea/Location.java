@@ -2,6 +2,9 @@ package com.rener.sea;
 
 import android.location.Address;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Locale;
 
 public class Location {
@@ -11,6 +14,7 @@ public class Location {
 	private Person manager = null;
 	private Person owner = null;
 	private Address address = null;
+	private long address_id;
 	public static String PUERTO_RICO = "Puerto Rico";
 
 	public Location(String name) {
@@ -60,14 +64,6 @@ public class Location {
 		return owner != null;
 	}
 
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
 	public String toString() {
 		return name;
 	}
@@ -109,5 +105,23 @@ public class Location {
 		a.setCountryName(PUERTO_RICO);
 		a.setPostalCode("");
 		return a;
+	}
+
+	public String toJSON() {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("location_id", id);
+			json.put("name", name);
+			json.put("manager_id", manager.getID());
+			json.put("owner_id", owner.getID());
+			json.put("address_line1", this.getAddressLine(1));
+			json.put("address_line2", this.getAddressLine(2));
+			json.put("city", this.getCity());
+			json.put("zip_code", this.getZipCode());
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return "";
+		}
+		return json.toString();
 	}
 }

@@ -13,6 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.FileOutputStream;
+
 public class MainActivity extends FragmentActivity
 		implements MenuListFragment.OnMenuItemSelectedListener {
 
@@ -120,8 +124,21 @@ public class MainActivity extends FragmentActivity
 		database = new DBEmulator();
 	}
 
-	public DBEmulator getData() {
+	public DBEmulator getDataFromDB() {
 		return database;
+	}
+
+	public void writeDataToFile() {
+		String filename = "people";
+		String string = database.peopleToJSON();
+		FileOutputStream outputStream;
+		try {
+			outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+			outputStream.write(string.getBytes());
+			outputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

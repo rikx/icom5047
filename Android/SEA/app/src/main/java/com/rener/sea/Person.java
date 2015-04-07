@@ -1,6 +1,7 @@
 package com.rener.sea;
 
-import android.provider.ContactsContract;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Person {
 
@@ -97,5 +98,22 @@ public class Person {
 
 	public String toString() {
 		return getFullNameFirstLast();
+	}
+
+	public String toJSON() {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("person_id", id);
+			json.put("first_name", first_name);
+			json.put("middle_name", middle_name);
+			json.put("last_name1", last_name1);
+			json.put("last_name2", last_name2);
+			json.put("email", email);
+			json.put("phone_number", phone_number);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return "";
+		}
+		return json.toString();
 	}
 }

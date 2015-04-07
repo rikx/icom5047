@@ -2,18 +2,14 @@ package com.rener.sea;
 
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ListFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
 import java.util.List;
 
 public class MenuListFragment extends ListFragment {
@@ -56,12 +52,12 @@ public class MenuListFragment extends ListFragment {
 					getResources().getStringArray(R.array.menu_list_strings));
 		}
 		else if(type.equals(TYPE_PEOPLE)) {
-			list = ((MainActivity)getActivity()).getData().getPeople();
+			list = ((MainActivity)getActivity()).getDataFromDB().getPeople();
 			adapter = new ArrayAdapter<>(getActivity(),
 					android.R.layout.simple_list_item_1, list);
 		}
 		else if(type.equals(TYPE_LOCATIONS)) {
-			list = ((MainActivity)getActivity()).getData().getLocations();
+			list = ((MainActivity)getActivity()).getDataFromDB().getLocations();
 			adapter = new ArrayAdapter<>(getActivity(),
 					android.R.layout.simple_list_item_1, list);
 		}
