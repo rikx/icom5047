@@ -111,6 +111,10 @@ public class Location {
 		return address.getPostalCode();
 	}
 
+	public long setAddressId(long id) {
+		return this.address_id = id;
+	}
+
 	private static Address newAddress() {
 		Address a = new Address(Locale.US);
 		a.setAddressLine(0, "");

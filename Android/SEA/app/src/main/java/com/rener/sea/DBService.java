@@ -67,7 +67,7 @@ public class DBService extends Service {
 	 * @param password the password
 	 * @return true if credentials are OK
 	 */
-	public boolean authLogin(S tring username, String password) {
+	public boolean authLogin(String username, String password) {
 		boolean ok = false;
 		for(User u : users) {
 			if(u.getUsername().equals(username)) {
