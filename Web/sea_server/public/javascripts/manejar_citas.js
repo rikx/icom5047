@@ -22,9 +22,66 @@ $(document).ready(function(){
 
   });
 
+  $citas_list.on('click', 'tr td a.show_info_cita', function(e){
+   
+    // preveLnts link from firing
+    e.preventDefault();
+    var table_content = '';
+
+    $('#edit_panel').hide();
+    $('#info_panel').show();
+
+    // remove active from previous list item 
+    remove_active_class($citas_list);
+    // add active to current clicked list item
+    var $this = $(this);
+    if (!$this.hasClass('active')) {
+      $this.addClass('active');
+    }
+
+    // contains ganadero id
+    var myVar = $this.attr('data-id');
+    console.log(myVar);
+    var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(myVar);
+    var thisUserObject = citas_array[arrayPosition];
+    
+
+    //#info_panel_heading
+
+
+    $('#info_panel_heading').text(thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
+    if(thisUserObject.middle_initial == null)
+    {
+      $('#usuario_info_name').text(thisUserObject.first_name);
+    }
+    else
+    {
+     $('#usuario_info_name').text(thisUserObject.first_name + " " + thisUserObject.middle_initial);
+   }
+
+   $('#usuario_info_lastname_paternal').text(thisUserObject.last_name1);
+   $('#usuario_info_lastname_maternal').text(thisUserObject.last_name2);
+   $('#usuario_info_contact').text(thisUserObject.email + " " + thisUserObject.phone_number);
+
+
+   $.each(locations_array, function(i){
+    if(myVar == this.user_id){
+      table_content += '<tr>';
+      table_content += "<td> ";
+      table_content += "" +this.location_name+"</td>";
+      table_content += '</tr>';
+    }
+  });  
+
+
+   $('#usuario_locations').html(table_content);
+});
+
 	function populate_citas(){
     $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
       citas_array = data.citas;
+      alert("lolking");
+      console.log(citas_array);
 
       // contents of localizaciones list
       var table_content = '';
