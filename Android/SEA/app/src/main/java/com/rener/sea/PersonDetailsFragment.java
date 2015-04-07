@@ -114,6 +114,8 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		else {
 			textPhoneNumber.setVisibility(TextView.GONE);
 		}
+
+		//System.out.println("PERSON="+person.toJSON());
 	}
 
 	private void flipToEditLayout() {

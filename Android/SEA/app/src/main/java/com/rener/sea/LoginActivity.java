@@ -1,68 +1,103 @@
 package com.rener.sea;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class LoginActivity extends Activity {
 
-    public final static String EXTRA_USERNAME = "com.rener.sea.USERNAME";
-    public final static String EXTRA_PASSWORD = "com.rener.sea.PASSWORD";
+	private DBService dbService;
+	private boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+	    Log.i(this.toString(), "created");
     }
 
-    public void startLogin(View view) {
+	@Override
+	protected void onStart() {
+		super.onStart();
+		//Bind to DB Service
+		Intent intent = new Intent(this, DBService.class);
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		Log.i(this.toString(), "binding to service...");
+	}
 
-        Intent intent = new Intent(this, MainActivity.class);
-        EditText editText;
+	@Override
+	protected void onStop() {
+		super.onStop();
+		//Unbind from DB Service
+		if(mBound) {
+			unbindService(mConnection);
+			mBound = false;
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.i(this.toString(), "destroyed");
+	}
+
+	private ServiceConnection mConnection = new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+			//Bound to DB Service successful, get the service instance
+			DBService.DBBinder binder = (DBService.DBBinder) iBinder;
+			dbService = binder.getService();
+			mBound = true;
+			Log.i(this.toString(), "bound to "+dbService.toString());
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName componentName) {
+			mBound = false;
+		}
+	};
+
+	public void startLogin(View view) {
 
         //Get username from text field
-        editText = (EditText) findViewById(R.id.field_username);
-        String username = editText.getText().toString();
-        intent.putExtra(EXTRA_USERNAME, username);
+        EditText editUsername = (EditText) findViewById(R.id.field_username);
+        String username = editUsername.getText().toString();
+
 
         //Get password from text field
-        editText = (EditText) findViewById(R.id.field_password);
-        String password = editText.getText().toString();
-        intent.putExtra(EXTRA_PASSWORD, password);
+        EditText editPassword = (EditText) findViewById(R.id.field_password);
+        String password = editPassword.getText().toString();
 
-        //TODO: other login steps
-
-        //Save login data
-        saveLogin(username, password);
-
-        //Go to main activity
-        startActivity(intent);
+		//Check login credentials
+		if(dbService.checkLogin(username, password)) {
+			//Successful login
+			saveLogin(username, password);
+			startActivity(new Intent(this, MainActivity.class));
+			Log.i(this.toString(), "login successful");
+			finish();
+		}
+		else {
+			//TODO failed login
+			Log.i(this.toString(), "login failed");
+		}
     }
 
 
     public void saveLogin(String username, String password) {
-
         SharedPreferences sharedPref = this.getSharedPreferences(
 				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.key_saved_username), username);
         editor.putString(getString(R.string.key_saved_password), password);
         editor.apply();
-
-        //Verify saved credentials with a toast
-		sharedPref = this.getSharedPreferences(
-				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String key = getString(R.string.key_saved_username);
-        String saved = sharedPref.getString(key, "DEFAULT");
-
     }
 }

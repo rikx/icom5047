@@ -8,7 +8,7 @@
 	<string name="button_login">Log In</string>
 	<string name="login_status_default">Enter credentials!</string>
 	<string name="main_credentials_default">You are not logged in.</string>
-	<string name="title_activity_main">Home</string>
+	<string name="title_activity_main">SEA</string>
 	<string name="key_saved_username">USERNAME</string>
 	<string name="no_username">No user</string>
 	<string name="no_data">NO DATA</string>

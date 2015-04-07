@@ -1,10 +1,19 @@
 package com.rener.sea;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Person {
 
+	public final static String PERSON_ID = "person_id";
+	public final static String FIRST_NAME = "first_name";
+	public final static String MIDDLE_NAME = "middle_name";
+	public final static String LAST_NAME1 = "last_name1";
+	public final static String LAST_NAME2 = "last_name2";
+	public final static String EMAIL = "email";
+	public final static String PHONE_NUMBER = "phone_number";
 	private long id;
 	private String first_name = "";
 	private String middle_name = "";
@@ -13,6 +22,9 @@ public class Person {
 	private String email = "";
 	private String phone_number = "";
 
+	public Person(long id) {
+		this.id = id;
+	}
 
 	public Person(long id, String first_name, String last_name) {
 		this.id = id;
@@ -25,8 +37,23 @@ public class Person {
 		this.last_name1 = last_name;
 	}
 
+	public Person(String json) {
+		Person p = Person.fromJSON(json);
+		this.id = p.getID();
+		this.first_name = p.getFirstName();
+		this.middle_name = p.getMiddleName();
+		this.last_name1 = p.getLastName1();
+		this.last_name2 = p.getLastName1();
+		this.email = p.getEmail();
+		this.phone_number = p.getPhoneNumber();
+	}
+
 	public long getID() {
 		return id;
+	}
+
+	public long setID(long id) {
+		return this.id = id;
 	}
 
 	public String getFirstName() {
@@ -103,17 +130,55 @@ public class Person {
 	public String toJSON() {
 		JSONObject json = new JSONObject();
 		try {
-			json.put("person_id", id);
-			json.put("first_name", first_name);
-			json.put("middle_name", middle_name);
-			json.put("last_name1", last_name1);
-			json.put("last_name2", last_name2);
-			json.put("email", email);
-			json.put("phone_number", phone_number);
+			json.put(PERSON_ID, id);
+			json.put(FIRST_NAME, first_name);
+			json.put(MIDDLE_NAME, middle_name);
+			json.put(LAST_NAME1, last_name1);
+			json.put(LAST_NAME2, last_name2);
+			json.put(EMAIL, email);
+			json.put(PHONE_NUMBER, phone_number);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return "";
 		}
+		Log.i("JSON-Person", json.toString());
 		return json.toString();
+	}
+
+	public static String toJSON(Person person) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put(PERSON_ID, person.getID());
+			json.put(FIRST_NAME, person.getFirstName());
+			json.put(MIDDLE_NAME, person.getMiddleName());
+			json.put(LAST_NAME1, person.getLastName1());
+			json.put(LAST_NAME2, person.getLastName2());
+			json.put(EMAIL, person.getEmail());
+			json.put(PHONE_NUMBER, person.getPhoneNumber());
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return "";
+		}
+		Log.i("JSON-Person", json.toString());
+		return json.toString();
+	}
+
+	public static Person fromJSON(String json) {
+		try {
+			JSONObject p = new JSONObject(json);
+			String strID = p.getString(PERSON_ID);
+			long id = Long.getLong(strID);
+			Person person = new Person(id);
+			person.setFirstName(p.getString(FIRST_NAME));
+			person.setMiddleName(p.getString(MIDDLE_NAME));
+			person.setLastName1(p.getString(LAST_NAME2));
+			person.setLastName2(p.getString(LAST_NAME2));
+			person.setEmail(p.getString(EMAIL));
+			person.setPhoneNumber(p.getString(PHONE_NUMBER));
+			return person;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
