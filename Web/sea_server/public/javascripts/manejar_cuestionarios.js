@@ -20,10 +20,10 @@ $(document).ready(function(){
   /* Open edit page */
 	$cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
 		// contains cuestionario id
-    var this_cuestionario_id = $this.attr('data-id');
+    var this_cuestionario_id = $(this).attr('data-id');
 		window.location.href = '/users/admin/cuestionario/'+this_cuestionario_id;
 	});
-
+ 
 	function populate_cuestionarios(){
     $.getJSON('http://localhost:3000/users/admin/list_cuestionarios', function(data) {
       cuestionarios_array = data.cuestionarios;

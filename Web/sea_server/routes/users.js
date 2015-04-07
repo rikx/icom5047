@@ -46,7 +46,7 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 });
 
 /* GET Admin Cuestionario */
-router.get('/admin/cuestionarios/:id', function(req, res, next) {
+router.get('/admin/cuestionario/:id', function(req, res, next) {
 	var cuestionario_id = req.params.id;
 	res.render('cuestionario', { title: 'Cuestionario'});
 });
