@@ -28,7 +28,8 @@ block content
 			.col-md-1
 			.col-md-6
 				.panel.panel-success
-					.panel-heading Localizaciones
+					.panel-heading
+						h3.panel-title Localizaciones
 					.panel-body
 						.list-group(style='overflow:auto; height:300px;')
 							table#localizaciones_list(class='table')
@@ -66,7 +67,6 @@ block content
 				.panel.panel-success
 					.panel-heading
 						h3#info_panel_heading(class='panel-title') Localización 1
-						h3#edit_associates_heading(class='panel-title') Associates
 					.panel-body
 						table#localizacion_info(class='table')
 							tr
@@ -106,7 +106,8 @@ block content
 				.jumbotron
 					h4#heading_create Editar Ganaderos/Agente Asociados		
 					.panel.panel-info
-						.panel-heading Ganaderos Asociados
+						.panel-heading 
+							h4.panel-title Ganaderos Asociados
 						.panel-body
 							table#associated_ganaderos(class='table')
 								tr
@@ -122,7 +123,8 @@ block content
 										a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
 											i(class='glyphicon glyphicon-plus')
 					.panel.panel-info
-						.panel-heading Agentes Asignados
+						.panel-heading
+							h4.panel-title Agentes Asignados
 						.panel-body
 							table#associated_agentes(class='table')
 								tr
@@ -133,8 +135,7 @@ block content
 											i(class='glyphicon glyphicon-plus')
 					
 					#add_ganaderos_dropdown_panel.panel.panel-info(style="display:none")
-						.panel-heading 
-							h4 Ganaderos Asociados
+						.panel-heading Añadir Ganaderos Asociados
 						.panel-body
 							form(role='form')
 								.form-group
@@ -149,8 +150,7 @@ block content
 								button#btn_submit(class='btn btn-default btn-success', type='button') Someter
 
 					#add_agente_dropdown_panel.panel.panel-info(style="display:none")
-						.panel-heading 
-							h4 Agentes Asociados
+						.panel-heading Añadir Agente Asociado
 						.panel-body
 							form(role='form')
 								.form-group
