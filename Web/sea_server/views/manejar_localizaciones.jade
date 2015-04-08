@@ -113,27 +113,25 @@ block content
 								tr
 									td 
 										strong Owner: 
-									td#add_associates_owner 
-										a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
-											i(class='glyphicon glyphicon-plus')
+									td#add_associates_owner
+										.btn-group(role='group')
+											a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
+												i(class='glyphicon glyphicon-edit') 
+											a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-toggle='tooltip', type='button', href='#') 
+												i(class='glyphicon glyphicon-minus')
 								tr
 									td 
 										strong Manager:
-									td#add_associates_manager 
-										a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
-											i(class='glyphicon glyphicon-plus')
+									td#add_associates_manager
+										.btn-group(role='group')
+											a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-toggle='tooltip', type='button', href='#') 
+												i(class='glyphicon glyphicon-plus')
 					.panel.panel-info
 						.panel-heading
 							h4.panel-title Agentes Asignados
 						.panel-body
 							table#associated_agentes(class='table')
-								tr
-									td 
-										strong Agregar Nuevo
-									td
-										a(class='btn_add_associate_agente btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
-											i(class='glyphicon glyphicon-plus')
-					
+
 					#add_ganaderos_dropdown_panel.panel.panel-info(style="display:none")
 						.panel-heading Añadir Ganaderos Asociados
 						.panel-body

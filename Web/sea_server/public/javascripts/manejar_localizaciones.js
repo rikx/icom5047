@@ -1,8 +1,6 @@
 $(document).ready(function(){
-  // store data for 10 localizaciones
-  var localizaciones_array;
-  var agentes_array;
-  var ganaderos_array;
+  // store data for initial 10 localizaciones
+  var localizaciones_array, agentes_array, ganaderos_array;
   // initial population of localizaciones list
   populate_localizaciones();
 
@@ -45,11 +43,59 @@ $(document).ready(function(){
   });
 
 
+
   /* */
   $localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
     $('#edit_panel').hide();
     $('#info_panel').hide();
     $('#add_associates_panel').show();
+
+    // contains localizacion id
+    var the_location = $(this).attr('data-id');
+    var assigned_ganaderos = ganaderos_array.filter(filter_by_id);
+
+    // gives an array of indexes in ganaderos_array where the ganadero is associated to location_id
+    function filter_by_id(person) {
+      if(person.location_id == the_location){
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // Populate Associated Ganaderos panel
+    var owner_content = '';
+    var manager_content = '';
+    $.each(assigned_ganaderos, function(i){
+      var the_content = '';
+      the_content += '<span>'+this.person_name+' </span>';
+      the_content += "<div class='btn-group' role='group'><a class='btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
+      the_content += "<a class='btn btn-sm btn-danger' data-toggle='tooltip' type='button href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-minus'></i></a></div>";
+      if(this.relation_type == 'owner') {
+        owner_content = the_content;
+      }
+      if(this.relation_type == 'manager') {
+        manager_content = the_content;
+      }
+    });
+
+    // inject content stirngs into html
+    $('#add_associates_owner').html(owner_content);
+    $('#add_associates_manager').html(manager_content);
+
+    // Populate Associated Agentes panel
+    var agentes_content = '';
+    var assigned_agentes = agentes_array.filter(filter_by_id);
+    $.each(assigned_agentes, function(i){
+      agentes_content += '<tr><td><span>'+this.username+' </span>';
+      agentes_content += "<div class='btn-group' role='group'><a class='btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
+      agentes_content += "<a class='btn btn-sm btn-danger' data-toggle='tooltip' type='button href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-minus'></i></a></div></td></tr>";
+    });
+    // Add table row with adding associated agent button
+      agentes_content += '<tr><td><strong>Agente Nuevo </strong>';
+      agentes_content += "<a class='btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a></td></tr>";
+    // inject content stirngs into html
+    $('#associated_agentes').html(agentes_content);
   });
 
 
