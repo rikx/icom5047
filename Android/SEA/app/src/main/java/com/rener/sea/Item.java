@@ -8,22 +8,22 @@ public class Item {
 	public static final String MULTIPLE_CHOICE = "MULTI";
 	public static final String OPEN = "OPEN";
 	public static final String CONDITIONAL = "CONDITIONAL";
-	private long item_id;
+	private long id;
 	private String label;
 	private String type;
 
-	public Item(long item_id, String label, String type) {
-		this.item_id = item_id;
+	public Item(long id, String label, String type) {
+		this.id = id;
 		this.label = label;
 		this.type = type;
 	}
 
 	public long getId() {
-		return item_id;
+		return id;
 	}
 
-	public void setId(long item_id) {
-		this.item_id = item_id;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getLabel() {

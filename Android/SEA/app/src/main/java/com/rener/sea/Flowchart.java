@@ -1,26 +1,28 @@
 package com.rener.sea;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Flowchart {
 
-	private long flowchart_id;
+	private long id;
 	private Item first, end;
 	private String name;
 	private User creator;
 	private String version;
 	private List<Item> items;
 
-	public Flowchart() {
-
+	public Flowchart(long id) {
+		this.id = id;
+		items = new ArrayList<>();
 	}
 
 	public long getId() {
-		return flowchart_id;
+		return id;
 	}
 
 	public void setId(long flowchart_id) {
-		this.flowchart_id = flowchart_id;
+		this.id = flowchart_id;
 	}
 
 	public Item getFirst() {
@@ -69,5 +71,9 @@ public class Flowchart {
 
 	public void setItems(List<Item> items) {
 		this.items = items;
+	}
+
+	public void addItem(Item item) {
+		items.add(item);
 	}
 }

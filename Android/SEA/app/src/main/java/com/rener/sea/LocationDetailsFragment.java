@@ -83,7 +83,7 @@ public class LocationDetailsFragment extends Fragment
 		agentSpinner = (Spinner) view.findViewById(R.id.location_agent_spinner);
 		agentSpinner.setOnItemSelectedListener(this);
 
-		peopleList = ((MainActivity)getActivity()).getDataFromDB().getPeople();
+		peopleList = ((MainActivity)getActivity()).getDBService().getPeople();
 		ArrayAdapter adapter;
 		adapter = new ArrayAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, peopleList);
@@ -161,7 +161,7 @@ public class LocationDetailsFragment extends Fragment
 			}
 			String label = getResources().getString(R.string.owner_label);
 			String owned = location.getOwner().toString();
-			textOwner.setText(label+" "+owned);
+			textOwner.setText(label+": "+owned);
 		}
 		else {
 			textOwner.setText(R.string.no_owner);
@@ -175,7 +175,7 @@ public class LocationDetailsFragment extends Fragment
 			}
 			String label = getResources().getString(R.string.manager_label);
 			String managed = location.getManager().toString();
-			textManager.setText(label+" "+managed);
+			textManager.setText(label+": "+managed);
 		}
 		else {
 			textManager.setText(R.string.no_manager);

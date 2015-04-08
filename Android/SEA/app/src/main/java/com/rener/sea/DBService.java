@@ -22,6 +22,9 @@ public class DBService extends Service {
 	private List<Location> locations;
 	private List<Report> reports;
 	private List<User> users;
+	private List<Flowchart> flowcharts;
+	private List<Item> items;
+	private List<Option> options;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -102,6 +105,42 @@ public class DBService extends Service {
 		return location;
 	}
 
+	public List<Report> getReports() {
+		return reports;
+	}
+
+	public Report findReportById(long id) {
+		Report report = null;
+		for (Report r : reports) {
+			if(r.getId() == id) report = r;
+		}
+		return report;
+	}
+
+	public List<Flowchart> getFlowcharts() {
+		return flowcharts;
+	}
+
+	public Flowchart findFlowchartById(long id) {
+		Flowchart flowchart = null;
+		for (Flowchart f : flowcharts) {
+			if(f.getId() == id) flowchart = f;
+		}
+		return flowchart;
+	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public Item findItemById(long id) {
+		Item item = null;
+		for (Item i : items) {
+			if(i.getId() == id) item = i;
+		}
+		return item;
+	}
+
 	public boolean writeJSONToFile(String filename, String json) {
 		FileOutputStream outputStream;
 		try {
@@ -151,9 +190,37 @@ public class DBService extends Service {
 		users.add(new User(4, "ramon.saldana", "iamramon", findPersonById(3)));
 		users.add(new User(5, "betzabe.rodriguez", "iambetzabe", findPersonById(6)));
 
+		items = new ArrayList<>();
+		items.add(new Item(1, "Is the cow sick?", Item.BOOLEAN));
+		items.add(new Item(2, "How would you categorize this problem?", Item.MULTIPLE_CHOICE));
+		items.add(new Item(3, "Record a description of the milk coloring, texture and smell",
+				Item.OPEN));
+		items.add(new Item(4, "Input amount of times cow eats a day", Item.CONDITIONAL));
+		items.add(new Item(5, "Recommendation 1", Item.RECOMMENDATION));
+		items.add(new Item(6, "Recommendation 2", Item.RECOMMENDATION));
+		items.add(new Item(7, "Recommendation 3", Item.RECOMMENDATION));
+		items.add(new Item(8, "Recommendation 4", Item.RECOMMENDATION));
+		items.add(new Item(9, "Recommendation 5", Item.RECOMMENDATION));
+		items.add(new Item(10, "End of flowchart test", Item.END));
+
+		options = new ArrayList<>();
+		options.add(new Option(1, findItemById(1), findItemById(2),"Yes"));
+		options.add(new Option(2, findItemById(1), findItemById(5),"No"));
+		options.add(new Option(3, findItemById(2), findItemById(3),"Milk is discolored"));
+		options.add(new Option(4, findItemById(2), findItemById(6),"Injured leg"));
+		options.add(new Option(5, findItemById(2), findItemById(4),"Eating problems"));
+		options.add(new Option(6, findItemById(4), findItemById(8),""));
+		options.add(new Option(7, findItemById(4), findItemById(9),""));
+		options.add(new Option(8, findItemById(3), findItemById(7),"Yes"));
+
+		flowcharts = new ArrayList<>();
+		Flowchart fc1 = new Flowchart(1);
+		flowcharts.add(fc1);
+		for(Item i : items) fc1.addItem(i);
+
 		reports = new ArrayList<>();
 		reports.add(new Report(0, findLocationById(4)));
-		reports.add(new Report(1, findLocationById(2)));
+		findReportById(0).setFlowchart(findFlowchartById(1));
 
 		Log.i(this.toString(), "dummy data set");
 	}

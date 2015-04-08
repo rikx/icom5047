@@ -13,7 +13,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
+/**
+ * Represents the activity that performs all functions related to authenticating the user
+ */
 public class LoginActivity extends Activity {
 
 	private DBService dbService;
@@ -51,6 +53,9 @@ public class LoginActivity extends Activity {
 		Log.i(this.toString(), "destroyed");
 	}
 
+	/**
+	 * Connection to the database service
+	 */
 	private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -67,12 +72,13 @@ public class LoginActivity extends Activity {
 		}
 	};
 
+	/**
+	 * Start the login process by authenticating the user credentials
+	 */
 	public void startLogin(View view) {
-
         //Get username from text field
         EditText editUsername = (EditText) findViewById(R.id.field_username);
         String username = editUsername.getText().toString();
-
 
         //Get password from text field
         EditText editPassword = (EditText) findViewById(R.id.field_password);
@@ -99,8 +105,12 @@ public class LoginActivity extends Activity {
 		}
     }
 
-
-    public void saveLogin(String username, String password) {
+	/**
+	 * Saves the login credentials to the preference file
+	 * @param username the username to be saved
+	 * @param password the password to be saved
+	 */
+    private void saveLogin(String username, String password) {
         SharedPreferences sharedPref = this.getSharedPreferences(
 				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

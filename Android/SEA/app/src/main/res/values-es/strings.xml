@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">SEA</string>
+	<string name="action_settings">Preferencias</string>
+	<string name="address_city">ciudad</string>
+	<string name="location_label">Localización</string>
+	<string name="address_line1">dirección linea 1</string>
+	<string name="location_name">nombre</string>
+	<string name="address_line2">dirección linea 2</string>
+	<string name="address_zip_code">código postal</string>
+	<string name="agent_label">Agente asignado</string>
+	<string name="button_login">Iniciar</string>
+	<string name="date_label">Fecha</string>
+	<string name="edit">Editar</string>
+	<string name="login_nak">Usuario o contraseña incorrectos</string>
+	<string name="password">contraseña</string>
+	<string name="username">usuario</string>
+	<string name="subject_label">Ganadero</string>
+	<string name="save">Guardar</string>
+	<string name="report_type">Tipo</string>
+	<string name="person_phone_number">teléfono</string>
+	<string name="person_middle_name">2do nombre</string>
+	<string name="person_last_name2">2do apellido</string>
+	<string name="person_last_name1">1er apellido</string>
+	<string name="person_first_name">nombre</string>
+	<string name="person_email">correo electrónico</string>
+	<string name="owner_label">Dueño</string>
+	<string name="manager_label">Ganadero</string>
+</resources>

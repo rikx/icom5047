@@ -107,7 +107,7 @@ public class Report {
 	public String toString() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/LLL/yy");
 		String s = location.getName()+"\t"+sdf.format(date);
-		Log.i("REPORT", s);
-		return "";
+		//Log.i("REPORT", s);
+		return s;
 	}
 }

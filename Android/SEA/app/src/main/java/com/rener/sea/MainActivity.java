@@ -11,15 +11,19 @@ import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
 
+/**
+ * Represents an activity in which the data is managed and displayed
+ */
 public class MainActivity extends FragmentActivity
 		implements MenuListFragment.OnMenuItemSelectedListener {
 
 	private DBService dbService;
-	private MenuListFragment menuListFragment;
-	private MenuListFragment selectedListFragment;
+	private MenuListFragment leftFragment;
+	private MenuListFragment rightFragment;
 	private boolean mBound = false;
 
 	@Override
@@ -29,12 +33,12 @@ public class MainActivity extends FragmentActivity
         setContentView(R.layout.activity_main);
 
 	    FragmentManager manager = getFragmentManager();
-	    menuListFragment = (MenuListFragment) manager.findFragmentByTag("MAIN");
+	    leftFragment = (MenuListFragment) manager.findFragmentByTag("MAIN");
 
 	    if(savedInstanceState == null) {
 		    FragmentTransaction transaction = manager.beginTransaction();
-		    menuListFragment = MenuListFragment.newInstance("MAIN");
-		    transaction.add(R.id.menu_list_container, menuListFragment, "MAIN");
+		    leftFragment = MenuListFragment.newInstance("MAIN");
+		    transaction.add(R.id.menu_list_container, leftFragment, "MAIN");
 		    transaction.commit();
 	    }
     }
@@ -90,8 +94,23 @@ public class MainActivity extends FragmentActivity
     public void onBackPressed() {
 	    FragmentManager manager = getFragmentManager();
 	    int count = manager.getBackStackEntryCount();
-		manager.popBackStack();
+	    String left = leftFragment.getType();
+		if(left.equals(MenuListFragment.TYPE_MAIN)) {
+		    return;
+	    }
+	    else {
+			FragmentTransaction transaction = manager.beginTransaction();
+			leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_MAIN);
+			rightFragment = MenuListFragment.newInstance(left);
+			transaction.replace(R.id.menu_list_container, leftFragment, "MAIN");
+			transaction.replace(R.id.menu_selected_container, rightFragment, left);
+			transaction.commit();
+		}
     }
+
+	public boolean isBound() {
+		return mBound;
+	}
 
 	public void OnMenuItemSelectedListener(String type, ListView l, View v, int position) {
 		FragmentManager manager = getFragmentManager();
@@ -99,19 +118,19 @@ public class MainActivity extends FragmentActivity
 		if(type.equals(MenuListFragment.TYPE_MAIN)) {
 			String selection = l.getAdapter().getItem(position).toString();
 			if(selection.equalsIgnoreCase("PEOPLE")) {
-				selectedListFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
-				transaction.replace(R.id.menu_selected_container, selectedListFragment, "PEOPLE");
+				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
+				transaction.replace(R.id.menu_selected_container, rightFragment, "PEOPLE");
 				transaction.commit();
 			}
 			else if(selection.equalsIgnoreCase("LOCATIONS")) {
-				selectedListFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
-				transaction.replace(R.id.menu_selected_container, selectedListFragment,
+				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
+				transaction.replace(R.id.menu_selected_container, rightFragment,
 						"LOCATIONS");
 				transaction.commit();
 			}
 			else if (selection.equalsIgnoreCase("REPORTS")) {
-				selectedListFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
-				transaction.replace(R.id.menu_selected_container, selectedListFragment, "REPORTS");
+				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
+				transaction.replace(R.id.menu_selected_container, rightFragment, "REPORTS");
 				transaction.commit();
 			}
 		}
@@ -124,6 +143,10 @@ public class MainActivity extends FragmentActivity
 				Location location = (Location) l.getAdapter().getItem(position);
 				showLocation(location, position);
 			}
+			else if(type.equals(MenuListFragment.TYPE_REPORTS)) {
+				Report report = (Report) l.getAdapter().getItem(position);
+				showReport(report, position);
+			}
 		}
 	}
 
@@ -132,11 +155,9 @@ public class MainActivity extends FragmentActivity
 		FragmentTransaction transaction = manager.beginTransaction();
 		PersonDetailsFragment details = new PersonDetailsFragment();
 		details.setPerson(person);
-		MenuListFragment list =
-				MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE, index);
-		transaction.replace(R.id.menu_list_container, list, "PEOPLE");
+		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE, index);
+		transaction.replace(R.id.menu_list_container, leftFragment, "PEOPLE");
 		transaction.replace(R.id.menu_selected_container, details, "PERSON");
-		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -145,16 +166,18 @@ public class MainActivity extends FragmentActivity
 		FragmentTransaction transaction = manager.beginTransaction();
 		LocationDetailsFragment details = new LocationDetailsFragment();
 		details.setLocation(location);
-		MenuListFragment list =
-				MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS, index);
-		transaction.replace(R.id.menu_list_container, list, "LOCATIONS");
+		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS, index);
+		transaction.replace(R.id.menu_list_container, leftFragment, "LOCATIONS");
 		transaction.replace(R.id.menu_selected_container, details, "LOCATION");
-		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
-	public DBService getDataFromDB() {
-		return dbService;
+	private void showReport(Report report, int index) {
+		//TODO: show report details
+	}
+
+	public DBService getDBService() {
+		return mBound? dbService : null;
 	}
 
 }

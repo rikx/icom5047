@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MenuListFragment extends ListFragment {
@@ -45,32 +47,25 @@ public class MenuListFragment extends ListFragment {
 
 		curPos = getArguments().getInt("index", -1);
 		type = getArguments().getString("type");
-		ArrayAdapter adapter = null;
+		list = new ArrayList();
+		DBService db = ((MainActivity)getActivity()).getDBService();
 		if(type.equals(TYPE_MAIN)) {
-			adapter = new ArrayAdapter<>(getActivity(),
-					android.R.layout.simple_list_item_1,
-					getResources().getStringArray(R.array.menu_list_strings));
+			list = Arrays.asList(getResources().getStringArray(R.array.main_list_strings));
 		}
 		else if(type.equals(TYPE_PEOPLE)) {
-			list = ((MainActivity)getActivity()).getDataFromDB().getPeople();
-			adapter = new ArrayAdapter<>(getActivity(),
-					android.R.layout.simple_list_item_1, list);
+			list = db.getPeople();
 		}
 		else if(type.equals(TYPE_LOCATIONS)) {
-			list = ((MainActivity)getActivity()).getDataFromDB().getLocations();
-			adapter = new ArrayAdapter<>(getActivity(),
-					android.R.layout.simple_list_item_1, list);
+			list = db.getLocations();
 		}
-		else if(type.equals(TYPE_REPORTS)) {
-			adapter = new ArrayAdapter<>(getActivity(),
-					android.R.layout.simple_list_item_1,
-					getResources().getStringArray(R.array.dummy_reports_list_strings));
-		}
+		else if(type.equals(TYPE_REPORTS))
+			list = db.getReports();
+		ArrayAdapter adapter = new ArrayAdapter<>(getActivity(),
+				android.R.layout.simple_list_item_1, list);
 		setListAdapter(adapter);
 		ListView l = getListView();
 		l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		if(curPos != -1)
-			l.setItemChecked(curPos, true);
+		l.setItemChecked(curPos, curPos !=-1 ? true : false);
 	}
 
 	@Override
@@ -107,6 +102,10 @@ public class MenuListFragment extends ListFragment {
 
 	public String getType() {
 		return type;
+	}
+
+	public int getPosition() {
+		return curPos;
 	}
 
 	public static MenuListFragment newInstance(String type) {
