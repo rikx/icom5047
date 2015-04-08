@@ -17,9 +17,6 @@ import java.util.List;
 
 public class DBService extends Service {
 
-	public final static String PEOPLE = "people";
-	public final static String LOCATIONS = "locations";
-	public final static String REPORTS = "reports";
 	private final IBinder mBinder = new DBBinder();
 	private List<Person> people;
 	private List<Location> locations;
@@ -93,16 +90,8 @@ public class DBService extends Service {
 		return person;
 	}
 
-	public boolean addPerson(Person person) {
-		return people.add(person);
-	}
-
 	public List<Location> getLocations() {
 		return locations;
-	}
-
-	public boolean addLocation(Location location) {
-		return locations.add(location);
 	}
 
 	public Location findLocationById(long id) {
@@ -161,6 +150,10 @@ public class DBService extends Service {
 		users.add(new User(3, "ricardo.fuentes", "iamricardo", findPersonById(2)));
 		users.add(new User(4, "ramon.saldana", "iamramon", findPersonById(3)));
 		users.add(new User(5, "betzabe.rodriguez", "iambetzabe", findPersonById(6)));
+
+		reports = new ArrayList<>();
+		reports.add(new Report(0, findLocationById(4)));
+		reports.add(new Report(1, findLocationById(2)));
 
 		Log.i(this.toString(), "dummy data set");
 	}
