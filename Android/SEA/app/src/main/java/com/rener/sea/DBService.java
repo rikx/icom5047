@@ -219,7 +219,7 @@ public class DBService extends Service {
 		for(Item i : items) fc1.addItem(i);
 
 		reports = new ArrayList<>();
-		reports.add(new Report(0, findLocationById(4)));
+		reports.add(new Report(0,"My Report", findLocationById(4)));
 		findReportById(0).setFlowchart(findFlowchartById(1));
 
 		Log.i(this.toString(), "dummy data set");

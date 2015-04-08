@@ -9,23 +9,28 @@ import java.util.List;
 
 public class Report {
 
+	public static final String DATE_FORMAT = "dd/LLL/yy";
 	private long id;
+	private String name;
 	private User creator;
 	private Location location;
 	private Person subject;
 	private Flowchart flowchart;
 	private String note = "";
 	private Date date;
+	private String type = "";
 	private List<Pair<Option,String>> path;
 
-	public Report(long id) {
+	public Report(long id, String name) {
 		this.id = id;
+		this.name = name;
 		this.date = new Date();
 		this.path = new ArrayList<>();
 	}
 
-	public Report(long id, Location location) {
+	public Report(long id, String name, Location location) {
 		this.id = id;
+		this.name = name;
 		this.location = location;
 		this.date = new Date();
 		this.path = new ArrayList<>();
@@ -49,6 +54,14 @@ public class Report {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public User getCreator() {
@@ -99,14 +112,27 @@ public class Report {
 		this.date = date;
 	}
 
+	public String getDateString() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		return sdf.format(date);
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public void addOptionToPath(Option option, String data) {
 		Pair<Option,String> pair = new Pair<Option,String>(option, data);
 		path.add(pair);
 	}
 
 	public String toString() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/LLL/yy");
-		String s = location.getName()+"\t"+sdf.format(date);
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		String s = name+"\n"+location.getName()+"\t"+sdf.format(date);
 		//Log.i("REPORT", s);
 		return s;
 	}

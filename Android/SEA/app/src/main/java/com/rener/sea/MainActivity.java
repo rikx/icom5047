@@ -176,7 +176,15 @@ public class MainActivity extends FragmentActivity
 	}
 
 	private void showReport(Report report, int index) {
-		//TODO: show report details
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		ReportDetailsFragment details = new ReportDetailsFragment();
+		details.setReport(report);
+		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS, index);
+		rightFragment = details;
+		transaction.replace(R.id.menu_list_container, leftFragment, "REPORTS");
+		transaction.replace(R.id.menu_selected_container, rightFragment, "REPORT");
+		transaction.commit();
 	}
 
 	public DBService getDBService() {
