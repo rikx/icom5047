@@ -16,10 +16,8 @@ router.get('/ganaderos', function(req, res, next) {
 		}
 	  client.query("SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 									FROM person \
-									WHERE person_id NOT IN ( \
-										SELECT person_id \
-										FROM person, location \
-										WHERE person_id = owner_id or person_id = manager_id)", function(err, result) {
+									WHERE person_id NOT IN (SELECT person_id FROM users) \
+									ORDER BY person_name ASC;", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -33,6 +31,14 @@ router.get('/ganaderos', function(req, res, next) {
 	});
 });
 
+/* This query returns all persons that are not associated with a location
+//SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+//								FROM person \
+//									WHERE person_id NOT IN ( \
+//										SELECT person_id \
+//										FROM person, location \
+//										WHERE person_id = owner_id or person_id = manager_id)
+
 /* GET usuarios */
 router.get('/usuarios', function(req, res, next) {
 	var usuarios_list;
@@ -42,7 +48,8 @@ router.get('/usuarios', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 	  client.query('SELECT user_id, username \
-									FROM users', function(err, result) {
+									FROM users \
+									ORDER BY username ASC', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

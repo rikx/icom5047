@@ -41,6 +41,7 @@ $(document).ready(function(){
     $('#btn_submit, #heading_create').show();
     $('#edit_panel').show();
     $('#info_panel').hide();
+    $('#add_associates_panel').hide();
   });
 
 
@@ -128,13 +129,12 @@ $(document).ready(function(){
     $('#btn_associated_agente').val($(this).attr('data-id'));
   });
 
-  /* */
+  /* Open info panel */
   $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
-
     $('#info_panel_heading').show();
     $('#localizacion_info').show();
     $('#edit_associates_heading').hide();
-    $('#localizacion_associates').hide();
+    $('#add_associates_panel').hide();
     e.preventDefault();
     var table_content = '';
     
@@ -204,9 +204,9 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
   $('#info_panel').hide();
+  $('#add_associates_panel').hide();
 
-  // contains ganadero id
-
+  // contains localizacion id
   var myVar = $(this).attr('data-id');
   var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
   var thisUserObject = localizaciones_array[arrayPosition];

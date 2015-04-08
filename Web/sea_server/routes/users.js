@@ -89,6 +89,13 @@ router.get('/admin/ganaderos', function(req, res, next) {
 /* GET Ganaderos List data 
  * Responds with first 10 ganaderos, alphabetically ordered 
  */
+ /* This query returns all persons asociated with a location*/
+// SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
+//	  								person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+//									FROM person, location \
+//									WHERE person_id = owner_id OR person_id = manager_id \
+//									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+//									LIMIT 10;
 router.get('/admin/list_ganaderos', function(req, res, next) {
 	var ganaderos_list, locations_list;
 	var db = req.db;
@@ -97,10 +104,9 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 	
-	  client.query('SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-	  								person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-									FROM person, location \
-									WHERE person_id = owner_id OR person_id = manager_id \
+	  client.query('SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+									FROM person \
+									WHERE person_id NOT IN (SELECT person_id FROM users) \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 									LIMIT 10;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
@@ -113,10 +119,9 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 	    }
 	  });
 
-	  client.query('WITH ganaderos AS (SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-											person_id, first_name, last_name1, last_name2 \
-										FROM person, location \
-										WHERE person_id = owner_id OR person_id = manager_id \
+	  client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+										FROM person \
+										WHERE person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 										LIMIT 10) \
 									SELECT person_id, location_id, location.name AS location_name \
