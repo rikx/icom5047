@@ -103,7 +103,7 @@ $('#list_user_type').on('click', 'li a', function(e){
   // prevents link from firing
   e.preventDefault();
 
-  $('#btn_user_type_text').text($(this).text());
+  $('#btn_user_type_text').text($(this).text()+' ');
   $('#btn_user_type').val($(this).attr('data-usario-type'));
 });
 

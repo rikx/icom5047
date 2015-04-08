@@ -102,56 +102,71 @@ block content
 								table#localizacion_agentes(class='table')
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 
-			#add_assosiates_panel.col-md-4(style="display:none")
+			#add_associates_panel.col-md-4(style="display:none")
 				.jumbotron
 					h4#heading_create Editar Ganaderos/Agente Asociados		
 					.panel.panel-info
 						.panel-heading Ganaderos Asociados
 						.panel-body
-							table#localizacion_ganaderos(class='table')
+							table#associated_ganaderos(class='table')
 								tr
 									td 
 										strong Owner: 
-									td#owner Ganadero 1
+									td#add_associates_owner 
+										a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
+											i(class='glyphicon glyphicon-plus')
 								tr
 									td 
 										strong Manager:
-									td#manager Ganadero 2
+									td#add_associates_manager 
+										a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
+											i(class='glyphicon glyphicon-plus')
 					.panel.panel-info
 						.panel-heading Agentes Asignados
 						.panel-body
-							table#localizacion_agentes(class='table')
-								tr
-									td Agente 1
-									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-										i(class='glyphicon glyphicon-minus')
-								tr
-									td Agente 2
-									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-										i(class='glyphicon glyphicon-minus')
-								tr
-									td Agente 3
-									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-										i(class='glyphicon glyphicon-minus')
+							table#associated_agentes(class='table')
 								tr
 									td 
 										strong Agregar Nuevo
-									td#a(class='btn_delete_localizacion btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#', data-id='1') 
-										i(class='glyphicon glyphicon-plus')
-								tr
-									td#newdropdown
-										.form-group
-											#usuario_type.dropdown
-												button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Ganaderos
-													span(class='caret')
-												ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
-													li(role='presentation')
-														a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
-													li(role='presentation')
-														a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
-													li(role='presentation')
-														a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agente	
-					button#btn_close_info_panel(class='btn btn-default') Cerrar
+									td
+										a(class='btn_add_associate_agente btn btn-sm btn-success', data-original-title='', data-toggle='tooltip', type='button', href='#') 
+											i(class='glyphicon glyphicon-plus')
+					
+					#add_ganaderos_dropdown_panel.panel.panel-info(style="display:none")
+						.panel-heading 
+							h4 Ganaderos Asociados
+						.panel-body
+							form(role='form')
+								.form-group
+									label(for='btn_associated_ganadero') Ganaderos:
+									.dropdown
+										.btn-group
+											button#btn_associated_ganadero(class='btn btn-default dropdown-toggle', type='button', name='btn_associated_ganadero', data-toggle='dropdown', aria-expanded='false') 
+												span#btn_associated_ganadero_text Lista de Ganaderos 
+												span(class='caret')
+											ul#list_associated_ganadero(class='dropdown-menu', role='menu')
+
+								button#btn_submit(class='btn btn-default btn-success', type='button') Someter
+
+					#add_agente_dropdown_panel.panel.panel-info(style="display:none")
+						.panel-heading 
+							h4 Agentes Asociados
+						.panel-body
+							form(role='form')
+								.form-group
+									label(for='btn_associated_agente') Agentes:
+									.dropdown
+										.btn-group
+											button#btn_associated_agente(class='btn btn-default dropdown-toggle', type='button', name='btn_associated_agente', data-toggle='dropdown', aria-expanded='false') 
+												span#btn_associated_agente_text Lista de Agentes 
+												span(class='caret')
+											ul#list_associated_agente(class='dropdown-menu', role='menu')
+												li
+													a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
+
+								button#btn_submit(class='btn btn-default btn-success', type='button') Someter
+
+					button#btn_close_add_panel(class='btn btn-default') Cerrar
 			.col-md-1
 
 		.row

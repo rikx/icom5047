@@ -13,11 +13,6 @@ router.get('/admin', function(req, res, next) {
   res.render('admin', { title: 'Admin Home'});
 });
 
-/* GET Admin Crear Cuestionario */
-router.get('/admin/cuestionario/crear', function(req, res, next) {
-	res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
-});
-
 /* GET Admin Manejar Cuestionarios
  * Responds with first 10 cuestionarios, 
  * alphabetically ordered by name
@@ -43,6 +38,11 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	    }
 	  });
 	});
+});
+
+/* GET Admin Crear Cuestionario */
+router.get('/admin/cuestionario/crear', function(req, res, next) {
+	res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
 });
 
 /* GET Admin Cuestionario */
@@ -272,7 +272,66 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 
 /* GET Admin Manejar Localizaciones */
 router.get('/admin/localizaciones', function(req, res, next) {
-	res.render('manejar_localizaciones', { title: 'Manejar Localizaciones'});
+	var localizaciones_list, agentes_list, ganaderos_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// query for location data
+	  client.query('SELECT location_id, location.name AS location_name, address_id, license, address_line1, address_line2, city, zipcode \
+									FROM location natural join address \
+									ORDER BY location_name \
+									LIMIT 10;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	localizaciones_list = result.rows;
+	    }
+	  });
+	  // query for associated agentes
+	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
+										FROM location natural join address \
+										ORDER BY location_name \
+										LIMIT 10) \
+									SELECT location_id, agent_id, username \
+									FROM locations,users \
+									WHERE user_id = agent_id;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	agentes_list = result.rows;
+	    }
+	  });
+	  // query for associated ganaderos
+	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
+										FROM location natural join address \
+										ORDER BY location_name \
+										LIMIT 10) \
+										SELECT person_id, location_id,\
+											CASE WHEN person_id = owner_id THEN 'owner' \
+											WHEN person_id = manager_id THEN 'manager' \
+											END AS relation_type, \
+											(first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
+										FROM locations, person \
+										WHERE person_id = owner_id or person_id = manager_id", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	ganaderos_list = result.rows;
+	    	res.render('manejar_localizaciones', { title: 'Manejar Localizaciones', localizaciones: localizaciones_list, agentes: agentes_list, ganaderos: ganaderos_list});
+	    }
+	  });
+	});
 });
 
 /* GET Localizaciones List data 

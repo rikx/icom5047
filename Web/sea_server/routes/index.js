@@ -33,7 +33,7 @@ router.get('/ganaderos', function(req, res, next) {
 	});
 });
 
-/* GET ganaderos */
+/* GET usuarios */
 router.get('/usuarios', function(req, res, next) {
 	var usuarios_list;
 	var db = req.db;
