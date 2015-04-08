@@ -33,7 +33,7 @@ $(document).ready(function(){
   });
 
 
-  /* Add ganadero */
+  /* Add localizacion */
   $('#btn_add_localizacion').on('click', function(){
     $('#btn_edit, #heading_edit').hide();
     $('#btn_submit, #heading_create').show();
@@ -43,8 +43,7 @@ $(document).ready(function(){
   });
 
 
-
-  /* */
+  /* Edit associates */
   $localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
     $('#edit_panel').hide();
     $('#info_panel').hide();
@@ -229,26 +228,40 @@ $(document).ready(function(){
       }
     });  
 
-    //populate ganaderos table according to relation_type
-    for (j = 0; j < selectedGanaderos.length; j++) { 
-    if(selectedGanaderos[j].relation_type == "owner") {
-      //$("#localizacion_ganaderos td:contains('Ganadero 1')").html(selectedGanaderos[j].person_name);
-      $('#owner').html(selectedGanaderos[j].person_name);
+    // populate ganaderos table according to relation_type
+    if(selectedGanaderos.length > 0){
+      for (j = 0; j < selectedGanaderos.length; j++) { 
+        if(selectedGanaderos[j].relation_type == "owner") {
+          //$("#localizacion_ganaderos td:contains('Ganadero 1')").html(selectedGanaderos[j].person_name);
+          $('#owner').html(selectedGanaderos[j].person_name);
+        } else {
+          //$("#localizacion_ganaderos td:contains('Ganadero 2')").html(selectedGanaderos[j].person_name);
+          $('#manager').html(selectedGanaderos[j].person_name);
+        }
+      }
     } else {
-       //$("#localizacion_ganaderos td:contains('Ganadero 2')").html(selectedGanaderos[j].person_name);
-       $('#manager').html(selectedGanaderos[j].person_name);
-     }
+      // array is empty so ganaderos populate with placeholders
+      $('#owner').html('Dueño no asignado');
+      $('#manager').html('Gerente no asignado');
     }
 
+    // populate agentes table if there is one assigned
+    var agent_found = false;
     $.each(agentes_array, function(i){
       if(myVar == agentes_array[i].location_id){
+        agent_found = true;
         table_content += '<tr>';
         table_content += "<td> ";
         table_content += "" +agentes_array[i].username+"</td>";
         table_content += '</tr>';
       }
     }); 
-    $('#localizacion_agentes').html(table_content);
+    // checks if agent is found
+    if(agent_found){
+      $('#localizacion_agentes').html(table_content);
+    } else {
+      $('#localizacion_agentes').html('<tr><td>Agente no asignado</tr></td>');
+    }  
  });
 
 $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(){
