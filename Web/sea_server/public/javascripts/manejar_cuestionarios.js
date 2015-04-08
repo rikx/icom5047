@@ -1,32 +1,55 @@
 $(document).ready(function(){
   // cuestionarios list
   $cuestionarios_list = $('#cuestionarios_list');
-
   // store data for initial 10 cuestionarios
   var cuestionarios_data= $cuestionarios_list.attr('data-cuestionarios');
   var cuestionarios_array = JSON.parse(cuestionarios_data);
 
   /* Button: Return home */
-	$('#btn_home').on('click', function(){
+  $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';
-	});
+  });
 
-	  /* Close info panel */
+  /* Close info panel */
   $('#btn_close_info_panel').on('click', function(){
     $('#info_panel').hide();
     remove_active_class($usuarios_list);
   });
 
   /* Open edit page */
-	$cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
+  $cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
 		// contains cuestionario id
     var this_cuestionario_id = $(this).attr('data-id');
-		window.location.href = '/users/admin/cuestionario/'+this_cuestionario_id;
-	});
- 
-	function populate_cuestionarios(){
-    $.getJSON('http://localhost:3000/users/admin/list_cuestionarios', function(data) {
-      cuestionarios_array = data.cuestionarios;
+    window.location.href = '/users/admin/cuestionario/'+this_cuestionario_id;
+  });
+
+  $cuestionarios_list.on('click', 'tr td a.show_info_cuestionario', function(e){
+    // prevents link from firing
+    e.preventDefault();
+    var table_content = '';
+
+    $('#edit_panel').hide();
+    $('#info_panel').show();
+
+    // remove active from previous list item 
+    remove_active_class($cuestionarios_list);
+    // add active to current clicked list item
+    var $this = $(this);
+    if (!$this.hasClass('active')) {
+      $this.addClass('active');
+    }
+    // contains ganadero id
+    var myVar = $this.attr('data-id');
+    var arrayPosition = cuestionarios_array.map(function(arrayItem) { return arrayItem.flowchart_id; }).indexOf(myVar);
+    var thisUserObject = cuestionarios_array[arrayPosition];
+    $('#cuestionario_info_name').text(thisUserObject.flowchart_name);
+    $('#cuestionario_info_version').text(thisUserObject.version);
+    $('#cuestionario_info_creator').text(thisUserObject.username);
+  });
+
+function populate_cuestionarios(){
+  $.getJSON('http://localhost:3000/users/admin/list_cuestionarios', function(data) {
+    cuestionarios_array = data.cuestionarios;
 
       // contents of localizaciones list
       var table_content = '';
@@ -48,5 +71,5 @@ $(document).ready(function(){
       // inject content string into html
       $cuestionarios_list.html(table_content);
     });
-  };
+};
 });
