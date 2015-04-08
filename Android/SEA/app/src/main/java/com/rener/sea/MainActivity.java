@@ -1,5 +1,6 @@
 package com.rener.sea;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
@@ -22,8 +23,8 @@ public class MainActivity extends FragmentActivity
 		implements MenuListFragment.OnMenuItemSelectedListener {
 
 	private DBService dbService;
-	private MenuListFragment leftFragment;
-	private MenuListFragment rightFragment;
+	private Fragment leftFragment;
+	private Fragment rightFragment;
 	private boolean mBound = false;
 
 	@Override
@@ -33,11 +34,11 @@ public class MainActivity extends FragmentActivity
         setContentView(R.layout.activity_main);
 
 	    FragmentManager manager = getFragmentManager();
-	    leftFragment = (MenuListFragment) manager.findFragmentByTag("MAIN");
+	    leftFragment = manager.findFragmentByTag("MAIN");
 
 	    if(savedInstanceState == null) {
 		    FragmentTransaction transaction = manager.beginTransaction();
-		    leftFragment = MenuListFragment.newInstance("MAIN");
+		    leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_MAIN);
 		    transaction.add(R.id.menu_list_container, leftFragment, "MAIN");
 		    transaction.commit();
 	    }
@@ -94,7 +95,7 @@ public class MainActivity extends FragmentActivity
     public void onBackPressed() {
 	    FragmentManager manager = getFragmentManager();
 	    int count = manager.getBackStackEntryCount();
-	    String left = leftFragment.getType();
+	    String left = ((MenuListFragment)leftFragment).getType();
 		if(left.equals(MenuListFragment.TYPE_MAIN)) {
 		    return;
 	    }
@@ -156,8 +157,9 @@ public class MainActivity extends FragmentActivity
 		PersonDetailsFragment details = new PersonDetailsFragment();
 		details.setPerson(person);
 		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE, index);
+		rightFragment = details;
 		transaction.replace(R.id.menu_list_container, leftFragment, "PEOPLE");
-		transaction.replace(R.id.menu_selected_container, details, "PERSON");
+		transaction.replace(R.id.menu_selected_container, rightFragment, "PERSON");
 		transaction.commit();
 	}
 
@@ -167,8 +169,9 @@ public class MainActivity extends FragmentActivity
 		LocationDetailsFragment details = new LocationDetailsFragment();
 		details.setLocation(location);
 		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS, index);
-		transaction.replace(R.id.menu_list_container, leftFragment, "LOCATIONS");
-		transaction.replace(R.id.menu_selected_container, details, "LOCATION");
+		rightFragment = details;
+		transaction.replace(R.id.menu_list_container, leftFragment, "PEOPLE");
+		transaction.replace(R.id.menu_selected_container, rightFragment, "PERSON");
 		transaction.commit();
 	}
 
