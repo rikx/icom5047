@@ -78,7 +78,13 @@ $(document).ready(function(){
         manager_content = the_content;
       }
     });
-
+    // if location has no associated owner and/or manager
+    if(owner_content == ''){
+      owner_content += "<a id='btn_add_associate_ganadero' class='btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a>";
+    }
+    if(manager_content == ''){
+      manager_content += "<a id='btn_add_associate_ganadero' class='btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a>";
+    }
     // inject content stirngs into html
     $('#add_associates_owner').html(owner_content);
     $('#add_associates_manager').html(manager_content);
@@ -93,14 +99,14 @@ $(document).ready(function(){
     });
     // Add table row with adding associated agent button
       agentes_content += '<tr><td><strong>Agente Nuevo </strong>';
-      agentes_content += "<a class='btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a></td></tr>";
+      agentes_content += "<a id='btn_add_associate_agente' class='btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a></td></tr>";
     // inject content stirngs into html
     $('#associated_agentes').html(agentes_content);
   });
 
 
   /* Add associated ganadero */
-  $('#associated_ganaderos').on('click', 'tr td a.btn_add_associate_ganadero', function(e){
+  $('#associated_ganaderos').on('click', 'tr td a#btn_add_associate_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
     $('#edit_panel').hide();
@@ -138,7 +144,7 @@ $(document).ready(function(){
 
 
   /* Add associated agente  */
-  $('#associated_agentes').on('click', 'tr td a.btn_add_associate_agente', function(e){
+  $('#associated_agentes').on('click', 'tr td a#btn_add_associate_agente', function(e){
     // prevents link from firing
     e.preventDefault();
 
