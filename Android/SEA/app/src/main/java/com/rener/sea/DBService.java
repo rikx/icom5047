@@ -141,6 +141,30 @@ public class DBService extends Service {
 		return item;
 	}
 
+	public List<Option> getOptions() {
+		return options;
+	}
+
+	public Option findOptionById(long id) {
+		Option option = null;
+		for(Option o : options) {
+			if(o.getId() == id) option = o;
+		}
+		return option;
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public User findUserById(long id) {
+		User user = null;
+		for(User u : users) {
+			if(u.getId() == id) user = u;
+		}
+		return user;
+	}
+
 	public boolean writeJSONToFile(String filename, String json) {
 		FileOutputStream outputStream;
 		try {
@@ -204,23 +228,32 @@ public class DBService extends Service {
 		items.add(new Item(10, "End of flowchart test", Item.END));
 
 		options = new ArrayList<>();
-		options.add(new Option(1, findItemById(1), findItemById(2),"Yes"));
-		options.add(new Option(2, findItemById(1), findItemById(5),"No"));
-		options.add(new Option(3, findItemById(2), findItemById(3),"Milk is discolored"));
-		options.add(new Option(4, findItemById(2), findItemById(6),"Injured leg"));
-		options.add(new Option(5, findItemById(2), findItemById(4),"Eating problems"));
-		options.add(new Option(6, findItemById(4), findItemById(8),""));
-		options.add(new Option(7, findItemById(4), findItemById(9),""));
-		options.add(new Option(8, findItemById(3), findItemById(7),"Yes"));
+		options.add(new Option(1, findItemById(2),"Yes"));
+		options.add(new Option(2, findItemById(5),"No"));
+		findItemById(1).addOption(findOptionById(1));
+		findItemById(1).addOption(findOptionById(2));
+		options.add(new Option(3, findItemById(3),"Milk is discolored"));
+		options.add(new Option(4, findItemById(6),"Injured leg"));
+		options.add(new Option(5, findItemById(4),"Eating problems"));
+		findItemById(2).addOption(findOptionById(3));
+		findItemById(2).addOption(findOptionById(4));
+		findItemById(2).addOption(findOptionById(5));
+		options.add(new Option(6, findItemById(8),"USER INPUT"));
+		options.add(new Option(7, findItemById(9),"USER INPUT"));
+		findItemById(4).addOption(findOptionById(6));
+		findItemById(4).addOption(findOptionById(7));
+		options.add(new Option(8, findItemById(7), "USER INPUT"));
+		findItemById(3).addOption(findOptionById(8));
 
 		flowcharts = new ArrayList<>();
-		Flowchart fc1 = new Flowchart(1);
+		Flowchart fc1 = new Flowchart(1, "Test Flowchart");
 		flowcharts.add(fc1);
 		for(Item i : items) fc1.addItem(i);
 
 		reports = new ArrayList<>();
 		reports.add(new Report(0,"My Report", findLocationById(4)));
 		findReportById(0).setFlowchart(findFlowchartById(1));
+		findReportById(0).setCreator(findUserById(0));
 
 		Log.i(this.toString(), "dummy data set");
 	}

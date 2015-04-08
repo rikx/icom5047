@@ -36,6 +36,7 @@
 	<string name="name_label">Name</string>
 	<string name="date_label">Date</string>
 	<string name="location_label">Location</string>
+	<string name="creator_label">Creator</string>
 	<string name="report_type">Type</string>
 	<string name="login_ak">Login successful</string>
 	<string name="login_nak">Wrong username or password</string>

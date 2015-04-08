@@ -12,8 +12,9 @@ public class Flowchart {
 	private String version;
 	private List<Item> items;
 
-	public Flowchart(long id) {
+	public Flowchart(long id, String name) {
 		this.id = id;
+		this.name = name;
 		items = new ArrayList<>();
 	}
 
