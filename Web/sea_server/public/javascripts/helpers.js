@@ -111,18 +111,3 @@
 			$(this).html(get_date_time(date, false)+' at '+time);
 		});
 	};
-
-	//
-	function populate_ganaderos(){
-    $.getJSON('http://localhost:3000/ganaderos', function(data) {
-    	return data.ganaderos;
-    });
-  };
-
-  //
-  function populate_usuarios(){
-    $.getJSON('http://localhost:3000/usuarios', function(data) {
-    	return data.usuarios;
-    });
-  };
-
