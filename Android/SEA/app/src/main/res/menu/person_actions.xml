@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item android:id="@+id/edit_person_action"
+		  android:title="@string/edit_person"
+		  />
+
+	<item android:id="@+id/save_person_action"
+		  android:title="@string/save_person"
+		  />
+
+	<item android:id="@+id/new_person_action"
+		  android:title="@string/new_person"
+		  />
+
+</menu>

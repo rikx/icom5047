@@ -112,7 +112,7 @@ public class Location implements Comparable<Location> {
 		return address.getPostalCode();
 	}
 
-	public long getAddress_id() {
+	public long getAddressId() {
 		return address_id;
 	}
 

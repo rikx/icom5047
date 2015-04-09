@@ -13,8 +13,12 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+
+import java.util.Stack;
 
 /**
  * Represents an activity in which the data is managed and displayed
@@ -22,6 +26,7 @@ import android.widget.ListView;
 public class MainActivity extends FragmentActivity
 		implements MenuListFragment.OnMenuItemSelectedListener {
 
+	private static final boolean SETTINGS_ENABLED = false;
 	private DBService dbService;
 	private Fragment leftFragment;
 	private Fragment rightFragment;
@@ -109,6 +114,27 @@ public class MainActivity extends FragmentActivity
 		}
     }
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_activity_actions, menu);
+		menu.findItem(R.id.action_settings).setVisible(SETTINGS_ENABLED);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_logout :
+				logout();
+				break;
+			case R.id.action_settings :
+				showSettings();
+				break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	public boolean isBound() {
 		return mBound;
 	}
@@ -116,9 +142,11 @@ public class MainActivity extends FragmentActivity
 	public void OnMenuItemSelectedListener(String type, ListView l, View v, int position) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
+		String title = getActionBar().getTitle().toString();
 		if(type.equals(MenuListFragment.TYPE_MAIN)) {
 			String selection = l.getAdapter().getItem(position).toString();
 			if(selection.equalsIgnoreCase("PEOPLE")) {
+				//String append = getResources().getString(R.id.people);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
 				transaction.replace(R.id.menu_selected_container, rightFragment, "PEOPLE");
 				transaction.commit();
@@ -189,6 +217,14 @@ public class MainActivity extends FragmentActivity
 
 	public DBService getDBService() {
 		return mBound? dbService : null;
+	}
+
+	private void logout() {
+		//TODO: logout
+	}
+
+	private void showSettings() {
+
 	}
 
 }

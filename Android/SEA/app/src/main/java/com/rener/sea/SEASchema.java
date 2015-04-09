@@ -370,7 +370,7 @@ public final class SEASchema extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(OPTION_ID        ,   option.getId());
-        values.put(OPTION_PARENT_ID ,   option.getParent());
+        //values.put(OPTION_PARENT_ID ,   option.getParent());
         values.put(OPTION_NEXT_ID   ,   option.getNext().getId());
         values.put(OPTION_LABEL     ,   option.getLabel());
 
@@ -501,7 +501,7 @@ public final class SEASchema extends SQLiteOpenHelper {
             location.setAddressId(cursor.getLong(2));
             location.setOwner(findPersonById(cursor.getLong(3)));
             location.setManager(findPersonById(cursor.getLong(4)));
-            location.setLicence(cursor.getString(5));
+            location.setLicense(cursor.getString(5));
             location.setAgent(findPersonById(cursor.getLong(6)));
             db.close();
             cursor.close();

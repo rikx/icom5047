@@ -42,6 +42,19 @@
 	<string name="report_type">Type</string>
 	<string name="login_ak">Login successful</string>
 	<string name="login_nak">Wrong username or password</string>
+	<string name="logout">Logout</string>
+	<string name="edit_report">Edit Report</string>
+	<string name="save_report">Save Report</string>
+	<string name="edit_person">Edit Person</string>
+	<string name="save_person">Save Person</string>
+	<string name="edit_location">Edit Location</string>
+	<string name="save_location">Save Location</string>
+	<string name="new_person">New Person</string>
+	<string name="new_location">new Location</string>
+	<string name="new_report">New Report</string>
+	<string name="reports">Reports</string>
+	<string name="people">People</string>
+	<string name="locations">Locations</string>
 	<string-array name="main_list_strings">
 		<item>Reports</item>
 		<item>Locations</item>
