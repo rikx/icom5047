@@ -21,9 +21,11 @@ public class LocationDetailsFragment extends Fragment
 	public static final int EDIT_LAYOUT = 1;
 	private Location location;
 	private ViewFlipper flipper;
-	private TextView textName, textAddressLine1, textAddressLine2, textCity, textZipCode;
+	private TextView textName, textLicense;
+	private TextView textAddressLine1, textAddressLine2, textCity, textZipCode;
 	private TextView textOwner, textManager, textAgent;
-	private EditText editName, editAddressLine1, editAddressLine2, editCity, editZipCode;
+	private EditText editName, editLicense;
+	private EditText editAddressLine1, editAddressLine2, editCity, editZipCode;
 	private boolean viewCreated;
 	private Spinner ownerSpinner, managerSpinner, agentSpinner;
 	private List peopleList;
@@ -44,6 +46,10 @@ public class LocationDetailsFragment extends Fragment
 		//Set the name views
 		textName = (TextView) view.findViewById(R.id.location_text_name);
 		editName = (EditText) view.findViewById(R.id.location_edit_name);
+
+		//Set the license views
+		textLicense = (TextView) view.findViewById(R.id.location_text_license);
+		editLicense = (EditText) view.findViewById(R.id.location_edit_license);
 
 		//Set the address line 1 views
 		textAddressLine1 = (TextView) view.findViewById(R.id.address_text_line1);
@@ -142,6 +148,10 @@ public class LocationDetailsFragment extends Fragment
 		textName.setText(location.getName());
 		editName.setText(location.getName());
 
+		//Set the license fields
+		textLicense.setText(location.getLicense());
+		editLicense.setText(location.getLicense());
+
 		//Set the address fields
 		textAddressLine1.setText(location.getAddressLine(1));
 		editAddressLine1.setText(location.getAddressLine(1));
@@ -207,15 +217,17 @@ public class LocationDetailsFragment extends Fragment
 
 		//Get the text from the fields
 		String name = editName.getText().toString();
+		String license = editLicense.getText().toString();
 		String line1 = editAddressLine1.getText().toString();
 		String line2 = editAddressLine2.getText().toString();
 		String city = editCity.getText().toString();
 		String zip = editZipCode.getText().toString();
 
-		//TODO validate input
+		//TODO check input
 
 		//Set the instance fields
 		location.setName(name);
+		location.setLicense(license);
 		location.setAddressLine(1, line1);
 		location.setAddressLine(2, line2);
 		location.setCity(city);

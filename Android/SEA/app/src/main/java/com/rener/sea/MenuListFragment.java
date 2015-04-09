@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MenuListFragment extends ListFragment {
@@ -58,8 +59,10 @@ public class MenuListFragment extends ListFragment {
 		else if(type.equals(TYPE_LOCATIONS)) {
 			list = db.getLocations();
 		}
-		else if(type.equals(TYPE_REPORTS))
+		else if(type.equals(TYPE_REPORTS)) {
 			list = db.getReports();
+		}
+		Collections.sort(list);
 		ArrayAdapter adapter = new ArrayAdapter<>(getActivity(),
 				android.R.layout.simple_list_item_1, list);
 		setListAdapter(adapter);

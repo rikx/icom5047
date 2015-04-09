@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ReportDetailsFragment extends Fragment {
@@ -44,6 +45,25 @@ public class ReportDetailsFragment extends Fragment {
 
 		//Create dynamic views
 		LinearLayout layoutInterview = (LinearLayout) view.findViewById(R.id.report_interview_layout);
+
+		Path path = report.getPath();
+		Iterator i = path.iterator();
+		int size = path.getSize();
+		for(Path.PathEntry e : path) {
+			Item item = e.getItem();
+			Option option = e.getOption();
+			String data = e.getData();
+			String question = item.getLabel();
+			TextView textQuestion = new TextView(getActivity());
+			textQuestion.setText("\t"+question);
+			TextView textAnswer = new TextView(getActivity());
+			String answer = data.equals("") ? option.getLabel() : data ;
+			textAnswer.setText("\t\t"+answer);
+			layoutInterview.addView(textQuestion);
+			layoutInterview.addView(textAnswer);
+		}
+
+		/*
 		List<Item> items = report.getFlowchart().getItems();
 		for(Item i : items) {
 			TextView textItem = new TextView(getActivity());
@@ -56,6 +76,7 @@ public class ReportDetailsFragment extends Fragment {
 				layoutInterview.addView(textOption);
 			}
 		}
+		*/
 
 		viewCreated = true;
 		return view;
@@ -84,7 +105,7 @@ public class ReportDetailsFragment extends Fragment {
 			textCreator.setText(label+": "+creator);
 		}
 		if(report.getSubject() != null) {
-			String label = getResources().getString(R.string.creator_label);
+			String label = getResources().getString(R.string.subject_label);
 			String subject = report.getSubject().toString();
 			textSubject.setText(label + ": " + subject);
 		}

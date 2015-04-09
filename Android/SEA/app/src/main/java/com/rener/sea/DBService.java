@@ -184,11 +184,11 @@ public class DBService extends Service {
 		people.add(new Person(1, "Enrique", "Rodriguez"));
 		people.add(new Person(2, "Ricardo", "Fuentes"));
 		people.add(new Person(3, "Ramón", "Saldaña"));
-		people.add(new Person(6, "Betzabe", "Rodriguez"));
 		people.add(new Person(4, "Gustavo", "Fring"));
 		people.add(new Person(5, "Dennis", "Markowski"));
 		people.add(new Person(6, "Generic", "Person"));
 		people.add(new Person(7, "Generic", "Agent"));
+		people.add(new Person(8, "Betzabe", "Rodriguez"));
 		findPersonById(0).setEmail("nelson.reyes@upr.edu");
 		findPersonById(0).setPhoneNumber("787-403-1082");
 		findPersonById(6).setEmail("generic.person@upr.edu");
@@ -212,7 +212,7 @@ public class DBService extends Service {
 		users.add(new User(2, "enrique.rodriguez2", "iamenrique", findPersonById(1)));
 		users.add(new User(3, "ricardo.fuentes", "iamricardo", findPersonById(2)));
 		users.add(new User(4, "ramon.saldana", "iamramon", findPersonById(3)));
-		users.add(new User(5, "betzabe.rodriguez", "iambetzabe", findPersonById(6)));
+		users.add(new User(5, "betzabe.rodriguez", "iambetzabe", findPersonById(8)));
 
 		items = new ArrayList<>();
 		items.add(new Item(1, "Is the cow sick?", Item.BOOLEAN));
@@ -238,12 +238,18 @@ public class DBService extends Service {
 		findItemById(2).addOption(findOptionById(3));
 		findItemById(2).addOption(findOptionById(4));
 		findItemById(2).addOption(findOptionById(5));
-		options.add(new Option(6, findItemById(8),"USER INPUT"));
-		options.add(new Option(7, findItemById(9),"USER INPUT"));
+		options.add(new Option(6, findItemById(8)));
+		options.add(new Option(7, findItemById(9)));
 		findItemById(4).addOption(findOptionById(6));
 		findItemById(4).addOption(findOptionById(7));
-		options.add(new Option(8, findItemById(7), "USER INPUT"));
+		options.add(new Option(8, findItemById(7)));
 		findItemById(3).addOption(findOptionById(8));
+		options.add(new Option(9, findItemById(10)));
+		findItemById(7).addOption(findOptionById(9));
+		options.add(new Option(10, findItemById(10)));
+		findItemById(8).addOption(findOptionById(10));
+		options.add(new Option(11, findItemById(10)));
+		findItemById(9).addOption(findOptionById(11));
 
 		flowcharts = new ArrayList<>();
 		Flowchart fc1 = new Flowchart(1, "Test Flowchart");
@@ -251,9 +257,15 @@ public class DBService extends Service {
 		for(Item i : items) fc1.addItem(i);
 
 		reports = new ArrayList<>();
-		reports.add(new Report(0,"My Report", findLocationById(4)));
+		reports.add(new Report(0,"My Report"));
+		findReportById(0).setLocation(findLocationById(3));
 		findReportById(0).setFlowchart(findFlowchartById(1));
-		findReportById(0).setCreator(findUserById(0));
+		findReportById(0).setCreator(findUserById(1));
+		findReportById(0).setSubject(findPersonById(8));
+		findReportById(0).addToPath(findOptionById(1));
+		findReportById(0).addToPath(findOptionById(5));
+		findReportById(0).addToPath(findOptionById(7), "5");
+		findReportById(0).addToPath(findOptionById(11));
 
 		Log.i(this.toString(), "dummy data set");
 	}

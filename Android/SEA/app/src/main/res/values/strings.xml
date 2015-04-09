@@ -22,13 +22,15 @@
 	<string name="edit">Edit</string>
 	<string name="save">Save</string>
 	<string name="location_name">location name</string>
+	<string name="license">license</string>
+	<string name="address">Address</string>
 	<string name="address_line1">address line 1</string>
 	<string name="address_line2">address line 2</string>
 	<string name="address_city">city</string>
 	<string name="address_zip_code">zip code</string>
 	<string name="no_owner">No owner</string>
 	<string name="no_manager">No manager</string>
-	<string name="no_agent">No agent on file</string>
+	<string name="no_agent">No agent</string>
 	<string name="owner_label">Owner</string>
 	<string name="manager_label">Manager</string>
 	<string name="agent_label">Assigned agent</string>
