@@ -379,19 +379,19 @@ public final class SEASchema extends SQLiteOpenHelper {
         return id;// if -1 error during insertion
 
     }
-    public long createPath(Path.Answer answer, long report){
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(PATH_REPORT_ID , report);
-        values.put(PATH_OPTION_ID, answer.getSelected().getId());
-        values.put(PATH_DATA, answer.getData());
-
-        long id = db.insert(TABLE_PATH,null,values);
-        db.close();
-        return id;// if -1 error during insertion
-
-    }
+//    public long createPath(Path.Answer answer, long report){
+//        SQLiteDatabase db = getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//
+//        values.put(PATH_REPORT_ID , report);
+//        values.put(PATH_OPTION_ID, answer.getSelected().getId());
+//        values.put(PATH_DATA, answer.getData());
+//
+//        long id = db.insert(TABLE_PATH,null,values);
+//        db.close();
+//        return id;// if -1 error during insertion
+//
+//    }
     public long createPerson(Person person){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
