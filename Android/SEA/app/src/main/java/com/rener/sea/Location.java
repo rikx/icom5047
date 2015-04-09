@@ -7,26 +7,18 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
-public class Location {
+public class Location implements Comparable<Location> {
 
+
+	public static final String PUERTO_RICO = "Puerto Rico";
 	private long id;
 	private String name = "";
 	private Person manager = null;
 	private Person owner = null;
 	private Person agent = null;
 	private Address address = null;
-    private String licence;
-
-    public String getLicence() {
-        return licence;
-    }
-
-    public void setLicence(String licence) {
-        this.licence = licence;
-    }
-
-    private long address_id;
-	public static String PUERTO_RICO = "Puerto Rico";
+	private long address_id;
+	private String license = "";
 
 	public Location(String name) {
 		this.name = name;
@@ -124,10 +116,14 @@ public class Location {
 	public long setAddressId(long id) {
 		return this.address_id = id;
 	}
-    public long getAddressId() {
-        return this.address_id;
-    }
 
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
+	}
 
 	private static Address newAddress() {
 		Address a = new Address(Locale.US);
@@ -159,5 +155,15 @@ public class Location {
 			return "";
 		}
 		return json.toString();
+	}
+
+	@Override
+	public int compareTo(Location l) {
+		int compare = toString().compareTo(l.toString());
+		return compare;
+	}
+
+	public boolean equals(Location l) {
+		return this.id == l.getId();
 	}
 }

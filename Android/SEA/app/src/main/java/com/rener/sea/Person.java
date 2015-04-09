@@ -5,7 +5,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Person {
+public class Person implements Comparable<Person> {
 
 	public final static String PERSON_ID = "person_id";
 	public final static String FIRST_NAME = "first_name";
@@ -190,5 +190,15 @@ public class Person {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public int compareTo(Person p) {
+		int compare = toString().compareTo(p.toString());
+		return compare;
+	}
+
+	public boolean equals(Person p) {
+		return this.id == p.getId();
 	}
 }

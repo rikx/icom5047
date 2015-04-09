@@ -22,6 +22,13 @@
 			/>
 
 			<TextView
+				android:id="@+id/location_text_license"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+				/>
+
+			<TextView
 				android:id="@+id/address_text_line1"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -87,10 +94,18 @@
 			android:orientation="vertical">
 
 			<EditText
-				android:id="@+id/location_edit_name"
+			android:id="@+id/location_edit_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:hint="@string/location_name"
+			android:inputType="text"
+			/>
+
+			<EditText
+				android:id="@+id/location_edit_license"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:hint="@string/location_name"
+				android:hint="@string/license"
 				android:inputType="text"
 				/>
 

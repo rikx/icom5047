@@ -4,13 +4,18 @@ public class Option {
 
 	private long id;
 	private Item next;
-    private Item parent;
-	private String label = "";
+	private String label;
 
 	public Option(long id, Item next, String label) {
 		this.id = id;
 		this.next = next;
 		this.label = label;
+	}
+
+	public Option(long id, Item next) {
+		this.id = id;
+		this.next = next;
+		this.label = "";
 	}
 
 	public long getId() {
@@ -36,9 +41,4 @@ public class Option {
 	public void setLabel(String label) {
 		this.label = label;
 	}
-
-    public long getParent() {
-        return parent.getId();
-    }
-
 }

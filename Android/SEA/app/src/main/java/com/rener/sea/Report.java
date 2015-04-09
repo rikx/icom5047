@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Report {
+public class Report implements Comparable<Report> {
 
 	public static final String DATE_FORMAT = "dd/LLL/yy";
 	private long id;
@@ -19,13 +19,13 @@ public class Report {
 	private String note = "";
 	private Date date;
 	private String type = "";
-	private List<Pair<Option,String>> path;
+	private Path path;
 
 	public Report(long id, String name) {
 		this.id = id;
 		this.name = name;
 		this.date = new Date();
-		this.path = new ArrayList<>();
+		this.path = new Path();
 	}
 
 	public Report(long id, String name, Location location) {
@@ -33,7 +33,7 @@ public class Report {
 		this.name = name;
 		this.location = location;
 		this.date = new Date();
-		this.path = new ArrayList<>();
+		this.path = new Path();
 	}
 
 	public Report(long id, User creator, Location location, Person subject, Flowchart flowchart,
@@ -45,7 +45,7 @@ public class Report {
 		this.flowchart = flowchart;
 		this.note = note;
 		this.date = date;
-		this.path = new ArrayList<>();
+		this.path = new  Path();
 	}
 
 	public long getId() {
@@ -125,9 +125,28 @@ public class Report {
 		this.type = type;
 	}
 
-	public void addOptionToPath(Option option, String data) {
-		Pair<Option,String> pair = new Pair<Option,String>(option, data);
-		path.add(pair);
+	public void addToPath(Option option, String data) {
+		Item item = findOptionParent(option);
+		path.addEntry(item, option, data);
+	}
+
+	public void addToPath(Option option) {
+		Item item = findOptionParent(option);
+		path.addEntry(item, option);
+	}
+
+	public Path getPath() {
+		return path;
+	}
+
+	private Item findOptionParent(Option option) {
+		Item item = null;
+		for(Item i : flowchart.getItems()) {
+			for(Option o : i.getOptions()) {
+				if(o.getId() == option.getId()) item = i;
+			}
+		}
+		return item;
 	}
 
 	public String toString() {
@@ -135,5 +154,11 @@ public class Report {
 		String s = name+"\n"+location.getName()+"\t"+sdf.format(date);
 		//Log.i("REPORT", s);
 		return s;
+	}
+
+	@Override
+	public int compareTo(Report r) {
+		int compare = this.date.compareTo(r.getDate());
+		return compare;
 	}
 }

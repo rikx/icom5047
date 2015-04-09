@@ -25,14 +25,14 @@
 			/>
 
 		<TextView
-			android:id="@+id/report_text_creator"
+			android:id="@+id/report_text_location"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/no_data"
 			/>
 
 		<TextView
-			android:id="@+id/report_text_location"
+			android:id="@+id/report_text_creator"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/no_data"
