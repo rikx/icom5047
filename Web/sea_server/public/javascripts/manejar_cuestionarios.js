@@ -5,25 +5,36 @@ $(document).ready(function(){
   var cuestionarios_data= $cuestionarios_list.attr('data-cuestionarios');
   var cuestionarios_array = JSON.parse(cuestionarios_data);
 
-  /* Button: Return home */
-  $('#btn_home').on('click', function(){
-    window.location.href = '/users/admin';
-  });
 
-  /* Close info panel */
-  $('#btn_close_info_panel').on('click', function(){
-    $('#info_panel').hide();
-    remove_active_class($usuarios_list);
-  });
+  populate_info_panel();
 
-  /* Open edit page */
-  $cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
+  function populate_info_panel(){
+   var firstElement = [];
+   firstElement = cuestionarios_array[0]; 
+   $('#cuestionario_info_name').text(firstElement.flowchart_name);
+   $('#cuestionario_info_version').text(firstElement.version);
+   $('#cuestionario_info_creator').text(firstElement.username);
+ }
+
+ /* Button: Return home */
+ $('#btn_home').on('click', function(){
+  window.location.href = '/users/admin';
+});
+
+ /* Close info panel */
+ $('#btn_close_info_panel').on('click', function(){
+  $('#info_panel').hide();
+  remove_active_class($usuarios_list);
+});
+
+ /* Open edit page */
+ $cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
 		// contains cuestionario id
     var this_cuestionario_id = $(this).attr('data-id');
     window.location.href = '/users/admin/cuestionario/'+this_cuestionario_id;
   });
 
-  $cuestionarios_list.on('click', 'tr td a.show_info_cuestionario', function(e){
+ $cuestionarios_list.on('click', 'tr td a.show_info_cuestionario', function(e){
     // prevents link from firing
     e.preventDefault();
     var table_content = '';
@@ -47,7 +58,7 @@ $(document).ready(function(){
     $('#cuestionario_info_creator').text(thisUserObject.username);
   });
 
-function populate_cuestionarios(){
+ function populate_cuestionarios(){
   $.getJSON('http://localhost:3000/users/admin/list_cuestionarios', function(data) {
     cuestionarios_array = data.cuestionarios;
 
