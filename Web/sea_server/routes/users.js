@@ -218,7 +218,6 @@ router.get('/admin/reportes/:id', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	reporte_details = result.rows[0];
-	    	console.log(reporte_details);
 //reporte_details = {report_id : report_id, username : 'Test User Please Ignore', date_filed : '05-12-2015', note : 'Lorem ipsum dolor sit amet, ne quo dictas iracundia, vivendum elaboraret contentiones sit cu. No omnium argumentum has, eos ea laoreet perfecto elaboraret. Nonumy mnesarchum an vix. Nam ei munere praesent referrentur, ei exerci soleat torquatos nec. Est et minimum voluptatum, has ad nulla homero recteque, et nam alii eleifend hendrerit.\
 //\
 //Nominavi hendrerit ex mea, iudico sententiae inciderint pro ea, nec ex dictas virtute albucius. Lorem everti mandamus no vel. Ut habemus menandri instructior nam. Virtute principes in ius. Cum id probo admodum, pro et facer meliore singulis, ne aeque aeterno salutandi vix. In mea iudico decore forensibus, sit et movet iuvaret, sapientem consetetur est an.\

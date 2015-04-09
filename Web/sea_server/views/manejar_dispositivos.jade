@@ -55,16 +55,13 @@ block content
 							label(for='dispositivo_usuario') Assignado a:
 							input#dispositivo_usuario(class='form-control', name='dispositivo_id_num', type='text', placeholder='# de identificación')
 						.form-group
-								#usuario_type.dropdown
-									button(class='btn btn-default dropdown-toggle user_type_dropdown', type='button', data-toggle='dropdown', aria-expanded='true') Seleccionar Usuario 
-											span(class='caret')
-									ul(class='dropdown-menu', id="user_type", role='menu', aria-labelledby='tipo de usuario')
-										li(role='presentation')
-											a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Admin
-										li(role='presentation')
-											a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Especialista
-										li(role='presentation')
-											a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Agent
+							label(for='btn_dropdown_agentes') Agentes:
+							.dropdown
+								.btn-group
+									button#btn_dropdown_agentes(class='btn btn-default dropdown-toggle', type='button', name='btn_dropdown_agentes', data-toggle='dropdown', aria-expanded='false') 
+										span#btn_dropdown_agentes_text Lista de Agentes 
+										span(class='caret')
+									ul#list_dropdown_agentes(class='dropdown-menu', role='menu')
 					.btn-group(role='group', aria-label='info panel buttons')
 						button#btn_close_edit_panel(class='btn btn-default') Cerrar
 						button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
