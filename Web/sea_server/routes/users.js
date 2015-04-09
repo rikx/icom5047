@@ -204,20 +204,27 @@ router.get('/admin/reportes/:id', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query('', function(err, result) {
+		// TODO: Falta join con path para determinar recomendacion a desplegar
+	  client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, location.name AS location_name, subject_id, first_name || ' ' || last_name1 || ' ' || last_name2 AS interviewee_name, report.flowchart_id, flowchart.name AS survey_name, \
+									flowchart.version AS survey_version, report.note, report.date_filed AS report_date, appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose \
+									FROM report, appointments, users, flowchart, person, location \
+									WHERE report.report_id =$1 AND report.report_id = appointments.report_id \
+									AND users.user_id = report.creator_id AND report.flowchart_id = flowchart.flowchart_id \
+									AND report.subject_id = person.person_id AND report.location_id = location.location_id", [report_id], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	//reporte_details = result.rows;
-	    	reporte_details = {report_id : report_id, username : 'Test User Please Ignore', date_filed : '05-12-2015', note : 'Lorem ipsum dolor sit amet, ne quo dictas iracundia, vivendum elaboraret contentiones sit cu. No omnium argumentum has, eos ea laoreet perfecto elaboraret. Nonumy mnesarchum an vix. Nam ei munere praesent referrentur, ei exerci soleat torquatos nec. Est et minimum voluptatum, has ad nulla homero recteque, et nam alii eleifend hendrerit.\
-\
-Nominavi hendrerit ex mea, iudico sententiae inciderint pro ea, nec ex dictas virtute albucius. Lorem everti mandamus no vel. Ut habemus menandri instructior nam. Virtute principes in ius. Cum id probo admodum, pro et facer meliore singulis, ne aeque aeterno salutandi vix. In mea iudico decore forensibus, sit et movet iuvaret, sapientem consetetur est an.\
-\
-Sit alia intellegat at, in ferri rebum est. Maluisset honestatis mei ei. Lorem melius an vim, admodum deserunt sit id. Suas detraxit vis in, ullum error iisque his ex. Vel eius mollis albucius ad, quot eius et duo.\
-', recomendation : 'Lorem ipsum dolor sit amet, feugiat nulla commodo, luctus elit euismod. Neque nunc, lectus mi tellus, neque primis erat, eget euismod convallis. Justo laoreet id neque eget leo placerat, nulla id, viverra amet laoreet litora lorem, mollis elit volutpat vel turpis sed laborum, massa consectetuer facilisis. Donec vehicula egestas purus nulla ut est. Accumsan risus massa commodo vivamus placerat sit, ut felis turpis consectetuer, per litora lectus diam scelerisque libero, ante ac at nulla. Pellentesque fermentum nunc eros mattis.'}
+	    	reporte_details = result.rows[0];
+	    	console.log(reporte_details);
+//reporte_details = {report_id : report_id, username : 'Test User Please Ignore', date_filed : '05-12-2015', note : 'Lorem ipsum dolor sit amet, ne quo dictas iracundia, vivendum elaboraret contentiones sit cu. No omnium argumentum has, eos ea laoreet perfecto elaboraret. Nonumy mnesarchum an vix. Nam ei munere praesent referrentur, ei exerci soleat torquatos nec. Est et minimum voluptatum, has ad nulla homero recteque, et nam alii eleifend hendrerit.\
+//\
+//Nominavi hendrerit ex mea, iudico sententiae inciderint pro ea, nec ex dictas virtute albucius. Lorem everti mandamus no vel. Ut habemus menandri instructior nam. Virtute principes in ius. Cum id probo admodum, pro et facer meliore singulis, ne aeque aeterno salutandi vix. In mea iudico decore forensibus, sit et movet iuvaret, sapientem consetetur est an.\
+//\
+//Sit alia intellegat at, in ferri rebum est. Maluisset honestatis mei ei. Lorem melius an vim, admodum deserunt sit id. Suas detraxit vis in, ullum error iisque his ex. Vel eius mollis albucius ad, quot eius et duo.\
+//', recomendation : 'Lorem ipsum dolor sit amet, feugiat nulla commodo, luctus elit euismod. Neque nunc, lectus mi tellus, neque primis erat, eget euismod convallis. Justo laoreet id neque eget leo placerat, nulla id, viverra amet laoreet litora lorem, mollis elit volutpat vel turpis sed laborum, massa consectetuer facilisis. Donec vehicula egestas purus nulla ut est. Accumsan risus massa commodo vivamus placerat sit, ut felis turpis consectetuer, per litora lectus diam scelerisque libero, ante ac at nulla. Pellentesque fermentum nunc eros mattis.'}
 	    	res.render('reporte', { title: 'Reporte', reporte: reporte_details});
 	    }
 	  });

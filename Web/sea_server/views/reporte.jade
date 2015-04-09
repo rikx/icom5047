@@ -24,15 +24,19 @@ block content
 					h2 Información General
 				.jumbotron
 					p Usuario: 
-						= reporte.username
+						= reporte.report_creator
 					p Fecha: 
-						= reporte.date_filed
+						= reporte.report_date
 					p Localización: 
 						= reporte.location_name
 					p Ganadero Entrevistado: 
-						= reporte.ganadero_name
+						= reporte.interviewee_name
 					p Tipo de Encuesta: 
 						= reporte.survey_type
+					p Nombre de Encuesta: 
+						= reporte.survey_name
+						| ' '
+						= reporte.survey_version
 				// For use in phase 3
 				div(style="display:none")
 					center
@@ -66,7 +70,14 @@ block content
 					h2 Fecha de Seguimiento
 				.jumbotron
 					p 
+						strong Fecha: 
 						= reporte.appointment_date
+					p
+						strong Hora: 
+						= reporte.appointment_time
+					p
+						strong Propósito: 
+						= reporte.appointment_purpose
 					a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
 						i(class='glyphicon glyphicon-edit')
 
