@@ -1,5 +1,10 @@
 package com.rener.sea;
 
+import android.graphics.BitmapFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Item {
 
 	public static final String RECOMMENDATION = "RECOM";
@@ -11,11 +16,13 @@ public class Item {
 	private long id;
 	private String label;
 	private String type;
+	private List<Option> options;
 
 	public Item(long id, String label, String type) {
 		this.id = id;
 		this.label = label;
 		this.type = type;
+		options = new ArrayList<>();
 	}
 
 	public long getId() {
@@ -40,5 +47,17 @@ public class Item {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public List<Option> getOptions() {
+		return options;
+	}
+
+	public void setOptions(List<Option> options) {
+		this.options = options;
+	}
+
+	public void addOption(Option option) {
+		options.add(option);
 	}
 }
