@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -13,7 +17,7 @@ import java.util.List;
  */
 public final class SEASchema extends SQLiteOpenHelper {
 
-    private static String VALUE = "VALUEDUMMY";
+    private static String VALUE = "DUMMY_VALUE";
     private static int DATABASE_VERSION = 1;
     // declaration of all keys for the DB
     public static final String
@@ -324,7 +328,7 @@ public final class SEASchema extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(ITEM_ID              , item.getId());
-        values.put(ITEM_FLOWCHART_ID    , VALUE);
+        values.put(ITEM_FLOWCHART_ID    , item.getFlowchartID());
         values.put(ITEM_LABEL           , item.getLabel());
         values.put(ITEM_POS_TOP         , VALUE);// ???
         values.put(ITEM_POS_LEFT        , VALUE);// ???
@@ -341,10 +345,10 @@ public final class SEASchema extends SQLiteOpenHelper {
 
         values.put(LOCATION_ID                   , loc.getId());
         values.put(LOCATION_NAME                 , loc.getName());
-        values.put(LOCATION_ADDRESS_ID           , loc.getAddressId());
+        values.put(LOCATION_ADDRESS_ID           , loc.getAddress_id());
         values.put(LOCATION_OWNER_ID             , loc.getOwner().getId());
         values.put(LOCATION_MANAGER_ID           , loc.getManager().getId());
-        values.put(LOCATION_LICENSE              , VALUE);
+        values.put(LOCATION_LICENSE              , loc.getLicense());
         values.put(LOCATION_AGENT_ID             , loc.getAgent().getId());
 
 
@@ -370,7 +374,7 @@ public final class SEASchema extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(OPTION_ID        ,   option.getId());
-        values.put(OPTION_PARENT_ID ,   option.getParent());
+//        values.put(OPTION_PARENT_ID ,   option.);
         values.put(OPTION_NEXT_ID   ,   option.getNext().getId());
         values.put(OPTION_LABEL     ,   option.getLabel());
 
@@ -379,19 +383,21 @@ public final class SEASchema extends SQLiteOpenHelper {
         return id;// if -1 error during insertion
 
     }
-//    public long createPath(Path.Answer answer, long report){
-//        SQLiteDatabase db = getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//
-//        values.put(PATH_REPORT_ID , report);
-//        values.put(PATH_OPTION_ID, answer.getSelected().getId());
-//        values.put(PATH_DATA, answer.getData());
-//
-//        long id = db.insert(TABLE_PATH,null,values);
-//        db.close();
-//        return id;// if -1 error during insertion
-//
-//    }
+    public long createPath(Path.PathEntry path, long report){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(PATH_REPORT_ID , report);
+        values.put(PATH_OPTION_ID, path.getOption().getId());
+        values.put(PATH_DATA, path.getData());
+
+        long id = db.insert(TABLE_PATH,null,values);
+        db.close();
+        return id;// if -1 error during insertion
+
+    }
+
+
     public long createPerson(Person person){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -501,7 +507,7 @@ public final class SEASchema extends SQLiteOpenHelper {
             location.setAddressId(cursor.getLong(2));
             location.setOwner(findPersonById(cursor.getLong(3)));
             location.setManager(findPersonById(cursor.getLong(4)));
-            location.setLicence(cursor.getString(5));
+            location.setLicense(cursor.getString(5));
             location.setAgent(findPersonById(cursor.getLong(6)));
             db.close();
             cursor.close();
@@ -511,45 +517,114 @@ public final class SEASchema extends SQLiteOpenHelper {
         return null;
     }
 
-//    public Item findItemById(long id){
-//            SQLiteDatabase db = getReadableDatabase();
-//            Cursor cursor= db.query(TABLE_ITEM,new String[] { ITEM_FLOWCHART_ID,
-//                            ITEM_ID,
-//                            ITEM_LABEL,
-//                            ITEM_TYPE
-//                    },
-//                    LOCATION_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
-//            if(cursor != null) {
-//                cursor.moveToFirst();
-//                Item item = new Item(cursor.getLong(0),cursor.getLong(1),cursor.getString(2),cursor.getString(3));
-//                db.close();
-//                cursor.close();
-//
-//                return item;
-//            }
-//            return null;
-//
-//    }
-//    public List<Option> getOptions(long flowchartID){
-//        SQLiteDatabase db = getReadableDatabase();
-//        Cursor cursor= db.query(TABLE_OPTION,new String[] { OPTION_ID,
-//                        OPTION_PARENT_ID,
-//                        OPTION_NEXT_ID,
-//                        OPTION_LABEL
-//                },
-//                LOCATION_ID + "=?", new String[] {String.valueOf(flowchartID)},null,null,null,null);
-//        if(cursor != null) {
-//            cursor.moveToFirst();
-//            List<Option> options = new ArrayList<Option>();
-//            options.add(new Option(cursor.getLong(0),));
-//            db.close();
-//            cursor.close();
-//
-//            return options;
-//        }
-//        return null;
-//
-//    }
+    public Item findItemById(long id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(TABLE_ITEM,new String[] { ITEM_FLOWCHART_ID,
+                        ITEM_ID,
+                        ITEM_LABEL,
+                        ITEM_TYPE
+                },
+                ITEM_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
+        if(cursor != null) {
+            cursor.moveToFirst();
+            Item item = new Item(cursor.getLong(0),cursor.getLong(1),cursor.getString(2),cursor.getString(3));
+            db.close();
+            cursor.close();
+
+            return item;
+        }
+        return null;
+
+    }
+    public List<Option> findOptionsOfItem(long itemID){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(TABLE_OPTION,new String[] { OPTION_ID,
+                        OPTION_PARENT_ID,
+                        OPTION_NEXT_ID,
+                        OPTION_LABEL
+                },
+                OPTION_PARENT_ID + "=?", new String[] {String.valueOf(itemID)},null,null,null,null);
+        if(cursor != null) {
+            cursor.moveToFirst();
+            List<Option> options = new ArrayList<Option>();
+            do {
+                options.add(new Option(cursor.getLong(0), findItemById(cursor.getLong(2)), cursor.getString(3)));
+            }while (cursor.moveToNext());
+            db.close();
+            cursor.close();
+
+            return options;
+        }
+        return null;
+
+    }
+    public Option findOptionById(long id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(TABLE_OPTION,new String[] { OPTION_ID,
+                        OPTION_PARENT_ID,
+                        OPTION_NEXT_ID,
+                        OPTION_LABEL
+                },
+                OPTION_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
+        if(cursor != null) {
+            cursor.moveToFirst();
+            Option options = new Option(cursor.getLong(0), findItemById(cursor.getLong(2)), cursor.getString(3));
+            db.close();
+            cursor.close();
+
+            return options;
+        }
+        return null;
+    }
+    public Report findReportById(long id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(TABLE_REPORT,new String[] { REPORT_ID,
+                        REPORT_CREATOR_ID,
+                        REPORT_LOCATION_ID,
+                        REPORT_SUBJECT_ID,
+                        REPORT_FLOWCHART_ID,
+                        REPORT_NOTE,
+                        REPORT_DATE_FILED
+                },
+                REPORT_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
+        if(cursor != null) {
+            cursor.moveToFirst();
+            Report report = new Report(cursor.getLong(0), findUserById(cursor.getLong(1)), findLocationById(cursor.getLong(2)), findPersonById(cursor.getLong(3)), findFlowchartById(cursor.getLong(4)), cursor.getString(5), Date.valueOf(cursor.getString(6)));
+            db.close();
+            cursor.close();
+
+            return report;
+        }
+        return null;
+    }
+    public Flowchart findFlowchartById(long id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_FLOWCHART,new String[] { FLOWCHART_ID,
+                        FLOWCHART_FIRST_ID,
+                        FLOWCHART_NAME,
+                        FLOWCHART_END_ID,
+                        FLOWCHART_CREATOR_ID,
+                        FLOWCHART_VERSION
+                },
+                FLOWCHART_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
+        if(cursor != null) {
+            cursor.moveToFirst();
+            Flowchart flowchart = new Flowchart(cursor.getLong(0), cursor.getString(2));
+            // , findLocationById(cursor.getLong(2)), findPersonById(cursor.getLong(3)), findFlowchartById(cursor.getLong(4)), cursor.getString(5), Date.valueOf(cursor.getString(6))
+            flowchart.setFirst(findItemById(cursor.getLong(1)));
+            db.close();
+            cursor.close();
+
+            return flowchart;
+        }
+        return null;
+
+    }
+    public User findUserById(long id){
+
+        return null;
+    }
+
 
 
     public class DummyData{
@@ -621,50 +696,57 @@ public final class SEASchema extends SQLiteOpenHelper {
             findLocationById(2).setManager(findPersonById(5));
             findLocationById(3).setOwner(findPersonById(6));
 
-//
-//            Flowchart fc1 = new Flowchart(1, "Test Flowchart");
-//
-//            createItem(new Item(1, "Is the cow sick?", Item.BOOLEAN));
-//            items.add(new Item(1, "Is the cow sick?", Item.BOOLEAN));
-//            items.add(new Item(2, "How would you categorize this problem?", Item.MULTIPLE_CHOICE));
-//            items.add(new Item(3, "Record a description of the milk coloring, texture and smell",
-//                    Item.OPEN));
-//            items.add(new Item(4, "Input amount of times cow eats a day", Item.CONDITIONAL));
-//            items.add(new Item(5, "Recommendation 1", Item.RECOMMENDATION));
-//            items.add(new Item(6, "Recommendation 2", Item.RECOMMENDATION));
-//            items.add(new Item(7, "Recommendation 3", Item.RECOMMENDATION));
-//            items.add(new Item(8, "Recommendation 4", Item.RECOMMENDATION));
-//            items.add(new Item(9, "Recommendation 5", Item.RECOMMENDATION));
-//            items.add(new Item(10, "End of flowchart test", Item.END));
-//
-//            options = new ArrayList<>();
-//            options.add(new Option(1, findItemById(2),"Yes"));
-//            options.add(new Option(2, findItemById(5),"No"));
-//            findItemById(1).addOption(findOptionById(1));
-//            findItemById(1).addOption(findOptionById(2));
-//            options.add(new Option(3, findItemById(3),"Milk is discolored"));
-//            options.add(new Option(4, findItemById(6),"Injured leg"));
-//            options.add(new Option(5, findItemById(4),"Eating problems"));
-//            findItemById(2).addOption(findOptionById(3));
-//            findItemById(2).addOption(findOptionById(4));
-//            findItemById(2).addOption(findOptionById(5));
-//            options.add(new Option(6, findItemById(8),"USER INPUT"));
-//            options.add(new Option(7, findItemById(9),"USER INPUT"));
-//            findItemById(4).addOption(findOptionById(6));
-//            findItemById(4).addOption(findOptionById(7));
-//            options.add(new Option(8, findItemById(7), "USER INPUT"));
-//            findItemById(3).addOption(findOptionById(8));
-//
-//
-//            flowcharts.add(fc1);
-//            for(Item i : items) fc1.addItem(i);
-//
-//            reports = new ArrayList<>();
-//            reports.add(new Report(0,"My Report", findLocationById(4)));
-//            findReportById(0).setFlowchart(findFlowchartById(1));
-//            findReportById(0).setCreator(findUserById(0));
-//
-//            Log.i(this.toString(), "dummy data set");
+            Flowchart fc1 = new Flowchart(1, "Test Flowchart");
+
+            createItem(new Item(1,1, "Is the cow sick?", Item.BOOLEAN));
+            createItem(new Item(1,2, "How would you categorize this problem?", Item.MULTIPLE_CHOICE));
+            createItem(new Item(1,3, "Record a description of the milk coloring, texture and smell",
+                    Item.OPEN));
+            createItem(new Item(1,4, "Input amount of times cow eats a day", Item.CONDITIONAL));
+            createItem(new Item(1,5, "Recommendation 1", Item.RECOMMENDATION));
+            createItem(new Item(1,6, "Recommendation 2", Item.RECOMMENDATION));
+            createItem(new Item(1,7, "Recommendation 3", Item.RECOMMENDATION));
+            createItem(new Item(1,8, "Recommendation 4", Item.RECOMMENDATION));
+            createItem(new Item(1,9, "Recommendation 5", Item.RECOMMENDATION));
+            createItem(new Item(1,10, "End of flowchart test", Item.END));
+
+            createOption(new Option(1, findItemById(2),"Yes"));
+            createOption(new Option(2, findItemById(5), "No"));
+            findItemById(1).addOption(findOptionById(1));
+            findItemById(1).addOption(findOptionById(2));
+            createOption(new Option(3, findItemById(3), "Milk is discolored"));
+            createOption(new Option(4, findItemById(6), "Injured leg"));
+            createOption(new Option(5, findItemById(4), "Eating problems"));
+            findItemById(2).addOption(findOptionById(3));
+            findItemById(2).addOption(findOptionById(4));
+            findItemById(2).addOption(findOptionById(5));
+            createOption(new Option(6, findItemById(8)));
+            createOption(new Option(7, findItemById(9)));
+            findItemById(4).addOption(findOptionById(6));
+            findItemById(4).addOption(findOptionById(7));
+            createOption(new Option(8, findItemById(7)));
+            findItemById(3).addOption(findOptionById(8));
+            createOption(new Option(9, findItemById(10)));
+            findItemById(7).addOption(findOptionById(9));
+            createOption(new Option(10, findItemById(10)));
+            findItemById(8).addOption(findOptionById(10));
+            createOption(new Option(11, findItemById(10)));
+            findItemById(9).addOption(findOptionById(11));
+
+
+            //  for(Item i : items) fc1.addItem(i);
+
+            Report report =new Report(0,"My Report") ;
+            findReportById(0).setLocation(findLocationById(3));
+            findReportById(0).setFlowchart(findFlowchartById(1));
+            findReportById(0).setCreator(findUserById(1));
+            findReportById(0).setSubject(findPersonById(8));
+            findReportById(0).addToPath(findOptionById(1));
+            findReportById(0).addToPath(findOptionById(5));
+            findReportById(0).addToPath(findOptionById(7), "5");
+            findReportById(0).addToPath(findOptionById(11));
+
+            Log.i(this.toString(), "dummy data set");
         }
 
 
