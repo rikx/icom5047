@@ -10,6 +10,7 @@ import java.util.List;
 public class Report implements Comparable<Report> {
 
 	public static final String DATE_FORMAT = "dd/LLL/yy";
+	public static final int NEW_REPORT_ID = -1;
 	private long id;
 	private String name;
 	private User creator;
@@ -20,6 +21,13 @@ public class Report implements Comparable<Report> {
 	private Date date;
 	private String type = "";
 	private Path path;
+
+	public Report() {
+		this.id = NEW_REPORT_ID;
+		this.name = "";
+		this.date = new Date();
+		this.path = new Path();
+	}
 
 	public Report(long id, String name) {
 		this.id = id;

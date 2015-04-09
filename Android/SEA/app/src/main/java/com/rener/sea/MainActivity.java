@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
@@ -131,6 +132,9 @@ public class MainActivity extends FragmentActivity
 			case R.id.action_settings :
 				showSettings();
 				break;
+			case R.id.new_report_action :
+				newReport();
+				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -142,26 +146,31 @@ public class MainActivity extends FragmentActivity
 	public void OnMenuItemSelectedListener(String type, ListView l, View v, int position) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		String title = getActionBar().getTitle().toString();
 		if(type.equals(MenuListFragment.TYPE_MAIN)) {
 			String selection = l.getAdapter().getItem(position).toString();
+			String title = getString(R.string.app_name);
+			String append = "";
 			if(selection.equalsIgnoreCase("PEOPLE")) {
-				//String append = getResources().getString(R.id.people);
+				append = getString(R.string.people);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
 				transaction.replace(R.id.menu_selected_container, rightFragment, "PEOPLE");
 				transaction.commit();
 			}
 			else if(selection.equalsIgnoreCase("LOCATIONS")) {
+				append = getString(R.string.locations);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
 				transaction.replace(R.id.menu_selected_container, rightFragment,
 						"LOCATIONS");
 				transaction.commit();
 			}
 			else if (selection.equalsIgnoreCase("REPORTS")) {
+				append = getString(R.string.reports);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
 				transaction.replace(R.id.menu_selected_container, rightFragment, "REPORTS");
 				transaction.commit();
 			}
+			title = title+" > "+append;
+			getActionBar().setTitle(title);
 		}
 		else {
 			if(type.equals(MenuListFragment.TYPE_PEOPLE)) {
@@ -220,10 +229,24 @@ public class MainActivity extends FragmentActivity
 	}
 
 	private void logout() {
-		//TODO: logout
+		//Delete the saved login credentials
+		SharedPreferences sharedPref = this.getSharedPreferences(
+				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.remove(getString(R.string.key_saved_username));
+		editor.remove(getString(R.string.key_saved_username));
+		editor.apply();
+
+		//Start a new Login Activity
+		startActivity(new Intent(this, LoginActivity.class));
+		finish();
 	}
 
 	private void showSettings() {
+		//TODO: settings
+	}
+
+	private void newReport() {
 
 	}
 

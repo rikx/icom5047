@@ -21,6 +21,7 @@
 	<string name="person_phone_number">phone number</string>
 	<string name="edit">Edit</string>
 	<string name="save">Save</string>
+	<string name="name">name</string>
 	<string name="location_name">location name</string>
 	<string name="license">license</string>
 	<string name="address">Address</string>

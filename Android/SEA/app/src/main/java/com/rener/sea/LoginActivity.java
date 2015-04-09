@@ -111,11 +111,11 @@ public class LoginActivity extends Activity {
 	 * @param password the password to be saved
 	 */
     private void saveLogin(String username, String password) {
-        SharedPreferences sharedPref = this.getSharedPreferences(
+		SharedPreferences sharedPref = this.getSharedPreferences(
 				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.key_saved_username), username);
-        editor.putString(getString(R.string.key_saved_password), password);
-        editor.apply();
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putString(getString(R.string.key_saved_username), username);
+		editor.putString(getString(R.string.key_saved_password), password);
+		editor.apply();
     }
 }
