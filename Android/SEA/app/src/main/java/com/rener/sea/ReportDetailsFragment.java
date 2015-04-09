@@ -47,8 +47,6 @@ public class ReportDetailsFragment extends Fragment {
 		LinearLayout layoutInterview = (LinearLayout) view.findViewById(R.id.report_interview_layout);
 
 		Path path = report.getPath();
-		Iterator i = path.iterator();
-		int size = path.getSize();
 		for(Path.PathEntry e : path) {
 			Item item = e.getItem();
 			Option option = e.getOption();

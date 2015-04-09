@@ -7,7 +7,6 @@ import java.util.List;
 public class Path implements Iterable<Path.PathEntry> {
 
 	private List<PathEntry> path;
-	private int size = 0;
 
 	public Path() {
 		this.path = new ArrayList<>();
@@ -19,10 +18,6 @@ public class Path implements Iterable<Path.PathEntry> {
 
 	public void addEntry(Item item, Option option, String data) {
 		path.add(new PathEntry(item, option, data));
-	}
-
-	public int getSize() {
-		return path.size();
 	}
 
 	@Override

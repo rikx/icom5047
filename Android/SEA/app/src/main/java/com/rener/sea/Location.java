@@ -9,7 +9,6 @@ import java.util.Locale;
 
 public class Location implements Comparable<Location> {
 
-
 	public static final String PUERTO_RICO = "Puerto Rico";
 	private long id;
 	private String name = "";
@@ -111,6 +110,10 @@ public class Location implements Comparable<Location> {
 	public String setZipCode(String code) {
 		address.setPostalCode(code);
 		return address.getPostalCode();
+	}
+
+	public long getAddress_id() {
+		return address_id;
 	}
 
 	public long setAddressId(long id) {
