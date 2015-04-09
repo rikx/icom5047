@@ -1,7 +1,5 @@
 package com.rener.sea;
 
-import android.graphics.BitmapFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +11,29 @@ public class Item {
 	public static final String MULTIPLE_CHOICE = "MULTI";
 	public static final String OPEN = "OPEN";
 	public static final String CONDITIONAL = "CONDITIONAL";
-	private long id;
-	private String label;
-	private String type;
-	private List<Option> options;
+    private long flowchartID;
+    private long id;
+    private String label;
+    private String type;
+    private List<Option> options;
+
+    public Item(long flowchartID, long id, String label, String type) {
+        this.flowchartID = flowchartID;
+        this.id = id;
+        this.label = label;
+        this.type = type;
+        this.options = options;
+    }
+
+    public long getFlowchartID() {
+
+        return flowchartID;
+    }
+
+    public void setFlowchartID(long flowchartID) {
+        this.flowchartID = flowchartID;
+    }
+
 
 	public Item(long id, String label, String type) {
 		this.id = id;

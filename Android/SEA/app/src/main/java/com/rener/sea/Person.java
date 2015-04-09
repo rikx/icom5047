@@ -22,6 +22,16 @@ public class Person {
 	private String email = "";
 	private String phone_number = "";
 
+    public int getSpecializationID() {
+        return specializationID;
+    }
+
+    public void setSpecializationID(int specializationID) {
+        this.specializationID = specializationID;
+    }
+
+    private int specializationID;
+
 	public Person(long id) {
 		this.id = id;
 	}

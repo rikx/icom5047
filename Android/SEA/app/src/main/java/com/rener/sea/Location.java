@@ -15,7 +15,17 @@ public class Location {
 	private Person owner = null;
 	private Person agent = null;
 	private Address address = null;
-	private long address_id;
+    private String licence;
+
+    public String getLicence() {
+        return licence;
+    }
+
+    public void setLicence(String licence) {
+        this.licence = licence;
+    }
+
+    private long address_id;
 	public static String PUERTO_RICO = "Puerto Rico";
 
 	public Location(String name) {
@@ -114,6 +124,10 @@ public class Location {
 	public long setAddressId(long id) {
 		return this.address_id = id;
 	}
+    public long getAddressId() {
+        return this.address_id;
+    }
+
 
 	private static Address newAddress() {
 		Address a = new Address(Locale.US);
