@@ -260,4 +260,9 @@ public class DBService extends Service {
 
 	}
 
+    //test method for git
+    private int getCommit(){
+        return 1;
+    }
+
 }
