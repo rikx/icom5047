@@ -123,6 +123,7 @@ public class MainActivity extends FragmentActivity
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		//Determine which Action Bar option was selected
 		switch (item.getItemId()) {
 			case R.id.action_logout :
 				logout();
@@ -152,32 +153,38 @@ public class MainActivity extends FragmentActivity
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 		if(type.equals(MenuListFragment.TYPE_MAIN)) {
+			//The selection was from the "main menu"
 			String selection = listView.getAdapter().getItem(position).toString();
 			String title = getString(R.string.app_name);
 			String append = "";
-			if(selection.equalsIgnoreCase("PEOPLE")) {
+			if(selection.equalsIgnoreCase(getString(R.string.people))) {
+				//People was selected, replace the right fragment with a people list
 				append = getString(R.string.people);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
 				transaction.replace(R.id.menu_selected_container, rightFragment, "PEOPLE");
 				transaction.commit();
 			}
-			else if(selection.equalsIgnoreCase("LOCATIONS")) {
+			else if(selection.equalsIgnoreCase(getString(R.string.locations))) {
+				//Locations was selected, replace the right fragment with a locations list
 				append = getString(R.string.locations);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
 				transaction.replace(R.id.menu_selected_container, rightFragment,
 						"LOCATIONS");
 				transaction.commit();
 			}
-			else if (selection.equalsIgnoreCase("REPORTS")) {
+			else if (selection.equalsIgnoreCase(getString(R.string.reports))) {
+				//Reports was selected, replace the right fragment with a reports list
 				append = getString(R.string.reports);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
 				transaction.replace(R.id.menu_selected_container, rightFragment, "REPORTS");
 				transaction.commit();
 			}
+			// Set the Action Bar title
 			title = title+" > "+append;
 			getActionBar().setTitle(title);
 		}
 		else {
+			//The selection was from the right list fragment and some data needs to be displayed
 			if(type.equals(MenuListFragment.TYPE_PEOPLE)) {
 				Person person = (Person) listView.getAdapter().getItem(position);
 				showPerson(person, position);
@@ -193,6 +200,11 @@ public class MainActivity extends FragmentActivity
 		}
 	}
 
+	/**
+	 * Set the right fragment as a person fragment and display it
+	 * @param person the Person object to be displayed
+	 * @param index the list index for the MenuListFragment
+	 */
 	private void showPerson(Person person, int index) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
@@ -205,6 +217,11 @@ public class MainActivity extends FragmentActivity
 		transaction.commit();
 	}
 
+	/**
+	 * Set the right fragment as a location fragment and display it
+	 * @param location the Location object to be displayed
+	 * @param index the list index for the MenuListFragment
+	 */
 	private void showLocation(Location location, int index) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
@@ -217,6 +234,11 @@ public class MainActivity extends FragmentActivity
 		transaction.commit();
 	}
 
+	/**
+	 * Set the right fragment as a report fragment and display it
+	 * @param report the Report obejct to be displayed
+	 * @param index the list index for the MenuListFragment
+	 */
 	private void showReport(Report report, int index) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();

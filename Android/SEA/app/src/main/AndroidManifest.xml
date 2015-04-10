@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name="com.rener.sea.MainActivity"
-            android:label="@string/title_activity_main">
+            android:label="@string/title_activity_main"
+			android:configChanges="orientation|screenSize">
         </activity>
 		<activity
 			android:name="com.rener.sea.SurveyActivity"

@@ -32,6 +32,7 @@ public class ReportDetailsFragment extends Fragment {
 	                         Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.report_details_fragment, container, false);
 		Context context = view.getContext();
+
 		//Set the static views
 		textName = (TextView) view.findViewById(R.id.report_text_name);
 		textLocation = (TextView) view.findViewById(R.id.report_text_location);
@@ -46,6 +47,7 @@ public class ReportDetailsFragment extends Fragment {
 		//Create dynamic views
 		LinearLayout layoutInterview = (LinearLayout) view.findViewById(R.id.report_interview_layout);
 
+		//Recreate the path taken through the flowchart
 		Path path = report.getPath();
 		for(Path.PathEntry e : path) {
 			Item item = e.getItem();
@@ -61,21 +63,6 @@ public class ReportDetailsFragment extends Fragment {
 			layoutInterview.addView(textAnswer);
 		}
 
-		/*
-		List<Item> items = report.getFlowchart().getItems();
-		for(Item i : items) {
-			TextView textItem = new TextView(getActivity());
-			textItem.setText("\t"+i.getLabel());
-			layoutInterview.addView(textItem);
-			List<Option> options = i.getOptions();
-			for(Option o : options) {
-				TextView textOption = new TextView(getActivity());
-				textOption.setText("\t\t"+o.getLabel());
-				layoutInterview.addView(textOption);
-			}
-		}
-		*/
-
 		viewCreated = true;
 		return view;
 	}
@@ -90,13 +77,16 @@ public class ReportDetailsFragment extends Fragment {
 		super.onDestroy();
 	}
 
+	/**
+	 * Set the static views for this fragment
+	 */
 	private void setFields() {
 		textName.setText(report.getName());
 		textDate.setText(report.getDateString());
 		textType.setText(report.getType());
 		textLocation.setText(report.getLocation().toString());
 		textFlowchart.setText(report.getFlowchart().getName());
-		textNotes.setText(report.getNote());
+		textNotes.setText(report.getNotes());
 		if(report.getCreator() != null) {
 			String label = getResources().getString(R.string.creator_label);
 			String creator = report.getCreator().getPerson().toString();

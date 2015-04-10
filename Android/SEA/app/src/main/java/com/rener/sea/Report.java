@@ -17,7 +17,7 @@ public class Report implements Comparable<Report> {
 	private Location location;
 	private Person subject;
 	private Flowchart flowchart;
-	private String note = "";
+	private String notes = "";
 	private Date date;
 	private String type = "";
 	private Path path;
@@ -93,12 +93,12 @@ public class Report implements Comparable<Report> {
 		this.flowchart = flowchart;
 	}
 
-	public String getNote() {
-		return note;
+	public String getNotes() {
+		return notes;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	public Date getDate() {

@@ -91,11 +91,12 @@
 			android:id="@+id/location_edit_layout"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:orientation="vertical">
+			android:orientation="vertical"
+			android:padding="16dp">
 
 			<EditText
 			android:id="@+id/location_edit_name"
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:hint="@string/location_name"
 			android:inputType="text"
@@ -103,15 +104,15 @@
 
 			<EditText
 				android:id="@+id/location_edit_license"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="@string/license"
-				android:inputType="text"
+				android:inputType="number"
 				/>
 
 			<EditText
 				android:id="@+id/address_edit_line1"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="@string/address_line1"
 				android:inputType="textPostalAddress"
@@ -119,7 +120,7 @@
 
 			<EditText
 				android:id="@+id/address_edit_line2"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="@string/address_line2"
 				android:inputType="textPostalAddress"
@@ -127,7 +128,7 @@
 
 			<EditText
 				android:id="@+id/address_edit_city"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="@string/address_city"
 				android:inputType="textPostalAddress"
@@ -135,7 +136,7 @@
 
 			<EditText
 				android:id="@+id/address_edit_zip_code"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="@string/address_zip_code"
 				android:inputType="number"
@@ -143,19 +144,19 @@
 
 			<Spinner
 				android:id="@+id/location_owner_spinner"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 				</Spinner>
 
 			<Spinner
 				android:id="@+id/location_manager_spinner"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 			</Spinner>
 
 			<Spinner
 				android:id="@+id/location_agent_spinner"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 			</Spinner>
 

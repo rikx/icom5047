@@ -35,6 +35,7 @@ public class MenuListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//Restore the state
 		if(savedInstanceState != null) {
 			type = savedInstanceState.getString("type");
 			curPos = savedInstanceState.getInt("index");
@@ -51,12 +52,18 @@ public class MenuListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+		//Restore arguments if they exist
 		curPos = getArguments().getInt("index", -1);
 		type = getArguments().getString("type");
+
+		//Initialize the list
 		list = new ArrayList();
 		DBService db = ((MainActivity)getActivity()).getDBService();
 		if(type.equals(TYPE_MAIN)) {
-			list = Arrays.asList(getResources().getStringArray(R.array.main_list_strings));
+			list = new ArrayList();
+			list.add(getString(R.string.reports));
+			list.add(getString(R.string.locations));
+			list.add(getString(R.string.people));
 		}
 		else if(type.equals(TYPE_PEOPLE)) {
 			list = db.getPeople();
@@ -67,11 +74,17 @@ public class MenuListFragment extends ListFragment {
 		else if(type.equals(TYPE_REPORTS)) {
 			list = db.getReports();
 		}
+
+		//Sort the list
 		Collections.sort(list);
+
+		//Set the list adapter
 		ArrayAdapter adapter = new ArrayAdapter<>(getActivity(),
 				android.R.layout.simple_list_item_1, list);
 		setListAdapter(adapter);
 		ListView l = getListView();
+
+		//Set the list view as single choice and check it's selected item if it exists
 		l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		l.setItemChecked(curPos, curPos !=-1 ? true : false);
 	}
@@ -121,6 +134,11 @@ public class MenuListFragment extends ListFragment {
 		return curPos;
 	}
 
+	/**
+	 * Create a MenuListFragment instance with a given type
+	 * @param type the MenuListFragment type
+	 * @return a new MenuListFragment object
+	 */
 	public static MenuListFragment newInstance(String type) {
 		MenuListFragment fragment = new MenuListFragment();
 		Bundle args = new Bundle();
@@ -129,6 +147,12 @@ public class MenuListFragment extends ListFragment {
 		return fragment;
 	}
 
+	/**
+	 * Create a MenuListFragment instance with a given type and preselected index
+	 * @param type the MenuListFragment type
+	 * @param index the preselected index
+	 * @return a new MenuListFragment object
+	 */
 	public static MenuListFragment newInstance(String type, int index) {
 		MenuListFragment fragment = new MenuListFragment();
 		Bundle args = new Bundle();

@@ -62,9 +62,8 @@
 	<string name="done">Done</string>
 	<string name="open_hint">Enter data here</string>
 	<string name="submit">Submit</string>
-	<string-array name="main_list_strings">
-		<item>Reports</item>
-		<item>Locations</item>
-		<item>People</item>
-	</string-array>
+	<string name="notes">notes</string>
+	<string name="manager">manager</string>
+	<string name="owner">owner</string>
+	<string name="agent">agent</string>
 </resources>

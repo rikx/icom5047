@@ -14,8 +14,8 @@ import android.widget.ViewFlipper;
  */
 public class PersonDetailsFragment extends Fragment implements View.OnClickListener {
 
-	public static final int SHOW_LAYOUT = 0;
-	public static final int EDIT_LAYOUT = 1;
+	private static final int SHOW_LAYOUT = 0;
+	private static final int EDIT_LAYOUT = 1;
 	private Person person;
 	private ViewFlipper flipper;
 	private TextView textName, textEmail, textPhoneNumber;
@@ -116,8 +116,6 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		else {
 			textPhoneNumber.setVisibility(TextView.GONE);
 		}
-
-		//System.out.println("PERSON="+person.toJSON());
 	}
 
 	private void flipToEditLayout() {
@@ -138,7 +136,7 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		String strEmail = editEmail.getText().toString();
 		String strPhone = editPhoneNumber.getText().toString();
 
-		//TODO validate input
+		//TODO: validate input
 
 		//Set the person instance fields
 		person.setFirstName(strFirstName);

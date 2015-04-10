@@ -26,6 +26,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +40,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	private DBService dbService;
 	private boolean mBound = false;
 	private Report report;
-	private EditText editName;
+	private EditText editName, editNotes;
 	private Spinner spinnerLocation, spinnerSubject, spinnerFlowchart;
 	private boolean viewCreated;
 	private Path path;
@@ -53,6 +55,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
 		//Set the static views
 		editName = (EditText) findViewById(R.id.survey_edit_name);
+		editNotes = (EditText) findViewById(R.id.survey_edit_notes);
 		spinnerLocation = (Spinner) findViewById(R.id.survey_location_spinner);
 		spinnerSubject = (Spinner) findViewById(R.id.survey_subject_spinner);
 		spinnerFlowchart = (Spinner) findViewById(R.id.survey_flowchart_spinner);
@@ -113,7 +116,11 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     @Override
     public void onBackPressed() {
-	    super.onBackPressed();
+	    dbService.getFlowcharts().remove(0);
+	    dbService.getLocations().remove(0);
+	    dbService.getPeople().remove(0);
+	    startActivity(new Intent(this, MainActivity.class));
+	    finish();
     }
 
 	@Override
@@ -162,15 +169,19 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	}
 
 	private void setServiceData() {
-		List<Location> locations = dbService.getLocations();
-		List<Person> people = dbService.getPeople();
-		List<Flowchart> flowcharts = dbService.getFlowcharts();
+		List<Location> locations = new ArrayList<>(dbService.getLocations());
+		List<Person> people = new ArrayList(dbService.getPeople());
+		List<Flowchart> flowcharts = new ArrayList<>(dbService.getFlowcharts());
+		Collections.sort(people);
+		Collections.sort(flowcharts);
+		Collections.sort(locations);
 
 		//Add a dummy item
 		locations.add(0, new Location(getString(R.string.location)));
 		people.add(0, new Person(getString(R.string.subject)));
 		flowcharts.add(0, new Flowchart(getString(R.string.flowchart)));
 
+		//Set the adapter
 		CustomAdapter locationAdapter = new CustomAdapter(this,
 				android.R.layout.simple_list_item_1, locations, 0);
 		spinnerLocation.setAdapter(locationAdapter);
@@ -314,13 +325,16 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	}
 
 	private void submit() {
+
+		//Finish the report
 		report.setPath(path);
 		String name = editName.getText().toString();
 		report.setName(name);
+		String notes = editNotes.getText().toString();
+		report.setNotes(notes);
 		dbService.getReports().add(report);
-		dbService.getFlowcharts().remove(0);
-		dbService.getLocations().remove(0);
-		dbService.getPeople().remove(0);
+
+		//Finish the activity
 		startActivity(new Intent(this, MainActivity.class));
 		finish();
 	}

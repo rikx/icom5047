@@ -138,8 +138,8 @@ public class Person implements Comparable<Person> {
 	}
 
 	@Override
-	public int compareTo(Person p) {
-		int compare = toString().compareTo(p.toString());
+	public int compareTo(Person other) {
+		int compare = toString().compareTo(other.toString());
 		return compare;
 	}
 

@@ -253,7 +253,7 @@ public class DBService extends Service {
 		locations.add(new Location(4, "Generic Location"));
 		findLocationById(2).setOwner(findPersonById(4));
 		findLocationById(2).setManager(findPersonById(5));
-		findLocationById(3).setOwner(findPersonById(6));
+		findLocationById(3).setOwner(findPersonById(8));
 
 		users = new ArrayList<>();
 		users.add(new User(0, "", "", findPersonById(6)));
@@ -299,6 +299,8 @@ public class DBService extends Service {
 		findItemById(8).addOption(findOptionById(10));
 		options.add(new Option(11, findItemById(10)));
 		findItemById(9).addOption(findOptionById(11));
+		options.add(new Option(12, findItemById(10)));
+		findItemById(5).addOption(findOptionById(12));
 
 		flowcharts = new ArrayList<>();
 		Flowchart fc1 = new Flowchart(1, "Test Flowchart");

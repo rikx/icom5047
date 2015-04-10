@@ -59,4 +59,13 @@
 	<string name="subject">ganadero</string>
 	<string name="submit">Someter</string>
 	<string name="title_activity_main" translatable="false">SEA</string>
+	<string name="notes">anotaciones</string>
+	<string name="agent">agente</string>
+	<string name="manager">ganadero</string>
+	<string name="owner">dueño</string>
+	<string-array name="main_list_strings">
+		<item>Reportes</item>
+		<item>Localizaciones</item>
+		<item>Personas</item>
+	</string-array>
 </resources>

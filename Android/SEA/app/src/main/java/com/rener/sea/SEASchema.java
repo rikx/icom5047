@@ -423,7 +423,7 @@ public final class SEASchema extends SQLiteOpenHelper {
         values.put(REPORT_LOCATION_ID  , report.getLocation().getId());
         values.put(REPORT_SUBJECT_ID   , report.getSubject().getId());
         values.put(REPORT_FLOWCHART_ID , report.getFlowchart().getId());
-        values.put(REPORT_NOTE         , report.getNote());
+        values.put(REPORT_NOTE         , report.getNotes());
         values.put(REPORT_DATE_FILED   , report.getDate().getTime());
 
         long id = db.insert(TABLE_REPORT,null,values);

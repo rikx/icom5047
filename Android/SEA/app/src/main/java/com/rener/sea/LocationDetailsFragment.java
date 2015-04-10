@@ -12,6 +12,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,8 +22,8 @@ import java.util.List;
 public class LocationDetailsFragment extends Fragment
 		implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-	public static final int SHOW_LAYOUT = 0;
-	public static final int EDIT_LAYOUT = 1;
+	private static final int SHOW_LAYOUT = 0;
+	private static final int EDIT_LAYOUT = 1;
 	private Location location;
 	private ViewFlipper flipper;
 	private TextView textName, textLicense;
@@ -91,12 +93,32 @@ public class LocationDetailsFragment extends Fragment
 		agentSpinner = (Spinner) view.findViewById(R.id.location_agent_spinner);
 		agentSpinner.setOnItemSelectedListener(this);
 
-		peopleList = ((MainActivity)getActivity()).getDBService().getPeople();
-		ArrayAdapter adapter;
-		adapter = new ArrayAdapter(getActivity(),
-				android.R.layout.simple_list_item_1, peopleList);
+
+		//Populate the spinner lists
+		DBService dbService = ((MainActivity)getActivity()).getDBService();
+		peopleList = dbService.getPeople();
+		Collections.sort(peopleList);
+		List<Person> managerList = new ArrayList(peopleList);
+		List<Person> agentList = new ArrayList(peopleList);
+		List<Person> ownerList = new ArrayList(peopleList);
+
+		//Add a dummy person to each list
+		String dummy = getString(R.string.manager);
+		managerList.add(0, new Person(dummy));
+		dummy = getString(R.string.owner);
+		ownerList.add(0, new Person(dummy));
+		dummy = getString(R.string.agent);
+		agentList.add(0, new Person(dummy));
+
+		//Set the adapters
+		CustomAdapter adapter = new CustomAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, ownerList, 0);
 		ownerSpinner.setAdapter(adapter);
+		adapter = new CustomAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, managerList, 0);
 		managerSpinner.setAdapter(adapter);
+		adapter = new CustomAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, agentList, 0);
 		agentSpinner.setAdapter(adapter);
 
 		//Set the button views
@@ -199,7 +221,7 @@ public class LocationDetailsFragment extends Fragment
 		if(location.hasAgent()) {
 			for(int i=0; i<peopleList.size(); i++) {
 				Person item = (Person) agentSpinner.getAdapter().getItem(i);
-				if(location.getManager().getId() == item.getId())
+				if(location.getAgent().getId() == item.getId())
 					agentSpinner.setSelection(i);
 			}
 			String label = getResources().getString(R.string.agent_label);

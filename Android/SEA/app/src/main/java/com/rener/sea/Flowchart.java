@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Represents a flowchart within the system
  */
-public class Flowchart {
+public class Flowchart implements Comparable<Flowchart> {
 
 	private long id;
 	private Item first, end;
@@ -96,5 +96,11 @@ public class Flowchart {
 
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public int compareTo(Flowchart other) {
+		int compare = toString().compareTo(other.toString());
+		return compare;
 	}
 }
