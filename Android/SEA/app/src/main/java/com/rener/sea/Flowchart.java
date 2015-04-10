@@ -86,6 +86,10 @@ public class Flowchart {
 		this.items = items;
 	}
 
+	/**
+	 * Add a Item object to the list of items for this flowchart.
+	 * @param item the Item object to be added
+	 */
 	public void addItem(Item item) {
 		items.add(item);
 	}

@@ -141,11 +141,18 @@ public class MainActivity extends FragmentActivity
 		return mBound;
 	}
 
-	public void OnMenuItemSelectedListener(String type, ListView l, View v, int position) {
+	/**
+	 * A listener method that listens for the selection of items from a MenuListFragment class.
+	 * @param type the type of MenuListFragment object whose list is being selected
+	 * @param listView the listView object associated with the ListFragment parent class
+	 * @param view the View object that performed the call
+	 * @param position the ListView's selected position index
+	 */
+	public void OnMenuItemSelectedListener(String type, ListView listView, View view, int position) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 		if(type.equals(MenuListFragment.TYPE_MAIN)) {
-			String selection = l.getAdapter().getItem(position).toString();
+			String selection = listView.getAdapter().getItem(position).toString();
 			String title = getString(R.string.app_name);
 			String append = "";
 			if(selection.equalsIgnoreCase("PEOPLE")) {
@@ -172,15 +179,15 @@ public class MainActivity extends FragmentActivity
 		}
 		else {
 			if(type.equals(MenuListFragment.TYPE_PEOPLE)) {
-				Person person = (Person) l.getAdapter().getItem(position);
+				Person person = (Person) listView.getAdapter().getItem(position);
 				showPerson(person, position);
 			}
 			else if(type.equals(MenuListFragment.TYPE_LOCATIONS)) {
-				Location location = (Location) l.getAdapter().getItem(position);
+				Location location = (Location) listView.getAdapter().getItem(position);
 				showLocation(location, position);
 			}
 			else if(type.equals(MenuListFragment.TYPE_REPORTS)) {
-				Report report = (Report) l.getAdapter().getItem(position);
+				Report report = (Report) listView.getAdapter().getItem(position);
 				showReport(report, position);
 			}
 		}
@@ -222,6 +229,10 @@ public class MainActivity extends FragmentActivity
 		transaction.commit();
 	}
 
+	/**
+	 * Returns the service's reference so that it's data can be accessed.
+	 * @return null if the service isn't bound to anything
+	 */
 	public DBService getDBService() {
 		return mBound? dbService : null;
 	}

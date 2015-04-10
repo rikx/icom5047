@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/**
+ * An Android fragment class used to manage the display of data pertaining to a report.
+ */
 public class ReportDetailsFragment extends Fragment {
 
 	private Report report;
@@ -106,6 +109,11 @@ public class ReportDetailsFragment extends Fragment {
 		}
 	}
 
+	/**
+	 * Set this fragment's corresponding Report object by setting it's views with the report data.
+	 * @param report
+	 * @return
+	 */
 	public Report setReport(Report report) {
 		this.report = report;
 		if(viewCreated)

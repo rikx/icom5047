@@ -1,5 +1,8 @@
 package com.rener.sea;
 
+/**
+ * A class representing a single user.
+ */
 public class User {
 
 	private long user_id;

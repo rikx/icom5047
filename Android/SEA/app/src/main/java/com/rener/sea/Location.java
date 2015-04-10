@@ -7,6 +7,9 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
+/**
+ * A class representing a location
+ */
 public class Location implements Comparable<Location> {
 
 	public static final String PUERTO_RICO = "Puerto Rico";
@@ -19,11 +22,21 @@ public class Location implements Comparable<Location> {
 	private long address_id;
 	private String license = "";
 
+	/**
+	 * Constructs a new Location object with the given name.
+	 * Used for locations that have been created but haven't been assigned an ID
+	 * @param name
+	 */
 	public Location(String name) {
 		this.name = name;
 		this.address = Location.newAddress();
 	}
 
+	/**
+	 * Constructs a new Location object with the given ID and name
+	 * @param id
+	 * @param name
+	 */
 	public Location(long id, String name) {
 		this.id = id;
 		this.name = name;
