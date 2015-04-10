@@ -9,6 +9,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+/**
+ * An Android fragment class used to display data pertaining to a person.
+ */
 public class PersonDetailsFragment extends Fragment implements View.OnClickListener {
 
 	public static final int SHOW_LAYOUT = 0;
@@ -146,6 +149,11 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		person.setPhoneNumber(strPhone);
 	}
 
+	/**
+	 * Set this fragment's corresponding Person object by setting it's views with the person data
+	 * @param person
+	 * @return
+	 */
 	public Person setPerson(Person person) {
 		this.person = person;
 		if(viewCreated)

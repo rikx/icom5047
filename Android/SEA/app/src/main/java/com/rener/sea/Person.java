@@ -5,6 +5,9 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * A class representing a person.
+ */
 public class Person implements Comparable<Person> {
 
 	public final static String PERSON_ID = "person_id";
@@ -95,6 +98,10 @@ public class Person implements Comparable<Person> {
 		return this.last_name2 = name;
 	}
 
+	/**
+	 * Get the full name of a person with order "first name" and "last name".
+	 * @return a string with the person's full name
+	 */
 	public String getFullNameFirstLast() {
 		if(hasMiddleName())
 			return (first_name+" "+middle_name+" "+last_name1+" "+last_name2).trim();
@@ -130,68 +137,18 @@ public class Person implements Comparable<Person> {
 		return getFullNameFirstLast();
 	}
 
-	public String toJSON() {
-		JSONObject json = new JSONObject();
-		try {
-			json.put(PERSON_ID, id);
-			json.put(FIRST_NAME, first_name);
-			json.put(MIDDLE_NAME, middle_name);
-			json.put(LAST_NAME1, last_name1);
-			json.put(LAST_NAME2, last_name2);
-			json.put(EMAIL, email);
-			json.put(PHONE_NUMBER, phone_number);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return "";
-		}
-		Log.i("JSON-Person", json.toString());
-		return json.toString();
-	}
-
-	public static String toJSON(Person person) {
-		JSONObject json = new JSONObject();
-		try {
-			json.put(PERSON_ID, person.getId());
-			json.put(FIRST_NAME, person.getFirstName());
-			json.put(MIDDLE_NAME, person.getMiddleName());
-			json.put(LAST_NAME1, person.getLastName1());
-			json.put(LAST_NAME2, person.getLastName2());
-			json.put(EMAIL, person.getEmail());
-			json.put(PHONE_NUMBER, person.getPhoneNumber());
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return "";
-		}
-		Log.i("JSON-Person", json.toString());
-		return json.toString();
-	}
-
-	public static Person fromJSON(String json) {
-		try {
-			JSONObject p = new JSONObject(json);
-			String strID = p.getString(PERSON_ID);
-			long id = Long.getLong(strID);
-			Person person = new Person(id);
-			person.setFirstName(p.getString(FIRST_NAME));
-			person.setMiddleName(p.getString(MIDDLE_NAME));
-			person.setLastName1(p.getString(LAST_NAME2));
-			person.setLastName2(p.getString(LAST_NAME2));
-			person.setEmail(p.getString(EMAIL));
-			person.setPhoneNumber(p.getString(PHONE_NUMBER));
-			return person;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	@Override
 	public int compareTo(Person p) {
 		int compare = toString().compareTo(p.toString());
 		return compare;
 	}
 
-	public boolean equals(Person p) {
-		return this.id == p.getId();
+	/**
+	 * Determine whether the provided person is equivalent to this one by comparing their IDs
+	 * @param other the other Person object
+	 * @return true if their IDs match
+	 */
+	public boolean equals(Person other) {
+		return this.id == other.getId();
 	}
 }

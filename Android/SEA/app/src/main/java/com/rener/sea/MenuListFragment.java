@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A fragment class used to display a list of objects in the application.
+ */
 public class MenuListFragment extends ListFragment {
 
 	public static String TYPE_PEOPLE = "PEOPLE";
