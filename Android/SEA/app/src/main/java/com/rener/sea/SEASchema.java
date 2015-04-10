@@ -1,11 +1,11 @@
 package com.rener.sea;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -129,6 +129,7 @@ public final class SEASchema extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         db.execSQL("CREATE TABLE " + TABLE_ADDRESS  + "(" +
                 ADDRESS_ID                          + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 ADDRESS_LINE1                       + " TEXT," +
@@ -211,6 +212,8 @@ public final class SEASchema extends SQLiteOpenHelper {
                 USER__PASSHASH                      + " TEXT," +
                 USER__PERSON_ID                     + " INTEGER," +
                 USER__SALT                          + " TEXT)");
+        DummyData dumm = new DummyData();
+        dumm.setDummyData();
 
 
     }
@@ -380,7 +383,7 @@ public final class SEASchema extends SQLiteOpenHelper {
         return id;// if -1 error during insertion
 
     }
-//    public long createPath(Path.Answer answer, long report){
+    //    public long createPath(Path.Answer answer, long report){
 //        SQLiteDatabase db = getWritableDatabase();
 //        ContentValues values = new ContentValues();
 //
@@ -394,14 +397,14 @@ public final class SEASchema extends SQLiteOpenHelper {
 //
 //    }
     public long createPerson(Person person){
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(PERSON_ID             , person.getId());
         values.put(PERSON_LAST_NAME1     , person.getLastName1());
         values.put(PERSON_FIRST_NAME     , person.getFirstName());
         values.put(PERSON_EMAIL          , person.getEmail());
-        values.put(PERSON_SPEC_ID        , VALUE);
+//        values.put(PERSON_SPEC_ID        , VALUE);
         values.put(PERSON_LAST_NAME2     , person.getLastName2());
         values.put(PERSON_MIDDLE_INITIAL , person.getMiddleName());
         values.put(PERSON_PHONE_NUMBER   , person.getPhoneNumber());
@@ -468,7 +471,7 @@ public final class SEASchema extends SQLiteOpenHelper {
                         PERSON_PHONE_NUMBER
                 },
                 PERSON_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
-        if(cursor != null) {
+        if((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             Person person = new Person(cursor.getLong(0), cursor.getString(2), cursor.getString(1));
             person.setEmail(cursor.getString(3));
@@ -496,7 +499,7 @@ public final class SEASchema extends SQLiteOpenHelper {
 
                 },
                 LOCATION_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
-        if(cursor != null) {
+        if((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             Location location = new Location(cursor.getLong(0),cursor.getString(1));
             location.setAddressId(cursor.getLong(2));
@@ -512,25 +515,26 @@ public final class SEASchema extends SQLiteOpenHelper {
         return null;
     }
 
-//    public Item findItemById(long id){
-//            SQLiteDatabase db = getReadableDatabase();
-//            Cursor cursor= db.query(TABLE_ITEM,new String[] { ITEM_FLOWCHART_ID,
-//                            ITEM_ID,
-//                            ITEM_LABEL,
-//                            ITEM_TYPE
-//                    },
-//                    LOCATION_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
-//            if(cursor != null) {
-//                cursor.moveToFirst();
-//                Item item = new Item(cursor.getLong(0),cursor.getLong(1),cursor.getString(2),cursor.getString(3));
-//                db.close();
-//                cursor.close();
-//
-//                return item;
-//            }
-//            return null;
-//
-//    }
+    public Item findItemById(long id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(TABLE_ITEM,new String[] { ITEM_FLOWCHART_ID,
+                        ITEM_ID,
+                        ITEM_LABEL,
+                        ITEM_TYPE
+                },
+                LOCATION_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
+        if((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            Item item = new Item(cursor.getLong(1),cursor.getString(2),cursor.getString(3));
+
+            db.close();
+            cursor.close();
+
+            return item;
+        }
+        return null;
+
+    }
 //    public List<Option> getOptions(long flowchartID){
 //        SQLiteDatabase db = getReadableDatabase();
 //        Cursor cursor= db.query(TABLE_OPTION,new String[] { OPTION_ID,
@@ -539,7 +543,7 @@ public final class SEASchema extends SQLiteOpenHelper {
 //                        OPTION_LABEL
 //                },
 //                LOCATION_ID + "=?", new String[] {String.valueOf(flowchartID)},null,null,null,null);
-//        if(cursor != null) {
+//        if((cursor != null) && (cursor.getCount() > 0)) {
 //            cursor.moveToFirst();
 //            List<Option> options = new ArrayList<Option>();
 //            options.add(new Option(cursor.getLong(0),));
@@ -551,6 +555,28 @@ public final class SEASchema extends SQLiteOpenHelper {
 //        return null;
 //
 //    }
+
+    public User findUserByUsername(String username){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(TABLE_USERS,new String[] { USER_ID,
+                        USER__USERNAME,
+                        USER__PASSHASH,
+                        USER__PERSON_ID,
+                        USER__SALT
+                },
+                USER__USERNAME + "=?", new String[] {String.valueOf(username)},null,null,null,null);
+        if((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            User user = new User(cursor.getLong(0),username,cursor.getString(2));
+
+            db.close();
+            cursor.close();
+
+            return user;
+        }
+        return null;
+
+    }
 
 
     public class DummyData{
