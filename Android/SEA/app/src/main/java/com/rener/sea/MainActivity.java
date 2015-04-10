@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,10 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import java.util.Stack;
-
 /**
- * Represents an activity in which the data is managed and displayed
+ * Represents an activity in which the primary navigation for the application is performed
  */
 public class MainActivity extends FragmentActivity
 		implements MenuListFragment.OnMenuItemSelectedListener {

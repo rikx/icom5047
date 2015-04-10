@@ -5,7 +5,7 @@
 	<string name="address_city">ciudad</string>
 	<string name="location_label">Localización</string>
 	<string name="address_line1">dirección linea 1</string>
-	<string name="location_name">nombre</string>
+	<string name="location_name">nombre de localización</string>
 	<string name="address_line2">dirección linea 2</string>
 	<string name="address_zip_code">código postal</string>
 	<string name="agent_label">Agente asignado</string>
@@ -26,4 +26,37 @@
 	<string name="person_email">correo electrónico</string>
 	<string name="owner_label">Dueño</string>
 	<string name="manager_label">Ganadero</string>
+	<string name="address">Dirección</string>
+	<string name="creator_label">Creador</string>
+	<string name="done">Terminar</string>
+	<string name="edit_location">Editar Localización</string>
+	<string name="edit_person">Editar Persona</string>
+	<string name="edit_report">Editar Reporte</string>
+	<string name="flowchart">flujograma</string>
+	<string name="license">licencia</string>
+	<string name="location">localización</string>
+	<string name="locations">Localizaciones</string>
+	<string name="login_ak">Autenticación completada</string>
+	<string name="login_status_default">Entre sus credenciales</string>
+	<string name="logout">Salir</string>
+	<string name="main_credentials_default">No esta autenticado</string>
+	<string name="name">nombre</string>
+	<string name="name_label">Nombre</string>
+	<string name="new_location">Añadir Localización</string>
+	<string name="new_person">Añadir Persona</string>
+	<string name="new_report">Añadir Entrevista</string>
+	<string name="no_agent">No hay agente</string>
+	<string name="no_data">No hay datos</string>
+	<string name="no_manager">No hay gerente</string>
+	<string name="no_owner">No hay dueño</string>
+	<string name="no_username">No hay usuario</string>
+	<string name="open_hint">Entre los datos aqui</string>
+	<string name="people">Personas</string>
+	<string name="reports">Reportes</string>
+	<string name="save_location">Guardar Localización</string>
+	<string name="save_person">Guardar Persona</string>
+	<string name="save_report">Guardar Reporte</string>
+	<string name="subject">ganadero</string>
+	<string name="submit">Someter</string>
+	<string name="title_activity_main" translatable="false">SEA</string>
 </resources>

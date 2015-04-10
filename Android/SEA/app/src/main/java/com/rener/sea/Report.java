@@ -1,12 +1,12 @@
 package com.rener.sea;
 
-import android.util.Log;
-import android.util.Pair;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+/**
+ * Represents a Report in the system
+ * A report is a survey that has been answered
+ */
 public class Report implements Comparable<Report> {
 
 	public static final String DATE_FORMAT = "dd/LLL/yy";
@@ -22,6 +22,10 @@ public class Report implements Comparable<Report> {
 	private String type = "";
 	private Path path;
 
+	/**
+	 * Constructs a new Report with no ID and some default value
+	 * Used to represent a Report that has been created but hasn't been assigned a unique ID
+	 */
 	public Report() {
 		this.id = NEW_REPORT_ID;
 		this.name = "";
@@ -29,31 +33,16 @@ public class Report implements Comparable<Report> {
 		this.path = new Path();
 	}
 
+	/**
+	 * Constructs a new Report object with a given ID and name
+	 * @param id
+	 * @param name
+	 */
 	public Report(long id, String name) {
 		this.id = id;
 		this.name = name;
 		this.date = new Date();
 		this.path = new Path();
-	}
-
-	public Report(long id, String name, Location location) {
-		this.id = id;
-		this.name = name;
-		this.location = location;
-		this.date = new Date();
-		this.path = new Path();
-	}
-
-	public Report(long id, User creator, Location location, Person subject, Flowchart flowchart,
-	              String note, Date date) {
-		this.id = id;
-		this.creator = creator;
-		this.location = location;
-		this.subject = subject;
-		this.flowchart = flowchart;
-		this.note = note;
-		this.date = date;
-		this.path = new  Path();
 	}
 
 	public long getId() {
@@ -145,6 +134,10 @@ public class Report implements Comparable<Report> {
 
 	public Path getPath() {
 		return path;
+	}
+
+	public void setPath(Path path) {
+		this.path = path;
 	}
 
 	private Item findOptionParent(Option option) {

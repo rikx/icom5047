@@ -1,16 +1,14 @@
 package com.rener.sea;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Stack;
 
 public class Path implements Iterable<Path.PathEntry> {
 
-	private List<PathEntry> path;
+	private Stack<PathEntry> path;
 
 	public Path() {
-		this.path = new ArrayList<>();
+		this.path = new Stack<>();
 	}
 
 	public void addEntry(Item item, Option option) {
@@ -18,7 +16,24 @@ public class Path implements Iterable<Path.PathEntry> {
 	}
 
 	public void addEntry(Item item, Option option, String data) {
-		path.add(new PathEntry(item, option, data));
+		path.push(new PathEntry(item, option, data));
+	}
+
+	public void setLastEntry(Item item, Option option) {
+		PathEntry entry = path.peek();
+		entry.setItem(item);
+		entry.setOption(option);
+	}
+
+	public void setLastEntry(Item item, Option option, String data) {
+		PathEntry entry = path.peek();
+		entry.setItem(item);
+		entry.setOption(option);
+		entry.setData(data);
+	}
+
+	public Item getLastItem() {
+		return path.get(path.size()-1).getItem();
 	}
 
 	@Override

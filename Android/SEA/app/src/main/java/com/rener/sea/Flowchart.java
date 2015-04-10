@@ -3,6 +3,9 @@ package com.rener.sea;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a flowchart within the system
+ */
 public class Flowchart {
 
 	private long id;
@@ -12,6 +15,11 @@ public class Flowchart {
 	private String version;
 	private List<Item> items;
 
+	/**
+	 * Constructs a new Flowchart object set to the given ID and name
+	 * @param id a unique ID
+	 * @param name a name
+	 */
 	public Flowchart(long id, String name) {
 		this.id = id;
 		this.name = name;
@@ -26,8 +34,8 @@ public class Flowchart {
 		return id;
 	}
 
-	public void setId(long flowchart_id) {
-		this.id = flowchart_id;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public Item getFirst() {

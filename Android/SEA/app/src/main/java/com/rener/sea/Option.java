@@ -41,4 +41,8 @@ public class Option {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+
+	public boolean equals(Option other) {
+		return this.id == other.getId();
+	}
 }

@@ -14,6 +14,9 @@ import android.widget.ViewFlipper;
 
 import java.util.List;
 
+/**
+ * An Android fragment that manages the display of details for a single Location object
+ */
 public class LocationDetailsFragment extends Fragment
 		implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -142,6 +145,9 @@ public class LocationDetailsFragment extends Fragment
 
 	}
 
+	/**
+	 * Sets the static views using the Location data
+	 */
 	private void setFields() {
 
 		//Set the name fields
@@ -213,6 +219,9 @@ public class LocationDetailsFragment extends Fragment
 		flipper.setDisplayedChild(SHOW_LAYOUT);
 	}
 
+	/**
+	 * Gets the data from the views when it is edited
+	 */
 	private void getFields() {
 
 		//Get the text from the fields
@@ -234,10 +243,13 @@ public class LocationDetailsFragment extends Fragment
 		location.setZipCode(zip);
 	}
 
-	public Location setLocation(Location location) {
+	/**
+	 * Dynamically changes the Location object for the fragment
+	 * @param location the new Location
+	 */
+	public void setLocation(Location location) {
 		this.location = location;
 		if (viewCreated)
 			setFields();
-		return this.location;
 	}
 }

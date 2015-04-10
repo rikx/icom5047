@@ -3,6 +3,9 @@ package com.rener.sea;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a single "node" for a flowchart
+ */
 public class Item {
 
 	public static final String RECOMMENDATION = "RECOM";
@@ -11,29 +14,10 @@ public class Item {
 	public static final String MULTIPLE_CHOICE = "MULTI";
 	public static final String OPEN = "OPEN";
 	public static final String CONDITIONAL = "CONDITIONAL";
-    private long flowchartID;
     private long id;
     private String label;
     private String type;
     private List<Option> options;
-
-    public Item(long flowchartID, long id, String label, String type) {
-        this.flowchartID = flowchartID;
-        this.id = id;
-        this.label = label;
-        this.type = type;
-        this.options = options;
-    }
-
-    public long getFlowchartID() {
-
-        return flowchartID;
-    }
-
-    public void setFlowchartID(long flowchartID) {
-        this.flowchartID = flowchartID;
-    }
-
 
 	public Item(long id, String label, String type) {
 		this.id = id;
@@ -74,6 +58,10 @@ public class Item {
 		this.options = options;
 	}
 
+	/**
+	 * Add an option to this Item's option list
+	 * @param option the Option to be added
+	 */
 	public void addOption(Option option) {
 		options.add(option);
 	}

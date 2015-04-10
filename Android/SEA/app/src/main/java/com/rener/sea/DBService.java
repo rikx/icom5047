@@ -1,20 +1,17 @@
 package com.rener.sea;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Service that provides the application with the underlying data structures in the background.
+ */
 public class DBService extends Service {
 
 	private final IBinder mBinder = new DBBinder();
@@ -36,7 +33,6 @@ public class DBService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		setDummyData();
-		jsonTest();
 	}
 
 	@Override
@@ -77,10 +73,19 @@ public class DBService extends Service {
 		return ok;
 	}
 
+	/**
+	 * Get the list of people in the service
+	 * @return a list of Person objects
+	 */
 	public List<Person> getPeople() {
 		return people;
 	}
 
+	/**
+	 * Find a person by it's unique ID
+	 * @param id the search ID
+	 * @return the Person object
+	 */
 	public Person findPersonById(long id) {
 		Person person = null;
 		//Check if person is in memory
@@ -93,10 +98,19 @@ public class DBService extends Service {
 		return person;
 	}
 
+	/**
+	 * Get the list of locations in the service
+	 * @return a list of Location objects
+	 */
 	public List<Location> getLocations() {
 		return locations;
 	}
 
+	/**
+	 * Find a location by it's unique ID
+	 * @param id the search ID
+	 * @return the Location object
+	 */
 	public Location findLocationById(long id) {
 		Location location = null;
 		for(Location l : locations) {
@@ -105,10 +119,19 @@ public class DBService extends Service {
 		return location;
 	}
 
+	/**
+	 * Get the list of reports in the service
+	 * @return a list of Report objects
+	 */
 	public List<Report> getReports() {
 		return reports;
 	}
 
+	/**
+	 * Find a report by it's unique ID
+	 * @param id the search ID
+	 * @return the Report object
+	 */
 	public Report findReportById(long id) {
 		Report report = null;
 		for (Report r : reports) {
@@ -117,10 +140,19 @@ public class DBService extends Service {
 		return report;
 	}
 
+	/**
+	 * Get the list of flowcharts in the service
+	 * @return a list of Flowchart objects
+	 */
 	public List<Flowchart> getFlowcharts() {
 		return flowcharts;
 	}
 
+	/**
+	 * Find a Flowchart by it's unique ID
+	 * @param id the search ID
+	 * @return the Flowchart object
+	 */
 	public Flowchart findFlowchartById(long id) {
 		Flowchart flowchart = null;
 		for (Flowchart f : flowcharts) {
@@ -129,10 +161,19 @@ public class DBService extends Service {
 		return flowchart;
 	}
 
+	/**
+	 * Get the list of items in the service
+	 * @return a list of Item objects
+	 */
 	public List<Item> getItems() {
 		return items;
 	}
 
+	/**
+	 * Find an Item by it's unique ID
+	 * @param id the search ID
+	 * @return the Item object
+	 */
 	public Item findItemById(long id) {
 		Item item = null;
 		for (Item i : items) {
@@ -141,10 +182,19 @@ public class DBService extends Service {
 		return item;
 	}
 
+	/**
+	 * Get the list of options in the service
+	 * @return a list of options
+	 */
 	public List<Option> getOptions() {
 		return options;
 	}
 
+	/**
+	 * Find an Option by it's unique ID
+	 * @param id the search ID
+	 * @return the Option object
+	 */
 	public Option findOptionById(long id) {
 		Option option = null;
 		for(Option o : options) {
@@ -153,10 +203,19 @@ public class DBService extends Service {
 		return option;
 	}
 
+	/**
+	 * Get the list of users in the service
+	 * @return a list of users
+	 */
 	public List<User> getUsers() {
 		return users;
 	}
 
+	/**
+	 * Find a User by it's unique ID
+	 * @param id the search ID
+	 * @return the User object
+	 */
 	public User findUserById(long id) {
 		User user = null;
 		for(User u : users) {
@@ -165,19 +224,9 @@ public class DBService extends Service {
 		return user;
 	}
 
-	public boolean writeJSONToFile(String filename, String json) {
-		FileOutputStream outputStream;
-		try {
-			outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-			outputStream.write(json.getBytes());
-			outputStream.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
+	/**
+	 * Generate dummy data to be used for testing purposes
+	 */
 	public void setDummyData() {
 		people = new ArrayList<>();
 		people.add(new Person(0, "Nelson", "Reyes"));
@@ -269,41 +318,6 @@ public class DBService extends Service {
 		findReportById(0).addToPath(findOptionById(11));
 
 		Log.i(this.toString(), "dummy data set");
-	}
-
-	public static String peopleToJSON(List<Person> people) {
-		JSONObject object = new JSONObject();
-		for(Person p : people) {
-			String json = p.toJSON();
-			String sid = String.valueOf(p.getId());
-			try {
-				object.put(sid, json);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		Log.i("JSON-List<Person>", object.toString());
-		return object.toString();
-	}
-
-	public static List<Person> peopleFromJSON(String json) {
-		try {
-			JSONObject object = new JSONObject(json);
-			Iterator<String> iterator = object.keys();
-			List list = new ArrayList<Person>();
-			while(iterator.hasNext()) {
-				Person p = new Person(iterator.next());
-				list.add(p);
-			}
-			return list;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private void jsonTest() {
-
 	}
 
     //test method for git

@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/**
+ * ArrayAdapter that facilitates hiding a dummy item
+ */
 public class CustomAdapter extends ArrayAdapter<String> {
 
 	private int hidingItemIndex;
