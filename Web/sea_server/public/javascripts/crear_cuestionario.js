@@ -38,7 +38,7 @@ $(document).ready(function(){
 	    if(i==0) {
 	      table_content +=  'active ';
 	    }
-	    table_content += "show_info_pregunta' href='#', data-id='"+this.id+"'>"+this.name+"</a></td></tr>";
+	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.type+' '+this.id+': '+this.name+"</a></td></tr>";
 		});
 
     $('#preguntas_list').html(table_content);
@@ -74,8 +74,10 @@ $(document).ready(function(){
 			var title = $('<div>').addClass('title_question');
 			var stateNameContainer = $('<div>');
 			var stateName = $('<input>').attr('type', 'text');
-			var title_id = $('<p>').text('Pregunta ' + j);
 			
+			// store element id as data attribute
+			stateName.attr('data-id', j);
+			var title_id = $('<p>').text('Pregunta ' + j);
 			// append element id text to title
 			title.append(title_id);
 			// put stateName input field into stateNameContainer div, 
@@ -126,8 +128,9 @@ $(document).ready(function(){
 
 		      // create element object
 		      var this_element = {
-		      	id: j,
-		      	name: this.value
+		      	id: $(this).attr('data-id'),
+		      	name: this.value,
+	      		type: 'Pregunta'
 		      };
 		      // push to elements_array
 		      elements_array.push(this_element);
@@ -150,8 +153,10 @@ function AddRecommendation() {
 		var title = $('<div>').addClass('title_rec');
 		var stateNameContainer = $('<div>');
 		var stateName = $('<input>').attr('type', 'text');
+
+		// store element id as data attribute
+		stateName.attr('data-id', j);
 		var title_id = $('<p>').text('Recomendación ' + j);
-		
 		// append element id text to title
 		title.append(title_id);
 		// put stateName input field into stateNameContainer div, 
@@ -202,8 +207,9 @@ function AddRecommendation() {
 
 	    	// create element object
 	      var this_element = {
-	      	id: j,
-	      	name: this.value
+	      	id: $(this).attr('data-id'),
+	      	name: this.value,
+	      	type: 'Recomendación'
 	      };
 	      // push to elements_array
 	      elements_array.push(this_element);
