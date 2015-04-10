@@ -253,6 +253,7 @@ public class DBService extends Service {
 
 		flowcharts = new ArrayList<>();
 		Flowchart fc1 = new Flowchart(1, "Test Flowchart");
+		fc1.setFirst(findItemById(1));
 		flowcharts.add(fc1);
 		for(Item i : items) fc1.addItem(i);
 

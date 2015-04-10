@@ -247,7 +247,7 @@ public class MainActivity extends FragmentActivity
 	}
 
 	private void newReport() {
-
+		startActivity(new Intent(this, SurveyActivity.class));
 	}
 
 }

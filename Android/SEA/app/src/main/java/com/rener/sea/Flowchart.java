@@ -18,6 +18,10 @@ public class Flowchart {
 		items = new ArrayList<>();
 	}
 
+	public Flowchart(String name) {
+		this.name = name;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -76,5 +80,9 @@ public class Flowchart {
 
 	public void addItem(Item item) {
 		items.add(item);
+	}
+
+	public String toString() {
+		return name;
 	}
 }

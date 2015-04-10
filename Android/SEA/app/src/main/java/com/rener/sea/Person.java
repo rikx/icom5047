@@ -47,15 +47,8 @@ public class Person implements Comparable<Person> {
 		this.last_name1 = last_name;
 	}
 
-	public Person(String json) {
-		Person p = Person.fromJSON(json);
-		this.id = p.getId();
-		this.first_name = p.getFirstName();
-		this.middle_name = p.getMiddleName();
-		this.last_name1 = p.getLastName1();
-		this.last_name2 = p.getLastName1();
-		this.email = p.getEmail();
-		this.phone_number = p.getPhoneNumber();
+	public Person(String name) {
+		this.first_name = name;
 	}
 
 	public long getId() {

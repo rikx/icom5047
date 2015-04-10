@@ -52,10 +52,13 @@
 	<string name="save_location">Save Location</string>
 	<string name="new_person">New Person</string>
 	<string name="new_location">new Location</string>
-	<string name="new_report">New Report</string>
+	<string name="new_report">New Survey</string>
 	<string name="reports">Reports</string>
 	<string name="people">People</string>
 	<string name="locations">Locations</string>
+	<string name="location">location</string>
+	<string name="subject">subject</string>
+	<string name="flowchart">flowchart</string>
 	<string-array name="main_list_strings">
 		<item>Reports</item>
 		<item>Locations</item>
