@@ -20,7 +20,7 @@ function populate_info_panel(){
  $('#cita_info_hour').text(firstElement.time);
  $('#cita_info_purpose').text(firstElement.purpose);
  $('#cita_info_agent').text(firstElement.username);   
- $('#cita_info_report').text(firstElement.report_id);
+ $('#cita_info_report').html("<a href='/users/admin/reportes/" + firstElement.report_id + "'> Reporte " + firstElement.report_id + "</a>");
 }
 
 /* Button: Return home */
@@ -73,7 +73,6 @@ $citas_list.on('click', 'tr td a.show_info_cita', function(e){
     var myVar = $this.attr('data-id');
     var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(myVar);
     var thisUserObject = citas_array[arrayPosition];
-    console.log(thisUserObject);
 
     //#info_panel_heading
     $('#info_panel_heading').text("Cita");
@@ -82,7 +81,7 @@ $citas_list.on('click', 'tr td a.show_info_cita', function(e){
     $('#cita_info_hour').text(thisUserObject.time);
     $('#cita_info_purpose').text(thisUserObject.purpose);
     $('#cita_info_agent').text(thisUserObject.username);   
-    $('#cita_info_report').text(thisUserObject.report_id);
+    $('#cita_info_report').html("<a href='/users/admin/reportes/" + thisUserObject.report_id + "'> Reporte " + thisUserObject.report_id + "</a>");
 
   });
 
@@ -115,7 +114,6 @@ $citas_list.on('click', 'tr td button.btn_edit_cita', function(){
 function populate_citas(){
   $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
     citas_array = data.citas;
-    console.log(citas_array);
 
       // contents of localizaciones list
       var table_content = '';
