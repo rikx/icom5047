@@ -20,6 +20,8 @@ public class LoginActivity extends Activity {
 
 	private DBService dbService;
 	private boolean mBound = false;
+	String username = null;
+	String password = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class LoginActivity extends Activity {
 			dbService = binder.getService();
 			mBound = true;
 			Log.i(this.toString(), "bound to "+dbService.toString());
+			loadLogin();
 		}
 
 		@Override
@@ -75,47 +78,63 @@ public class LoginActivity extends Activity {
 	/**
 	 * Start the login process by authenticating the user credentials
 	 */
-	public void startLogin(View view) {
+	public void login(View view) {
         //Get username from text field
         EditText editUsername = (EditText) findViewById(R.id.field_username);
-        String username = editUsername.getText().toString();
-
-        //Get password from text field
-        EditText editPassword = (EditText) findViewById(R.id.field_password);
-        String password = editPassword.getText().toString();
-
-		//Check login credentials
-		Context context = getApplicationContext();
-		if(dbService.authLogin(username, password)) {
-			//Successful login
-			saveLogin(username, password);
-			startActivity(new Intent(this, MainActivity.class));
-			String s = getResources().getString(R.string.login_ak);
-			Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-			Log.i(this.toString(), "login successful");
-			finish();
-		}
-		else {
-			//Failed login
+		EditText editPassword = (EditText) findViewById(R.id.field_password);
+        username = editUsername.getText().toString();
+        password = editPassword.getText().toString();
+		if(!attemptLogin()) {
 			editUsername.setText("");
 			editPassword.setText("");
-			String s = getResources().getString(R.string.login_nak);
-			Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-			Log.i(this.toString(), "login failed");
 		}
     }
 
 	/**
 	 * Saves the login credentials to the preference file
-	 * @param username the username to be saved
-	 * @param password the password to be saved
 	 */
-    private void saveLogin(String username, String password) {
+    private void saveLogin() {
 		SharedPreferences sharedPref = this.getSharedPreferences(
 				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putString(getString(R.string.key_saved_username), username);
 		editor.putString(getString(R.string.key_saved_password), password);
 		editor.apply();
+	    Log.i(this.toString(), "saveLogin: "+username+", "+password);
     }
+
+	private void loadLogin() {
+		SharedPreferences sharedPref = this.getSharedPreferences(
+				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
+		String sPassword = sharedPref.getString(getString(R.string.key_saved_password), null);
+		Log.i(this.toString(), "loadLogin: "+sUsername+", "+sPassword);
+		if(sUsername != null && sPassword != null) {
+			username = sUsername;
+			password = sPassword;
+			attemptLogin();
+		}
+	}
+
+	private boolean attemptLogin() {
+		//Check login credentials
+		Context context = getApplicationContext();
+		if(dbService.authLogin(username, password)) {
+			//Successful login
+			saveLogin();
+			startActivity(new Intent(this, MainActivity.class));
+			String s = getResources().getString(R.string.login_ak);
+			Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+			Log.i(this.toString(), "login successful");
+			finish();
+			return true;
+		}
+		else {
+			//Failed login
+			String s = getResources().getString(R.string.login_nak);
+			Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+			Log.i(this.toString(), "login failed");
+			return false;
+		}
+	}
 }
