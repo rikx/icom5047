@@ -32,7 +32,7 @@ $(document).ready(function(){
     var this_id = $this.attr('data-id');
     var arrayPosition = cuestionarios_array.map(function(arrayItem) { return arrayItem.flowchart_id; }).indexOf(this_id);
     var this_list_element = cuestionarios_array[arrayPosition];
-    populate_info_panel();
+    populate_info_panel(this_list_element);
   });
 
  	// Populates info panel with list element's information
