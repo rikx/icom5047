@@ -1,9 +1,39 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
+/* GET users listing. 
+ * TODO: make this route redirect to the proper home page
+ * TODO: depending on the currently signed in user type
+*/
 router.get('/', function(req, res, next) {
-  res.send("Ramon's secret hiding place");
+  res.redirect('/users/admin');
+});
+
+/* GET Tomar Cuestionario 
+ * Responds with first 20 cuestionarios, 
+ * alphabetically ordered by name
+ */
+router.get('/cuestionarios', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+									FROM flowchart, users \
+									WHERE user_id = creator_id \
+									ORDER BY flowchart_name \
+									LIMIT 20;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.render('tomar_cuestionarios', { title: 'Cuestionarios', cuestionarios: result.rows});
+	    }
+	  });
+	});
 });
 
 //TODO: add :id or :username after /admin

@@ -7,12 +7,12 @@ $(document).ready(function(){
 		window.location.href = '/users/admin/cuestionarios'
 	});
 
-	$('#btn_manejar_ganaderos').click(function(){
-		window.location.href = '/users/admin/ganaderos'
+	$('#btn_tomar_cuestionario').click(function(){
+		window.location.href = '/users/cuestionarios'
 	});
 
-	$('#btn_manejar_reportes').click(function(){
-		window.location.href = '/users/admin/reportes'
+	$('#btn_manejar_ganaderos').click(function(){
+		window.location.href = '/users/admin/ganaderos'
 	});
 
 	$('#btn_manejar_usuarios').click(function(){
@@ -23,13 +23,18 @@ $(document).ready(function(){
 		window.location.href = '/users/admin/localizaciones'
 	});
 
+	$('#btn_manejar_dispositivos').click(function(){
+		window.location.href = '/users/admin/dispositivos'
+	});
+
+	$('#btn_manejar_reportes').click(function(){
+		window.location.href = '/users/admin/reportes'
+	});
+
 	$('#btn_manejar_citas').click(function(){
 		window.location.href = '/users/admin/citas'
 	});
 
-	$('#btn_manejar_dispositivos').click(function(){
-		window.location.href = '/users/admin/dispositivos'
-	});
 
 	//logout function
 	$('#btn_logout').click(function(){

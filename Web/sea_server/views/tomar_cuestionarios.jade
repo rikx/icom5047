@@ -9,7 +9,7 @@ block content
 				.jumbotron
 					center
 						h2 Servicio de Extensión Agrícola
-						h4 Manejar Cuestionarios
+						h4 Tomar Cuestionarios
 			.col-md-2
 
 		.row
@@ -42,10 +42,11 @@ block content
 												else 
 													a(class='list-group-item active show_info_cuestionario', href='#', data-id=cuestionario.flowchart_id)= cuestionario.flowchart_name
 											td
-												button(class='btn_edit_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionario.flowchart_id) Editar
+												cuestionario.version
 											td
-												a(class='btn_delete_cuestionario btn btn-sm btn-success', data-toggle='tooltip', data-id=cuestionario.flowchart_id)
-													i(class='glyphicon glyphicon-trash')
+												button(class='btn_flujo_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionario.flowchart_id) Método con Flujo
+											td
+												button(class='btn_abierto_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionario.flowchart_id) Método Abierto
 
 			#info_panel.col-md-4
 				.panel.panel-success
@@ -62,10 +63,10 @@ block content
 							tr
 								td Creado por:
 								td#cuestionario_info_creator
+
 		.row
 			.col-md-2
 			.col-md-2
-				button#btn_add_cuestionario(class='btn btn-sm btn-default btn-block', type='button') Agregar Cuestionario
 			.col-md-2
 				// TODO: add home glyphicon
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
@@ -73,5 +74,5 @@ block content
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
-	script(src='/javascripts/manejar_cuestionarios.js')
+	script(src='/javascripts/tomar_cuestionarios.js')
 	script(src='/javascripts/helpers.js')

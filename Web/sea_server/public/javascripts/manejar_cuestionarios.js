@@ -9,23 +9,23 @@ $(document).ready(function(){
   populate_info_panel();
 
   function populate_info_panel(){
-   var firstElement = [];
-   firstElement = cuestionarios_array[0]; 
-   $('#cuestionario_info_name').text(firstElement.flowchart_name);
-   $('#cuestionario_info_version').text(firstElement.version);
-   $('#cuestionario_info_creator').text(firstElement.username);
- }
+    var firstElement = [];
+    firstElement = cuestionarios_array[0]; 
+    $('#cuestionario_info_name').text(firstElement.flowchart_name);
+    $('#cuestionario_info_version').text(firstElement.version);
+    $('#cuestionario_info_creator').text(firstElement.username);
+  }
 
- /* Button: Return home */
- $('#btn_home').on('click', function(){
-  window.location.href = '/users/admin';
-});
+  /* Button: Return home */
+  $('#btn_home').on('click', function(){
+    window.location.href = '/users/admin';
+  });
 
- /* Close info panel */
- $('#btn_close_info_panel').on('click', function(){
-  $('#info_panel').hide();
-  remove_active_class($usuarios_list);
-});
+  /* Close info panel */
+  $('#btn_close_info_panel').on('click', function(){
+    $('#info_panel').hide();
+    remove_active_class($usuarios_list);
+  });
 
  /* Open edit page */
  $cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
