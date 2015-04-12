@@ -63,6 +63,30 @@ router.get('/usuarios', function(req, res, next) {
 	});
 });
 
+/* GET flowchart element family 
+ * returns family info of element matching :id
+ */
+router.get('/element', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	  client.query('SELECT user_id, username \
+									FROM users \
+									ORDER BY username ASC', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({usuarios : result.rows});
+	    }
+	  });
+	});
+});
+
 /* POST login */
 router.post('/login', function(req, res, next) {
 	if(!req.body.hasOwnProperty('input_username') || !req.body.hasOwnProperty('input_password') ) {
