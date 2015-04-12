@@ -11,12 +11,12 @@ import java.util.List;
 /**
  * ArrayAdapter that facilitates hiding a dummy item
  */
-public class CustomAdapter extends ArrayAdapter<String> {
+public class DummyAdapter extends ArrayAdapter<String> {
 
 	private int hidingItemIndex;
 
-	public CustomAdapter(Context context, int resource, List objects,
-	                     int hidingItemIndex) {
+	public DummyAdapter(Context context, int resource, List objects,
+	                    int hidingItemIndex) {
 		super(context, resource, objects);
 		this.hidingItemIndex = hidingItemIndex;
 	}

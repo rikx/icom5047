@@ -22,8 +22,7 @@ import android.widget.ListView;
 /**
  * Represents an activity in which the primary navigation for the application is performed
  */
-public class MainActivity extends FragmentActivity
-		implements MenuListFragment.OnMenuItemSelectedListener {
+public class MainActivity extends FragmentActivity {
 
 	private static final boolean SETTINGS_ENABLED = false;
 	private DBService dbService;

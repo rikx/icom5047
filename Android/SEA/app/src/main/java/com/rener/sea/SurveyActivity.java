@@ -182,17 +182,17 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		flowcharts.add(0, new Flowchart(getString(R.string.flowchart)));
 
 		//Set the adapter
-		CustomAdapter locationAdapter = new CustomAdapter(this,
+		DummyAdapter locationAdapter = new DummyAdapter(this,
 				android.R.layout.simple_list_item_1, locations, 0);
 		spinnerLocation.setAdapter(locationAdapter);
 		spinnerLocation.setOnItemSelectedListener(this);
 
-		CustomAdapter personAdapter = new CustomAdapter(this,
+		DummyAdapter personAdapter = new DummyAdapter(this,
 				android.R.layout.simple_list_item_1, people, 0);
 		spinnerSubject.setAdapter(personAdapter);
 		spinnerSubject.setOnItemSelectedListener(this);
 
-		CustomAdapter flowchartAdapter = new CustomAdapter(this,
+		DummyAdapter flowchartAdapter = new DummyAdapter(this,
 				android.R.layout.simple_list_item_1, flowcharts, 0);
 		spinnerFlowchart.setAdapter(flowchartAdapter);
 		spinnerFlowchart.setOnItemSelectedListener(this);

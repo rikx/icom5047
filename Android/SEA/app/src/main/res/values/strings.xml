@@ -45,7 +45,10 @@
 	<string name="login_nak">Wrong username or password</string>
 	<string name="logout">Logout</string>
 	<string name="edit_report">Edit Report</string>
+	<string name="report_name">report name</string>
+	<string name="report_location">report location</string>
 	<string name="save_report">Save Report</string>
+	<string name="date">date</string>
 	<string name="edit_person">Edit Person</string>
 	<string name="save_person">Save Person</string>
 	<string name="edit_location">Edit Location</string>
@@ -66,4 +69,5 @@
 	<string name="manager">manager</string>
 	<string name="owner">owner</string>
 	<string name="agent">agent</string>
+	<string name="date_format">dd/LLL/yy</string>
 </resources>

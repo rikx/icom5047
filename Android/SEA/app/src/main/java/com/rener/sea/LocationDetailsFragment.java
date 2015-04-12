@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -111,13 +110,13 @@ public class LocationDetailsFragment extends Fragment
 		agentList.add(0, new Person(dummy));
 
 		//Set the adapters
-		CustomAdapter adapter = new CustomAdapter(getActivity(),
+		DummyAdapter adapter = new DummyAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, ownerList, 0);
 		ownerSpinner.setAdapter(adapter);
-		adapter = new CustomAdapter(getActivity(),
+		adapter = new DummyAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, managerList, 0);
 		managerSpinner.setAdapter(adapter);
-		adapter = new CustomAdapter(getActivity(),
+		adapter = new DummyAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, agentList, 0);
 		agentSpinner.setAdapter(adapter);
 
