@@ -53,7 +53,7 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	res.render('', { title: 'Cuestionarios', cuestionario: result.rows[0]});
+	    	res.render('cuestionario_flujo', { title: 'Cuestionarios', cuestionario: result.rows[0]});
 	    }
 	  });
 	});
