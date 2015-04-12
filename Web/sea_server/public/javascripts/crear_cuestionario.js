@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$preguntas_list = $('#preguntas_list');
-
+	// stores current elements in the jsPlumb container
 	var elements_array = [];
 
 	// Return to admin page button
@@ -15,7 +15,7 @@ $(document).ready(function(){
 	});
 
   /* Open info panel */
-  $preguntas_list.on('click', 'tr td a.show_info_pregunta', function(e){
+  $preguntas_list.on('click', 'tr td a.show_info_elemento', function(e){
     // prevents link from firing
     e.preventDefault();
 
