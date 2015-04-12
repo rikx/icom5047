@@ -200,12 +200,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	}
 
 	private void setCreator() {
-		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-		String username = sharedPref.getString(getString(R.string.key_saved_username), "DEFAULT");
+		SharedPreferences sharedPref = this.getSharedPreferences(
+				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
 		List<User> users = dbService.getUsers();
 		User creator = null;
 		for(User u : users) {
-			if(u.getUsername().equals(username)) creator = u;
+			if(u.getUsername().equals(sUsername)) creator = u;
 		}
 		report.setCreator(creator);
 	}
