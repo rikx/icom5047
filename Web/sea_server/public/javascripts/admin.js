@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$('#btn_crear_cuestionario').click(function(){
-		window.location.href = '/users/admin/cuestionario/crear'
+		window.location.href = '/users/admin/cuestionarios/crear'
 	});
 
 	$('#btn_manejar_cuestionarios').click(function(){

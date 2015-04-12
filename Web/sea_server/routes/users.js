@@ -71,12 +71,12 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 });
 
 /* GET Admin Crear Cuestionario */
-router.get('/admin/cuestionario/crear', function(req, res, next) {
+router.get('/admin/cuestionarios/crear', function(req, res, next) {
 	res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
 });
 
 /* GET Admin Cuestionario */
-router.get('/admin/cuestionario/:id', function(req, res, next) {
+router.get('/admin/cuestionarios/:id', function(req, res, next) {
 	var cuestionario_id = req.params.id;
 	res.render('cuestionario', { title: 'Cuestionario'});
 });

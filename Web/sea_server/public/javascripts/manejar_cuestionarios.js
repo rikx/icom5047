@@ -41,7 +41,7 @@ $(document).ready(function(){
     if (!$this.hasClass('active')) {
       $this.addClass('active');
     }
-    // contains ganadero id
+    // contains cuestionario id
     var this_id = $this.attr('data-id');
     var arrayPosition = cuestionarios_array.map(function(arrayItem) { return arrayItem.flowchart_id; }).indexOf(this_id);
     var this_list_element = cuestionarios_array[arrayPosition];
@@ -50,7 +50,7 @@ $(document).ready(function(){
 
   // Populates info panel with list element's information
   function populate_info_panel(element){
-    $('#cuestionario_info_name').text(element.flowchart_name);
+    $('#cuestionario_info_name').html("<a href='/users/admin/cuestionarios/" + element.flowchart_id + "'>" +element.flowchart_name+ "</a>");
     $('#cuestionario_info_version').text(element.version);
     $('#cuestionario_info_creator').text(element.username);
   };

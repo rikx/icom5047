@@ -37,7 +37,7 @@ $(document).ready(function(){
 
  	// Populates info panel with list element's information
   function populate_info_panel(element){
-    $('#cuestionario_info_name').text(element.flowchart_name);
+    $('#cuestionario_info_name').html("<a href='/users/admin/cuestionarios/" + element.flowchart_id + "'>" +element.flowchart_name+ "</a>");
     $('#cuestionario_info_version').text(element.version);
     $('#cuestionario_info_creator').text(element.username);
   };
