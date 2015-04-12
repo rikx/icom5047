@@ -23,16 +23,13 @@ $(document).ready(function(){
  $cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
 		// contains cuestionario id
     var this_cuestionario_id = $(this).attr('data-id');
-    window.location.href = '/users/admin/cuestionario/'+this_cuestionario_id;
+    window.location.href = '/users/admin/cuestionarios/'+this_cuestionario_id;
   });
 
  $cuestionarios_list.on('click', 'tr td a.show_info_cuestionario', function(e){
     // prevents link from firing
     e.preventDefault();
     var table_content = '';
-
-    $('#edit_panel').hide();
-    $('#info_panel').show();
 
     // remove active from previous list item 
     remove_active_class($cuestionarios_list);

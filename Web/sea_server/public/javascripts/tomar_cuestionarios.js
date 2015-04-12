@@ -13,13 +13,11 @@ $(document).ready(function(){
   	window.location.href = '/users'; 
 	});
 
+  // show info panel click event
  	$cuestionarios_list.on('click', 'tr td a.show_info_cuestionario', function(e){
     // prevents link from firing
     e.preventDefault();
     var table_content = '';
-
-    $('#edit_panel').hide();
-    $('#info_panel').show();
 
     // remove active from previous list item 
     remove_active_class($cuestionarios_list);
@@ -33,6 +31,20 @@ $(document).ready(function(){
     var arrayPosition = cuestionarios_array.map(function(arrayItem) { return arrayItem.flowchart_id; }).indexOf(this_id);
     var this_list_element = cuestionarios_array[arrayPosition];
     populate_info_panel(this_list_element);
+  });
+
+  // take survey with flow method click event
+  $cuestionarios_list.on('click', 'tr td button.btn_flujo_cuestionario', function(){
+    // contains cuestionario id
+    var this_cuestionario_id = $(this).attr('data-id');
+    window.location.href = '/users/cuestionarios/flow/'+this_cuestionario_id;
+  });
+
+  // take survey with open method click event
+  $cuestionarios_list.on('click', 'tr td button.btn_abierto_cuestionario', function(){
+    // contains cuestionario id
+    var this_cuestionario_id = $(this).attr('data-id');
+    window.location.href = '/users/cuestionarios/open/'+this_cuestionario_id;
   });
 
  	// Populates info panel with list element's information
