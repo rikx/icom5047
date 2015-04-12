@@ -11,12 +11,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class ReportListAdapter extends ArrayAdapter {
+public class ReportListAdapter extends ArrayAdapter<Report> {
 
 	private Context context;
 	private List<Report> reports;
 
-	public ReportListAdapter(Context context, List reports) {
+	public ReportListAdapter(Context context, List<Report> reports) {
 		super(context, R.layout.report_list_item, reports);
 		this.context = context;
 		this.reports = reports;
@@ -24,14 +24,24 @@ public class ReportListAdapter extends ArrayAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.report_list_item, parent, false);
+		View row = convertView;
+		ReportHolder holder;
 
-		//Get the views
-		TextView nameView = (TextView) view.findViewById(R.id.report_list_item_name);
-		TextView locationView = (TextView) view.findViewById(R.id.report_list_item_location);
-		TextView dateView = (TextView) view.findViewById(R.id.report_list_item_date);
+		//Inflate the layout if necessary
+		if(row == null) {
+			LayoutInflater inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			row = inflater.inflate(R.layout.report_list_item, parent, false);
+
+			holder = new ReportHolder();
+			holder.nameText = (TextView) row.findViewById(R.id.report_list_item_name);
+			holder.locationText = (TextView) row.findViewById(R.id.report_list_item_location);
+			holder.dateText = (TextView) row.findViewById(R.id.report_list_item_date);
+			row.setTag(holder);
+		}
+		else {
+			holder = (ReportHolder) row.getTag();
+		}
 
 		//Get the data
 		Report report = reports.get(position);
@@ -40,11 +50,17 @@ public class ReportListAdapter extends ArrayAdapter {
 		Date date = report.getDate();
 
 		//Set the views
-		nameView.setText(name);
-		locationView.setText(location);
-		dateView.setText(new SimpleDateFormat("dd/LLL/yy").format(date));
+		holder.nameText.setText(name);
+		holder.locationText.setText(location);
+		holder.dateText.setText(new SimpleDateFormat("dd/LLL/yy").format(date));
 
-		return view;
+		return row;
 
+	}
+
+	private static class ReportHolder {
+		TextView nameText;
+		TextView locationText;
+		TextView dateText;
 	}
 }
