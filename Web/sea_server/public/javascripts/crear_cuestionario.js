@@ -4,15 +4,15 @@ $(document).ready(function(){
 	var elements_array = [];
 
 	// Return to admin page button
-  $('#btn_home').on('click', function(){
-    window.location.href = '/users/admin';
-  });
+	$('#btn_home').on('click', function(){
+		window.location.href = '/users/admin';
+	});
 
   // Close info panel
-	$('#btn_close_info_panel').on('click', function(){
-	  $('#info_panel').hide();
-	  remove_active_class($preguntas_list);
-	});
+  $('#btn_close_info_panel').on('click', function(){
+  	$('#info_panel').hide();
+  	remove_active_class($preguntas_list);
+  });
 
   /* Open info panel */
   $preguntas_list.on('click', 'tr td a.show_info_elemento', function(e){
@@ -24,11 +24,11 @@ $(document).ready(function(){
     // add active to current clicked list item
     var $this = $(this);
     if (!$this.hasClass('active')) {
-      $this.addClass('active');
+    	$this.addClass('active');
     }
-  });
+});
 
- 	function populate_elements_list(){
+  function populate_elements_list(){
 		// add new element to elements list
 		var table_content = '';
 
@@ -36,45 +36,55 @@ $(document).ready(function(){
 			table_content += "<tr><td><a class='list-group-item ";
 	    // if initial list item, set to active
 	    if(i==0) {
-	      table_content +=  'active ';
+	    	table_content +=  'active ';
 	    }
 	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.type+' '+this.id+': '+this.name+"</a></td></tr>";
-		});
+	});
 
-    $('#preguntas_list').html(table_content);
- 	}
+		$('#preguntas_list').html(table_content);
+	}
  	// JS PLUMB create code
 
  	$('#btn_add_question').on('click', function(){
-  	AddQuestion();
-  });
+ 		AddQuestion();
+ 	});
 
-  $('#btn_add_recommendation').on('click', function(){
-  	AddRecommendation();
-  });
+ 	$('#btn_add_recommendation').on('click', function(){
+ 		AddRecommendation();
+ 	});
 
-  $('#btn_submit').on('click', function(){
-  	saveGraph();
-  });
+ 	$('#btn_submit').on('click', function(){
+ 		saveGraph();
+ 	});
 
  	$('#btn_load').on('click', function(){
  		loadGraph();
-  });
+ 	});
 
-  var j =0;
-	var array = [];
-	var arrayConnection = [];
-	var trigger = "yes";
-	jsPlumb.Defaults.Container = $('#container_plumbjs');
+ 	var j =0;
+ 	var array = [];
+ 	var arrayConnection = [];
+ 	var trigger = "yes";
+ 	jsPlumb.Defaults.Container = $('#container_plumbjs');
 
-	function AddQuestion() {
+ 	$('#list_question_type').on('click', 'li a', function(e){
+  // prevents link from firing
+  e.preventDefault();
+  $('#btn_question_type_text').text($(this).text()+' ');
+  $('#btn_question_type').val($(this).attr('data-usario-type'));
+});
 
-		jsPlumb.ready(function() {
-			var newState = $('<div>').attr('id', 'state' + j).addClass('item_question');
-			var title = $('<div>').addClass('title_question');
-			var stateNameContainer = $('<div>');
-			var stateName = $('<input>').attr('type', 'text');
-			
+ 	function AddQuestion() {
+
+ 		jsPlumb.ready(function() {
+
+ 			var questionType = $('#btn_question_type_text').text();
+ 			var newState = $('<div>').attr('id', 'state' + j).addClass('item_question');
+ 			newState.addClass(questionType);
+ 			var title = $('<div>').addClass('title_question');
+ 			var stateNameContainer = $('<div>');
+ 			var stateName = $('<input>').attr('type', 'text');
+
 			// store element id as data attribute
 			stateName.attr('data-id', j);
 			var title_id = $('<p>').text('Pregunta ' + j);
@@ -109,9 +119,9 @@ $(document).ready(function(){
 					if ($(event.target).find('select').length == 0) {
 					//saveState(event.target);
 					array.push(newState);
-					}
 				}
-			});
+			}
+		});
 
 			newState.dblclick(function(e) {
 				jsPlumb.detachAllConnections($(this));
@@ -130,14 +140,14 @@ $(document).ready(function(){
 		      var this_element = {
 		      	id: $(this).attr('data-id'),
 		      	name: this.value,
-	      		type: 'Pregunta'
+		      	type: 'Pregunta'
 		      };
 		      // push to elements_array
 		      elements_array.push(this_element);
 		      // populate elements list with new element
 		      populate_elements_list();
-			  }
-			});
+		  }
+		});
 
 			// focuses on input field of the created element
 			stateName.focus();
@@ -206,17 +216,17 @@ function AddRecommendation() {
 	      $(this).parent().text(this.value);
 
 	    	// create element object
-	      var this_element = {
-	      	id: $(this).attr('data-id'),
-	      	name: this.value,
-	      	type: 'Recomendación'
-	      };
+	    	var this_element = {
+	    		id: $(this).attr('data-id'),
+	    		name: this.value,
+	    		type: 'Recomendación'
+	    	};
 	      // push to elements_array
 	      elements_array.push(this_element);
 	      // populate elements list with new element
 	      populate_elements_list();
-		  }
-		});
+	  }
+	});
 
 		// focuses on input field of the created element
 		stateName.focus();
@@ -238,10 +248,10 @@ jsPlumb.bind("connection", function(info, originalEvent) {
 //info.connection.setLabel("FOO");
 arrayConnection.push(info.sourceId);
 arrayConnection.push(info.targetId);
-
+var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
 console.log(info.connection.getOverlays());
 info.connection.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
-info.connection.addOverlay([ "Label", { id:"label", label:"foo", borderWidth:20}]); 
+info.connection.addOverlay([ "Label", { id:"label", label:mylabel, borderWidth:20}]); 
 info.connection.setPaintStyle({lineWidth:10,strokeStyle:'rgb(0,225,0)'});
 console.log(info.connection.getOverlays());
 }
@@ -296,7 +306,7 @@ function checkGraph(){
 }
 
 $('#container_plumbjs').scroll(function(){
-		jsPlumb.repaintEverything();
+	jsPlumb.repaintEverything();
 });
 
 });
