@@ -81,11 +81,34 @@ $('#btn_add_ganadero').on('click', function(){
 
 /* POSTs new ganadero information */
 $('#btn_submit').on('click', function(){
-      // ajax call to post new ganadero
+  // get form data and conver to json format
+  var form_data = $('#form_manage_ganadero').serializeArray();
+  var new_ganadero = ConverToJSON(form_data);
+  console.log("New ganadero: " + JSON.stringify(new_ganadero));
 
-      // update ganadero list after posting 
-      populate_ganaderos();
-    });
+  // ajax call to post new ganadero
+  $.ajax({
+    url: "http://localhost:3000/users/admin/ganaderos",
+    method: "POST",
+    data: JSON.stringify(new_ganadero),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function() {
+      alert("Ganadero ha sido añadido al systema.");
+      // clear add forms
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+
+  // update ganadero list after posting 
+  populate_ganaderos();
+});
 
 /* Open edit panel */
 $ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
@@ -116,7 +139,7 @@ $('#btn_edit').on('click', function(){
     //TODO: collect data to submit from edit form
 
     $.ajax({
-      url: "http://localhost:3000/users/admin/ganadero_edit",
+      url: "http://localhost:3000/users/admin/ganadero",
       method: "PUT",
 
       success: function( data ) {
@@ -148,7 +171,7 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
     $(this).attr('data-id');
 
     $.ajax({
-      url: "http://localhost:3000/users/admin/ganadero_delete",
+      url: "http://localhost:3000/users/admin/ganadero",
       method: "DELETE",
 
       success: function( data ) {
