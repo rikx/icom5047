@@ -94,11 +94,12 @@ $(document).ready(function(){
  			var newState = $('<div>').attr('id', 'state' + j).addClass('item_question');
  			newState.addClass(questionType);
  			var title = $('<div>').addClass('title_question');
- 			var stateNameContainer = $('<div>');
+ 			// 
+ 			var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
  			var stateName = $('<input>').attr('type', 'text');
 
 			// store element id as data attribute
-			stateName.attr('data-id', j);
+			stateName.attr('data-id', 'state' + j);
 			var title_id = $('<p>').text('Pregunta ' + j);
 			// append element id text to title
 			title.append(title_id);
@@ -134,8 +135,8 @@ $(document).ready(function(){
 					   // create element object
 					   var this_element = {
 					   	id: newState.attr('id'),
-					   	name: newState.attr('type'),
-					   	type: 'Pregunta',
+					   	name: $('#'+newState.attr('id')).attr('data-state-name'),
+					   	type: questionType,
 					   	left: newState.position().left,
 					   	top: newState.position().top
 					   };
@@ -143,6 +144,7 @@ $(document).ready(function(){
 			  console.log(this_element.id);
 			  console.log(this_element.name);
 			  console.log(this_element.left);
+			  console.log(this_element.type);
 		      // push to elements_array
 		      elements_array.push(this_element);
 		      // populate elements list with new element
@@ -163,7 +165,9 @@ $(document).ready(function(){
 		      //var state = $(this).closest('.item');
 		      //state.children('.title').text(this.value);
 		      $(this).parent().text(this.value);
-
+					var state_id = $(this).attr('data-id')
+					console.log("My state id: " + state_id);
+					$('#'+state_id).attr('data-state-name', this.value);
 		      // // create element object
 		      // var this_element = {
 		      // 	id: $(this).attr('data-id'),
