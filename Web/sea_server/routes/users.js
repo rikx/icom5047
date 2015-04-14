@@ -30,6 +30,7 @@ router.get('/cuestionarios', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
+	    	console.log(result.rows);
 	    	res.render('tomar_cuestionarios', { title: 'Cuestionarios', cuestionarios: result.rows});
 	    }
 	  });
@@ -46,14 +47,16 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query('', function(err, result) {
+	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, item_id, item.label AS question, type, option_id, option.label AS answer, next_id \
+									FROM flowchart, item, option \
+									WHERE flowchart.flowchart_id = $1 AND item_id = first_id AND first_id = parent_id', [cuestionario_id], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	res.render('cuestionario_flujo', { title: 'Cuestionarios', cuestionario: result.rows[0]});
+	    	res.render('cuestionario_flujo', { title: 'Cuestionario con Flujo', pregunta: result.rows});
 	    }
 	  });
 	});

@@ -72,16 +72,14 @@ router.get('/element', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query('SELECT user_id, username \
-									FROM users \
-									ORDER BY username ASC', function(err, result) {
+	  client.query('', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	res.json({usuarios : result.rows});
+	    	res.json({element_family : result.rows});
 	    }
 	  });
 	});

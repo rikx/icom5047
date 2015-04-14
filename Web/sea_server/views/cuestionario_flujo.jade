@@ -1,6 +1,52 @@
 extends layout
 
 block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extensión Agrícola
+						h3#flowchart(data-flowchart-id=pregunta[0].flowchart_id) 
+							| Cuestionario 
+							= pregunta[0].flowchart_name
+			.col-md-2
+
+		.row
+			.col-md-2
+			.col-md-8
+				.panel.panel-success(data-question=pregunta)
+					.panel-heading 
+						h3#panel_title_first(class='panel-title')
+							| Preguntas Contestadas
+					.panel-body
+						ol#answered_questions
+		.row
+			.col-md-2
+			.col-md-8
+				.panel.panel-success(data-question=pregunta)
+					.panel-heading 
+						h3#panel_title_first(class='panel-title')
+							| Primera Pregunta
+						h3#panel_title_next(class='panel-title', style="display: none;")
+							| Próxima Pregunta
+					.panel-body#next_question
+						p#question(data-question-id=pregunta[0].item_id)
+							= pregunta[0].question
+						each contestacion, i in pregunta
+							.radio
+								label
+									input(id='#answer'+i, name='answer_radios', type='radio', value=contestacion.answer, data-answer-id=contestacion.option_id)
+									= contestacion.answer
+		.row
+			.col-md-2
+			.col-md-2
+				button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button') Guardar Progreso
+			.col-md-2
+				// TODO: add home glyphicon
+				button#btn_next_question(class='btn btn-sm btn-default btn-block', type='button') Próxima Pregunta
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
