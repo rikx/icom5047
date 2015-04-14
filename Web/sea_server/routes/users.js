@@ -141,6 +141,52 @@ router.get('/admin/ganaderos', function(req, res, next) {
 	res.render('manejar_ganaderos', { title: 'Manejar Ganaderos'});
 });
 
+/* GET Ganaderos List data 
+ * Responds with first 10 ganaderos, alphabetically ordered 
+ */
+router.get('/admin/list_ganaderos', function(req, res, next) {
+	var ganaderos_list, locations_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	
+	  client.query('SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+									FROM person \
+									WHERE person_id NOT IN (SELECT person_id FROM users) \
+									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+									LIMIT 10;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	ganaderos_list = result.rows;
+	    }
+	  });
+
+	  client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+										FROM person \
+										WHERE person_id NOT IN (SELECT person_id FROM users) \
+										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+										LIMIT 10) \
+									SELECT person_id, location_id, location.name AS location_name \
+									FROM ganaderos, location \
+									WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
+			done();
+			if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	locations_list = result.rows;
+	    	// response
+				res.json({ganaderos: ganaderos_list, locations: locations_list});
+	    }
+		});	
+	});
+});
+
 /* POST Admin Manejar Ganaderos
  * Add new ganadero to database
  */
@@ -183,57 +229,36 @@ router.post('/admin/ganaderos', function(req, res, next) {
 	}
 });
 
-/* GET Ganaderos List data 
- * Responds with first 10 ganaderos, alphabetically ordered 
+/* PUT Admin Manejar Ganaderos 
+ * Edit ganadero matching :id in database
  */
- /* This query returns all persons asociated with a location*/
-// SELECT DISTINCT ON (person_id, first_name, last_name1, last_name2) \
-//	  								person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-//									FROM person, location \
-//									WHERE person_id = owner_id OR person_id = manager_id \
-//									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-//									LIMIT 10;
-router.get('/admin/list_ganaderos', function(req, res, next) {
-	var ganaderos_list, locations_list;
-	var db = req.db;
-	db.connect(req.conString, function(err, client, done) {
-		if(err) {
-	  	return console.error('error fetching client from pool', err);
-		}
-	
-	  client.query('SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-									FROM person \
-									WHERE person_id NOT IN (SELECT person_id FROM users) \
-									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-									LIMIT 10;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	ganaderos_list = result.rows;
-	    }
-	  });
-
-	  client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-										FROM person \
-										WHERE person_id NOT IN (SELECT person_id FROM users) \
-										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-										LIMIT 10) \
-									SELECT person_id, location_id, location.name AS location_name \
-									FROM ganaderos, location \
-									WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
-			done();
-			if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	locations_list = result.rows;
-	    	// response
-				res.json({ganaderos: ganaderos_list, locations: locations_list});
-	    }
-		});	
-	});
+router.put('/admin/ganaderos/:id', function(req, res, next) {
+	var ganadero_id = req.params.id;
+	if(!req.body.hasOwnProperty('ganadero_name') || !req.body.hasOwnProperty('ganadero_apellido1')
+			|| !req.body.hasOwnProperty('ganadero_apellido2') || !req.body.hasOwnProperty('ganadero_email')
+			|| !req.body.hasOwnProperty('ganadero_telefono') || !req.body.hasOwnProperty('ganadero_m_initial')) {
+  	res.statusCode = 400;
+  	return res.send('Error: Missing fields for user login.');
+	} else {
+		var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+			// Insert new ganadero into db
+			client.query("UPDATE person SET first_name = $1, middle_initial = $2, last_name1 = $3, last_name2 = $4, email = $5, phone_number = $6 \
+										WHERE person_id = $7", 
+										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono, ganadero_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+			  done();
+			  if(err) {
+			    return console.error('error running query', err);
+			  } else {
+			    res.json(true);
+			  }
+			});
+		});
+	}
 });
 
 /* GET Admin Manejar Reportes 
