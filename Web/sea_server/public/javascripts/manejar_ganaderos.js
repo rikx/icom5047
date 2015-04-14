@@ -77,12 +77,16 @@ $('#btn_add_ganadero').on('click', function(){
   $('#btn_submit, #heading_create').show();
   $('#edit_panel').show();
   $('#info_panel').hide();
+
+  // clear add form
+  $('#form_manage_ganadero')[0].reset();
 });
 
 /* POSTs new ganadero information */
 $('#btn_submit').on('click', function(){
   // get form data and conver to json format
-  var form_data = $('#form_manage_ganadero').serializeArray();
+  var $the_form = $('#form_manage_ganadero');
+  var form_data = $the_form.serializeArray();
   var new_ganadero = ConverToJSON(form_data);
 
   // ajax call to post new ganadero
@@ -98,8 +102,8 @@ $('#btn_submit').on('click', function(){
         alert("Ganadero con este correo electrónico o teléfono ya existe");
       } else {
         alert("Ganadero ha sido añadido al sistema.");
-
-        // clear add forms
+        // clear add form
+        $the_form[0].reset();
       }
     },
     error: function( xhr, status, errorThrown ) {
@@ -127,43 +131,40 @@ $ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
   var thisUserObject = ganaderos_array[arrayPosition];
 
   $('#btn_edit').attr('data-id', myVar);
-  $('#ganadero_name').attr("value", thisUserObject.first_name);
-  $('#ganadero_apellido1').attr("value", thisUserObject.last_name1);
-  $('#ganadero_apellido2').attr("value", thisUserObject.last_name2);
-  $('#ganadero_email').attr("value", thisUserObject.email);
-  $('#ganadero_telefono').attr("value", thisUserObject.phone_number);
-    //thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
+  $('#ganadero_name').val(thisUserObject.first_name);
+  $('#ganadero_apellido1').val(thisUserObject.last_name1);
+  $('#ganadero_apellido2').val(thisUserObject.last_name2);
+  $('#ganadero_email').val(thisUserObject.email);
+  $('#ganadero_telefono').val(thisUserObject.phone_number);
+});
 
+/* PUTs edited ganadero information */
+$('#btn_edit').on('click', function(){
+  var ganadero_id = $(this).attr('data-id');
+  // get form data and conver to json format
+  var $the_form = $('#form_manage_ganadero');
+  var form_data = $the_form.serializeArray();
+  var new_ganadero = ConverToJSON(form_data);
+
+  // ajax call to update ganadero
+  $.ajax({
+    url: "http://localhost:3000/users/admin/ganaderos/" + ganadero_id,
+    method: "PUT",
+    data: JSON.stringify(new_ganadero),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      alert("Informacion de ganadero ha sido editada en el sistema.");
+     },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
   });
-
-  /* PUTs edited ganadero information */
-  $('#btn_edit').on('click', function(){
-    var ganadero_id = $(this).attr('data-id');
-    // get form data and conver to json format
-    var form_data = $('#form_manage_ganadero').serializeArray();
-    var new_ganadero = ConverToJSON(form_data);
-    console.log("New ganadero: " + JSON.stringify(new_ganadero));
-
-    // ajax call to update ganadero
-    $.ajax({
-      url: "http://localhost:3000/users/admin/ganaderos/" + ganadero_id,
-      method: "PUT",
-      data: JSON.stringify(new_ganadero),
-      contentType: "application/json",
-      dataType: "json",
-
-      success: function(data) {
-        alert("Informacion de ganadero ha sido editada en el sistema.");
-        // clear add forms
-      },
-      error: function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        console.dir( xhr );
-      }
-    });
-  });
+});
 
 /* DELETEs ganadero information */
 $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
