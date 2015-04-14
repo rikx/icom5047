@@ -30,7 +30,6 @@ router.get('/cuestionarios', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	console.log(result.rows);
 	    	res.render('tomar_cuestionarios', { title: 'Cuestionarios', cuestionarios: result.rows});
 	    }
 	  });
@@ -140,6 +139,13 @@ router.get('/admin/list_cuestionarios', function(req, res, next) {
 /* GET Admin Manejar Ganaderos */
 router.get('/admin/ganaderos', function(req, res, next) {
 	res.render('manejar_ganaderos', { title: 'Manejar Ganaderos'});
+});
+
+/* POST Admin Manejar Ganaderos
+ * 
+ */
+router.post('/admin/ganaderos', function(req, res, next) {
+
 });
 
 /* GET Ganaderos List data 

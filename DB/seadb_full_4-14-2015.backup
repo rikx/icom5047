@@ -4,26 +4,7 @@
 
 -- Dumped from database version 9.4.1
 -- Dumped by pg_dump version 9.4.1
--- Started on 2015-04-13 10:19:53
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-
---
--- TOC entry 2192 (class 1262 OID 24943)
--- Name: SEA; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE "SEA" WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United States.1252' LC_CTYPE = 'English_United States.1252';
-
-
-ALTER DATABASE "SEA" OWNER TO postgres;
-
-\connect "SEA"
+-- Started on 2015-04-14 10:58:29
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -41,7 +22,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2195 (class 0 OID 0)
+-- TOC entry 2221 (class 0 OID 0)
 -- Dependencies: 199
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
@@ -58,7 +39,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- TOC entry 2196 (class 0 OID 0)
+-- TOC entry 2222 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
 --
@@ -104,7 +85,7 @@ CREATE SEQUENCE address_address_id_seq
 ALTER TABLE address_address_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2197 (class 0 OID 0)
+-- TOC entry 2223 (class 0 OID 0)
 -- Dependencies: 173
 -- Name: address_address_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -145,7 +126,7 @@ CREATE SEQUENCE appointments_appointment_id_seq
 ALTER TABLE appointments_appointment_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2198 (class 0 OID 0)
+-- TOC entry 2224 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: appointments_appointment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -182,7 +163,7 @@ CREATE SEQUENCE category_category_id_seq
 ALTER TABLE category_category_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2199 (class 0 OID 0)
+-- TOC entry 2225 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: category_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -222,7 +203,7 @@ CREATE SEQUENCE devices_device_id_seq
 ALTER TABLE devices_device_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2200 (class 0 OID 0)
+-- TOC entry 2226 (class 0 OID 0)
 -- Dependencies: 179
 -- Name: devices_device_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -263,7 +244,7 @@ CREATE SEQUENCE flowchart_flowchart_id_seq
 ALTER TABLE flowchart_flowchart_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2201 (class 0 OID 0)
+-- TOC entry 2227 (class 0 OID 0)
 -- Dependencies: 181
 -- Name: flowchart_flowchart_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -304,7 +285,7 @@ CREATE SEQUENCE item_item_id_seq
 ALTER TABLE item_item_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2202 (class 0 OID 0)
+-- TOC entry 2228 (class 0 OID 0)
 -- Dependencies: 183
 -- Name: item_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -359,7 +340,7 @@ CREATE SEQUENCE location_location_id_seq
 ALTER TABLE location_location_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2203 (class 0 OID 0)
+-- TOC entry 2229 (class 0 OID 0)
 -- Dependencies: 186
 -- Name: location_location_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -398,7 +379,7 @@ CREATE SEQUENCE option_option_id_seq
 ALTER TABLE option_option_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2204 (class 0 OID 0)
+-- TOC entry 2230 (class 0 OID 0)
 -- Dependencies: 188
 -- Name: option_option_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -455,7 +436,7 @@ CREATE SEQUENCE person_person_id_seq
 ALTER TABLE person_person_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2205 (class 0 OID 0)
+-- TOC entry 2231 (class 0 OID 0)
 -- Dependencies: 191
 -- Name: person_person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -497,7 +478,7 @@ CREATE SEQUENCE report_report_id_seq
 ALTER TABLE report_report_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2206 (class 0 OID 0)
+-- TOC entry 2232 (class 0 OID 0)
 -- Dependencies: 193
 -- Name: report_report_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -534,7 +515,7 @@ CREATE SEQUENCE specialization_spec_id_seq
 ALTER TABLE specialization_spec_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2207 (class 0 OID 0)
+-- TOC entry 2233 (class 0 OID 0)
 -- Dependencies: 195
 -- Name: specialization_spec_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -559,7 +540,7 @@ CREATE TABLE users (
 ALTER TABLE users OWNER TO postgres;
 
 --
--- TOC entry 2208 (class 0 OID 0)
+-- TOC entry 2234 (class 0 OID 0)
 -- Dependencies: 196
 -- Name: COLUMN users.passhash; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -583,7 +564,7 @@ CREATE SEQUENCE user_user_id_seq
 ALTER TABLE user_user_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2209 (class 0 OID 0)
+-- TOC entry 2235 (class 0 OID 0)
 -- Dependencies: 197
 -- Name: user_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -702,6 +683,312 @@ ALTER TABLE ONLY specialization ALTER COLUMN spec_id SET DEFAULT nextval('specia
 --
 
 ALTER TABLE ONLY users ALTER COLUMN user_id SET DEFAULT nextval('user_user_id_seq'::regclass);
+
+
+--
+-- TOC entry 2188 (class 0 OID 24979)
+-- Dependencies: 172
+-- Data for Name: address; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY address (address_id, address_line1, city, zipcode, address_line2) FROM stdin;
+1	Nowhere	Kansas	666	\N
+2	123 bomba	Aguadilla	1234	\N
+3	Calle Watah despues del Mcdonalds	San Juan	54321	\N
+4	Jesse Pinkerton's House	New Mexico	12	\N
+5	El Garabato 	Mayaguez	680	calle post
+\.
+
+
+--
+-- TOC entry 2236 (class 0 OID 0)
+-- Dependencies: 173
+-- Name: address_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('address_address_id_seq', 5, true);
+
+
+--
+-- TOC entry 2190 (class 0 OID 24987)
+-- Dependencies: 174
+-- Data for Name: appointments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY appointments (appointment_id, date, "time", location_id, report_id, purpose) FROM stdin;
+1	2015-05-01	10:05:00	1	1	Cita de Seguimiento
+2	2015-06-10	16:30:00	4	2	Observacion
+\.
+
+
+--
+-- TOC entry 2237 (class 0 OID 0)
+-- Dependencies: 175
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('appointments_appointment_id_seq', 2, true);
+
+
+--
+-- TOC entry 2192 (class 0 OID 24995)
+-- Dependencies: 176
+-- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY category (category_id, name) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2238 (class 0 OID 0)
+-- Dependencies: 177
+-- Name: category_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('category_category_id_seq', 1, false);
+
+
+--
+-- TOC entry 2194 (class 0 OID 25003)
+-- Dependencies: 178
+-- Data for Name: devices; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY devices (device_id, name, id_number, user_id, latest_sync) FROM stdin;
+1	Tablet 1	001122	2	2004-10-19 10:23:54
+8	Tablet 2	001133	6	2014-01-15 00:03:20
+\.
+
+
+--
+-- TOC entry 2239 (class 0 OID 0)
+-- Dependencies: 179
+-- Name: devices_device_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('devices_device_id_seq', 8, true);
+
+
+--
+-- TOC entry 2196 (class 0 OID 25011)
+-- Dependencies: 180
+-- Data for Name: flowchart; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY flowchart (flowchart_id, first_id, name, end_id, creator_id, version) FROM stdin;
+1	1	Test	10	1	1.0.0
+\.
+
+
+--
+-- TOC entry 2240 (class 0 OID 0)
+-- Dependencies: 181
+-- Name: flowchart_flowchart_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('flowchart_flowchart_id_seq', 1, true);
+
+
+--
+-- TOC entry 2198 (class 0 OID 25019)
+-- Dependencies: 182
+-- Data for Name: item; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY item (item_id, flowchart_id, label, pos_top, pos_left, type) FROM stdin;
+1	1	Is the cow sick?	0	0	Boolean
+2	1	How would you categorize the problem	0	0	MULTI
+3	1	Record a description of the milk coloring, texture, and smell	0	0	OPEN
+4	1	Input amount of times cow eats a day	0	0	CONDITIONAL
+5	1	Recommendation 1	0	0	RECOM
+6	1	Recommendation 2	0	0	RECOM
+7	1	Recommendation 3	0	0	RECOM
+8	1	Recommendation 4	0	0	RECOM
+9	1	Recommendation 5	0	0	RECOM
+10	1	End of: Test	0	0	END
+\.
+
+
+--
+-- TOC entry 2241 (class 0 OID 0)
+-- Dependencies: 183
+-- Name: item_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('item_item_id_seq', 10, true);
+
+
+--
+-- TOC entry 2200 (class 0 OID 25027)
+-- Dependencies: 184
+-- Data for Name: location; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY location (location_id, name, address_id, owner_id, manager_id, license, agent_id) FROM stdin;
+1	La granjita del pueblo	1	5	6	123456789	2
+3	Mad Kow Aguadilla	2	5	10	00112233	2
+5	Pollos Hermanos	4	12	11	12990066	2
+4	Mad Kow San Juan	3	5	11	223344113	6
+6	My LOST farm	5	\N	\N	4815162342	\N
+\.
+
+
+--
+-- TOC entry 2201 (class 0 OID 25033)
+-- Dependencies: 185
+-- Data for Name: location_category; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY location_category (location_id, category_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2242 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: location_location_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('location_location_id_seq', 6, true);
+
+
+--
+-- TOC entry 2203 (class 0 OID 25038)
+-- Dependencies: 187
+-- Data for Name: option; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY option (option_id, parent_id, next_id, label) FROM stdin;
+1	1	2	Yes
+2	1	5	No
+3	2	4	Milk is discolored
+4	2	6	Injured Leg
+5	2	4	Eating Problems
+6	4	8	2
+7	4	9	4
+8	3	7	Its yellow, its chunky, and it smells rotten.
+9	7	10	End
+10	6	10	End
+11	8	10	End
+12	5	10	End
+13	9	10	End
+\.
+
+
+--
+-- TOC entry 2243 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: option_option_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('option_option_id_seq', 13, true);
+
+
+--
+-- TOC entry 2205 (class 0 OID 25046)
+-- Dependencies: 189
+-- Data for Name: path; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY path (report_id, option_id, data) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2206 (class 0 OID 25052)
+-- Dependencies: 190
+-- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY person (person_id, last_name1, first_name, email, spec_id, last_name2, middle_initial, phone_number) FROM stdin;
+1	Bar	Foo	sea_admin@upr.edu	\N	Watdo	J	555-555-1234
+2	Mofongo	Nelsongo	nelsongo.mofongo@upr.edu	\N	Cocacola	E	555-555-1234
+5	Doe	John	john.doe@gmail.edu	\N	Johnson	\N	555-555-1234
+3	Geller	Ross	ross.geller@upr.edu	1	Doctor	D	555-555-1234
+6	Smith	Jane	wazza123@hotmail.com	\N	White	\N	555-555-1234
+11	Cruz	Pepita	pe.cru@lol.com	\N	Cruise	\N	555-555-1234
+10	Gonzalez	Pepito	lalala@wat.com	\N	Rodriguez	X	555-555-1234
+12	Fring	Gustavo	breaking.bad@amc.com	\N	Pollos	\N	555-555-1234
+13	Cornholio	Beavis	mike.judge@mtv.com	\N	Buthead	E	555-555-1234
+14	Scully	Dana	iwanttobelieve@fox.com	2	Mulder	\N	555-555-1234
+15	Dilworth	John	\N	\N	\N	R	\N
+\.
+
+
+--
+-- TOC entry 2244 (class 0 OID 0)
+-- Dependencies: 191
+-- Name: person_person_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('person_person_id_seq', 15, true);
+
+
+--
+-- TOC entry 2208 (class 0 OID 25060)
+-- Dependencies: 192
+-- Data for Name: report; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY report (report_id, creator_id, location_id, subject_id, flowchart_id, note, date_filed) FROM stdin;
+1	2	1	6	1	Lorem ipsum dolor sit amet, feugiat nulla commodo, luctus elit euismod. Neque nunc, lectus mi tellus, neque primis erat, eget euismod convallis. Justo laoreet id neque eget leo placerat, nulla id, viverra amet laoreet litora lorem, mollis elit volutpat vel turpis sed laborum, massa consectetuer facilisis. Donec vehicula egestas purus nulla ut est. Accumsan risus massa commodo vivamus placerat sit, ut felis turpis consectetuer, per litora lectus diam scelerisque libero, ante ac at nulla. Pellentesque fermentum nunc eros mattis.	2010-01-08
+2	2	4	11	1	Na, todo anda bien aqui.	2014-12-10
+\.
+
+
+--
+-- TOC entry 2245 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: report_report_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('report_report_id_seq', 2, true);
+
+
+--
+-- TOC entry 2210 (class 0 OID 25068)
+-- Dependencies: 194
+-- Data for Name: specialization; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY specialization (spec_id, name) FROM stdin;
+1	Mastitis
+2	Anatidaephobia
+\.
+
+
+--
+-- TOC entry 2246 (class 0 OID 0)
+-- Dependencies: 195
+-- Name: specialization_spec_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('specialization_spec_id_seq', 2, true);
+
+
+--
+-- TOC entry 2247 (class 0 OID 0)
+-- Dependencies: 197
+-- Name: user_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('user_user_id_seq', 7, true);
+
+
+--
+-- TOC entry 2212 (class 0 OID 25076)
+-- Dependencies: 196
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY users (user_id, username, passhash, person_id, salt) FROM stdin;
+1	sea_admin@upr.edu	password	1	$2a$06$LMRfvcHKw1FyqsbgryP03O
+2	nelsongo.mofongo@upr.edu	password	2	$2a$06$DkLy6BIWUalW66HzwYF48e
+3	ross.geller@upr.edu	password	3	$2a$06$mb60YsdbsiO9rTKJey/hqe
+6	mike.judge@mtv.com	password	13	$2a$06$LG0eIdq.7ihr/Pt.6JkePe
+7	iwanttobelieve@fox.com	password	14	$2a$06$oiP1UEPtEdaHbzoH4X12s.
+\.
 
 
 --
@@ -1065,7 +1352,7 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 2194 (class 0 OID 0)
+-- TOC entry 2220 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -1076,7 +1363,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2015-04-13 10:19:54
+-- Completed on 2015-04-14 10:58:29
 
 --
 -- PostgreSQL database dump complete
