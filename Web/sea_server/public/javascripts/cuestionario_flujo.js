@@ -6,7 +6,8 @@ $(document).ready(function(){
 	// answered questions list
   $answered_list = $('#answered_questions');
   //
-  $question_panel = $('#next_question');
+  $question_panel_question = $('#next_question');
+  $question_panel_answers = $('#next_question_answers');
 
 	/* */
 	$('#btn_next_question').on('click', function(){
@@ -24,22 +25,14 @@ $(document).ready(function(){
 		answered_questions.push(question_answer_pair);
 		// 
 		update_answered_questions();
-
-		var next_question_info = get_next_element(the_answer.attr('data-next-id'));
-		update_next_question(next_question_info);
+		var next_question = the_answer.attr('data-next-id');
+		update_next_question(next_question);
 	});
 
 	/* */
 	$('#btn_save_progress').on('click', function(){
 
 	});
-
-	/* */
-	function get_next_element(id) {
-		$.getJSON('http://localhost:3000/element/'+id, function(data) {
-    	return data.element_family;
-    });
-	}
 
 	/* update answered questions */
 	function update_answered_questions() {
@@ -52,12 +45,19 @@ $(document).ready(function(){
 	}
 
 	/* */
-	function update_next_question(question_family) {
-		var next_content = '';
-		$.each(question_family, function(){
-			next_content += "<p id='question'>"+this.question+"</p>";
-			next_content += "<div class='radio'><label></label></div>";
+	function update_next_question(next_question) {
+		$.getJSON('http://localhost:3000/element/'+next_question, function(data) {
+			var next_content_answers = '';
+			$.each(data.question_family, function(i){
+				if(i!=0) {
+					$question_panel_question.html(this.question);
+					$question_panel_question.attr('data-question-id', this.item_id);
+				} else {
+					next_content_answers += "<div class='radio'><label><input id='answer"+i+"' name='answer_radios' value='"+this.answer+"' data-answer-id='"+this.option_id+"' data-next-id='"+this.next_id+"'></input>";
+					next_content_answers += this.answer+"</label></div>";
+				}
+			});
+			$question_panel_answers.html(next_content_answers);
 		});
-		$question_panel.html(answered_content);
 	}
 });

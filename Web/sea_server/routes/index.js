@@ -66,13 +66,16 @@ router.get('/usuarios', function(req, res, next) {
 /* GET flowchart element family 
  * returns family info of element matching :id
  */
-router.get('/element', function(req, res, next) {
+router.get('/element/:id', function(req, res, next) {
+	var element_id = req.params.id
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query('', function(err, result) {
+	  client.query('SELECT item_id, item.label AS question, option_id, option.label AS answer, next_id \
+									FROM item, option \
+									WHERE item_id = $1 AND item_id = parent_id', [element_id], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

@@ -36,10 +36,11 @@ block content
 						p#question(data-question-id=pregunta[0].item_id)
 							= pregunta[0].question
 						each contestacion, i in pregunta
-							.radio
-								label
-									input(id='#answer'+i, name='answer_radios', type='radio', value=contestacion.answer, data-answer-id=contestacion.option_id)
-									= contestacion.answer
+							#next_question_answers
+								.radio
+									label
+										input(id='#answer'+i, name='answer_radios', type='radio', value=contestacion.answer, data-answer-id=contestacion.option_id, data-next-id=contestacion.next_id)
+										= contestacion.answer
 		.row
 			.col-md-2
 			.col-md-2
