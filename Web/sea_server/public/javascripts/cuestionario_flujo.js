@@ -6,12 +6,12 @@ $(document).ready(function(){
 	// answered questions list
   $answered_list = $('#answered_questions');
   //
-  $question_panel_question = $('#next_question');
+  $question_panel_question = $('#next_question_question');
   $question_panel_answers = $('#next_question_answers');
 
 	/* */
 	$('#btn_next_question').on('click', function(){
-		var the_question = $('#question');
+		var the_question = $('#next_question_question');
 		var the_answer = $("input[name='answer_radios']:checked");
 
 		var question_answer_pair = {
@@ -49,13 +49,12 @@ $(document).ready(function(){
 		$.getJSON('http://localhost:3000/element/'+next_question, function(data) {
 			var next_content_answers = '';
 			$.each(data.question_family, function(i){
-				if(i!=0) {
+				if(i==0) {
 					$question_panel_question.html(this.question);
 					$question_panel_question.attr('data-question-id', this.item_id);
-				} else {
-					next_content_answers += "<div class='radio'><label><input id='answer"+i+"' name='answer_radios' value='"+this.answer+"' data-answer-id='"+this.option_id+"' data-next-id='"+this.next_id+"'></input>";
-					next_content_answers += this.answer+"</label></div>";
 				}
+				next_content_answers += "<div class='radio'><label><input id='answer"+i+"' name='answer_radios' type='radio' value='"+this.answer+"' data-answer-id='"+this.option_id+"' data-next-id='"+this.next_id+"'></input>";
+				next_content_answers += this.answer+"</label></div>";
 			});
 			$question_panel_answers.html(next_content_answers);
 		});

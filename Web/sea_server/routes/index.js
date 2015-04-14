@@ -82,7 +82,7 @@ router.get('/element/:id', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	res.json({element_family : result.rows});
+	    	res.json({question_family : result.rows});
 	    }
 	  });
 	});

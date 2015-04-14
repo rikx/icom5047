@@ -33,10 +33,10 @@ block content
 						h3#panel_title_next(class='panel-title', style="display: none;")
 							| Próxima Pregunta
 					.panel-body#next_question
-						p#question(data-question-id=pregunta[0].item_id)
+						p#next_question_question(data-question-id=pregunta[0].item_id)
 							= pregunta[0].question
-						each contestacion, i in pregunta
-							#next_question_answers
+						#next_question_answers
+							each contestacion, i in pregunta
 								.radio
 									label
 										input(id='#answer'+i, name='answer_radios', type='radio', value=contestacion.answer, data-answer-id=contestacion.option_id, data-next-id=contestacion.next_id)
