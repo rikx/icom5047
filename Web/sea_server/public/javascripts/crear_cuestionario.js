@@ -64,6 +64,10 @@ $(document).ready(function(){
  		loadGraph();
  	});
 
+ 	$('#btn_test').on('click', function(){
+ 		loadGraphTest();
+ 	});
+
  	var j =0;
  	var array = [];
  	var arrayConnection = [];
@@ -87,17 +91,13 @@ $(document).ready(function(){
  });
 
  	function AddQuestion() {
-
  		jsPlumb.ready(function() {
-
  			var questionType = $('#btn_question_type_text').text();
  			var newState = $('<div>').attr('id', 'state' + j).addClass('item_question');
  			newState.addClass(questionType);
  			var title = $('<div>').addClass('title_question');
- 			// 
  			var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
  			var stateName = $('<input>').attr('type', 'text');
-
 			// store element id as data attribute
 			stateName.attr('data-id', 'state' + j);
 			var title_id = $('<p>').text('Pregunta ' + j);
@@ -106,25 +106,19 @@ $(document).ready(function(){
 			// put stateName input field into stateNameContainer div, 
 			// and then append this div to title
 			title.append(stateNameContainer.append(stateName));
-
 			var connect = $('<div>').addClass('connect_question');
 			newState.append(title);
 			newState.append(connect);
-
 			$('#container_plumbjs').append(newState);
-
 			jsPlumb.makeTarget(newState, {
 				anchor: 'Continuous',
 				endpoint:'Blank'
 			});
-
 			jsPlumb.makeSource(connect, {
 				parent: newState,
 				anchor: 'Continuous',
 				connector: 'Flowchart',
 				endpoint:'Blank'
-
-
 			});   
 
 			jsPlumb.draggable(newState, {
@@ -140,18 +134,28 @@ $(document).ready(function(){
 					   	left: newState.position().left,
 					   	top: newState.position().top
 					   };
+					   console.log(this_element.id);
+					   console.log(this_element.name);
+					   console.log(this_element.left);
+					   console.log(this_element.type);
 
-			  console.log(this_element.id);
-			  console.log(this_element.name);
-			  console.log(this_element.left);
-			  console.log(this_element.type);
-		      // push to elements_array
-		      elements_array.push(this_element);
-		      // populate elements list with new element
-		      populate_elements_list();
-		  }
+					   if(containsObject(this_element, elements_array))
+					   {
+					   	replace(this_element, elements_array);
+					   	alert("replacing");
+					   }
+					   else
+					   {
+					   	alert("new element");
+					   	elements_array.push(this_element);
+				// populate elements list with new element
+			}
+
+
+			populate_elements_list();
 		}
-	});
+	}
+});
 
 			newState.dblclick(function(e) {
 				jsPlumb.detachAllConnections($(this));
@@ -165,8 +169,8 @@ $(document).ready(function(){
 		      //var state = $(this).closest('.item');
 		      //state.children('.title').text(this.value);
 		      $(this).parent().text(this.value);
-					var state_id = $(this).attr('data-id')
-					$('#'+state_id).attr('data-state-name', this.value);
+		      var state_id = $(this).attr('data-id')
+		      $('#'+state_id).attr('data-state-name', this.value);
 		      // // create element object
 		      // var this_element = {
 		      // 	id: $(this).attr('data-id'),
@@ -353,18 +357,16 @@ $('#connect_item').dblclick(function(e) {
 
 
 jsPlumb.bind("connection", function(info, originalEvent) {
-
 	if(trigger == "yes"){
-//info.connection.setLabel("FOO");
-arrayConnection.push(info.sourceId);
-arrayConnection.push(info.targetId);
-var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
-console.log(info.connection.getOverlays());
-info.connection.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
-info.connection.addOverlay([ "Label", { id:"label", label:mylabel, borderWidth:20}]); 
-info.connection.setPaintStyle({lineWidth:10,strokeStyle:'rgb(0,225,0)'});
-console.log(info.connection.getOverlays());
-}
+		arrayConnection.push(info.sourceId);
+		arrayConnection.push(info.targetId);
+		var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
+		console.log(info.connection.getOverlays());
+		info.connection.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
+		info.connection.addOverlay([ "Label", { id:"label", label:mylabel, borderWidth:20}]); 
+		info.connection.setPaintStyle({lineWidth:10,strokeStyle:'rgb(0,225,0)'});
+		console.log(info.connection.getOverlays());
+	}
 });
 
 
@@ -378,14 +380,10 @@ function loadGraph()
 	var targetlol;
 	var sourcelol;
 	var state;
-
 	var length = array.length;
 	var length2 = arrayConnection.length/2;
 	for (k = 0; k <= length - 1; k++) { 
-
 		state = array.pop();
-
-
 		//EED TO FIND A WAY TO GET "connect" object back to make it a source
 		jsPlumb.draggable(state, {
 			containment: 'parent'
@@ -401,26 +399,16 @@ function loadGraph()
 			endpoint:'Blank'
 		});
 		$('#container_plumbjs').append(state);
-
-
 	}
-
-
 	trigger = "no";
-
-
 	for (a = 0; a <= length2 - 1; a++) { 
-
 		targetlol = arrayConnection.pop();
 		sourcelol = arrayConnection.pop();
 		var temp = jsPlumb.connect({source: sourcelol, target:targetlol});
 		temp.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
 		temp.addOverlay([ "Label", { location: [-.25, 1.1], id:"label", label:"foo"}]); 
-
 	}
-
 	trigger = "yes";
-
 }
 
 function checkGraph(){
@@ -430,8 +418,91 @@ function checkGraph(){
 
 }
 
-$('#container_plumbjs').scroll(function(){
-	jsPlumb.repaintEverything();
-});
+
+function loadGraphTest()
+{
+	var length = elements_array.length;
+	var element;
+	var questionType;
+	var questionNumber;
+	var newState;
+	var title;
+	var stateNameContainer;
+	var stateName;
+	var title_id;
+	var connect;
+	var str;
+	for (k = 0; k <= length - 1; k++) { 
+		element = elements_array[k];
+		questionType = element.type;
+		str = element.id;
+		console.log(str);
+		questionNumber = str.substring(5);
+		newState = $('<div>').attr('id', element.id).addClass('item_question');
+		newState.addClass(questionType);
+		title = $('<div>').addClass('title_question');
+		stateNameContainer = $('<div>').attr('data-state-id', element.id);
+		stateName = $('<p>').text(element.name);
+			// store element id as data attribute
+			stateName.attr('data-id', element.id);
+			title_id = $('<p>').text('Pregunta ' + questionNumber);
+			// append element id text to title
+			title.append(title_id);
+			// put stateName input field into stateNameContainer div, 
+			// and then append this div to title
+			title.append(stateNameContainer.append(stateName));
+			connect = $('<div>').addClass('connect_question');
+			newState.css({
+				'top': element.top,
+				'left': element.left
+			});
+			newState.append(title);
+			newState.append(connect);
+			$('#container_plumbjs').append(newState);
+			jsPlumb.makeTarget(newState, {
+				anchor: 'Continuous',
+				endpoint:'Blank'
+			});
+			jsPlumb.makeSource(connect, {
+				parent: newState,
+				anchor: 'Continuous',
+				connector: 'Flowchart',
+				endpoint:'Blank'
+			});   
+
+			jsPlumb.draggable(newState, {
+				containment: 'parent'
+			});
+			newState.dblclick(function(e) {
+				jsPlumb.detachAllConnections($(this));
+				$(this).remove();
+				e.stopPropagation();
+			});   
+			alert(k);
+		}
+	}
+
+	$('#container_plumbjs').scroll(function(){
+		jsPlumb.repaintEverything();
+	});
+
+	function containsObject(obj, list) {
+		var i;
+		for (i = 0; i < list.length; i++) {
+			if (list[i].id === obj.id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	function replace(obj, list) {
+		var i;
+		for (i = 0; i < list.length; i++) {
+			if (list[i].id === obj.id) {
+				list[i] = obj;
+			}
+		}
+	}
 
 });
