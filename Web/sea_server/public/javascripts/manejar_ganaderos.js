@@ -94,9 +94,14 @@ $('#btn_submit').on('click', function(){
     contentType: "application/json",
     dataType: "json",
 
-    success: function() {
-      alert("Ganadero ha sido añadido al systema.");
-      // clear add forms
+    success: function(data) {
+      if(data.exists){
+        alert("Ganadero con este correo electrónico o teléfono ya existe");
+      } else {
+        alert("Ganadero ha sido añadido al systema.");
+
+         // clear add forms
+      }
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );

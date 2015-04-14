@@ -156,18 +156,29 @@ router.post('/admin/ganaderos', function(req, res, next) {
 	  	if(err) {
 	    	return console.error('error fetching client from pool', err);
 	  	}
-	  	// TODO: modify query to also give you account type
-		  client.query("INSERT into person (first_name, middle_initial, last_name1, last_name2, email, phone_number) \
-										VALUES ($1, $2, $3, $4, $5, $6)", 
-										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono] , function(err, result) {
-		  	//call `done()` to release the client back to the pool
-		    done();
-		    if(err) {
-		      return console.error('error running query', err);
-		    } else {
-		    	res.json(true);
-		    }
-		  });
+	  	// Verify ganadero does not already exist in db
+	  	client.query("SELECT email FROM person WHERE email = $1 OR phone_number = $2", [req.body.ganadero_email, req.body.ganadero_telefono], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+	  			if(result.rowCount > 0){
+		  			res.send({exists: true});
+		  		} else {
+		  			// Insert new ganadero into db
+						client.query("INSERT into person (first_name, middle_initial, last_name1, last_name2, email, phone_number) \
+													VALUES ($1, $2, $3, $4, $5, $6)", 
+													[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono] , function(err, result) {
+							//call `done()` to release the client back to the pool
+						  done();
+						  if(err) {
+						    return console.error('error running query', err);
+						  } else {
+						    res.json(true);
+						  }
+						});
+		  		}
+	  		}
+	  	});
 		});
 	}
 });
