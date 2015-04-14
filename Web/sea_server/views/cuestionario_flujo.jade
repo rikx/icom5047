@@ -19,7 +19,7 @@ block content
 			.col-md-8
 				.panel.panel-success(data-question=pregunta)
 					.panel-heading 
-						h3#panel_title_first(class='panel-title')
+						h3(class='panel-title')
 							| Preguntas Contestadas
 					.panel-body
 						ol#answered_questions
@@ -46,8 +46,9 @@ block content
 			.col-md-2
 				button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button') Guardar Progreso
 			.col-md-2
-				// TODO: add home glyphicon
 				button#btn_next_question(class='btn btn-sm btn-default btn-block', type='button') Próxima Pregunta
+			.col-md-4
+				button#btn_end_survey(class='btn btn-sm btn-default btn-block', type='button', style="display: none;") Finalizar Cuestionario
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

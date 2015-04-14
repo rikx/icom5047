@@ -29,8 +29,13 @@ $(document).ready(function(){
 		update_next_question(next_question);
 	});
 
-	/* */
+	/* Save Survey progress */
 	$('#btn_save_progress').on('click', function(){
+
+	});
+
+	/* Save Survey and redirect to report page */
+	$('#btn_end_survey').on('click', function(){
 
 	});
 
@@ -46,15 +51,31 @@ $(document).ready(function(){
 
 	/* */
 	function update_next_question(next_question) {
+		$('#panel_title_first').hide();
+		$('#panel_title_next').show();
+
 		$.getJSON('http://localhost:3000/element/'+next_question, function(data) {
 			var next_content_answers = '';
 			$.each(data.question_family, function(i){
-				if(i==0) {
-					$question_panel_question.html(this.question);
-					$question_panel_question.attr('data-question-id', this.item_id);
+				// push to global array 
+
+				if(this.item_type != "RECOM") {
+					if(i==0) {
+						$question_panel_question.html(this.question);
+						$question_panel_question.attr('data-question-id', this.item_id);
+					}
+					next_content_answers += "<div class='radio'><label><input id='answer"+i+"' name='answer_radios' type='radio' value='"+this.answer+"' data-answer-id='"+this.option_id+"' data-next-id='"+this.next_id+"'></input>";
+					next_content_answers += this.answer+"</label></div>";
+				} else {
+					$('#btn_save_progress, #btn_next_question').hide();
+					$('#btn_end_survey').show();
+					$('#panel_title_next').html('Recommendaciones:');
+
+					$question_panel_question.hide();
+					next_content_answers += "<p class='lead'>"+this.question+"</p>";
+					$question_panel_answers.html(next_content_answers);
+					return;
 				}
-				next_content_answers += "<div class='radio'><label><input id='answer"+i+"' name='answer_radios' type='radio' value='"+this.answer+"' data-answer-id='"+this.option_id+"' data-next-id='"+this.next_id+"'></input>";
-				next_content_answers += this.answer+"</label></div>";
 			});
 			$question_panel_answers.html(next_content_answers);
 		});

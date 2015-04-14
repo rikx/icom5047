@@ -47,7 +47,7 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, item_id, item.label AS question, type, option_id, option.label AS answer, next_id \
+	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, item_id, item.label AS question, type AS item_type, option_id, option.label AS answer, next_id \
 									FROM flowchart, item, option \
 									WHERE flowchart.flowchart_id = $1 AND item_id = first_id AND first_id = parent_id', [cuestionario_id], function(err, result) {
 	  	//call `done()` to release the client back to the pool
