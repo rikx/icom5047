@@ -3,6 +3,9 @@ $(document).ready(function(){
 	// stores current elements in the jsPlumb container
 	var elements_array = [];
 
+	//disable add question button initially
+	$('#btn_add_question').prop('disabled', true);
+
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
 		window.location.href = '/users/admin';
@@ -68,11 +71,20 @@ $(document).ready(function(){
  	jsPlumb.Defaults.Container = $('#container_plumbjs');
 
  	$('#list_question_type').on('click', 'li a', function(e){
-  // prevents link from firing
-  e.preventDefault();
-  $('#btn_question_type_text').text($(this).text()+' ');
-  $('#btn_question_type').val($(this).attr('data-usario-type'));
-});
+     // prevents link from firing
+     e.preventDefault();
+     $('#btn_question_type_text').text($(this).text()+' ');
+     $('#btn_question_type').val($(this).attr('data-usario-type'));
+     var questionType = $('#btn_question_type_text').text($(this).text()+' ').text();
+     if(questionType == 'Tipo de Pregunta'){
+     	$('#btn_add_question').prop('disabled', true);
+     }else
+     {
+     	$('#btn_add_question').prop('disabled', false);
+
+     }
+
+ });
 
  	function AddQuestion() {
 
@@ -119,9 +131,25 @@ $(document).ready(function(){
 					if ($(event.target).find('select').length == 0) {
 					//saveState(event.target);
 					array.push(newState);
-				}
-			}
-		});
+					   // create element object
+					   var this_element = {
+					   	id: newState.attr('id'),
+					   	name: newState.attr('type'),
+					   	type: 'Pregunta',
+					   	left: newState.position().left,
+					   	top: newState.position().top
+					   };
+
+			  console.log(this_element.id);
+			  console.log(this_element.name);
+			  console.log(this_element.left);
+		      // push to elements_array
+		      elements_array.push(this_element);
+		      // populate elements list with new element
+		      populate_elements_list();
+		  }
+		}
+	});
 
 			newState.dblclick(function(e) {
 				jsPlumb.detachAllConnections($(this));
@@ -136,25 +164,104 @@ $(document).ready(function(){
 		      //state.children('.title').text(this.value);
 		      $(this).parent().text(this.value);
 
-		      // create element object
-		      var this_element = {
-		      	id: $(this).attr('data-id'),
-		      	name: this.value,
-		      	type: 'Pregunta'
-		      };
-		      // push to elements_array
-		      elements_array.push(this_element);
-		      // populate elements list with new element
-		      populate_elements_list();
+		      // // create element object
+		      // var this_element = {
+		      // 	id: $(this).attr('data-id'),
+		      // 	name: this.value,
+		      // 	type: 'Pregunta'
+		      // };
+		      // // push to elements_array
+		      // elements_array.push(this_element);
+		      // // populate elements list with new element
+		      // populate_elements_list();
 		  }
 		});
 
 			// focuses on input field of the created element
 			stateName.focus();
+
 			j++; 
 		});
 }
 
+
+function AddLastNode() {
+
+	jsPlumb.ready(function() {
+		var newState = $('<div>').attr('id', 'state' + j).addClass('item_rec');
+		var title = $('<div>').addClass('title_rec');
+		var stateNameContainer = $('<div>');
+		var stateName = $('<input>').attr('type', 'text');
+
+		// store element id as data attribute
+		stateName.attr('data-id', j);
+		var title_id = $('<p>').text('Recomendación ' + j);
+		// append element id text to title
+		title.append(title_id);
+		// put stateName input field into stateNameContainer div, 
+		// and then append this div to title
+		title.append(stateNameContainer.append(stateName));
+
+		var connect = $('<div>').addClass('connect_rec');
+		newState.append(title);
+		newState.append(connect);
+
+
+		
+
+		$('#container_plumbjs').append(newState);
+
+
+		jsPlumb.makeTarget(newState, {
+			anchor: 'Continuous'
+			
+		});
+
+		jsPlumb.makeSource(connect, {
+			parent: newState,
+			anchor: 'Continuous',
+			connector: 'StateMachine',
+			paintStyle:{ strokeStyle:"blue"}
+			
+
+		});   
+
+		jsPlumb.draggable(newState, {
+			containment: 'parent'
+		});
+
+
+		newState.dblclick(function(e) {
+			jsPlumb.detachAllConnections($(this));
+			$(this).remove();
+			e.stopPropagation();
+
+		});   
+
+		stateName.keyup(function(e) {
+			if (e.keyCode === 13) {
+	      //var state = $(this).closest('.item');
+	      //state.children('.title').text(this.value);
+	      $(this).parent().text(this.value);
+
+	    	// create element object
+	    	var this_element = {
+	    		id: $(this).attr('data-id'),
+	    		name: this.value,
+	    		type: 'Recomendación'
+	    	};
+	      // push to elements_array
+	      elements_array.push(this_element);
+	      // populate elements list with new element
+	      populate_elements_list();
+	  }
+	});
+
+		// focuses on input field of the created element
+		stateName.focus();
+		j++; 
+	})
+}
 
 function AddRecommendation() {
 
@@ -260,23 +367,38 @@ console.log(info.connection.getOverlays());
 
 function saveGraph()
 {
-
 	console.log(array);
-
-
-
 }
 
 function loadGraph()
 {
 	var targetlol;
 	var sourcelol;
+	var state;
 
 	var length = array.length;
 	var length2 = arrayConnection.length/2;
 	for (k = 0; k <= length - 1; k++) { 
 
-		$('#container_plumbjs').append(array.pop());
+		state = array.pop();
+
+
+		//EED TO FIND A WAY TO GET "connect" object back to make it a source
+		jsPlumb.draggable(state, {
+			containment: 'parent'
+		});
+		state.dblclick(function(e) {
+			jsPlumb.detachAllConnections($(this));
+			$(this).remove();
+			e.stopPropagation();
+
+		}); 
+		jsPlumb.makeTarget(state, {
+			anchor: 'Continuous',
+			endpoint:'Blank'
+		});
+		$('#container_plumbjs').append(state);
+
 
 	}
 
