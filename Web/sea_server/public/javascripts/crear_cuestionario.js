@@ -166,7 +166,6 @@ $(document).ready(function(){
 		      //state.children('.title').text(this.value);
 		      $(this).parent().text(this.value);
 					var state_id = $(this).attr('data-id')
-					console.log("My state id: " + state_id);
 					$('#'+state_id).attr('data-state-name', this.value);
 		      // // create element object
 		      // var this_element = {
