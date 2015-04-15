@@ -32,17 +32,6 @@ $(document).ready(function(){
     remove_active_class($localizaciones_list);
   });
 
-
-  /* Add localizacion */
-  $('#btn_add_localizacion').on('click', function(){
-    $('#btn_edit, #heading_edit').hide();
-    $('#btn_submit, #heading_create').show();
-    $('#edit_panel').show();
-    $('#info_panel').hide();
-    $('#add_associates_panel').hide();
-  });
-
-
   /* Edit associates */
   $localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
     $('#edit_panel').hide();
@@ -203,24 +192,24 @@ $(document).ready(function(){
 
 
     var selectedGanaderos = [];
-    // contains ganadero id
+    // contains location id
     var myVar = $this.attr('data-id');
     var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
-    var thisUserObject = localizaciones_array[arrayPosition];
+    var this_location = localizaciones_array[arrayPosition];
     
 
     // Populate info panel with selected item's information
-    $('#info_panel_heading').text(thisUserObject.location_name);
-    $('#localizacion_info_name').text(thisUserObject.location_name);
-    $('#localizacion_info_license').text(thisUserObject.license);
+    $('#info_panel_heading').text(this_location.location_name);
+    $('#localizacion_info_name').text(this_location.location_name);
+    $('#localizacion_info_license').text(this_location.license);
 
-    if(thisUserObject.address_line2 == null) {
-      $('#localizacion_info_address').text(thisUserObject.address_line1);
+    if(this_location.address_line2 == null) {
+      $('#localizacion_info_address').text(this_location.address_line1);
     } else {
-      $('#localizacion_info_address').text(thisUserObject.address_line1 + " " + thisUserObject.address_line2);
+      $('#localizacion_info_address').text(this_location.address_line1 + " " + this_location.address_line2);
     }
-    $('#localizacion_info_ciudad').text(thisUserObject.city);
-    $('#localizacion_info_zipcode').text(thisUserObject.zipcode);
+    $('#localizacion_info_ciudad').text(this_location.city);
+    $('#localizacion_info_zipcode').text(this_location.zipcode);
 
     $.each(ganaderos_array, function(i){
       if(myVar == ganaderos_array[i].location_id){
@@ -264,6 +253,55 @@ $(document).ready(function(){
     }  
  });
 
+/* Add localizacion */
+$('#btn_add_localizacion').on('click', function(){
+  $('#btn_edit, #heading_edit').hide();
+  $('#btn_submit, #heading_create').show();
+  $('#edit_panel').show();
+  $('#info_panel').hide();
+  $('#add_associates_panel').hide();
+
+  // clear add form
+  $('#form_manage_location')[0].reset();
+});
+
+/* POSTs new location information */
+$('#btn_submit').on('click', function(){
+  // get form data and conver to json format
+  var $the_form = $('#form_manage_location');
+  var form_data = $the_form.serializeArray();
+  var new_location = ConverToJSON(form_data);
+
+  // ajax call to post new location
+  $.ajax({
+    url: "http://localhost:3000/users/admin/localizaciones",
+    method: "POST",
+    data: JSON.stringify(new_location),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      if(data.exists){
+        alert("Localización con este número de licensia ya existe");
+      } else {
+        alert("Localización ha sido añadido al sistema.");
+        // clear add form
+        $the_form[0].reset();
+      }
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+
+  // update locations list after posting 
+  populate_localizaciones();
+});
+
+/* Open edit location panel */
 $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(){
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
@@ -271,20 +309,18 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
   $('#info_panel').hide();
   $('#add_associates_panel').hide();
 
-  // contains localizacion id
+  // contains location id
   var myVar = $(this).attr('data-id');
   var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
-  var thisUserObject = localizaciones_array[arrayPosition];
+  var this_location = localizaciones_array[arrayPosition];
 
-
-  $('#localizacion_name').attr("value", thisUserObject.location_name);
-  $('#localizacion_license').attr("value", thisUserObject.license);
-  $('#localizacion_address_line1').attr("value", thisUserObject.address_line1);
-  $('#localizacion_address_line2').attr("value", thisUserObject.address_line2);
-  $('#localizacion_address_city').attr("value", thisUserObject.city);
-  $('#localizacion_address_zipcode').attr("value", thisUserObject.zipcode);
-
-
+  $('#btn_edit').attr('data-id', myVar);
+  $('#localizacion_name').val(this_location.location_name);
+  $('#localizacion_license').val(this_location.license);
+  $('#localizacion_address_line1').val(this_location.address_line1);
+  $('#localizacion_address_line2').val(this_location.address_line2);
+  $('#localizacion_address_city').val(this_location.city);
+  $('#localizacion_address_zipcode').val(this_location.zipcode);
 
   //change dropdown selected value
   $('#user_type li').on('click', function(){
@@ -293,7 +329,35 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
   });
 });
 
+/* PUTs edited location information */
+$('#btn_edit').on('click', function(){
+  var location_id = $(this).attr('data-id');
+  // get form data and conver to json format
+  var $the_form = $('#form_manage_location');
+  var form_data = $the_form.serializeArray();
+  var new_location = ConverToJSON(form_data);
 
+  // ajax call to update location
+  $.ajax({
+    url: "http://localhost:3000/users/admin/localizaciones/" + location_id,
+    method: "PUT",
+    data: JSON.stringify(new_location),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      alert("Localización ha sido editada en el sistema.");
+     },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+});
+
+/* */
 function populate_localizaciones(){
   $.getJSON('http://localhost:3000/users/admin/list_localizaciones', function(data) {
     $('#edit_associates_heading').hide();

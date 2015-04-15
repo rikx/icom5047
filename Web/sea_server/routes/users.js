@@ -82,7 +82,7 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 									FROM flowchart, users \
 									WHERE user_id = creator_id \
 									ORDER BY flowchart_name \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -122,7 +122,7 @@ router.get('/admin/list_cuestionarios', function(req, res, next) {
 									FROM flowchart, users \
 									WHERE user_id = creator_id \
 									ORDER BY flowchart_name \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -156,7 +156,7 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 									FROM person \
 									WHERE person_id NOT IN (SELECT person_id FROM users) \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -171,7 +171,7 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 										FROM person \
 										WHERE person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-										LIMIT 10) \
+										LIMIT 20) \
 									SELECT person_id, location_id, location.name AS location_name \
 									FROM ganaderos, location \
 									WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
@@ -277,7 +277,7 @@ router.get('/admin/reportes', function(req, res, next) {
 									FROM report, location, person, flowchart, users \
 									WHERE report.creator_id = user_id and subject_id = person.person_id and report.location_id = location.location_id \
 									ORDER BY location_name ASC \
-									LIMIT 10;", function(err, result) {
+									LIMIT 20;", function(err, result) {
 			done();
 
 			if(err) {
@@ -303,7 +303,7 @@ router.get('/admin/list_reportes', function(req, res, next) {
 		}
 		// TODO: modify query to also give you account type
 	  client.query(' \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -367,7 +367,7 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 									FROM (users natural join person) LEFT OUTER JOIN specialization \
 									ON person.spec_id = specialization.spec_id \
 									ORDER BY email ASC \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -382,7 +382,7 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 	  client.query('WITH usuarios AS (SELECT user_id, email \
 										FROM users natural join person \
 										ORDER BY email ASC \
-										LIMIT 10) \
+										LIMIT 20) \
 									SELECT user_id, location_id, location.name AS location_name \
 									FROM usuarios, location \
 									WHERE user_id = agent_id', function(err, result){
@@ -409,7 +409,7 @@ router.get('/admin/localizaciones', function(req, res, next) {
 	  client.query('SELECT location_id, location.name AS location_name, address_id, license, address_line1, address_line2, city, zipcode \
 									FROM location natural join address \
 									ORDER BY location_name \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -423,7 +423,7 @@ router.get('/admin/localizaciones', function(req, res, next) {
 	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
 										FROM location natural join address \
 										ORDER BY location_name \
-										LIMIT 10) \
+										LIMIT 20) \
 									SELECT location_id, agent_id, username \
 									FROM locations,users \
 									WHERE user_id = agent_id;', function(err, result) {
@@ -440,7 +440,7 @@ router.get('/admin/localizaciones', function(req, res, next) {
 	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
 										FROM location natural join address \
 										ORDER BY location_name \
-										LIMIT 10) \
+										LIMIT 20) \
 										SELECT person_id, location_id,\
 											CASE WHEN person_id = owner_id THEN 'owner' \
 											WHEN person_id = manager_id THEN 'manager' \
@@ -476,7 +476,7 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 	  client.query('SELECT location_id, location.name AS location_name, address_id, license, address_line1, address_line2, city, zipcode \
 									FROM location natural join address \
 									ORDER BY location_name \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -490,7 +490,7 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
 										FROM location natural join address \
 										ORDER BY location_name \
-										LIMIT 10) \
+										LIMIT 20) \
 									SELECT location_id, agent_id, username \
 									FROM locations,users \
 									WHERE user_id = agent_id;', function(err, result) {
@@ -507,7 +507,7 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
 										FROM location natural join address \
 										ORDER BY location_name \
-										LIMIT 10) \
+										LIMIT 20) \
 										SELECT person_id, location_id,\
 											CASE WHEN person_id = owner_id THEN 'owner' \
 											WHEN person_id = manager_id THEN 'manager' \
@@ -526,6 +526,55 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 	    }
 	  });
 	});
+});
+
+/* */
+router.post('/admin/localizaciones', function(req, res, next) {
+
+});
+
+/* PUT Admin Manejar Localizaciones 
+ * Edit information of location matching :id
+ */
+
+router.put('/admin/localizaciones/:id', function(req, res, next) {
+	var location_id = req.params.id;
+	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
+			|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
+			|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
+  	res.statusCode = 400;
+  	return res.send('Error: Missing fields for user login.');
+	} else {
+		var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+			// Insert new ganadero into db
+			client.query("UPDATE location SET name = $1, license = $2 \
+										WHERE location_id = $3", 
+										[req.body.localizacion_name, req.body.localizacion_license, location_id], function(err, result) {
+			  if(err) {
+			    return console.error('error running query', err);
+			  } else {
+			  	client.query("UPDATE address \
+												SET address_line1 = $1, address_line2 = $2, city = $3, zipcode = $4 \
+												FROM location \
+												WHERE location_id = $5 and location.address_id = address.address_id",
+												[req.body.localizacion_address_line1, req.body.localizacion_address_line2, req.body.localizacion_address_city, 
+												req.body.localizacion_address_zipcode, location_id], function(err, result) {
+						//call `done()` to release the client back to the pool
+						done();
+					  if(err) {
+					    return console.error('error running query', err);
+					  } else {
+					  	res.json(true);
+					  }
+			  	});   
+			  }
+			});
+		});
+	}
 });
 
 /* GET Admin Manejar Citas */
