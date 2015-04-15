@@ -1,10 +1,15 @@
 $(document).ready(function(){
-  // store data for 10 ganaderos
-  var ganaderos_array, locations_array;
   // initial population of ganaderos list
   populate_ganaderos();
   //ganaderos list
   $ganaderos_list = $('#ganaderos_list');
+
+  // store data for initial 20 ganaderos
+  var ganaderos_array =  JSON.parse($ganaderos_list.attr('data-ganaderos'));
+  var localizaciones_array = JSON.parse($ganaderos_list.attr('data-localizaciones'));
+
+  // initial info panel population
+  populate_info_panel(ganaderos_array[0]);
 
   /* Return home */
   $('#btn_home').on('click', function(){
@@ -27,7 +32,7 @@ $(document).ready(function(){
   $ganaderos_list.on('click', 'tr td a.show_info_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
-    var table_content = '';
+
     $('#edit_panel').hide();
     $('#info_panel').show();
 
@@ -40,35 +45,12 @@ $(document).ready(function(){
     }
 
     // contains ganadero id
-    var myVar = $this.attr('data-id');
-    var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);
-    var thisUserObject = ganaderos_array[arrayPosition];
+    var ganadero_id = $this.attr('data-id');
+    var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(ganadero_id);
+    var this_ganadero = ganaderos_array[arrayPosition];
 
-    $('#info_panel_heading').text(thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
-    if(thisUserObject.middle_initial == null)
-    {
-      $('#ganadero_info_name').text(thisUserObject.first_name);
-    }
-    else
-    {
-     $('#ganadero_info_name').text(thisUserObject.first_name + " " + thisUserObject.middle_initial);
-   }
-
-   $('#ganadero_info_apellidos').text(thisUserObject.last_name1 + " " + thisUserObject.last_name2);
-   $('#ganadero_info_contact').text(thisUserObject.email + " " + thisUserObject.phone_number);
-   
-
-   $.each(locations_array, function(i){
-    if(myVar == this.person_id){
-      table_content += '<tr>';
-      table_content += "<td> ";
-      table_content += "" +this.location_name+"</td>";
-      table_content += '</tr>';
-    }
-  });  
-
-
-   $('#ganadero_locations').html(table_content);
+    // populate info panel with this_ganadero info
+    populate_info_panel(this_ganadero);
  });
 
 /* Add ganadero */
@@ -126,16 +108,17 @@ $ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
   $('#info_panel').hide();
 
   // contains ganadero id
-  var myVar =  $(this).attr('data-id');
-  var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(myVar);
-  var thisUserObject = ganaderos_array[arrayPosition];
+  var ganadero_id =  $(this).attr('data-id');
+  var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(ganadero_id);
+  var this_ganadero = ganaderos_array[arrayPosition];
 
-  $('#btn_edit').attr('data-id', myVar);
-  $('#ganadero_name').val(thisUserObject.first_name);
-  $('#ganadero_apellido1').val(thisUserObject.last_name1);
-  $('#ganadero_apellido2').val(thisUserObject.last_name2);
-  $('#ganadero_email').val(thisUserObject.email);
-  $('#ganadero_telefono').val(thisUserObject.phone_number);
+  $('#btn_edit').attr('data-id', ganadero_id);
+  $('#ganadero_name').val(this_ganadero.first_name);
+  $('#ganadero_m_initial').val(this_ganadero.middle_initial);
+  $('#ganadero_apellido1').val(this_ganadero.last_name1);
+  $('#ganadero_apellido2').val(this_ganadero.last_name2);
+  $('#ganadero_email').val(this_ganadero.email);
+  $('#ganadero_telefono').val(this_ganadero.phone_number);
 });
 
 /* PUTs edited ganadero information */
@@ -201,10 +184,36 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
 
   });
 
+  /* Populates info panel with $this_ganadero information */
+  function populate_info_panel($this_ganadero){
+    $('#info_panel_heading').text($this_ganadero.first_name + " " + $this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
+    if($this_ganadero.middle_initial == null) {
+      $('#ganadero_info_name').text($this_ganadero.first_name);
+    } else {
+      $('#ganadero_info_name').text($this_ganadero.first_name + " " + $this_ganadero.middle_initial);
+    }
+
+    $('#ganadero_info_apellidos').text($this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
+    $('#ganadero_info_contact').text($this_ganadero.email + " " + $this_ganadero.phone_number);
+   
+    var table_content = '';
+    $.each(localizaciones_array, function(i){
+      if($this_ganadero.location_id == this.person_id){
+        table_content += '<tr>';
+        table_content += "<td> ";
+        table_content += "" +this.location_name+"</td>";
+        table_content += '</tr>';
+      }
+    });  
+  
+    $('#ganadero_locations').html(table_content);
+  }
+
+  /* */
   function populate_ganaderos(){
     $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
       ganaderos_array = data.ganaderos;
-      locations_array = data.locations;
+      localizaciones_array = data.locations;
       var firstElement = ganaderos_array[0];
 
       // contents of ganaderos list
@@ -228,27 +237,7 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
       $ganaderos_list.html(table_content);
 
       //populate info panel with information regarding the first person on the list
-      $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);
-      if(firstElement.middle_initial == null) {
-        $('#ganadero_info_name').text(firstElement.first_name);
-      } else {
-        $('#ganadero_info_name').text(firstElement.first_name + " " + firstElement.middle_initial);
-      }
-      $('#ganadero_info_apellidos').text(firstElement.last_name1 + " " + firstElement.last_name2);
-      $('#ganadero_info_contact').text(firstElement.email + " " + firstElement.phone_number);
-
-      table_content = '';
-
-      $.each(locations_array, function(i){
-        if(firstElement.person_id == this.person_id){
-          table_content += '<tr>';
-          table_content += "<td> ";
-          table_content += "" +this.location_name+"</td>";
-          table_content += '</tr>';
-        }
-      });  
-
-      $('#ganadero_locations').html(table_content);
+      //populate_info_panel(localizaciones_array[0]);
     });
   };
 });

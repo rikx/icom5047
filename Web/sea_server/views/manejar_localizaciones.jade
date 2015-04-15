@@ -32,7 +32,9 @@ block content
 						h3.panel-title Localizaciones
 					.panel-body
 						.list-group(style='overflow:auto; height:300px;')
-							table#localizaciones_list(class='table' data-localizaciones=localizaciones data-agentes=agentes data-ganaderos=ganaderos)
+							table(class='table')
+								thead
+								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos)
 
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron

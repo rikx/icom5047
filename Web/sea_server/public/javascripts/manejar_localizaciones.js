@@ -5,7 +5,7 @@ $(document).ready(function(){
   // localizaciones list
   $localizaciones_list = $('#localizaciones_list');
 
-  // store data for initial 20 cuestionarios
+  // store data for initial 20 locations
   var localizaciones_array = JSON.parse($localizaciones_list.attr('data-localizaciones'));
   var agentes_array =  JSON.parse($localizaciones_list.attr('data-agentes'));
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
@@ -195,8 +195,8 @@ $(document).ready(function(){
     }
 
     // contains location id
-    var myVar = $this.attr('data-id');
-    var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
+    var location_id = $this.attr('data-id');
+    var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(location_id);
     var this_location = localizaciones_array[arrayPosition];
 
     // Populate info panel with selected item's information
@@ -259,11 +259,11 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
   $('#add_associates_panel').hide();
 
   // contains location id
-  var myVar = $(this).attr('data-id');
-  var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(myVar);
+  var location_id = $(this).attr('data-id');
+  var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(location_id);
   var this_location = localizaciones_array[arrayPosition];
 
-  $('#btn_edit').attr('data-id', myVar);
+  $('#btn_edit').attr('data-id', location_id);
   $('#localizacion_name').val(this_location.location_name);
   $('#localizacion_license').val(this_location.license);
   $('#localizacion_address_line1').val(this_location.address_line1);
@@ -394,6 +394,9 @@ function populate_localizaciones(){
 
       // inject content string into html
       $localizaciones_list.html(table_content);
+
+      // populate info panel with first location's information
+      //populate_info_panel(localizaciones_array[0]);
     });
   };
 });
