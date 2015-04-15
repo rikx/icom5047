@@ -1,7 +1,10 @@
 $(document).ready(function(){
+
+	jsPlumb.ready(function() {
 	$preguntas_list = $('#preguntas_list');
 	// stores current elements in the jsPlumb container
 	var elements_array = [];
+	var connections_array =[];
 
 	//disable add question button initially
 	$('#btn_add_question').prop('disabled', true);
@@ -60,9 +63,10 @@ $(document).ready(function(){
  		saveGraph();
  	});
 
- 	$('#btn_load').on('click', function(){
- 		loadGraph();
+ 	$('#btn_end').on('click', function(){
+ 		AddLastNode();
  	});
+
 
  	$('#btn_test').on('click', function(){
  		loadGraphTest();
@@ -142,11 +146,11 @@ $(document).ready(function(){
 					   if(containsObject(this_element, elements_array))
 					   {
 					   	replace(this_element, elements_array);
-					   	alert("replacing");
+
 					   }
 					   else
 					   {
-					   	alert("new element");
+
 					   	elements_array.push(this_element);
 				// populate elements list with new element
 			}
@@ -193,91 +197,112 @@ $(document).ready(function(){
 
 
 function AddLastNode() {
+ 		jsPlumb.ready(function() {
+ 			var questionType = 'END';
+ 			var newState = $('<div>').attr('id', 'state' + j).addClass('item_del');
+ 			newState.addClass(questionType);
+ 			var title = $('<div>').addClass('title_del');
+ 			var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
+ 			var stateName = $('<input>').attr('type', 'text');
+			// store element id as data attribute
+			stateName.attr('data-id', 'state' + j);
+			var title_id = $('<p>').text('FINAL');
+			// append element id text to title
+			title.append(title_id);
+			// put stateName input field into stateNameContainer div, 
+			// and then append this div to title
+			//title.append(stateNameContainer.append(stateName));
+			var connect = $('<div>').addClass('connect_del');
+			newState.append(title);
+			newState.append(connect);
+			$('#container_plumbjs').append(newState);
+			jsPlumb.makeTarget(newState, {
+				anchor: 'Continuous',
+				endpoint:'Blank'
+			});
+			jsPlumb.makeSource(connect, {
+				parent: newState,
+				anchor: 'Continuous',
+				connector: 'Flowchart',
+				endpoint:'Blank'
+			});   
 
-	jsPlumb.ready(function() {
-		var newState = $('<div>').attr('id', 'state' + j).addClass('item_rec');
-		var title = $('<div>').addClass('title_rec');
-		var stateNameContainer = $('<div>');
-		var stateName = $('<input>').attr('type', 'text');
+			jsPlumb.draggable(newState, {
+				stop: function(event) {
+					if ($(event.target).find('select').length == 0) {
+					//saveState(event.target);
+					array.push(newState);
+					   // create element object
+					   var this_element = {
+					   	id: newState.attr('id'),
+					   	name: $('#'+newState.attr('id')).attr('data-state-name'),
+					   	type: questionType,
+					   	left: newState.position().left,
+					   	top: newState.position().top
+					   };
+					   console.log(this_element.id);
+					   console.log(this_element.name);
+					   console.log(this_element.left);
+					   console.log(this_element.type);
 
-		// store element id as data attribute
-		stateName.attr('data-id', j);
-		var title_id = $('<p>').text('Recomendación ' + j);
-		// append element id text to title
-		title.append(title_id);
-		// put stateName input field into stateNameContainer div, 
-		// and then append this div to title
-		title.append(stateNameContainer.append(stateName));
+					   if(containsObject(this_element, elements_array))
+					   {
+					   	replace(this_element, elements_array);
 
-		var connect = $('<div>').addClass('connect_rec');
-		newState.append(title);
-		newState.append(connect);
+					   }
+					   else
+					   {
 
-
-		
-
-		$('#container_plumbjs').append(newState);
+					   	elements_array.push(this_element);
+				// populate elements list with new element
+			}
 
 
-		jsPlumb.makeTarget(newState, {
-			anchor: 'Continuous'
-			
+			populate_elements_list();
+		}
+	}
+});
+
+			newState.dblclick(function(e) {
+				jsPlumb.detachAllConnections($(this));
+				$(this).remove();
+				e.stopPropagation();
+
+			}); 
+
+			stateName.keyup(function(e) {
+				if (e.keyCode === 13) {
+		      //var state = $(this).closest('.item');
+		      //state.children('.title').text(this.value);
+		      $(this).parent().text(this.value);
+		      var state_id = $(this).attr('data-id')
+		      $('#'+state_id).attr('data-state-name', this.value);
+		      // // create element object
+		      // var this_element = {
+		      // 	id: $(this).attr('data-id'),
+		      // 	name: this.value,
+		      // 	type: 'Pregunta'
+		      // };
+		      // // push to elements_array
+		      // elements_array.push(this_element);
+		      // // populate elements list with new element
+		      // populate_elements_list();
+		  }
 		});
 
-		jsPlumb.makeSource(connect, {
-			parent: newState,
-			anchor: 'Continuous',
-			connector: 'StateMachine',
-			paintStyle:{ strokeStyle:"blue"}
-			
+			// focuses on input field of the created element
+			stateName.focus();
 
-		});   
-
-		jsPlumb.draggable(newState, {
-			containment: 'parent'
+			j++; 
 		});
-
-
-		newState.dblclick(function(e) {
-			jsPlumb.detachAllConnections($(this));
-			$(this).remove();
-			e.stopPropagation();
-
-		});   
-
-		stateName.keyup(function(e) {
-			if (e.keyCode === 13) {
-	      //var state = $(this).closest('.item');
-	      //state.children('.title').text(this.value);
-	      $(this).parent().text(this.value);
-
-	    	// create element object
-	    	var this_element = {
-	    		id: $(this).attr('data-id'),
-	    		name: this.value,
-	    		type: 'Recomendación'
-	    	};
-	      // push to elements_array
-	      elements_array.push(this_element);
-	      // populate elements list with new element
-	      populate_elements_list();
-	  }
-	});
-
-		// focuses on input field of the created element
-		stateName.focus();
-		j++; 
-	})
 }
 
 function AddRecommendation() {
-
 	jsPlumb.ready(function() {
 		var newState = $('<div>').attr('id', 'state' + j).addClass('item_rec');
 		var title = $('<div>').addClass('title_rec');
 		var stateNameContainer = $('<div>');
 		var stateName = $('<input>').attr('type', 'text');
-
 		// store element id as data attribute
 		stateName.attr('data-id', j);
 		var title_id = $('<p>').text('Recomendación ' + j);
@@ -286,49 +311,32 @@ function AddRecommendation() {
 		// put stateName input field into stateNameContainer div, 
 		// and then append this div to title
 		title.append(stateNameContainer.append(stateName));
-
 		var connect = $('<div>').addClass('connect_rec');
 		newState.append(title);
 		newState.append(connect);
-
-
-		
-
 		$('#container_plumbjs').append(newState);
-
-
 		jsPlumb.makeTarget(newState, {
 			anchor: 'Continuous'
-			
 		});
-
 		jsPlumb.makeSource(connect, {
 			parent: newState,
 			anchor: 'Continuous',
 			connector: 'StateMachine',
 			paintStyle:{ strokeStyle:"blue"}
-			
-
 		});   
-
 		jsPlumb.draggable(newState, {
 			containment: 'parent'
 		});
-
-
 		newState.dblclick(function(e) {
 			jsPlumb.detachAllConnections($(this));
 			$(this).remove();
 			e.stopPropagation();
-
 		});   
-
 		stateName.keyup(function(e) {
 			if (e.keyCode === 13) {
 	      //var state = $(this).closest('.item');
 	      //state.children('.title').text(this.value);
 	      $(this).parent().text(this.value);
-
 	    	// create element object
 	    	var this_element = {
 	    		id: $(this).attr('data-id'),
@@ -341,7 +349,6 @@ function AddRecommendation() {
 	      populate_elements_list();
 	  }
 	});
-
 		// focuses on input field of the created element
 		stateName.focus();
 		j++; 
@@ -350,78 +357,44 @@ function AddRecommendation() {
 
 
 $('#connect_item').dblclick(function(e) {
-	alert("hello world");
-	e.stopPropagation();
 
+	e.stopPropagation();
 }); 
 
 
 jsPlumb.bind("connection", function(info, originalEvent) {
+	jsPlumb.ready(function() {
+	var this_connection;
 	if(trigger == "yes"){
+		this_connection = {
+			sourceid: info.sourceId,
+			targetid: info.targetId,
+			label: 'label'
+		};
+		console.log(info.sourceId);
+		console.log(info.targetId);
 		arrayConnection.push(info.sourceId);
 		arrayConnection.push(info.targetId);
 		var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
-		console.log(info.connection.getOverlays());
+		this_connection.label = mylabel;
 		info.connection.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
 		info.connection.addOverlay([ "Label", { id:"label", label:mylabel, borderWidth:20}]); 
 		info.connection.setPaintStyle({lineWidth:10,strokeStyle:'rgb(0,225,0)'});
-		console.log(info.connection.getOverlays());
+		connections_array.push(this_connection);
 	}
+	console.log(connections_array);
+});
 });
 
-
-function saveGraph()
-{
-	console.log(array);
-}
-
-function loadGraph()
-{
-	var targetlol;
-	var sourcelol;
-	var state;
-	var length = array.length;
-	var length2 = arrayConnection.length/2;
-	for (k = 0; k <= length - 1; k++) { 
-		state = array.pop();
-		//EED TO FIND A WAY TO GET "connect" object back to make it a source
-		jsPlumb.draggable(state, {
-			containment: 'parent'
-		});
-		state.dblclick(function(e) {
-			jsPlumb.detachAllConnections($(this));
-			$(this).remove();
-			e.stopPropagation();
-
-		}); 
-		jsPlumb.makeTarget(state, {
-			anchor: 'Continuous',
-			endpoint:'Blank'
-		});
-		$('#container_plumbjs').append(state);
-	}
-	trigger = "no";
-	for (a = 0; a <= length2 - 1; a++) { 
-		targetlol = arrayConnection.pop();
-		sourcelol = arrayConnection.pop();
-		var temp = jsPlumb.connect({source: sourcelol, target:targetlol});
-		temp.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
-		temp.addOverlay([ "Label", { location: [-.25, 1.1], id:"label", label:"foo"}]); 
-	}
-	trigger = "yes";
-}
-
-function checkGraph(){
-
-
-	console.log(arrayConnection);
-
-}
 
 
 function loadGraphTest()
 {
+	jsPlumb.ready(function() {
 	var length = elements_array.length;
+	var length2 = connections_array.length;
+	var targetlol;
+	var sourcelol;
 	var element;
 	var questionType;
 	var questionNumber;
@@ -432,6 +405,8 @@ function loadGraphTest()
 	var title_id;
 	var connect;
 	var str;
+	var temp;
+	jsPlumb.Defaults.Container = $('#container_plumbjs');
 	for (k = 0; k <= length - 1; k++) { 
 		element = elements_array[k];
 		questionType = element.type;
@@ -444,6 +419,7 @@ function loadGraphTest()
 		stateNameContainer = $('<div>').attr('data-state-id', element.id);
 		stateName = $('<p>').text(element.name);
 			// store element id as data attribute
+			console.log("element id is " + element.id);
 			stateName.attr('data-id', element.id);
 			title_id = $('<p>').text('Pregunta ' + questionNumber);
 			// append element id text to title
@@ -478,15 +454,35 @@ function loadGraphTest()
 				$(this).remove();
 				e.stopPropagation();
 			});   
-			alert(k);
+
 		}
-	}
+
+		trigger = "no";
+		console.log("penus");
+		console.log(connections_array);
+		for (a = 0; a <= length2 - 1; a++) { 
+			console.log(connections_array[a].targetid);
+			console.log(connections_array[a].sourceid);
+			targetlol = connections_array[a].targetid;
+			sourcelol = connections_array[a].sourceid;
+			temp = jsPlumb.connect({source: targetlol, target:sourcelol});
+			alert("hello world");
+
+		}
+		trigger = "yes";
+	
+});
+	
+}
 
 	$('#container_plumbjs').scroll(function(){
+		jsPlumb.ready(function() {
 		jsPlumb.repaintEverything();
+	});
 	});
 
 	function containsObject(obj, list) {
+
 		var i;
 		for (i = 0; i < list.length; i++) {
 			if (list[i].id === obj.id) {
@@ -504,5 +500,5 @@ function loadGraphTest()
 			}
 		}
 	}
-
+});
 });

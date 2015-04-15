@@ -44,3 +44,21 @@
 		background-color: white;
 		cursor: pointer;
 	}
+
+	.item_del{
+		position: absolute;
+		border: 1px solid black;
+		background-color: red;
+	}
+
+	.title_del {
+		padding: 10px;
+		cursor: move;
+	}
+
+	.connect_del {
+		width: 100%;
+		height: 20px;
+		background-color: white;
+		cursor: pointer;
+	}
