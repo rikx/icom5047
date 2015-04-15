@@ -595,7 +595,6 @@ router.post('/admin/localizaciones', function(req, res, next) {
 						    return console.error('error running query', err);
 						  } else {
 						  	var address_id = result.rows[0].address_id;
-						  	console.log(address_id);
 						  	client.query("INSERT into location (name, license, address_id) VALUES ($1, $2, $3)", 
 						  								[req.body.localizacion_name, req.body.localizacion_license, address_id], function(err, result) {
 						  		//call `done()` to release the client back to the pool
