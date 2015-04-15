@@ -580,22 +580,32 @@ router.post('/admin/localizaciones', function(req, res, next) {
 	    	return console.error('error fetching client from pool', err);
 	  	}
 	  	// Verify location does not already exist in db
-	  	client.query("SELECT license FROM location WHERE license = $1", [req.body.localizacion_license], function(err, result) {
+	  	client.query("SELECT license FROM location WHERE license = $1", 
+	  								[req.body.localizacion_license], function(err, result) {
 	  		if(err) {
 	  			return console.error('error running query', err);
 	  		} else {
 	  			if(result.rowCount > 0){
-		  			res.send({exists: true});
+		  			res.send({exists: true}); 
 		  		} else {
 		  			// Insert new location into db
-						client.query("INSERT into location (name, license) VALUES ($1, $2)", 
-													[req.body.localizacion_name, req.body.localizacion_license] , function(err, result) {
-							//call `done()` to release the client back to the pool
-						  done();
+						client.query("INSERT into address (address_line1, address_line2, city, zipcode) VALUES ($1, $2, $3, $4) RETURNING address_id", 
+													[req.body.localizacion_name, req.body.localizacion_license, req.body.localizacion_address_city, req.body.localizacion_address_zipcode] , function(err, result) {
 						  if(err) {
 						    return console.error('error running query', err);
 						  } else {
-						    res.json(true);
+						  	var address_id = result.rows[0].address_id;
+						  	console.log(address_id);
+						  	client.query("INSERT into location (name, license, address_id) VALUES ($1, $2, $3)", 
+						  								[req.body.localizacion_name, req.body.localizacion_license, address_id], function(err, result) {
+						  		//call `done()` to release the client back to the pool
+						  		done();
+						  		if(err) {
+						  			return console.error('error running query', err);
+						  		} else {
+						  			res.json(true);
+						  		}
+						  	});
 						  }
 						});
 		  		}
