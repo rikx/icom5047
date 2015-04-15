@@ -32,7 +32,7 @@ block content
 						h3.panel-title Localizaciones
 					.panel-body
 						.list-group(style='overflow:auto; height:300px;')
-							table#localizaciones_list(class='table')
+							table#localizaciones_list(class='table' data-localizaciones=localizaciones data-agentes=agentes data-ganaderos=ganaderos)
 
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
@@ -66,15 +66,15 @@ block content
 			#info_panel.col-md-4
 				.panel.panel-success
 					.panel-heading
-						h3#info_panel_heading(class='panel-title') Localización 1
+						h3#info_panel_heading(class='panel-title')
 					.panel-body
 						table#localizacion_info(class='table')
 							tr
 								td Nombre:
-								td#localizacion_info_name Localización 1
+								td#localizacion_info_name 
 							tr
 								td Numero de Licencia:
-								td#localizacion_info_license # de licencia
+								td#localizacion_info_license
 							tr
 								td Dirección:
 								td#localizacion_info_address
@@ -82,19 +82,19 @@ block content
 								td Ciudad:
 								td#localizacion_info_ciudad
 							tr
-								td ZipCode:
-								td#localizacion_info_zipcode
+								td Código Postál:
+								td#localizacion_info_zipcode 
 						.panel.panel-info
 							.panel-heading Ganaderos Asociados
 							.panel-body
 								table#localizacion_ganaderos(class='table')
 									tr
 										td 
-											strong Owner: 
+											strong Dueño: 
 										td#owner 
 									tr
 										td 
-											strong Manager:
+											strong Gerente:
 										td#manager 
 						.panel.panel-info
 							.panel-heading Agentes Asignados

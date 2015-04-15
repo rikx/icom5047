@@ -156,6 +156,8 @@ $('#btn_edit').on('click', function(){
 
     success: function(data) {
       alert("Informacion de ganadero ha sido editada en el sistema.");
+      // update ganadero list after posting 
+      populate_ganaderos();
      },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );

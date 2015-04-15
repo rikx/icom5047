@@ -4,7 +4,7 @@ var router = express.Router();
 /* GET users listing. 
  * TODO: make this route redirect to the proper home page
  * TODO: depending on the currently signed in user type
-*/
+ */
 router.get('/', function(req, res, next) {
   res.redirect('/users/admin');
 });

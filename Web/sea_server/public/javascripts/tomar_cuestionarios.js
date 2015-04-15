@@ -1,7 +1,7 @@
 $(document).ready(function(){
   // cuestionarios list
   $cuestionarios_list = $('#cuestionarios_list');
-  // store data for initial 10 cuestionarios
+  // store data for initial 20 cuestionarios
   var cuestionarios_data= $cuestionarios_list.attr('data-cuestionarios');
   var cuestionarios_array = JSON.parse(cuestionarios_data);
 
