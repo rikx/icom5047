@@ -195,7 +195,7 @@ router.post('/admin/ganaderos', function(req, res, next) {
 			|| !req.body.hasOwnProperty('ganadero_apellido2') || !req.body.hasOwnProperty('ganadero_email')
 			|| !req.body.hasOwnProperty('ganadero_telefono') || !req.body.hasOwnProperty('ganadero_m_initial')) {
   	res.statusCode = 400;
-  	return res.send('Error: Missing fields for user login.');
+  	return res.send('Error: Missing fields for post ganadero.');
 	} else {
 		var db = req.db;
 	  db.connect(req.conString, function(err, client, done) {
@@ -238,7 +238,7 @@ router.put('/admin/ganaderos/:id', function(req, res, next) {
 			|| !req.body.hasOwnProperty('ganadero_apellido2') || !req.body.hasOwnProperty('ganadero_email')
 			|| !req.body.hasOwnProperty('ganadero_telefono') || !req.body.hasOwnProperty('ganadero_m_initial')) {
   	res.statusCode = 400;
-  	return res.send('Error: Missing fields for user login.');
+  	return res.send('Error: Missing fields for put ganadero.');
 	} else {
 		var db = req.db;
 	  db.connect(req.conString, function(err, client, done) {
@@ -530,20 +530,53 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 
 /* */
 router.post('/admin/localizaciones', function(req, res, next) {
-
+	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
+			|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
+			|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
+  	res.statusCode = 400;
+  	return res.send('Error: Missing fields for post location.');
+	} else {
+		var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+	  	// Verify location does not already exist in db
+	  	client.query("SELECT license FROM location WHERE license = $1", [req.body.localizacion_license], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+	  			if(result.rowCount > 0){
+		  			res.send({exists: true});
+		  		} else {
+		  			// Insert new location into db
+						client.query("INSERT into location (name, license) VALUES ($1, $2)", 
+													[req.body.localizacion_name, req.body.localizacion_license] , function(err, result) {
+							//call `done()` to release the client back to the pool
+						  done();
+						  if(err) {
+						    return console.error('error running query', err);
+						  } else {
+						    res.json(true);
+						  }
+						});
+		  		}
+	  		}
+	  	});
+		});
+	}
 });
 
 /* PUT Admin Manejar Localizaciones 
  * Edit information of location matching :id
  */
-
 router.put('/admin/localizaciones/:id', function(req, res, next) {
 	var location_id = req.params.id;
 	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
 			|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
 			|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
   	res.statusCode = 400;
-  	return res.send('Error: Missing fields for user login.');
+  	return res.send('Error: Missing fields for put location.');
 	} else {
 		var db = req.db;
 	  db.connect(req.conString, function(err, client, done) {
@@ -575,6 +608,13 @@ router.put('/admin/localizaciones/:id', function(req, res, next) {
 			});
 		});
 	}
+});
+
+/* PUT Admin Manejar Localizaciones Associates
+ * Edit associates of location matching :id
+ */
+router.put('/admin/localizaciones/:id/associates', function(req, res, next) {
+	var location_id = req.params.id;
 });
 
 /* GET Admin Manejar Citas */
