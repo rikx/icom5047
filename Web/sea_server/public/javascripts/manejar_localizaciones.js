@@ -351,10 +351,7 @@ function populate_info_panel($this_location){
   $.each(agentes_array, function(i){
     if($this_location.location_id == agentes_array[i].location_id){
       agent_found = true;
-      table_content += '<tr>';
-      table_content += "<td> ";
-      table_content += "" +agentes_array[i].username+"</td>";
-      table_content += '</tr>';
+      table_content += '<tr><td>'+agentes_array[i].username+'</td></tr>';
     }
   }); 
   // checks if agent is found

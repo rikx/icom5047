@@ -1,17 +1,16 @@
 $(document).ready(function(){
+  // initial population of usuarios list
+  populate_usuarios();
   // usuarios list
   $usuarios_list = $('#usuarios_list');
   $locations_list = $('#usuario_locations');
   
   // store data for 10 initial usuarios
-  var usuarios_array, locations_array;
-  var usuarios_data = $usuarios_list.attr('data-usuarios');
-  //var usuarios_array = JSON.parse(usuarios_data);
-  // and their assigned locations
-  var locations_data = $usuarios_list.attr('data-locations');
-  //var locations_array = JSON.parse(locations_data);
-  // initial population of usuarios list
-  populate_usuarios();
+  var usuarios_array =  JSON.parse($usuarios_list.attr('data-usuarios'));
+  var locations_array = JSON.parse($usuarios_list.attr('data-locations'));
+
+  // initial info panel population
+  populate_info_panel(usuarios_array[0]);
 
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';
@@ -29,26 +28,10 @@ $(document).ready(function(){
     remove_active_class($usuarios_list);
   });
 
-  $('#btn_add_usuario').on('click', function(){
-    $('#btn_edit, #heading_edit').hide();
-    $('#btn_submit, #heading_create').show();
-    $('#edit_panel').show();
-    $('#info_panel').hide();
-
-
-    $('#usuario_name').attr("value", "");
-    $('#usuario_lastname_paternal').attr("value", "");
-    $('#usuario_lastname_maternal').attr("value", "");
-    $('#usuario_email').attr("value", "");
-    $('#usuario_telefono').attr("value", "");
-    $('#usuario_password').attr("value", "");
-  });
-
   /* Show info panel */
   $usuarios_list.on('click', 'tr td a.show_info_usuario', function(e){
     // prevents link from firing
     e.preventDefault();
-    var table_content = '';
 
     $('#edit_panel').hide();
     $('#info_panel').show();
@@ -61,71 +44,64 @@ $(document).ready(function(){
       $this.addClass('active');
     }
 
-    // contains ganadero id
-    var myVar = $this.attr('data-id');
-    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(myVar);
-    var thisUserObject = usuarios_array[arrayPosition];
+    // contains usuario id
+    var usuario_id = $this.attr('data-id');
+    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
+    var this_usuario = usuarios_array[arrayPosition];
     
+    // populate info panel with this_usuario
+    populate_info_panel(this_usuario);
+  });
 
-    //#info_panel_heading
-
-
-    $('#info_panel_heading').text(thisUserObject.first_name + " " + thisUserObject.last_name1 + " " + thisUserObject.last_name2);
-    if(thisUserObject.middle_initial == null)
-    {
-      $('#usuario_info_name').text(thisUserObject.first_name);
-    }
-    else
-    {
-     $('#usuario_info_name').text(thisUserObject.first_name + " " + thisUserObject.middle_initial);
-   }
-
-   $('#usuario_info_lastname_paternal').text(thisUserObject.last_name1);
-   $('#usuario_info_lastname_maternal').text(thisUserObject.last_name2);
-   $('#usuario_info_contact').text(thisUserObject.email + " " + thisUserObject.phone_number);
-
-
-   $.each(locations_array, function(i){
-    if(myVar == this.user_id){
-      table_content += '<tr>';
-      table_content += "<td> ";
-      table_content += "" +this.location_name+"</td>";
-      table_content += '</tr>';
-    }
-  });  
-
-
-   $('#usuario_locations').html(table_content);
-});
-
-/* Change user type dropdown selected value */
-$('#list_user_type').on('click', 'li a', function(e){
-  // prevents link from firing
-  e.preventDefault();
-  $('#btn_user_type_text').text($(this).text()+' ');
-  $('#btn_user_type').val($(this).attr('data-usario-type'));
-});
-
-/* Open edit panel */
-$usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
-  $('#btn_edit, #heading_edit').show();
-  $('#btn_submit, #heading_create').hide();
-  $('#edit_panel').show();
-  $('#info_panel').hide();
-
-  // contains usuario id
-  var myVar = $(this).attr('data-id');
-  var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(myVar);
-  var thisUserObject = usuarios_array[arrayPosition];
+  /* Change user type dropdown selected value */
+  $('#list_user_type').on('click', 'li a', function(e){
+    // prevents link from firing
+    e.preventDefault();
+    $('#btn_user_type_text').text($(this).text()+' ');
+    $('#btn_user_type').val($(this).attr('data-usario-type'));
+  });
   
-  $('#usuario_name').attr("value", thisUserObject.first_name);
-  $('#usuario_lastname_paternal').attr("value", thisUserObject.last_name1);
-  $('#usuario_lastname_maternal').attr("value", thisUserObject.last_name2);
-  $('#usuario_email').attr("value", thisUserObject.email);
-  $('#usuario_telefono').attr("value", thisUserObject.phone_number);
-});
+  /* Open add panel */
+  $('#btn_add_usuario').on('click', function(){
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
 
-$('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
+    // clear add form
+    $('#form_manage_usuario')[0].reset();
+  });
+
+  /* POSTs new usuario */
+  $('#btn_submit').on('click', function(){
+
+  });
+
+  /* Open edit panel */
+  $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
+    $('#btn_edit, #heading_edit').show();
+    $('#btn_submit, #heading_create').hide();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
+
+    // contains usuario id
+    var usuario_id = $(this).attr('data-id');
+    var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
+    var this_usuario = usuarios_array[arrayPosition];
+    
+    $('#usuario_name').attr("value", this_usuario.first_name);
+    $('#usuario_lastname_paternal').attr("value", this_usuario.last_name1);
+    $('#usuario_lastname_maternal').attr("value", this_usuario.last_name2);
+    $('#usuario_email').attr("value", this_usuario.email);
+    $('#usuario_telefono').attr("value", this_usuario.phone_number);
+  });
+
+  /* PUTs edited ganadero information */
+  $('#btn_edit').on('click', function(){
+
+  });
+
+  $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -157,103 +133,90 @@ $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
 
   });
 
-/* POSTs new ganadero information */
-$('#btn_submit').on('click', function(){
-      // ajax call to post new ganadero
+  /* Populates info panel with $this_usuario information */
+  function populate_info_panel($this_usuario){
+    // populate basic information panel
+    $('#info_panel_heading').text($this_usuario.first_name + " " + $this_usuario.last_name1 + " " + $this_usuario.last_name2);
+    if($this_usuario.middle_initial == null) {
+      $('#usuario_info_name').text($this_usuario.first_name);
+    } else {
+      $('#usuario_info_name').text($this_usuario.first_name + " " + $this_usuario.middle_initial);
+    }
+    $('#usuario_info_lastname_paternal').text($this_usuario.last_name1);
+    $('#usuario_info_lastname_maternal').text($this_usuario.last_name2);
+    $('#usuario_info_contact').text($this_usuario.email + " " + $this_usuario.phone_number);
 
-      // update ganadero list after posting 
-      populate_ganaderos();
-    });
-
-
-/* PUTs edited ganadero information */
-$('#btn_edit').on('click', function(){
-    //TODO: collect data to submit from edit form
-
-    $.ajax({
-      url: "http://localhost:3000/users/admin/ganadero_edit",
-      method: "PUT",
-
-      success: function( data ) {
-
-      },
-
-      // Code to run if the request fails; the raw request and
-      // status codes are passed to the function
-      error: function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        console.dir( xhr );
-      },
-
-      // Code to run regardless of success or failure
-      complete: function( xhr, status ) {
-        alert( "The request is complete!" );
-      }
-    });
-  });
-
-function populate_usuarios(){
-  $.getJSON('http://localhost:3000/users/admin/list_usuarios', function(data) {
-    usuarios_array = data.usuarios;
-    locations_array = data.locations;
-    var firstElement = usuarios_array[0];
-    //locations_array = data.locations;
-    
-    //especialidades_array = data.especialidades;
-
-    // contents of usuarios list
+    // populate associated locations panel
     var table_content = '';
-
-      // for each item in JSON, add table row and cells
-      $.each(data.usuarios, function(i){
-        table_content += '<tr>';
-        table_content += "<td><a class='list-group-item ";
-        // if initial list item, set to active
-        if(i==0) {
-          table_content +=  'active ';
-        }
-        table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.email+"</a></td>";
-        table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
-        table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
-        table_content += '</tr>';
-      });  
-
-      // inject content string into html
-      $usuarios_list.html(table_content);
-
-
-      $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);
-      if(firstElement.middle_initial == null)
-      {
-        $('#usuario_info_name').text(firstElement.first_name);
-      }
-      else
-      {
-       $('#usuario_info_name').text(firstElement.first_name + " " + firstElement.middle_initial);
-     }
-
-     $('#usuario_info_lastname_paternal').text(firstElement.last_name1);
-     $('#usuario_info_lastname_maternal').text(firstElement.last_name2);
-     $('#usuario_info_contact').text(firstElement.email + " " + firstElement.phone_number);
-     table_content = '';
-
-
-
-
-     $.each(locations_array, function(i){
-      if(firstElement.user_id == this.user_id){
-        table_content += '<tr>';
-        table_content += "<td> ";
-        table_content += "" +this.location_name+"</td>";
-        table_content += '</tr>';
+    $.each(locations_array, function(i){
+      if($this_usuario.user_id == this.user_id){
+        table_content += '<tr><td>'+this.location_name+'</td></tr>';
       }
     });  
+    $('#usuario_locations').html(table_content);
+  }
 
-     
-     $('#usuario_locations').html(table_content);
+  /* */
+  function populate_usuarios(){
+    $.getJSON('http://localhost:3000/users/admin/list_usuarios', function(data) {
+      usuarios_array = data.usuarios;
+      locations_array = data.locations;
+      var firstElement = usuarios_array[0];
+      //locations_array = data.locations;
+      
+      //especialidades_array = data.especialidades;
 
-   });
-}
+      // contents of usuarios list
+      var table_content = '';
+
+        // for each item in JSON, add table row and cells
+        $.each(data.usuarios, function(i){
+          table_content += '<tr>';
+          table_content += "<td><a class='list-group-item ";
+          // if initial list item, set to active
+          if(i==0) {
+            table_content +=  'active ';
+          }
+          table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.email+"</a></td>";
+          table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
+          table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+          table_content += '</tr>';
+        });  
+
+        // inject content string into html
+        $usuarios_list.html(table_content);
+
+
+        $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);
+        if(firstElement.middle_initial == null)
+        {
+          $('#usuario_info_name').text(firstElement.first_name);
+        }
+        else
+        {
+         $('#usuario_info_name').text(firstElement.first_name + " " + firstElement.middle_initial);
+       }
+
+       $('#usuario_info_lastname_paternal').text(firstElement.last_name1);
+       $('#usuario_info_lastname_maternal').text(firstElement.last_name2);
+       $('#usuario_info_contact').text(firstElement.email + " " + firstElement.phone_number);
+       table_content = '';
+
+
+
+
+       $.each(locations_array, function(i){
+        if(firstElement.user_id == this.user_id){
+          table_content += '<tr>';
+          table_content += "<td> ";
+          table_content += "" +this.location_name+"</td>";
+          table_content += '</tr>';
+        }
+      });  
+
+       
+       $('#usuario_locations').html(table_content);
+
+     });
+  }
 });

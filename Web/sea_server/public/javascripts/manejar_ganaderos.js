@@ -186,26 +186,23 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
 
   /* Populates info panel with $this_ganadero information */
   function populate_info_panel($this_ganadero){
+    // populate basic information panel
     $('#info_panel_heading').text($this_ganadero.first_name + " " + $this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
     if($this_ganadero.middle_initial == null) {
       $('#ganadero_info_name').text($this_ganadero.first_name);
     } else {
       $('#ganadero_info_name').text($this_ganadero.first_name + " " + $this_ganadero.middle_initial);
     }
-
     $('#ganadero_info_apellidos').text($this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
     $('#ganadero_info_contact').text($this_ganadero.email + " " + $this_ganadero.phone_number);
    
+   // populate associated locations panel
     var table_content = '';
     $.each(localizaciones_array, function(i){
-      if($this_ganadero.location_id == this.person_id){
-        table_content += '<tr>';
-        table_content += "<td> ";
-        table_content += "" +this.location_name+"</td>";
-        table_content += '</tr>';
+      if($this_ganadero.person_id == this.person_id){
+        table_content += '<tr><td>'+this.location_name+'</td></tr>';
       }
     });  
-  
     $('#ganadero_locations').html(table_content);
   }
 

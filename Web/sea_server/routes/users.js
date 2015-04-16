@@ -381,13 +381,51 @@ router.get('/admin/reportes/:id', function(req, res, next) {
 });
 
 
-/* GET Admin Manejar Usuarios */
+/* GET Admin Manejar Usuarios 
+ * Renders page with first 20 usuarios, alphabetically ordered 
+ */
 router.get('/admin/usuarios', function(req, res, next) {
-	res.render('manejar_usuarios', { title: 'Manejar Usuarios'});
+	var usuarios_list, locations_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// TODO: modify query to also give you account type
+	  client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, person.spec_id, specialization.name AS specialization_name \
+									FROM (users natural join person) LEFT OUTER JOIN specialization \
+									ON person.spec_id = specialization.spec_id \
+									ORDER BY email ASC \
+									LIMIT 20;', function(err, result) {
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	usuarios_list = result.rows;
+	    }
+	  });
+
+	  // get locations associated with users
+	  client.query('WITH usuarios AS (SELECT user_id, email \
+										FROM users natural join person \
+										ORDER BY email ASC \
+										LIMIT 20) \
+									SELECT user_id, location_id, location.name AS location_name \
+									FROM usuarios, location \
+									WHERE user_id = agent_id', function(err, result){
+	  	//call `done()` to release the client back to the pool
+	  	done();
+	  	if(err) {
+	  		return console.error('error running query', err);
+	  	} else {
+	  		locations_list = result.rows;
+	  		res.render('manejar_usuarios', { title: 'Manejar Usuarios', usuarios : usuarios_list, locations : locations_list});
+	  	}
+	  });
+	});
 });
 
 /* GET Usuarios List data 
- * Responds with first 10 usuarios, alphabetically ordered 
+ * Responds with first 20 usuarios, alphabetically ordered 
  */
 router.get('/admin/list_usuarios', function(req, res, next) {
 	var usuarios_list, locations_list;
