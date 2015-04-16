@@ -59,9 +59,13 @@ $(document).ready(function(){
     $('#btn_submit, #heading_create').show();
     $('#edit_panel').show();
     $('#info_panel').hide();
+
+    // clear add form
+    $('#form_manage_dispositivo')[0].reset();
   });
 
-  /* POSTs new ganadero information */
+
+  /* POSTs new dispositivo information */
   $('#btn_submit').on('click', function(){
 
   });
@@ -84,7 +88,7 @@ $(document).ready(function(){
     $('#dispositivo_usuario').val(this_dispositivo.username);
   });
 
-  /* PUTs edited ganadero information */
+  /* PUTs edited dispositivo information */
   $('#btn_edit').on('click', function(){
 
   });
@@ -111,16 +115,6 @@ $(document).ready(function(){
 
     $('#btn_dropdown_agentes_text').text($(this).text()+' ');
     $('#btn_dropdown_agentes').val($(this).attr('data-id'));
-  });
-
-  $('#btn_add_dispositivo').on('click', function(){
-    $('#btn_edit, #heading_edit').hide();
-    $('#btn_submit, #heading_create').show();
-    $('#edit_panel').show();
-    $('#info_panel').hide();
-
-    // clear add form
-    $('#form_manage_dispositivo')[0].reset();
   });
 
   /* Populate info panel with $this_dispositivo info */
