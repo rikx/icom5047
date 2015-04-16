@@ -1,4 +1,4 @@
-$(document).ready(function(){
+
 
 	jsPlumb.ready(function() {
 	$preguntas_list = $('#preguntas_list');
@@ -366,6 +366,8 @@ jsPlumb.bind("connection", function(info, originalEvent) {
 	jsPlumb.ready(function() {
 	var this_connection;
 	if(trigger == "yes"){
+		alert("triggered");
+		alert(trigger);
 		this_connection = {
 			sourceid: info.sourceId,
 			targetid: info.targetId,
@@ -377,9 +379,7 @@ jsPlumb.bind("connection", function(info, originalEvent) {
 		arrayConnection.push(info.targetId);
 		var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
 		this_connection.label = mylabel;
-		info.connection.addOverlay([ "Arrow", { width:30, height:30, location: [0.1, 0.1], id:"arrow" }]); 
-		info.connection.addOverlay([ "Label", { id:"label", label:mylabel, borderWidth:20}]); 
-		info.connection.setPaintStyle({lineWidth:10,strokeStyle:'rgb(0,225,0)'});
+		
 		connections_array.push(this_connection);
 	}
 	console.log(connections_array);
@@ -406,9 +406,12 @@ function loadGraphTest()
 	var connect;
 	var str;
 	var temp;
-	jsPlumb.Defaults.Container = $('#container_plumbjs');
+	var k;
+	var i;
+	
 	for (k = 0; k <= length - 1; k++) { 
-		element = elements_array[k];
+		element = elements_array[k]
+		console.log(k);
 		questionType = element.type;
 		str = element.id;
 		console.log(str);
@@ -458,14 +461,16 @@ function loadGraphTest()
 		}
 
 		trigger = "no";
-		console.log("penus");
+		alert("penus");
+
 		console.log(connections_array);
 		for (a = 0; a <= length2 - 1; a++) { 
 			console.log(connections_array[a].targetid);
 			console.log(connections_array[a].sourceid);
 			targetlol = connections_array[a].targetid;
 			sourcelol = connections_array[a].sourceid;
-			temp = jsPlumb.connect({source: targetlol, target:sourcelol});
+			console.log(targetlol + " and " +sourcelol);
+			temp = jsPlumb.connect({source: sourcelol, target:targetlol});
 			alert("hello world");
 
 		}
@@ -500,5 +505,4 @@ function loadGraphTest()
 			}
 		}
 	}
-});
 });
