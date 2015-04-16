@@ -38,13 +38,13 @@ block content
 											center Dispositivo
 										th
 											center Última syncronicazión
-								tbody#dispositivos_list
+								tbody#dispositivos_list(data-dispositivos=dispositivos)
 
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
 					h4#heading_create Agregar Dispositivo
 					h4#heading_edit Editar Dispositivo
-					form(role='form')
+					form#form_manage_dispositivo(role='form')
 						.form-group
 							label(for='dispositivo_name') Dispositivo:
 							input#dispositivo_name(class='form-control', name='dispositivo_name', type='text', placeholder='Nombre')

@@ -720,13 +720,51 @@ router.get('/admin/list_citas', function(req, res, next) {
 	});
 });
 
-/* GET Admin Manejar Dispositivos */
+/* GET Admin Manejar Dispositivos
+ *
+ */
 router.get('/admin/dispositivos', function(req, res, next) {
-	res.render('manejar_dispositivos', { title: 'Manejar Dispositivos'});
+	var dispositivos_list, usuarios_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		
+	  client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
+									FROM devices natural join users \
+									ORDER BY username ASC \
+									LIMIT 20;', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	dispositivos_list = result.rows;
+	    }
+	  });
+
+	  // to populate usuario dropdown list
+	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, person.spec_id, specialization.name AS specialization_name \
+									FROM (users natural join person) LEFT OUTER JOIN specialization \
+									ON person.spec_id = specialization.spec_id \
+									ORDER BY email ASC', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	usuarios_list = result.rows;
+	    	res.render('manejar_dispositivos', { title: 'Manejar Dispositivos', dispositivos: dispositivos_list, usuarios: usuarios_list});
+	    }
+	  });
+	});
 });
 
 /* GET Dispositivos List data 
- * Responds with first 10 dispositivos, 
+ * Responds with first 20 dispositivos, 
  * ordered by assigned person
  */
 router.get('/admin/list_dispositivos', function(req, res, next) {
@@ -740,7 +778,7 @@ router.get('/admin/list_dispositivos', function(req, res, next) {
 	  client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
 									FROM devices natural join users \
 									ORDER BY username ASC \
-									LIMIT 10;', function(err, result) {
+									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

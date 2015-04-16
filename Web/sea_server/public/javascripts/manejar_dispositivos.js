@@ -1,31 +1,37 @@
 $(document).ready(function(){
-  // store data for 10 dispositivos
-  var dispositivos_array;
   // initial population of dispositivos list
   populate_dispositivos();
   // dispositivos list
   $dispositivos_list = $('#dispositivos_list');
+
+  // store data for initial 20 dispositivos
+  var dispositivos_array =  JSON.parse($dispositivos_list.attr('data-dispositivos'));
+
+  // initial info panel population
+  populate_info_panel(dispositivos_array[0]);
+
 
   /* Return home */
   $('#btn_home').on('click', function(){
   	window.location.href = '/users/admin'
   });
 
-  /* Add dispositivo */
-  $('#btn_add_dispositivo').on('click', function(){
-  	$('#btn_edit, #heading_edit').hide();
-  	$('#btn_submit, #heading_create').show();
-  	$('#edit_panel').show();
-  	$('#info_panel').hide();
+  /* Close edit panel */
+  $('#btn_close_edit_panel').on('click', function(){
+    $('#edit_panel').hide();
+    remove_active_class($dispositivos_list);
   });
 
+  /* Close info panel */
+  $('#btn_close_info_panel').on('click', function(){
+    $('#info_panel').hide();
+    remove_active_class($dispositivos_list);
+  });
 
+  /* Open info panel */
   $dispositivos_list.on('click', 'tr td a.show_info_dispositivo', function(e){
-
     // prevents link from firing
-    
     e.preventDefault();
-    var table_content = '';
 
     $('#edit_panel').hide();
     $('#info_panel').show();
@@ -38,114 +44,112 @@ $(document).ready(function(){
       $this.addClass('active');
     }
 
-    // contains ganadero id
-    var myVar = $this.attr('data-id');
-    var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(myVar);
-    var thisUserObject = dispositivos_array[arrayPosition];
+    // contains dispositivo id
+    var dispositivo_id = $this.attr('data-id');
+    var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(dispositivo_id);
+    var this_dispositivo = dispositivos_array[arrayPosition];
     
+    // populate info panel with this_dispositivo
+    populate_info_panel(this_dispositivo);
+  });
 
-    //#info_panel_heading
-    $('#info_panel_heading').text(thisUserObject.device_name);
-    $('#dispositivo_info_name').text(thisUserObject.device_name);
-    $('#dispositivo_info_id_num').text(thisUserObject.device_id);
-    $('#dispositivo_info_usuario').text(thisUserObject.username);
-    $('#dispositivo_info_last_sync').text(thisUserObject.latest_sync);
-    var date_time = get_date_time(thisUserObject.latest_sync, true);
-    
-    $('#dispositivo_info_last_sync').text(date_time.date + " at " + date_time.time);
+  /* Add dispositivo */
+  $('#btn_add_dispositivo').on('click', function(){
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
+  });
 
-
+  /* POSTs new ganadero information */
+  $('#btn_submit').on('click', function(){
 
   });
 
+  /* Open edit panel */
+  $dispositivos_list.on('click', 'tr td button.btn_edit_dispositivo', function(){
+    $('#btn_edit, #heading_edit').show();
+    $('#btn_submit, #heading_create').hide();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
 
-$dispositivos_list.on('click', 'tr td button.btn_edit_dispositivo', function(){
-  $('#btn_edit, #heading_edit').show();
-  $('#btn_submit, #heading_create').hide();
-  $('#edit_panel').show();
-  $('#info_panel').hide();
+    // contains dispositivo id
+    var dispositivo_id = $(this).attr('data-id');
+    var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(dispositivo_id);
+    var this_dispositivo = dispositivos_array[arrayPosition];
 
-  var myVar = $(this).attr('data-id');
-  var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(myVar);
-  var thisUserObject = dispositivos_array[arrayPosition];
+    $('#btn_edit').attr('data-id', dispositivo_id);
+    $('#dispositivo_name').val(this_dispositivo.device_name);
+    $('#dispositivo_id_num').val(this_dispositivo.device_id);
+    $('#dispositivo_usuario').val(this_dispositivo.username);
+  });
 
+  /* PUTs edited ganadero information */
+  $('#btn_edit').on('click', function(){
 
-  $('#dispositivo_name').attr("value", thisUserObject.device_name);
-  $('#dispositivo_id_num').attr("value", thisUserObject.device_id);
-  $('#dispositivo_usuario').attr("value", thisUserObject.username);
-  var date_time = get_date_time(thisUserObject.latest_sync, true);
-  $('#dispositivo_last_sync').attr("value", thisUserObject.phone_number);
-});
+  });
 
-// Populate asign agente dropdown menu when clicked
-$('#btn_dropdown_agentes').on('click', function(){
-  var list_content = '';
+  // Populate asign agente dropdown menu when clicked
+  $('#btn_dropdown_agentes').on('click', function(){
+    var list_content = '';
 
-  // ajax call to GET all usuarios
-  $.getJSON('http://localhost:3000/usuarios', function(data) {
-    $.each(data.usuarios, function(i){
-      list_content += "<li><a role='menuitem' tabindex='-1' href='#' data-id='"+this.user_id+"'>"+this.username+'</a></li>';
+    // ajax call to GET all usuarios
+    $.getJSON('http://localhost:3000/usuarios', function(data) {
+      $.each(data.usuarios, function(i){
+        list_content += "<li><a role='menuitem' tabindex='-1' href='#' data-id='"+this.user_id+"'>"+this.username+'</a></li>';
+      });
+
+      // popuplate dropdown list with ganaderos
+      $('#list_dropdown_agentes').html(list_content);
     });
-
-    // popuplate dropdown list with ganaderos
-    $('#list_dropdown_agentes').html(list_content);
   });
-});
 
-/* Change asigned agente dropdown selected value */
-$('#list_dropdown_agentes').on('click', 'li a', function(e){
-  // prevents link from firing
-  e.preventDefault();
+  /* Change asigned agente dropdown selected value */
+  $('#list_dropdown_agentes').on('click', 'li a', function(e){
+    // prevents link from firing
+    e.preventDefault();
 
-  $('#btn_dropdown_agentes_text').text($(this).text()+' ');
-  $('#btn_dropdown_agentes').val($(this).attr('data-id'));
-});
+    $('#btn_dropdown_agentes_text').text($(this).text()+' ');
+    $('#btn_dropdown_agentes').val($(this).attr('data-id'));
+  });
 
+  $('#btn_add_dispositivo').on('click', function(){
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
 
-$('#btn_close_info_panel').on('click', function(){
-  $('#info_panel').hide();
-  remove_active_class($dispositivos_list);
-});
+    // clear add form
+    $('#form_manage_dispositivo')[0].reset();
+  });
 
-$('#btn_close_edit_panel').on('click', function(){
-  $('#edit_panel').hide();
-  remove_active_class($dispositivos_list);
-});
+  /* Populate info panel with $this_dispositivo info */
+  function populate_info_panel($this_dispositivo) {
+    $('#info_panel_heading').text($this_dispositivo.device_name);
+    $('#dispositivo_info_name').text($this_dispositivo.device_name);
+    $('#dispositivo_info_id_num').text($this_dispositivo.device_id);
+    $('#dispositivo_info_usuario').text($this_dispositivo.username);
 
-$('#btn_add_dispositivo').on('click', function(){
-  $('#btn_edit, #heading_edit').hide();
-  $('#btn_submit, #heading_create').show();
-  $('#edit_panel').show();
-  $('#info_panel').hide();
+    var date_time = get_date_time($this_dispositivo.latest_sync, true);
+    $('#dispositivo_info_last_sync').text(date_time.date + " at " + date_time.time);
+  }
 
-
- //#info_panel_heading
-    $('#info_panel_heading').text(" ");
-    $('#dispositivo_info_name').text(" ");
-    $('#dispositivo_info_id_num').text(" ");
-    $('#dispositivo_info_usuario').text(" ");
-    $('#dispositivo_info_last_sync').text(" ");
-    $('#dispositivo_info_last_sync').text(" ");
-
-});
-
-function populate_dispositivos() {
-	$.getJSON('http://localhost:3000/users/admin/list_dispositivos', function(data) {
-		dispositivos_array = data.dispositivos;
+  /* */
+  function populate_dispositivos() {
+  	$.getJSON('http://localhost:3000/users/admin/list_dispositivos', function(data) {
+  		dispositivos_array = data.dispositivos;
 
 			// contents of dispositivos list
 			var table_content = '';
-      var firstElement = [];
-      firstElement = dispositivos_array[0];
 
 			// device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username
 			// for each item in JSON, add table row and cells
 			$.each(data.dispositivos, function(i){
-				// get {date, time} object of latest_ sync for this dispositivo
-				var date_time = get_date_time(this.latest_sync, true);
+        // get {date, time} object of latest_ sync for this dispositivo
+        var date_time = get_date_time(this.latest_sync, true);
 
-       table_content += '<tr>';
-       table_content += "<td><a class='list-group-item ";
+        table_content += '<tr>';
+        table_content += "<td><a class='list-group-item ";
 
 			  // if initial list item, set to active
 			  if(i==0) {
@@ -160,18 +164,6 @@ function populate_dispositivos() {
 
 			// inject content string into html
 			$dispositivos_list.html(table_content);
-
-      $('#info_panel_heading').text(firstElement.device_name);
-      $('#dispositivo_info_name').text(firstElement.device_name);
-      $('#dispositivo_info_id_num').text(firstElement.device_id);
-      $('#dispositivo_info_usuario').text(firstElement.username);
-      date_time = get_date_time(firstElement.latest_sync, true);
-      $('#dispositivo_info_last_sync').text(date_time.date + " at " + date_time.time);
-
-
-
-
-
     });
-};
+  };
 });
