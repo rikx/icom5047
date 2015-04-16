@@ -361,12 +361,12 @@ router.get('/admin/reportes/:id', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: Falta join con path para determinar recomendacion a desplegar
-	  client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, location.name AS location_name, subject_id, first_name || ' ' || last_name1 || ' ' || last_name2 AS interviewee_name, report.flowchart_id, flowchart.name AS survey_name, \
+	  client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
 									flowchart.version AS survey_version, report.note, report.date_filed AS report_date, appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose \
 									FROM report, appointments, users, flowchart, person, location \
 									WHERE report.report_id =$1 AND report.report_id = appointments.report_id \
 									AND users.user_id = report.creator_id AND report.flowchart_id = flowchart.flowchart_id \
-									AND report.subject_id = person.person_id AND report.location_id = location.location_id", [report_id], function(err, result) {
+									AND report.location_id = location.location_id", [report_id], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

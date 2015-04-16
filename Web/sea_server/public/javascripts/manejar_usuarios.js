@@ -5,7 +5,7 @@ $(document).ready(function(){
   $usuarios_list = $('#usuarios_list');
   $locations_list = $('#usuario_locations');
   
-  // store data for 10 initial usuarios
+  // store data for 20 initial usuarios
   var usuarios_array =  JSON.parse($usuarios_list.attr('data-usuarios'));
   var locations_array = JSON.parse($usuarios_list.attr('data-locations'));
 
@@ -89,6 +89,7 @@ $(document).ready(function(){
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
     
+    $('#btn_edit').attr('data-id', usuario_id);
     $('#usuario_name').val(this_usuario.first_name);
     $('#usuario_lastname_paternal').val(this_usuario.last_name1);
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
@@ -161,62 +162,23 @@ $(document).ready(function(){
     $.getJSON('http://localhost:3000/users/admin/list_usuarios', function(data) {
       usuarios_array = data.usuarios;
       locations_array = data.locations;
-      var firstElement = usuarios_array[0];
-      //locations_array = data.locations;
-      
-      //especialidades_array = data.especialidades;
 
       // contents of usuarios list
       var table_content = '';
 
-        // for each item in JSON, add table row and cells
-        $.each(data.usuarios, function(i){
-          table_content += '<tr>';
-          table_content += "<td><a class='list-group-item ";
-          // if initial list item, set to active
-          if(i==0) {
-            table_content +=  'active ';
-          }
-          table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.email+"</a></td>";
-          table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
-          table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
-          table_content += '</tr>';
-        });  
-
-        // inject content string into html
-        $usuarios_list.html(table_content);
-
-
-        $('#info_panel_heading').text(firstElement.first_name + " " + firstElement.last_name1 + " " + firstElement.last_name2);
-        if(firstElement.middle_initial == null)
-        {
-          $('#usuario_info_name').text(firstElement.first_name);
+      // for each item in JSON, add table row and cells
+      $.each(data.usuarios, function(i){
+        table_content += '<tr>';
+        table_content += "<td><a class='list-group-item ";
+        // if initial list item, set to active
+        if(i==0) {
+          table_content +=  'active ';
         }
-        else
-        {
-         $('#usuario_info_name').text(firstElement.first_name + " " + firstElement.middle_initial);
-       }
-
-       $('#usuario_info_lastname_paternal').text(firstElement.last_name1);
-       $('#usuario_info_lastname_maternal').text(firstElement.last_name2);
-       $('#usuario_info_contact').text(firstElement.email + " " + firstElement.phone_number);
-       table_content = '';
-
-
-
-
-       $.each(locations_array, function(i){
-        if(firstElement.user_id == this.user_id){
-          table_content += '<tr>';
-          table_content += "<td> ";
-          table_content += "" +this.location_name+"</td>";
-          table_content += '</tr>';
-        }
-      });  
-
-       
-       $('#usuario_locations').html(table_content);
-
-     });
+        table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.email+"</a></td>";
+        table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
+        table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+        table_content += '</tr>';
+      });
+    });
   }
 });
