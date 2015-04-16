@@ -60,7 +60,7 @@ $(document).ready(function(){
     $('#btn_user_type_text').text($(this).text()+' ');
     $('#btn_user_type').val($(this).attr('data-usario-type'));
   });
-  
+
   /* Open add panel */
   $('#btn_add_usuario').on('click', function(){
     $('#btn_edit, #heading_edit').hide();
@@ -89,11 +89,11 @@ $(document).ready(function(){
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
     
-    $('#usuario_name').attr("value", this_usuario.first_name);
-    $('#usuario_lastname_paternal').attr("value", this_usuario.last_name1);
-    $('#usuario_lastname_maternal').attr("value", this_usuario.last_name2);
-    $('#usuario_email').attr("value", this_usuario.email);
-    $('#usuario_telefono').attr("value", this_usuario.phone_number);
+    $('#usuario_name').val(this_usuario.first_name);
+    $('#usuario_lastname_paternal').val(this_usuario.last_name1);
+    $('#usuario_lastname_maternal').val(this_usuario.last_name2);
+    $('#usuario_email').val(this_usuario.email);
+    $('#usuario_telefono').val(this_usuario.phone_number);
   });
 
   /* PUTs edited ganadero information */
