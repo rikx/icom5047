@@ -150,9 +150,6 @@ router.get('/admin/ganaderos', function(req, res, next) {
 									WHERE person_id NOT IN (SELECT person_id FROM users) \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -168,6 +165,7 @@ router.get('/admin/ganaderos', function(req, res, next) {
 									SELECT person_id, location_id, location.name AS location_name \
 									FROM ganaderos, location \
 									WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
+			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
 	      return console.error('error running query', err);
@@ -195,9 +193,6 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 									WHERE person_id NOT IN (SELECT person_id FROM users) \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -213,6 +208,7 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
 									SELECT person_id, location_id, location.name AS location_name \
 									FROM ganaderos, location \
 									WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
+			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
 	      return console.error('error running query', err);
@@ -406,9 +402,6 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 									ON person.spec_id = specialization.spec_id \
 									ORDER BY email ASC \
 									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -424,6 +417,7 @@ router.get('/admin/list_usuarios', function(req, res, next) {
 									SELECT user_id, location_id, location.name AS location_name \
 									FROM usuarios, location \
 									WHERE user_id = agent_id', function(err, result){
+	  	//call `done()` to release the client back to the pool
 	  	done();
 	  	if(err) {
 
@@ -448,9 +442,6 @@ router.get('/admin/localizaciones', function(req, res, next) {
 									FROM location natural join address \
 									ORDER BY location_name \
 									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -465,9 +456,6 @@ router.get('/admin/localizaciones', function(req, res, next) {
 									SELECT location_id, agent_id, username \
 									FROM locations,users \
 									WHERE user_id = agent_id;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -515,9 +503,6 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 									FROM location natural join address \
 									ORDER BY location_name \
 									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -532,9 +517,6 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
 									SELECT location_id, agent_id, username \
 									FROM locations,users \
 									WHERE user_id = agent_id;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -730,14 +712,11 @@ router.get('/admin/dispositivos', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-		
+		// to populate devices list
 	  client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
 									FROM devices natural join users \
 									ORDER BY username ASC \
 									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -779,9 +758,6 @@ router.get('/admin/list_dispositivos', function(req, res, next) {
 									FROM devices natural join users \
 									ORDER BY username ASC \
 									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
