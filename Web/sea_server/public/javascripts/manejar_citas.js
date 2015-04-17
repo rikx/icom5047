@@ -1,60 +1,34 @@
 $(document).ready(function(){
-
-  // format dates in initial cita list population
-  format_dates($('.show_date_cita'));
   // citas list
   $citas_list = $('#citas_list');
+  // format dates in initial cita list population
+  format_dates($('.show_date_cita'));
+  // store data for initial 20 citas
+  var citas_array = JSON.parse($citas_list.attr('data-citas'));
+  // initial info panel population
+  populate_info_panel(citas_array[0]);
 
-// store data for 10 citas
-
-var citas_data = $citas_list.attr('data-citas');
-var citas_array = JSON.parse(citas_data);
-populate_info_panel();
-
-function populate_info_panel(){
- var firstElement = [];
- firstElement = citas_array[0]; 
- $('#info_panel_heading').text("Cita");
- $('#cita_info_location').text(firstElement.location_name);
- $('#cita_info_date').text(firstElement.date);   
- $('#cita_info_hour').text(firstElement.time);
- $('#cita_info_purpose').text(firstElement.purpose);
- $('#cita_info_agent').text(firstElement.username);   
- $('#cita_info_report').html("<a href='/users/admin/reportes/" + firstElement.report_id + "'> Reporte " + firstElement.report_id + "</a>");
-}
-
-/* Button: Return home */
-$('#btn_home').on('click', function(){
-  window.location.href = '/users/admin';
-});
-
-/* Open edit panel */
-$citas_list.on('click', 'tr td button.btn_edit_cita', function(){
-  $('#edit_panel').show();
-
-    // contains cita id
-    var cita_id = $(this).attr('data-id');
-
-    // ramon work
-
+  /* Button: Return home */
+  $('#btn_home').on('click', function(){
+    window.location.href = '/users/admin';
   });
 
-$('#btn_close_edit_panel').on('click', function(){
-  $('#edit_panel').hide();
-  remove_active_class($citas_list);
-});
+  /* Close edit panel */
+  $('#btn_close_edit_panel').on('click', function(){
+    $('#edit_panel').hide();
+    remove_active_class($citas_list);
+  });
 
-$('#btn_close_info_panel').on('click', function(){
-  $('#info_panel').hide();
-  remove_active_class($citas_list);
-});
+  /* Close info panel */
+  $('#btn_close_info_panel').on('click', function(){
+    $('#info_panel').hide();
+    remove_active_class($citas_list);
+  });
 
-$citas_list.on('click', 'tr td a.show_info_cita', function(e){
-
-
+  /* Open info panel */
+  $citas_list.on('click', 'tr td a.show_info_cita', function(e){
     // preveLnts link from firing
     e.preventDefault();
-    var table_content = '';
 
     $('#edit_panel').hide();
     $('#info_panel').show();
@@ -67,53 +41,61 @@ $citas_list.on('click', 'tr td a.show_info_cita', function(e){
       $this.addClass('active');
     }
 
+    // contains cita id
+    var cita_id = $this.attr('data-id');
+    var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(cita_id);
+    var this_cita = citas_array[arrayPosition];
 
+    // populate info panel with this_cita
+    populate_info_panel(this_cita);
+  });
 
-    // contains ganadero id
-    var myVar = $this.attr('data-id');
-    var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(myVar);
-    var thisUserObject = citas_array[arrayPosition];
+  /* Open edit panel */
+  $citas_list.on('click', 'tr td button.btn_edit_cita', function(){
+    $('#btn_edit, #heading_edit').show();
+    $('#btn_submit, #heading_create').hide();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
 
-    //#info_panel_heading
-    $('#info_panel_heading').text("Cita");
-    $('#cita_info_location').text(thisUserObject.location_name);
-    $('#cita_info_date').text(thisUserObject.date);   
-    $('#cita_info_hour').text(thisUserObject.time);
-    $('#cita_info_purpose').text(thisUserObject.purpose);
-    $('#cita_info_agent').text(thisUserObject.username);   
-    $('#cita_info_report').html("<a href='/users/admin/reportes/" + thisUserObject.report_id + "'> Reporte " + thisUserObject.report_id + "</a>");
+    var cita_id = $(this).attr('data-id');
+    var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(cita_id);
+    var this_cita = citas_array[arrayPosition];
+
+    //date and time logic
+    var dateTimeObject = new Date(this_cita.date + " " + this_cita.time);
+    var day = ("0" + dateTimeObject.getDate()).slice(-2);
+    var month = ("0" + (dateTimeObject.getMonth() + 1)).slice(-2);
+    var hours = dateTimeObject.getHours();
+    var minutes = dateTimeObject.getMinutes();
+    var seconds = dateTimeObject.getSeconds();
+    var theDay = dateTimeObject.getFullYear()+"-"+(month)+"-"+(day);
+    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+    
+    $('#btn_edit').attr('data-id', cita_id);
+    $('#cita_proposito').val(this_cita.purpose);
+    $('#cita_date').val(theDay);
+    $('#cita_time').val(theTime);
+  });
+
+  /* PUTs edited ganadero information */
+  $('#btn_edit').on('click', function(){
 
   });
 
-$citas_list.on('click', 'tr td button.btn_edit_cita', function(){
-  $('#btn_edit, #heading_edit').show();
-  $('#btn_submit, #heading_create').hide();
-  $('#edit_panel').show();
-  $('#info_panel').hide();
+  /* Populate info panel with $this_cita information */
+  function populate_info_panel($this_cita){
+    $('#cita_info_location').text($this_cita.location_name);
+    $('#cita_info_date').text(get_date_time($this_cita.date, false));   
+    $('#cita_info_hour').text($this_cita.time);
+    $('#cita_info_purpose').text($this_cita.purpose);
+    $('#cita_info_agent').text($this_cita.username);   
+    $('#cita_info_report').html("<a href='/users/admin/reportes/" + $this_cita.report_id + "'> Reporte " + $this_cita.report_id + "</a>");
+  }
 
-
-  var myVar = $(this).attr('data-id');
-  var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(myVar);
-  var thisUserObject = citas_array[arrayPosition];
-
-
-  //date and time logic
-  var dateTimeObject = new Date(thisUserObject.date + " " + thisUserObject.time);
-  var day = ("0" + dateTimeObject.getDate()).slice(-2);
-  var month = ("0" + (dateTimeObject.getMonth() + 1)).slice(-2);
-  var hours = dateTimeObject.getHours();
-  var minutes = dateTimeObject.getMinutes();
-  var seconds = dateTimeObject.getSeconds();
-  var theDay = dateTimeObject.getFullYear()+"-"+(month)+"-"+(day);
-  var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
-  $('#cita_proposito').attr("value", thisUserObject.purpose);
-  $('#cita_date').attr("value", theDay);
-  $('#cita_time').attr("value", theTime);
-});
-
-function populate_citas(){
-  $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
-    citas_array = data.citas;
+  /* */
+  function populate_citas(){
+    $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
+      citas_array = data.citas;
 
       // contents of localizaciones list
       var table_content = '';
@@ -136,5 +118,5 @@ function populate_citas(){
       // inject content string into html
       $citas_list.html(table_content);
     });
-};
+  };
 });
