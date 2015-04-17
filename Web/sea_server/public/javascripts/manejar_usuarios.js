@@ -159,7 +159,7 @@ $(document).ready(function(){
 
   /* */
   function populate_usuarios(){
-    $.getJSON('http://localhost:3000/users/admin/list_usuarios', function(data) {
+    $.getJSON('http://localhost:3000/list_usuarios', function(data) {
       usuarios_array = data.usuarios;
       locations_array = data.locations;
 

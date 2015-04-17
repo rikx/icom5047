@@ -341,7 +341,7 @@ function populate_info_panel($this_location){
 
 /* */
 function populate_localizaciones(){
-  $.getJSON('http://localhost:3000/users/admin/list_localizaciones', function(data) {
+  $.getJSON('http://localhost:3000/list_localizaciones', function(data) {
     $('#edit_associates_heading').hide();
     $('#localizacion_associates').hide();
     localizaciones_array = data.localizaciones;

@@ -210,7 +210,7 @@ $(document).ready(function(){
 
  /* */
  function populate_ganaderos(){
-  $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
+  $.getJSON('http://localhost:3000/list_ganaderos', function(data) {
     ganaderos_array = data.ganaderos;
     localizaciones_array = data.locations;
     var firstElement = ganaderos_array[0];

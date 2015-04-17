@@ -168,7 +168,7 @@ $(document).ready(function(){
 
   /* */
   function populate_citas(){
-    $.getJSON('http://localhost:3000/users/admin/list_citas', function(data) {
+    $.getJSON('http://localhost:3000/list_citas', function(data) {
       citas_array = data.citas;
 
       // contents of localizaciones list

@@ -53,7 +53,7 @@ $(document).ready(function(){
   };
 
   function populate_cuestionarios(){
-    $.getJSON('http://localhost:3000/users/admin/list_cuestionarios', function(data) {
+    $.getJSON('http://localhost:3000/list_cuestionarios', function(data) {
       cuestionarios_array = data.cuestionarios;
 
       // contents of localizaciones list
