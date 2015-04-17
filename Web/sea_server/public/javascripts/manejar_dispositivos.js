@@ -10,6 +10,7 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(dispositivos_array[0]);
 
+  $('#dispositivo_usuario').hide();
 
   /* Return home */
   $('#btn_home').on('click', function(){
@@ -67,8 +68,42 @@ $(document).ready(function(){
 
   /* POSTs new dispositivo information */
   $('#btn_submit').on('click', function(){
+    var $the_form = $('#form_manage_dispositivo');
+    var form_data = $the_form.serializeArray();
+    var new_dispositivo = ConverToJSON(form_data);
 
+
+  // ajax call to post new ganadero
+  $.ajax({
+    url: "http://localhost:3000/users/admin/dispositivos",
+    method: "POST",
+    data: JSON.stringify(new_dispositivo),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      if(data.exists){
+        alert("Dispositivo con este numero de identificacion ya existe");
+      } else {
+        alert("Dispositivo ha sido añadido al sistema.");
+        // clear add form
+        $the_form[0].reset();
+      }
+       // update ganadero list after posting 
+       populate_dispositivos();
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
   });
+  
+
+ 
+
+});
 
   /* Open edit panel */
   $dispositivos_list.on('click', 'tr td button.btn_edit_dispositivo', function(){
@@ -115,6 +150,7 @@ $(document).ready(function(){
 
     $('#btn_dropdown_agentes_text').text($(this).text()+' ');
     $('#btn_dropdown_agentes').val($(this).attr('data-id'));
+    $('#dispositivo_usuario').val($('#btn_dropdown_agentes').val());
   });
 
   /* Populate info panel with $this_dispositivo info */
@@ -159,5 +195,5 @@ $(document).ready(function(){
 			// inject content string into html
 			$dispositivos_list.html(table_content);
     });
-  };
+};
 });
