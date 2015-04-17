@@ -130,6 +130,28 @@ router.get('/element/:id', function(req, res, next) {
 	});
 });
 
+/* GET all locations
+ * responds JSON object with all locations
+ */
+router.get('/locations', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// query for all locations data
+		client.query("SELECT location_id, name AS location_name \
+									FROM location \
+									WHERE name like '%"+req.query.key+"%'", function(err, result){
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({locations: result.rows});
+	    }
+		});
+	});
+});
+
 /* GET location
  * returns location information matching :id
  */

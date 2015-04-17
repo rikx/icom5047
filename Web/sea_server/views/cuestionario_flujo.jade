@@ -17,12 +17,39 @@ block content
 		.row
 			.col-md-2
 			.col-md-8
-				.panel.panel-success(data-question=pregunta)
+				.panel.panel-info
+					.panel-heading 
+						h3(class='panel-title')
+							| Información Básica
+					.panel-body
+						table(class='table')
+							thead
+							tbody
+								tr
+									td Cuestionario:
+									td#take_survey_name 
+										= pregunta[0].flowchart_name
+								tr
+									td Fecha Comenzado:
+									td#take_survey_date
+								tr
+									td Llenado por:
+									td#take_survey_user
+								tr
+									td Localización:
+									td#take_survey_location
+										input(type="text", name="typeahead", class="typeahead tt-query", autocomplete="off", spellcheck="false")
+
+		.row
+			.col-md-2
+			.col-md-8
+				.panel.panel-success
 					.panel-heading 
 						h3(class='panel-title')
 							| Preguntas Contestadas
 					.panel-body
 						ol#answered_questions
+		
 		.row
 			.col-md-2
 			.col-md-8
@@ -55,3 +82,4 @@ block content
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
 	script(src='/javascripts/cuestionario_flujo.js')
 	script(src='/javascripts/helpers.js')
+	script(src='/javascripts/typeahead.bundle.js')
