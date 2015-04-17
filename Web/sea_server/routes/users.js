@@ -324,7 +324,9 @@ router.get('/admin/reportes', function(req, res, next) {
 	});
 });
 
-/* GET Admin Ver Reporte */
+/* GET Admin Ver Reporte 
+ *
+ */
 router.get('/admin/reportes/:id', function(req, res, next) {
 	var report_id = req.params.id;
 	var reporte_details;

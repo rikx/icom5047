@@ -194,7 +194,7 @@ router.get('/location/:id', function(req, res, next) {
 /* GET Ganaderos List data 
  * Responds with first 20 ganaderos, alphabetically ordered 
  */
-router.get('/admin/list_ganaderos', function(req, res, next) {
+router.get('/list_ganaderos', function(req, res, next) {
 	var ganaderos_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -240,7 +240,7 @@ router.get('/admin/list_ganaderos', function(req, res, next) {
  * alphabetically ordered by name
  * for use to fill requested page in pagination
  */
-router.get('/admin/list_cuestionarios', function(req, res, next) {
+router.get('/list_cuestionarios', function(req, res, next) {
 	var cuestionarios_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -268,7 +268,7 @@ router.get('/admin/list_cuestionarios', function(req, res, next) {
 /* GET Usuarios List data 
  * Responds with first 20 usuarios, alphabetically ordered 
  */
-router.get('/admin/list_usuarios', function(req, res, next) {
+router.get('/list_usuarios', function(req, res, next) {
 	var usuarios_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -312,7 +312,7 @@ router.get('/admin/list_usuarios', function(req, res, next) {
  * Responds with first 20 localizaciones, 
  * alphabetically ordered by location_name
  */
-router.get('/admin/list_localizaciones', function(req, res, next) {
+router.get('/list_localizaciones', function(req, res, next) {
 	var localizaciones_list, agentes_list, ganaderos_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -376,7 +376,7 @@ router.get('/admin/list_localizaciones', function(req, res, next) {
  	* alphabetically ordered by location_name
 	* for use to fill requested page in pagination
  */
-router.get('/admin/list_reportes', function(req, res, next) {
+router.get('/list_reportes', function(req, res, next) {
 	var reportes_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -404,7 +404,7 @@ router.get('/admin/list_reportes', function(req, res, next) {
  * ordered by date and time
  * for use to fill requested page in pagination
  */
-router.get('/admin/list_citas', function(req, res, next) {
+router.get('/list_citas', function(req, res, next) {
 	var citas_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -434,7 +434,7 @@ router.get('/admin/list_citas', function(req, res, next) {
  * Responds with first 20 dispositivos, 
  * ordered by assigned person
  */
-router.get('/admin/list_dispositivos', function(req, res, next) {
+router.get('/list_dispositivos', function(req, res, next) {
 	var dispositivos_list, usuarios_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
