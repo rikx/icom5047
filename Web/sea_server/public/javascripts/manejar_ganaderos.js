@@ -1,8 +1,9 @@
 $(document).ready(function(){
+  // ganaderos list
+  $ganaderos_list = $('#ganaderos_list');
+
   // initial population of ganaderos list
   populate_ganaderos();
-  //ganaderos list
-  $ganaderos_list = $('#ganaderos_list');
 
   // store data for initial 20 ganaderos
   var ganaderos_array =  JSON.parse($ganaderos_list.attr('data-ganaderos'));

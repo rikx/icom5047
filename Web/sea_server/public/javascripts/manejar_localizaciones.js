@@ -1,9 +1,9 @@
 $(document).ready(function(){
-  // initial population of localizaciones list
-  populate_localizaciones();
-
   // localizaciones list
   $localizaciones_list = $('#localizaciones_list');
+
+  // initial population of localizaciones list
+  populate_localizaciones();
 
   // store data for initial 20 locations
   var localizaciones_array = JSON.parse($localizaciones_list.attr('data-localizaciones'));

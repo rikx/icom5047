@@ -1,9 +1,9 @@
 $(document).ready(function(){
-  // initial population of usuarios list
-  populate_usuarios();
   // usuarios list
   $usuarios_list = $('#usuarios_list');
-  $locations_list = $('#usuario_locations');
+
+  // initial population of usuarios list
+  populate_usuarios();
   
   // store data for 20 initial usuarios
   var usuarios_array =  JSON.parse($usuarios_list.attr('data-usuarios'));
@@ -179,6 +179,9 @@ $(document).ready(function(){
         table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
         table_content += '</tr>';
       });
+
+      // inject content string into html
+      $usuarios_list.html(table_content);
     });
   }
 });
