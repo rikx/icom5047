@@ -312,8 +312,8 @@ $('#btn_edit').on('click', function(){
 function populate_info_panel($this_location){
   $('#info_panel_heading').text($this_location.location_name);
   $('#localizacion_info_name').text($this_location.location_name);
+  $('#localizacion_info_category').text($this_location.location_category);
   $('#localizacion_info_license').text($this_location.license);
-
   if($this_location.address_line2 == null) {
     $('#localizacion_info_address').text($this_location.address_line1);
   } else {
