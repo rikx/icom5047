@@ -196,7 +196,7 @@ $(document).ready(function(){
       $('#ganadero_info_name').text($this_ganadero.first_name + " " + $this_ganadero.middle_initial);
     }
     $('#ganadero_info_apellidos').text($this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
-    $('#ganadero_info_contact').text($this_ganadero.email + " " + $this_ganadero.phone_number);
+    $('#ganadero_info_contact').html('<p>'+$this_ganadero.email+'</p><p>'+$this_ganadero.phone_number+'</p>');
     
    // populate associated locations panel
    var table_content = '';
