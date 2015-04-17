@@ -6,7 +6,47 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Servicio De Extension Agricola',});
 });
 
-/* GET ganaderos */
+/* GET all ganaderos and users
+ * For use in manejar localizaciones dropdowns
+ */
+router.get('/modify_location_dropdowns', function(req, res, next) {
+	var ganaderos_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// gets all users
+	  client.query('SELECT user_id, username \
+									FROM users \
+									ORDER BY username ASC', function(err, result) {
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	usuarios_list = result.rows;
+	    }
+	  });
+	  // gets all ganaderos
+	  client.query("SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+									FROM person \
+									WHERE person_id NOT IN (SELECT person_id FROM users) \
+									ORDER BY person_name ASC;", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	ganaderos_list = result.rows;
+	    	res.json({ganaderos : ganaderos_list, usuarios : usuarios_list});
+	    }
+	  });
+	});
+});
+
+/* 
+ * GET ganaderos 
+ */
 router.get('/ganaderos', function(req, res, next) {
 	var ganaderos_list;
 	var db = req.db;
@@ -39,7 +79,9 @@ router.get('/ganaderos', function(req, res, next) {
 //										FROM person, location \
 //										WHERE person_id = owner_id or person_id = manager_id)
 
-/* GET usuarios */
+/* 
+ * GET usuarios 
+ */
 router.get('/usuarios', function(req, res, next) {
 	var usuarios_list;
 	var db = req.db;
