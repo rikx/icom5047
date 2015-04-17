@@ -52,21 +52,21 @@ $(document).ready(function(){
 
     // populate info panel with this_ganadero info
     populate_info_panel(this_ganadero);
- });
+  });
 
-/* Add ganadero */
-$('#btn_add_ganadero').on('click', function(){
-  $('#btn_edit, #heading_edit').hide();
-  $('#btn_submit, #heading_create').show();
-  $('#edit_panel').show();
-  $('#info_panel').hide();
+  /* Add ganadero */
+  $('#btn_add_ganadero').on('click', function(){
+    $('#btn_edit, #heading_edit').hide();
+    $('#btn_submit, #heading_create').show();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
 
   // clear add form
   $('#form_manage_ganadero')[0].reset();
 });
 
-/* POSTs new ganadero information */
-$('#btn_submit').on('click', function(){
+  /* POSTs new ganadero information */
+  $('#btn_submit').on('click', function(){
   // get form data and conver to json format
   var $the_form = $('#form_manage_ganadero');
   var form_data = $the_form.serializeArray();
@@ -88,6 +88,8 @@ $('#btn_submit').on('click', function(){
         // clear add form
         $the_form[0].reset();
       }
+      // update ganadero list after posting 
+      populate_ganaderos();
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
@@ -97,16 +99,15 @@ $('#btn_submit').on('click', function(){
     }
   });
 
-  // update ganadero list after posting 
-  populate_ganaderos();
+  
 });
 
-/* Open edit panel */
-$ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
-  $('#btn_edit, #heading_edit').show();
-  $('#btn_submit, #heading_create').hide();
-  $('#edit_panel').show();
-  $('#info_panel').hide();
+  /* Open edit panel */
+  $ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
+    $('#btn_edit, #heading_edit').show();
+    $('#btn_submit, #heading_create').hide();
+    $('#edit_panel').show();
+    $('#info_panel').hide();
 
   // contains ganadero id
   var ganadero_id =  $(this).attr('data-id');
@@ -122,9 +123,9 @@ $ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
   $('#ganadero_telefono').val(this_ganadero.phone_number);
 });
 
-/* PUTs edited ganadero information */
-$('#btn_edit').on('click', function(){
-  var ganadero_id = $(this).attr('data-id');
+  /* PUTs edited ganadero information */
+  $('#btn_edit').on('click', function(){
+    var ganadero_id = $(this).attr('data-id');
   // get form data and conver to json format
   var $the_form = $('#form_manage_ganadero');
   var form_data = $the_form.serializeArray();
@@ -142,7 +143,7 @@ $('#btn_edit').on('click', function(){
       alert("Informacion de ganadero ha sido editada en el sistema.");
       // update ganadero list after posting 
       populate_ganaderos();
-     },
+    },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
       console.log( "Error: " + errorThrown );
@@ -152,8 +153,8 @@ $('#btn_edit').on('click', function(){
   });
 });
 
-/* DELETEs ganadero information */
-$ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
+  /* DELETEs ganadero information */
+  $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -196,23 +197,23 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
     }
     $('#ganadero_info_apellidos').text($this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
     $('#ganadero_info_contact').text($this_ganadero.email + " " + $this_ganadero.phone_number);
-   
+    
    // populate associated locations panel
-    var table_content = '';
-    $.each(localizaciones_array, function(i){
-      if($this_ganadero.person_id == this.person_id){
-        table_content += '<tr><td>'+this.location_name+'</td></tr>';
-      }
-    });  
-    $('#ganadero_locations').html(table_content);
-  }
+   var table_content = '';
+   $.each(localizaciones_array, function(i){
+    if($this_ganadero.person_id == this.person_id){
+      table_content += '<tr><td>'+this.location_name+'</td></tr>';
+    }
+  });  
+   $('#ganadero_locations').html(table_content);
+ }
 
-  /* */
-  function populate_ganaderos(){
-    $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
-      ganaderos_array = data.ganaderos;
-      localizaciones_array = data.locations;
-      var firstElement = ganaderos_array[0];
+ /* */
+ function populate_ganaderos(){
+  $.getJSON('http://localhost:3000/users/admin/list_ganaderos', function(data) {
+    ganaderos_array = data.ganaderos;
+    localizaciones_array = data.locations;
+    var firstElement = ganaderos_array[0];
 
       // contents of ganaderos list
       var table_content = '';
@@ -237,5 +238,5 @@ $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
       //populate info panel with information regarding the first person on the list
       //populate_info_panel(localizaciones_array[0]);
     });
-  };
+};
 });

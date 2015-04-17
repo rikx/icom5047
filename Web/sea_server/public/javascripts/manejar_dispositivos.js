@@ -89,6 +89,8 @@ $(document).ready(function(){
         // clear add form
         $the_form[0].reset();
       }
+       // update ganadero list after posting 
+       populate_dispositivos();
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
@@ -99,8 +101,7 @@ $(document).ready(function(){
   });
   
 
-  // update ganadero list after posting 
-  populate_dispositivos();
+ 
 
 });
 
