@@ -30,6 +30,7 @@ $(document).ready(function(){
     // preveLnts link from firing
     e.preventDefault();
 
+    $('#location_panel').hide();
     $('#edit_panel').hide();
     $('#info_panel').show();
 
@@ -82,9 +83,82 @@ $(document).ready(function(){
 
   });
 
+  /* Close location panel */
+  $('#btn_close_location_panel').on('click', function(){
+    $('#location_panel').hide();
+  });
+
+  /* Open location panel */
+  $('#cita_info').on('click', 'tr td a.show_location_info', function(e){
+    // preveLnts link from firing
+    e.preventDefault();
+
+    $('#location_panel').show();
+    // contains location id
+    var location_id = $(this).attr('data-location-id');
+    $.getJSON('http://localhost:3000/location/'+location_id, function(data){
+      // populate location panel with this_location
+      populate_location_panel(data.location, data.ganaderos, data.agentes);
+    });
+  });
+
+  /* Populates info panel with $this_location's information */
+  function populate_location_panel($this_location, location_ganaderos, location_agentes){
+    $('#location_panel_heading').text($this_location.location_name);
+    $('#localizacion_info_name').text($this_location.location_name);
+    $('#localizacion_info_license').text($this_location.license);
+
+    if($this_location.address_line2 == null) {
+      $('#localizacion_info_address').text($this_location.address_line1);
+    } else {
+      $('#localizacion_info_address').html('<p>'+$this_location.address_line1+'</p><p>'+$this_location.address_line2+'</p>');
+    }
+    $('#localizacion_info_ciudad').text($this_location.city);
+    $('#localizacion_info_zipcode').text($this_location.zipcode);
+
+    // populate local array with ganaderos associated to this location
+    var selectedGanaderos = [];
+    $.each(location_ganaderos, function(i){
+      if($this_location.location_id == location_ganaderos[i].location_id){
+        selectedGanaderos.push(location_ganaderos[i]);
+      }
+    });  
+
+    // populate ganaderos table according to relation_type
+    if(selectedGanaderos.length > 0){
+      for (j = 0; j < selectedGanaderos.length; j++) { 
+        if(selectedGanaderos[j].relation_type == "owner") {
+          $('#owner').html(selectedGanaderos[j].person_name);
+        } else {
+          $('#manager').html(selectedGanaderos[j].person_name);
+        }
+      }
+    } else {
+      // array is empty so ganaderos populate with placeholders
+      $('#owner').html('Dueño no asignado');
+      $('#manager').html('Gerente no asignado');
+    }
+
+    // populate agentes table if there is one assigned
+    var agent_found = false;
+    var table_content = '';
+    $.each(location_agentes, function(i){
+      if($this_location.location_id == location_agentes[i].location_id){
+        agent_found = true;
+        table_content += '<tr><td>'+location_agentes[i].username+'</td></tr>';
+      }
+    }); 
+    // checks if agent is found
+    if(agent_found){
+      $('#localizacion_agentes').html(table_content);
+    } else {
+      $('#localizacion_agentes').html('<tr><td>Agente no asignado</td></tr>');
+    }  
+  };
+
   /* Populate info panel with $this_cita information */
   function populate_info_panel($this_cita){
-    $('#cita_info_location').text($this_cita.location_name);
+    $('#cita_info_location').html("<a class='show_location_info' href='#' data-location-id='"+$this_cita.location_id+"'>"+$this_cita.location_name+"</a>");
     $('#cita_info_date').text(get_date_time($this_cita.date, false));   
     $('#cita_info_hour').text($this_cita.time);
     $('#cita_info_purpose').text($this_cita.purpose);

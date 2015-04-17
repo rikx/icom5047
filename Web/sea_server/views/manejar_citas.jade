@@ -74,7 +74,7 @@ block content
 			#info_panel.col-md-4
 				.panel.panel-success
 					.panel-heading
-						h3#info_panel_heading(class='panel-title') Cita 1
+						h3#info_panel_heading(class='panel-title') Cita
 					.panel-body
 						table#cita_info(class='table')
 							tr
@@ -97,9 +97,48 @@ block content
 								td#cita_info_report
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 
+			#location_panel.col-md-4(style="display:none")
+				.panel.panel-success
+					.panel-heading
+						h3#location_panel_heading(class='panel-title')
+					.panel-body
+						table#localizacion_info(class='table')
+							tr
+								td Nombre:
+								td#localizacion_info_name 
+							tr
+								td Numero de Licencia:
+								td#localizacion_info_license
+							tr
+								td Dirección:
+								td#localizacion_info_address
+							tr
+								td Ciudad:
+								td#localizacion_info_ciudad
+							tr
+								td Código Postál:
+								td#localizacion_info_zipcode 
+						.panel.panel-info
+							.panel-heading Ganaderos Asociados
+							.panel-body
+								table#localizacion_ganaderos(class='table')
+									tr
+										td 
+											strong Dueño: 
+										td#owner 
+									tr
+										td 
+											strong Gerente:
+										td#manager 
+						.panel.panel-info
+							.panel-heading Agentes Asignados
+							.panel-body
+								table#localizacion_agentes(class='table')
+						button#btn_close_location_panel(class='btn btn-default') Cerrar
+
 		.row
-			.col-md-3
-			.col-md-2
+			.col-md-1
+			.col-md-6
 				// TODO: add home glyphicon
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 

@@ -88,6 +88,64 @@ router.get('/element/:id', function(req, res, next) {
 	});
 });
 
+/* GET location
+ * returns location information matching :id
+ */
+router.get('/location/:id', function(req, res, next) {
+	var location_id = req.params.id;
+	var location_info, agentes_list, ganaderos_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// query for location data
+	  client.query('SELECT location_id, location.name AS location_name, address_id, license, address_line1, address_line2, city, zipcode \
+									FROM location natural join address \
+									WHERE location_id = $1', [location_id], function(err, result) {
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	location_info = result.rows;
+	    }
+	  });
+	  // query for associated agentes
+	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
+										FROM location natural join address \
+										WHERE location_id = $1) \
+									SELECT location_id, agent_id, username \
+									FROM locations,users \
+									WHERE user_id = agent_id;', [location_id], function(err, result) {
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	agentes_list = result.rows;
+	    }
+	  });
+	  // query for associated ganaderos
+	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
+										FROM location natural join address \
+										WHERE location_id = $1) \
+										SELECT person_id, location_id,\
+											CASE WHEN person_id = owner_id THEN 'owner' \
+											WHEN person_id = manager_id THEN 'manager' \
+											END AS relation_type, \
+											(first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
+										FROM locations, person \
+										WHERE person_id = owner_id or person_id = manager_id", [location_id], function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	ganaderos_list = result.rows;
+	    	res.json({location: location_info[0], agentes: agentes_list, ganaderos: ganaderos_list});
+	    }
+	  });
+	});
+});
+
 /* POST login */
 router.post('/login', function(req, res, next) {
 	if(!req.body.hasOwnProperty('input_username') || !req.body.hasOwnProperty('input_password') ) {
