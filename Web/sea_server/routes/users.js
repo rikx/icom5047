@@ -340,6 +340,36 @@ router.put('/admin/ganaderos/:id', function(req, res, next) {
 	}
 });
 
+/* PUT Admin Manejar Dispositivos 
+ * Edit ganadero matching :id in database
+ */
+router.put('/admin/dispositivos/:id', function(req, res, next) {
+	var dispositivo_id = req.params.id;
+	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
+  	res.statusCode = 400;
+  	return res.send('Error: Missing fields for post dispositivo.');
+	} else {
+		var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+			// Insert new ganadero into db
+			client.query("UPDATE devices SET name = $1, id_number = $2 \
+										WHERE device_id = $3", 
+										[req.body.dispositivo_name, req.body.dispositivo_id_num, dispositivo_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+			  done();
+			  if(err) {
+			    return console.error('error running query', err);
+			  } else {
+			    res.json(true);
+			  }
+			});
+		});
+	}
+});
+
 /* GET Admin Manejar Reportes 
  * Renders page and includes response with first 10 reportes, 
  * alphabetically ordered by location name

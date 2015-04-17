@@ -91,8 +91,8 @@ $(document).ready(function(){
       }
        // update ganadero list after posting 
        populate_dispositivos();
-    },
-    error: function( xhr, status, errorThrown ) {
+     },
+     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
@@ -101,7 +101,7 @@ $(document).ready(function(){
   });
   
 
- 
+
 
 });
 
@@ -125,8 +125,35 @@ $(document).ready(function(){
 
   /* PUTs edited dispositivo information */
   $('#btn_edit').on('click', function(){
+    console.log("hi");
+    var dispositivo_id = $(this).attr('data-id');
+  // get form data and conver to json format
+  var $the_form = $('#form_manage_dispositivo');
+  var form_data = $the_form.serializeArray();
+  var new_dispositivo = ConverToJSON(form_data);
+  console.log(new_dispositivo);
 
+  // ajax call to update ganadero
+  $.ajax({
+    url: "http://localhost:3000/users/admin/dispositivos/" + dispositivo_id,
+    method: "PUT",
+    data: JSON.stringify(new_dispositivo),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      alert("Informacion de ganadero ha sido editada en el sistema.");
+      // update ganadero list after posting 
+      //populate_dispositvos();
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
   });
+});
 
   // Populate asign agente dropdown menu when clicked
   $('#btn_dropdown_agentes').on('click', function(){
