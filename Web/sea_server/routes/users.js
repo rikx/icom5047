@@ -263,6 +263,53 @@ router.post('/admin/ganaderos', function(req, res, next) {
 	}
 });
 
+
+/* POST Admin Manejar Dispositivo
+ * Add new ganadero to database
+ */
+router.post('/admin/dispositivos', function(req, res, next) {
+	console.log("server executed!!");
+	console.log(req.body);
+	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
+  	res.statusCode = 400;
+  	return res.send('Error: Missing fields for post ganadero.');
+	} else {
+
+		console.log("corn 1/2");
+		var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+	  	// Verify ganadero does not already exist in db
+	  	console.log("corn 1");
+	  	client.query("SELECT * FROM devices WHERE id_number = $1", [req.body.dispositivo_id_num], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+	  			if(result.rowCount > 0){
+		  			res.send({exists: true});
+		  		} else {
+		  			console.log("corn 2");
+		  			// Insert new ganadero into db
+						client.query("INSERT into devices (name, id_number, user_id) \
+													VALUES ($1, $2, $3)", 
+													[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
+							//call `done()` to release the client back to the pool
+						  done();
+						  if(err) {
+						    return console.error('error running query', err);
+						  } else {
+						    res.json(true);
+						  }
+						});
+		  		}
+	  		}
+	  	});
+		});
+	}
+});
+
 /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
  */
