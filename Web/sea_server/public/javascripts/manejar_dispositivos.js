@@ -10,7 +10,7 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(dispositivos_array[0]);
 
-  //$('#dispositivo_usuario').hide();
+  $('#dispositivo_usuario').hide();
 
   /* Return home */
   $('#btn_home').on('click', function(){
@@ -68,12 +68,10 @@ $(document).ready(function(){
 
   /* POSTs new dispositivo information */
   $('#btn_submit').on('click', function(){
-    console.log("Posting dispositivo");
     var $the_form = $('#form_manage_dispositivo');
     var form_data = $the_form.serializeArray();
     var new_dispositivo = ConverToJSON(form_data);
 
-   console.log(new_dispositivo);
 
   // ajax call to post new ganadero
   $.ajax({
@@ -99,6 +97,7 @@ $(document).ready(function(){
       console.dir( xhr );
     }
   });
+  
 
   // update ganadero list after posting 
   populate_dispositivos();
