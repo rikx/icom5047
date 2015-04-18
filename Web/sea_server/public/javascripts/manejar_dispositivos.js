@@ -193,7 +193,7 @@ $(document).ready(function(){
 
   /* */
   function populate_dispositivos() {
-  	$.getJSON('http://localhost:3000/users/admin/list_dispositivos', function(data) {
+  	$.getJSON('http://localhost:3000/list_dispositivos', function(data) {
   		dispositivos_array = data.dispositivos;
 
 			// contents of dispositivos list
