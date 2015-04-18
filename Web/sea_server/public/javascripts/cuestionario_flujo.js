@@ -14,7 +14,7 @@ $(document).ready(function(){
 
   /* TEST: location search */
   $('.typeahead').typeahead({
-  	hint: true,
+  	hint: false,
   	highlight: true
   },
   {
