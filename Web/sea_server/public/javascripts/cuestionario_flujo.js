@@ -9,6 +9,12 @@ $(document).ready(function(){
   $question_panel_answers = $('#next_question_answers');
 
   var locations_array = JSON.parse($('#scrollable-dropdown-menu').attr('data-locations'));
+
+	/* Return home */
+  $('#btn_home').on('click', function(){
+    window.location.href = '/users/admin';
+  });
+
   // set up basic information panel
   survey_start();
 
@@ -23,6 +29,7 @@ $(document).ready(function(){
 	  source: substringMatcher(locations_array)
   });
 
+  // this probably goes in helper
   function substringMatcher(strs) {
 	  return function findMatches(q, cb) {
 	    var matches, substrRegex;
@@ -48,7 +55,47 @@ $(document).ready(function(){
 	};
 	/* TEST END: location search */
 
-	/* */
+	/* Saves pre-survey information and displays first questions */
+	$('#take_survey_start').on('click', function(){
+		// validate location input
+
+		// if not valid 
+		if(false){
+			alert('La localización escrita no existe. Por favor seleccione una localización valida');
+		} else {
+			// disable location input 
+			$('#take_survey_location').attr('disabled', true);
+
+			// get form data and conver to json format
+	    var $the_form = $('#form_survey_flow');
+	    var form_data = $the_form.serializeArray();
+	    var new_cuestionario = ConverToJSON(form_data);
+
+	    // ajax call to post new ganadero
+	/*    $.ajax({
+	      url: "http://localhost:3000/cuestionarios/start",
+	      method: "POST",
+	      data: JSON.stringify(new_cuestionario),
+	      contentType: "application/json",
+	      dataType: "json",
+
+	      success: function(data) {
+	      	alert("Cuestionario ha sido comenzado.");
+	      },
+	      error: function( xhr, status, errorThrown ) {
+	        alert( "Sorry, there was a problem!" );
+	        console.log( "Error: " + errorThrown );
+	        console.log( "Status: " + status );
+	        console.dir( xhr );
+	      }
+	    });*/
+
+			$('#row_answered, #row_current, #row_buttons').show();
+			$('#take_survey_start, #row_home').attr('disabled', true).hide();
+		}
+	});
+
+	/* Saves answer for current question, gets next questionand updates the interface */
 	$('#btn_next_question').on('click', function(){
 		var the_question = $('#next_question_question');
 		var the_answer = $("input[name='answer_radios']:checked");

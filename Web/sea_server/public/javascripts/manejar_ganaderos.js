@@ -61,46 +61,44 @@ $(document).ready(function(){
     $('#edit_panel').show();
     $('#info_panel').hide();
 
-  // clear add form
-  $('#form_manage_ganadero')[0].reset();
-});
+    // clear add form
+    $('#form_manage_ganadero')[0].reset();
+  });
 
   /* POSTs new ganadero information */
   $('#btn_submit').on('click', function(){
-  // get form data and conver to json format
-  var $the_form = $('#form_manage_ganadero');
-  var form_data = $the_form.serializeArray();
-  var new_ganadero = ConverToJSON(form_data);
+    // get form data and conver to json format
+    var $the_form = $('#form_manage_ganadero');
+    var form_data = $the_form.serializeArray();
+    var new_ganadero = ConverToJSON(form_data);
 
-  // ajax call to post new ganadero
-  $.ajax({
-    url: "http://localhost:3000/users/admin/ganaderos",
-    method: "POST",
-    data: JSON.stringify(new_ganadero),
-    contentType: "application/json",
-    dataType: "json",
+    // ajax call to post new ganadero
+    $.ajax({
+      url: "http://localhost:3000/users/admin/ganaderos",
+      method: "POST",
+      data: JSON.stringify(new_ganadero),
+      contentType: "application/json",
+      dataType: "json",
 
-    success: function(data) {
-      if(data.exists){
-        alert("Ganadero con este correo electrónico o teléfono ya existe");
-      } else {
-        alert("Ganadero ha sido añadido al sistema.");
-        // clear add form
-        $the_form[0].reset();
+      success: function(data) {
+        if(data.exists){
+          alert("Ganadero con este correo electrónico o teléfono ya existe");
+        } else {
+          alert("Ganadero ha sido añadido al sistema.");
+          // clear add form
+          $the_form[0].reset();
+        }
+        // update ganadero list after posting 
+        populate_ganaderos();
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
       }
-      // update ganadero list after posting 
-      populate_ganaderos();
-    },
-    error: function( xhr, status, errorThrown ) {
-      alert( "Sorry, there was a problem!" );
-      console.log( "Error: " + errorThrown );
-      console.log( "Status: " + status );
-      console.dir( xhr );
-    }
+    });
   });
-
-  
-});
 
   /* Open edit panel */
   $ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){

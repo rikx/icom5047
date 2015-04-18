@@ -4,7 +4,6 @@ block css
 
 block content
 	.container
-		br
 		.row
 			.col-md-2
 			.col-md-8
@@ -27,20 +26,25 @@ block content
 						form#form_survey_flow(role='form')
 							.form-group
 								label(for='take_survey_name') Cuestionario: 
-								span#take_survey_name(class='form-control')
+								span#take_survey_name(class='form-control', disabled)
 									= pregunta[0].flowchart_name
 							.form-group
 								label(for='take_survey_date') Fecha Comenzado:
-								span#take_survey_date(class='form-control')
+								span#take_survey_date(class='form-control', disabled)
 							.form-group
 								label(for='take_survey_user') Llenado por:
-								span#take_survey_user(class='form-control')
+								span#take_survey_user(class='form-control', disabled)
 							.form-group
 								label(for='take_survey_location') Localización:
 								#scrollable-dropdown-menu(data-locations=locations) 
 									input#take_survey_location(class="form-control typeahead", name="take_survey_location", type='text', placeholder='Nombre de Localización')
+						.row
+							.col-md-2
+							.col-md-7
+							.col-md-3
+								button#take_survey_start(class='btn btn-default btn-success', type='button') Comenzar Encuesta
 
-		.row
+		.row#row_answered(style="display: none;")
 			.col-md-2
 			.col-md-8
 				.panel.panel-success
@@ -50,7 +54,7 @@ block content
 					.panel-body
 						ol#answered_questions
 		
-		.row
+		.row#row_current(style="display: none;")
 			.col-md-2
 			.col-md-8
 				.panel.panel-success(data-question=pregunta)
@@ -68,7 +72,8 @@ block content
 									label
 										input(id='#answer'+i, name='answer_radios', type='radio', value=contestacion.answer, data-answer-id=contestacion.option_id, data-next-id=contestacion.next_id)
 										= contestacion.answer
-		.row
+		
+		.row#row_buttons(style="display: none;")
 			.col-md-2
 			.col-md-2
 				button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button') Guardar Progreso
@@ -76,6 +81,11 @@ block content
 				button#btn_next_question(class='btn btn-sm btn-default btn-block', type='button') Próxima Pregunta
 			.col-md-4
 				button#btn_end_survey(class='btn btn-sm btn-default btn-block', type='button', style="display: none;") Finalizar Cuestionario
+		br
+		.row#row_home
+			.col-md-2
+			.col-md-8
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
