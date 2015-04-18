@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity {
 	    if(savedInstanceState == null) {
 		    FragmentTransaction transaction = manager.beginTransaction();
 		    leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_MAIN);
-		    transaction.add(R.id.menu_list_container, leftFragment, "MAIN");
+		    transaction.add(R.id.main_list_container, leftFragment, "MAIN");
 		    transaction.commit();
 	    }
     }
@@ -106,8 +106,8 @@ public class MainActivity extends FragmentActivity {
 			FragmentTransaction transaction = manager.beginTransaction();
 			leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_MAIN);
 			rightFragment = MenuListFragment.newInstance(left);
-			transaction.replace(R.id.menu_list_container, leftFragment, "MAIN");
-			transaction.replace(R.id.menu_selected_container, rightFragment, left);
+			transaction.replace(R.id.main_list_container, leftFragment, "MAIN");
+			transaction.replace(R.id.main_right_container, rightFragment, left);
 			transaction.commit();
 		}
     }
@@ -160,14 +160,14 @@ public class MainActivity extends FragmentActivity {
 				//People was selected, replace the right fragment with a people list
 				append = getString(R.string.people);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
-				transaction.replace(R.id.menu_selected_container, rightFragment, "PEOPLE");
+				transaction.replace(R.id.main_right_container, rightFragment, "PEOPLE");
 				transaction.commit();
 			}
 			else if(selection.equalsIgnoreCase(getString(R.string.locations))) {
 				//Locations was selected, replace the right fragment with a locations list
 				append = getString(R.string.locations);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
-				transaction.replace(R.id.menu_selected_container, rightFragment,
+				transaction.replace(R.id.main_right_container, rightFragment,
 						"LOCATIONS");
 				transaction.commit();
 			}
@@ -175,7 +175,7 @@ public class MainActivity extends FragmentActivity {
 				//Reports was selected, replace the right fragment with a reports list
 				append = getString(R.string.reports);
 				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
-				transaction.replace(R.id.menu_selected_container, rightFragment, "REPORTS");
+				transaction.replace(R.id.main_right_container, rightFragment, "REPORTS");
 				transaction.commit();
 			}
 			// Set the Action Bar title
@@ -211,8 +211,8 @@ public class MainActivity extends FragmentActivity {
 		details.setPerson(person);
 		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE, index);
 		rightFragment = details;
-		transaction.replace(R.id.menu_list_container, leftFragment, "PEOPLE");
-		transaction.replace(R.id.menu_selected_container, rightFragment, "PERSON");
+		transaction.replace(R.id.main_list_container, leftFragment, "PEOPLE");
+		transaction.replace(R.id.main_right_container, rightFragment, "PERSON");
 		transaction.commit();
 	}
 
@@ -228,8 +228,8 @@ public class MainActivity extends FragmentActivity {
 		details.setLocation(location);
 		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS, index);
 		rightFragment = details;
-		transaction.replace(R.id.menu_list_container, leftFragment, "PEOPLE");
-		transaction.replace(R.id.menu_selected_container, rightFragment, "PERSON");
+		transaction.replace(R.id.main_list_container, leftFragment, "PEOPLE");
+		transaction.replace(R.id.main_right_container, rightFragment, "PERSON");
 		transaction.commit();
 	}
 
@@ -245,8 +245,8 @@ public class MainActivity extends FragmentActivity {
 		details.setReport(report);
 		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS, index);
 		rightFragment = details;
-		transaction.replace(R.id.menu_list_container, leftFragment, "REPORTS");
-		transaction.replace(R.id.menu_selected_container, rightFragment, "REPORT");
+		transaction.replace(R.id.main_list_container, leftFragment, "REPORTS");
+		transaction.replace(R.id.main_right_container, rightFragment, "REPORT");
 		transaction.commit();
 	}
 
