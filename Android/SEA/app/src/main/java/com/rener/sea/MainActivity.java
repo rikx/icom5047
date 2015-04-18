@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 
 /**
@@ -30,21 +29,12 @@ public class MainActivity extends FragmentActivity {
 	private Fragment rightFragment;
 	private boolean mBound = false;
 
+
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 	    Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
-
-	    FragmentManager manager = getFragmentManager();
-	    leftFragment = manager.findFragmentByTag("MAIN");
-
-	    if(savedInstanceState == null) {
-		    FragmentTransaction transaction = manager.beginTransaction();
-		    leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_MAIN);
-		    transaction.add(R.id.main_list_container, leftFragment, "MAIN");
-		    transaction.commit();
-	    }
     }
 
 	@Override
@@ -80,6 +70,7 @@ public class MainActivity extends FragmentActivity {
 			dbService = binder.getService();
 			mBound = true;
 			Log.i(this.toString(), "bound to "+dbService.toString());
+			showReportsList();
 		}
 
 		@Override
@@ -96,20 +87,7 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-	    FragmentManager manager = getFragmentManager();
-	    int count = manager.getBackStackEntryCount();
-	    String left = ((MenuListFragment)leftFragment).getType();
-		if(left.equals(MenuListFragment.TYPE_MAIN)) {
-		    return;
-	    }
-	    else {
-			FragmentTransaction transaction = manager.beginTransaction();
-			leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_MAIN);
-			rightFragment = MenuListFragment.newInstance(left);
-			transaction.replace(R.id.main_list_container, leftFragment, "MAIN");
-			transaction.replace(R.id.main_right_container, rightFragment, left);
-			transaction.commit();
-		}
+	    super.onBackPressed();
     }
 
 	@Override
@@ -124,78 +102,97 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		//Determine which Action Bar option was selected
 		switch (item.getItemId()) {
+			case R.id.reports :
+				showReportsList();
+				break;
+			case R.id.people :
+				showPeopleList();
+				break;
+			case R.id.locations :
+				showLocationsList();
+				break;
 			case R.id.action_logout :
 				logout();
 				break;
 			case R.id.action_settings :
 				showSettings();
 				break;
-			case R.id.new_report_action :
-				newReport();
-				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	public boolean isBound() {
-		return mBound;
+	private void showReportsList() {
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		leftFragment = manager.findFragmentByTag("REPORTS");
+		if(leftFragment == null) {
+			leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
+			transaction.replace(R.id.main_list_container, leftFragment, "REPORTS");
+		}
+		rightFragment = manager.findFragmentByTag("REPORT");
+		if(rightFragment == null) {
+			transaction.replace(R.id.main_right_container, new Fragment());
+		}
+		else {
+			transaction.replace(R.id.main_right_container, rightFragment);
+		}
+		transaction.commit();
+	}
+
+	private void showPeopleList() {
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		leftFragment = manager.findFragmentByTag("PEOPLE");
+		if(leftFragment == null) {
+			leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
+			transaction.replace(R.id.main_list_container, leftFragment, "PEOPLE");
+		}
+		rightFragment = manager.findFragmentByTag("PERSON");
+		if(rightFragment == null) {
+			transaction.replace(R.id.main_right_container, new Fragment());
+		}
+		else {
+			transaction.replace(R.id.main_right_container, rightFragment);
+		}
+		transaction.commit();
+	}
+
+	private void showLocationsList() {
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		leftFragment = manager.findFragmentByTag("LOCATIONS");
+		if(leftFragment == null) {
+			leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
+			transaction.replace(R.id.main_list_container, leftFragment, "LOCATIONS");
+		}
+		rightFragment = manager.findFragmentByTag("LOCATION");
+		if(rightFragment == null) {
+			transaction.replace(R.id.main_right_container, new Fragment());
+		}
+		else {
+			transaction.replace(R.id.main_right_container, rightFragment);
+		}
+		transaction.commit();
 	}
 
 	/**
 	 * A listener method that listens for the selection of items from a MenuListFragment class.
 	 * @param type the type of MenuListFragment object whose list is being selected
 	 * @param listView the listView object associated with the ListFragment parent class
-	 * @param view the View object that performed the call
 	 * @param position the ListView's selected position index
 	 */
-	public void OnMenuItemSelectedListener(String type, ListView listView, View view, int position) {
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		if(type.equals(MenuListFragment.TYPE_MAIN)) {
-			//The selection was from the "main menu"
-			String selection = listView.getAdapter().getItem(position).toString();
-			String title = getString(R.string.app_name);
-			String append = "";
-			if(selection.equalsIgnoreCase(getString(R.string.people))) {
-				//People was selected, replace the right fragment with a people list
-				append = getString(R.string.people);
-				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
-				transaction.replace(R.id.main_right_container, rightFragment, "PEOPLE");
-				transaction.commit();
-			}
-			else if(selection.equalsIgnoreCase(getString(R.string.locations))) {
-				//Locations was selected, replace the right fragment with a locations list
-				append = getString(R.string.locations);
-				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
-				transaction.replace(R.id.main_right_container, rightFragment,
-						"LOCATIONS");
-				transaction.commit();
-			}
-			else if (selection.equalsIgnoreCase(getString(R.string.reports))) {
-				//Reports was selected, replace the right fragment with a reports list
-				append = getString(R.string.reports);
-				rightFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
-				transaction.replace(R.id.main_right_container, rightFragment, "REPORTS");
-				transaction.commit();
-			}
-			// Set the Action Bar title
-			title = title+" > "+append;
-			getActionBar().setTitle(title);
+	public void OnMenuItemSelectedListener(String type, ListView listView, int position) {
+		if(type.equals(MenuListFragment.TYPE_PEOPLE)) {
+			Person person = (Person) listView.getAdapter().getItem(position);
+			showPerson(person, position);
 		}
-		else {
-			//The selection was from the right list fragment and some data needs to be displayed
-			if(type.equals(MenuListFragment.TYPE_PEOPLE)) {
-				Person person = (Person) listView.getAdapter().getItem(position);
-				showPerson(person, position);
-			}
-			else if(type.equals(MenuListFragment.TYPE_LOCATIONS)) {
-				Location location = (Location) listView.getAdapter().getItem(position);
-				showLocation(location, position);
-			}
-			else if(type.equals(MenuListFragment.TYPE_REPORTS)) {
-				Report report = (Report) listView.getAdapter().getItem(position);
-				showReport(report, position);
-			}
+		else if(type.equals(MenuListFragment.TYPE_LOCATIONS)) {
+			Location location = (Location) listView.getAdapter().getItem(position);
+			showLocation(location, position);
+		}
+		else if(type.equals(MenuListFragment.TYPE_REPORTS)) {
+			Report report = (Report) listView.getAdapter().getItem(position);
+			showReport(report, position);
 		}
 	}
 
@@ -209,9 +206,7 @@ public class MainActivity extends FragmentActivity {
 		FragmentTransaction transaction = manager.beginTransaction();
 		PersonDetailsFragment details = new PersonDetailsFragment();
 		details.setPerson(person);
-		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE, index);
 		rightFragment = details;
-		transaction.replace(R.id.main_list_container, leftFragment, "PEOPLE");
 		transaction.replace(R.id.main_right_container, rightFragment, "PERSON");
 		transaction.commit();
 	}
@@ -226,16 +221,14 @@ public class MainActivity extends FragmentActivity {
 		FragmentTransaction transaction = manager.beginTransaction();
 		LocationDetailsFragment details = new LocationDetailsFragment();
 		details.setLocation(location);
-		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS, index);
 		rightFragment = details;
-		transaction.replace(R.id.main_list_container, leftFragment, "PEOPLE");
-		transaction.replace(R.id.main_right_container, rightFragment, "PERSON");
+		transaction.replace(R.id.main_right_container, rightFragment, "LOCATION");
 		transaction.commit();
 	}
 
 	/**
 	 * Set the right fragment as a report fragment and display it
-	 * @param report the Report obejct to be displayed
+	 * @param report the Report object to be displayed
 	 * @param index the list index for the MenuListFragment
 	 */
 	private void showReport(Report report, int index) {
@@ -243,9 +236,7 @@ public class MainActivity extends FragmentActivity {
 		FragmentTransaction transaction = manager.beginTransaction();
 		ReportDetailsFragment details = new ReportDetailsFragment();
 		details.setReport(report);
-		leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS, index);
 		rightFragment = details;
-		transaction.replace(R.id.main_list_container, leftFragment, "REPORTS");
 		transaction.replace(R.id.main_right_container, rightFragment, "REPORT");
 		transaction.commit();
 	}
@@ -255,7 +246,7 @@ public class MainActivity extends FragmentActivity {
 	 * @return null if the service isn't bound to anything
 	 */
 	public DBService getDBService() {
-		return mBound? dbService : null;
+		return mBound ? dbService : null;
 	}
 
 	private void logout() {
@@ -264,7 +255,7 @@ public class MainActivity extends FragmentActivity {
 				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.remove(getString(R.string.key_saved_username));
-		editor.remove(getString(R.string.key_saved_username));
+		editor.remove(getString(R.string.key_saved_password));
 		editor.apply();
 
 		//Start a new Login Activity

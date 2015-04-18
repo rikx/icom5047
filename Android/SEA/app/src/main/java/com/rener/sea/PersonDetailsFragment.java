@@ -3,6 +3,8 @@ package com.rener.sea;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -26,6 +28,7 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -85,6 +88,14 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 				break;
 		}
 	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.person_actions, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+
 
 	private void setFields() {
 

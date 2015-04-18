@@ -24,7 +24,6 @@ public class MenuListFragment extends ListFragment {
 	public static String TYPE_PEOPLE = "PEOPLE";
 	public static String TYPE_REPORTS = "REPORTS";
 	public static String TYPE_LOCATIONS = "LOCATIONS";
-	public static String TYPE_MAIN = "MAIN";
 	private int curPos = -1;
 	private String type;
 
@@ -57,15 +56,7 @@ public class MenuListFragment extends ListFragment {
 		List list = new ArrayList();
 		DBService db = ((MainActivity)getActivity()).getDBService();
 		ArrayAdapter adapter = null;
-		if(type.equals(TYPE_MAIN)) {
-			list = new ArrayList();
-			list.add(getString(R.string.reports));
-			list.add(getString(R.string.locations));
-			list.add(getString(R.string.people));
-			adapter = new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_list_item_1, list);
-		}
-		else if(type.equals(TYPE_PEOPLE)) {
+		if(type.equals(TYPE_PEOPLE)) {
 			list = db.getPeople();
 			adapter = new ArrayAdapter<Person>(getActivity(),
 					android.R.layout.simple_list_item_1, list);
@@ -98,7 +89,7 @@ public class MenuListFragment extends ListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		if(curPos != position) {
 			MainActivity callback = (MainActivity) getActivity();
-			callback.OnMenuItemSelectedListener(type, l, v, position);
+			callback.OnMenuItemSelectedListener(type, l, position);
 		}
 		curPos = position;
 	}

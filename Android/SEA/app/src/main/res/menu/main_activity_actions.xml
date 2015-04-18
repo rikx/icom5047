@@ -7,7 +7,7 @@
 		  />
 
 	<item android:id="@+id/people"
-		  android:title="@string/locations"
+		  android:title="@string/people"
 		  android:showAsAction="always"
 		/>
 
@@ -15,11 +15,6 @@
 		  android:title="@string/locations"
 		  android:showAsAction="always"
 		/>
-
-	<item android:id="@+id/new_report_action"
-		  android:title="@string/new_report"
-		  android:showAsAction="ifRoom"
-		  />
 
 	<item android:id="@+id/action_settings"
 		  android:title="@string/action_settings"

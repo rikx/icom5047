@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -20,11 +22,11 @@ public class ReportDetailsFragment extends Fragment {
 	private boolean viewCreated;
 	private TextView textName, textLocation, textDate, textSubject, textType, textCreator,
 			textFlowchart, textNotes;
-	private List<TextView> questions;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -75,6 +77,12 @@ public class ReportDetailsFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.report_actions, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	/**
