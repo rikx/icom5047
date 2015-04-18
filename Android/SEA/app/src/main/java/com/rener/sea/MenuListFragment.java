@@ -97,7 +97,13 @@ public class MenuListFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
+		if(type.equals(TYPE_REPORTS)) {
+			inflater.inflate(R.menu.reports_actions, menu);
+		}
+		else if(type.equals(TYPE_PEOPLE))
+			inflater.inflate(R.menu.people_actions, menu);
+		else if(type.equals(TYPE_LOCATIONS))
+			inflater.inflate(R.menu.locations_actions, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}

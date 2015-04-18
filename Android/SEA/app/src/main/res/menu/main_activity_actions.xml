@@ -8,18 +8,21 @@
 			  android:title="@string/reports"
 			  android:icon="@drawable/ic_action_view_as_list"
 			  android:showAsAction="always"
+			  android:orderInCategory="0"
 			/>
 
 		<item android:id="@+id/people"
 			  android:title="@string/people"
 			  android:icon="@drawable/ic_action_group"
 			  android:showAsAction="always"
+			  android:orderInCategory="0"
 			/>
 
 		<item android:id="@+id/locations"
 			  android:title="@string/locations"
 			  android:icon="@drawable/ic_action_place"
 			  android:showAsAction="always"
+			  android:orderInCategory="0"
 			/>
 	</group>
 
@@ -27,12 +30,13 @@
 		  android:title="@string/action_settings"
 		  android:showAsAction="never"
 		  android:visible="false"
+		  android:orderInCategory="98"
 		/>
 
 	<item android:id="@+id/action_logout"
 		  android:title="@string/logout"
 		  android:showAsAction="never"
-		  android:orderInCategory="@integer/abc_max_action_buttons"
+		  android:orderInCategory="99"
 		/>
 
 </menu>

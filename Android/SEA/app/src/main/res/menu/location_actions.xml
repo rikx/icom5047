@@ -5,12 +5,16 @@
 		  android:title="@string/edit_location"
 		  android:icon="@drawable/ic_action_edit"
 		  android:visible="true"
+		  android:showAsAction="always"
+		  android:orderInCategory="22"
 		  />
 
 	<item android:id="@+id/save_location_action"
 		  android:title="@string/save_location"
 		  android:icon="@drawable/ic_action_save"
 		  android:visible="false"
+		  android:showAsAction="always"
+		  android:orderInCategory="22"
 		  />
 
 </menu>

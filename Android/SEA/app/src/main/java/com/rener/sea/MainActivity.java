@@ -104,6 +104,9 @@ public class MainActivity extends FragmentActivity {
 			case R.id.reports :
 				showReportsList();
 				break;
+			case R.id.new_report_action :
+				newReport();
+				break;
 			case R.id.people :
 				showPeopleList();
 				break;

@@ -4,15 +4,17 @@
 	<item android:id="@+id/edit_person_action"
 		  android:title="@string/edit_person"
 		  android:icon="@drawable/ic_action_edit"
-		  android:showAsAction="ifRoom"
+		  android:showAsAction="always"
 		  android:visible="true"
+		  android:orderInCategory="22"
 		  />
 
 	<item android:id="@+id/save_person_action"
 		  android:title="@string/save_person"
 		  android:icon="@drawable/ic_action_save"
-		  android:showAsAction="ifRoom"
+		  android:showAsAction="always"
 		  android:visible="false"
+		  android:orderInCategory="22"
 		  />
 
 </menu>
