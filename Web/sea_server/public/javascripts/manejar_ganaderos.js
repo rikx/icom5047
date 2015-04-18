@@ -12,6 +12,11 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(ganaderos_array[0]);
 
+  /* Search */
+  $('#btn_search').on('click', function() {
+
+  });
+
   /* Return home */
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin'

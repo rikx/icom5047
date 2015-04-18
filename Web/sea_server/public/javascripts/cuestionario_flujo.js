@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 	/* Return home */
   $('#btn_home').on('click', function(){
-    window.location.href = '/users/admin';
+    window.location.href = '/users';
   });
 
   // set up basic information panel
@@ -117,12 +117,20 @@ $(document).ready(function(){
 
 	/* Save Survey progress */
 	$('#btn_save_progress').on('click', function(){
+		// ajax post
 
+		// redirect to user home
+		window.location.href = '/users';
 	});
 
 	/* Save Survey and redirect to report page */
 	$('#btn_end_survey').on('click', function(){
+		// ajax post
 
+			// if ajax successful
+			// redirect to report page using returned id
+			//var report_id = data.report_id;
+			//window.location.href = '/users/reports/'+report_id;
 	});
 
 	/* */
