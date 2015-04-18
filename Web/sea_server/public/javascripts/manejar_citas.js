@@ -61,6 +61,10 @@ $(document).ready(function(){
     var cita_id = $(this).attr('data-id');
     var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(cita_id);
     var this_cita = citas_array[arrayPosition];
+    console.log("editing");
+    console.log(cita_id);
+    console.log(this_cita);
+
 
     //date and time logic
     var dateTimeObject = new Date(this_cita.date + " " + this_cita.time);
@@ -78,18 +82,44 @@ $(document).ready(function(){
     $('#cita_time').val(theTime);
   });
 
-  /* PUTs edited ganadero information */
-  $('#btn_edit').on('click', function(){
+/* PUTs edited cita information */
+$('#btn_edit').on('click', function(){
+  var cita_id = $(this).attr('data-id');
+  // get form data and conver to json format
+  var $the_form = $('#form_manage_cita');
+  var form_data = $the_form.serializeArray();
+  var new_cita = ConverToJSON(form_data);
+  console.log(new_cita);
 
+  // ajax call to update ganadero
+  $.ajax({
+    url: "http://localhost:3000/users/admin/citas/" + cita_id,
+    method: "PUT",
+    data: JSON.stringify(new_cita),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      alert("Informacion de cita ha sido editada en el sistema.");
+      // update ganadero list after posting 
+      populate_citas();
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
   });
+});
 
-  /* Close location panel */
-  $('#btn_close_location_panel').on('click', function(){
-    $('#location_panel').hide();
-  });
+/* Close location panel */
+$('#btn_close_location_panel').on('click', function(){
+  $('#location_panel').hide();
+});
 
-  /* Open location panel */
-  $('#cita_info').on('click', 'tr td a.show_location_info', function(e){
+/* Open location panel */
+$('#cita_info').on('click', 'tr td a.show_location_info', function(e){
     // preveLnts link from firing
     e.preventDefault();
 
@@ -102,19 +132,19 @@ $(document).ready(function(){
     });
   });
 
-  /* Populates info panel with $this_location's information */
-  function populate_location_panel($this_location, location_ganaderos, location_agentes){
-    $('#location_panel_heading').text($this_location.location_name);
-    $('#localizacion_info_name').text($this_location.location_name);
-    $('#localizacion_info_category').text($this_location.location_category);
-    $('#localizacion_info_license').text($this_location.license);
-    if($this_location.address_line2 == null) {
-      $('#localizacion_info_address').text($this_location.address_line1);
-    } else {
-      $('#localizacion_info_address').html('<p>'+$this_location.address_line1+'</p><p>'+$this_location.address_line2+'</p>');
-    }
-    $('#localizacion_info_ciudad').text($this_location.city);
-    $('#localizacion_info_zipcode').text($this_location.zipcode);
+/* Populates info panel with $this_location's information */
+function populate_location_panel($this_location, location_ganaderos, location_agentes){
+  $('#location_panel_heading').text($this_location.location_name);
+  $('#localizacion_info_name').text($this_location.location_name);
+  $('#localizacion_info_category').text($this_location.location_category);
+  $('#localizacion_info_license').text($this_location.license);
+  if($this_location.address_line2 == null) {
+    $('#localizacion_info_address').text($this_location.address_line1);
+  } else {
+    $('#localizacion_info_address').html('<p>'+$this_location.address_line1+'</p><p>'+$this_location.address_line2+'</p>');
+  }
+  $('#localizacion_info_ciudad').text($this_location.city);
+  $('#localizacion_info_zipcode').text($this_location.zipcode);
 
     // populate local array with ganaderos associated to this location
     var selectedGanaderos = [];
@@ -170,6 +200,7 @@ $(document).ready(function(){
   function populate_citas(){
     $.getJSON('http://localhost:3000/list_citas', function(data) {
       citas_array = data.citas;
+      console.log(citas_array);
 
       // contents of localizaciones list
       var table_content = '';
@@ -192,5 +223,5 @@ $(document).ready(function(){
       // inject content string into html
       $citas_list.html(table_content);
     });
-  };
+};
 });

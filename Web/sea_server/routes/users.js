@@ -307,6 +307,40 @@ router.put('/admin/dispositivos/:id', function(req, res, next) {
 	}
 });
 
+/* PUT Admin Manejar Citas 
+ * Edit ganadero matching :id in database
+ */
+router.put('/admin/citas/:id', function(req, res, next) {
+	var cita_id = req.params.id;
+	console.log("appointment id is " + cita_id);
+	if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time')) {
+  	res.statusCode = 400;
+  	return res.send('Error: Missing fields for post dispositivo.');
+	} else {
+		var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+	  	    console.log(req.body.cita_date);
+	  	     console.log(req.body.cita_time);
+			// Insert new ganadero into db
+
+			client.query("UPDATE appointments SET date = $1, time = $2 \
+										WHERE appointment_id = $3", 
+										[req.body.cita_date, req.body.cita_time, cita_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+			  done();
+			  if(err) {
+			    return console.error('error running query', err);
+			  } else {
+			    res.json(true);
+			  }
+			});
+		});
+	}
+});
+
 /* GET Admin Manejar Reportes 
  * Renders page and includes response with first 10 reportes, 
  * alphabetically ordered by location name
