@@ -36,6 +36,7 @@ public class MenuListFragment extends ListFragment {
 			type = savedInstanceState.getString("type");
 			curPos = savedInstanceState.getInt("index");
 		}
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -96,6 +97,8 @@ public class MenuListFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 

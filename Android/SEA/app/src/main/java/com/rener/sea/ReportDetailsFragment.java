@@ -81,7 +81,6 @@ public class ReportDetailsFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.report_actions, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 

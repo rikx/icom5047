@@ -3,14 +3,14 @@
 
 	<item android:id="@+id/edit_location_action"
 		  android:title="@string/edit_location"
+		  android:icon="@drawable/ic_action_edit"
+		  android:visible="true"
 		  />
 
 	<item android:id="@+id/save_location_action"
 		  android:title="@string/save_location"
-		  />
-
-	<item android:id="@+id/new_location_action"
-		  android:title="@string/new_location"
+		  android:icon="@drawable/ic_action_save"
+		  android:visible="false"
 		  />
 
 </menu>

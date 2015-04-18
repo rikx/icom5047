@@ -3,14 +3,16 @@
 
 	<item android:id="@+id/edit_person_action"
 		  android:title="@string/edit_person"
+		  android:icon="@drawable/ic_action_edit"
+		  android:showAsAction="ifRoom"
+		  android:visible="true"
 		  />
 
 	<item android:id="@+id/save_person_action"
 		  android:title="@string/save_person"
-		  />
-
-	<item android:id="@+id/new_person_action"
-		  android:title="@string/new_person"
+		  android:icon="@drawable/ic_action_save"
+		  android:showAsAction="ifRoom"
+		  android:visible="false"
 		  />
 
 </menu>

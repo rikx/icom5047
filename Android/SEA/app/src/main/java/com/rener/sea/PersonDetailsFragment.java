@@ -91,8 +91,8 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		//super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.person_actions, menu);
-		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 

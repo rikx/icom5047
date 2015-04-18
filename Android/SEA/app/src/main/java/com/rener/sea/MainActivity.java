@@ -1,5 +1,6 @@
 package com.rener.sea;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -23,7 +24,6 @@ import android.widget.ListView;
  */
 public class MainActivity extends FragmentActivity {
 
-	private static final boolean SETTINGS_ENABLED = false;
 	private DBService dbService;
 	private Fragment leftFragment;
 	private Fragment rightFragment;
@@ -94,7 +94,6 @@ public class MainActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_activity_actions, menu);
-		menu.findItem(R.id.action_settings).setVisible(SETTINGS_ENABLED);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -270,5 +269,4 @@ public class MainActivity extends FragmentActivity {
 	private void newReport() {
 		startActivity(new Intent(this, SurveyActivity.class));
 	}
-
 }

@@ -123,8 +123,6 @@ public class LoginActivity extends Activity {
 			//Successful login
 			saveLogin();
 			startActivity(new Intent(this, MainActivity.class));
-			String s = getResources().getString(R.string.login_ak);
-			Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
 			Log.i(this.toString(), "login successful");
 			finish();
 			return true;

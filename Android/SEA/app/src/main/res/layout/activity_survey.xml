@@ -1,57 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:orientation="vertical"
-			  android:layout_width="match_parent"
-			  android:layout_height="match_parent">
+<ScrollView	xmlns:android="http://schemas.android.com/apk/res/android"
+			   android:layout_width="match_parent"
+			   android:layout_height="match_parent">
 
-	<EditText
-		android:id="@+id/survey_edit_name"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_horizontal"
-		android:hint="@string/name"
-		android:inputType="text"/>
+	<LinearLayout android:orientation="vertical"
+				  android:layout_width="match_parent"
+				  android:layout_height="match_parent">
 
-	<Spinner
-		android:id="@+id/survey_location_spinner"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_horizontal"
-		android:layout_gravity="center_horizontal"
-		/>
+		<EditText
+			android:id="@+id/survey_edit_name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_horizontal"
+			android:hint="@string/name"
+			android:inputType="text"/>
 
-	<Spinner
-		android:id="@+id/survey_subject_spinner"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:gravity="center_horizontal"
-		/>
+		<Spinner
+			android:id="@+id/survey_location_spinner"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_horizontal"
+			android:layout_gravity="center_horizontal"
+			android:prompt="@string/select_location"
+			/>
 
-	<Spinner
-		android:id="@+id/survey_flowchart_spinner"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:gravity="center_horizontal"
-		/>
+		<Spinner
+			android:id="@+id/survey_subject_spinner"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:gravity="center_horizontal"
+			/>
 
-	<LinearLayout
-		android:id="@+id/survey_progress_layout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:padding="16dp"
-		android:orientation="vertical"
-		/>
+		<Spinner
+			android:id="@+id/survey_flowchart_spinner"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:gravity="center_horizontal"
+			/>
 
-	<EditText
-		android:id="@+id/survey_edit_notes"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:minLines="10"
-		android:gravity="start"
-		android:hint="@string/notes"
-		android:inputType="textMultiLine"
-		/>
+		<LinearLayout
+			android:id="@+id/survey_progress_layout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:orientation="vertical"
+			/>
 
-</LinearLayout>
+		<EditText
+			android:id="@+id/survey_edit_notes"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:minLines="10"
+			android:gravity="start"
+			android:hint="@string/notes"
+			android:inputType="textMultiLine"
+			/>
+
+	</LinearLayout>
+
+</ScrollView>

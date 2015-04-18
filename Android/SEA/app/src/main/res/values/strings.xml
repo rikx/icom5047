@@ -70,4 +70,7 @@
 	<string name="owner">owner</string>
 	<string name="agent">agent</string>
 	<string name="date_format">dd/LLL/yy</string>
+	<string name="select_location">select a location</string>
+	<string name="select_subject">select a subject</string>
+	<string name="select_survey">select a survey</string>
 </resources>
