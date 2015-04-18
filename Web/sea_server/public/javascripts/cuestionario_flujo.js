@@ -1,7 +1,6 @@
 $(document).ready(function(){
 	// store current element's information and its children
 	var element_family;
-	var locations_array;
 	var answered_questions = []; 
 	// answered questions list
   $answered_list = $('#answered_questions');
@@ -9,17 +8,45 @@ $(document).ready(function(){
   $question_panel_question = $('#next_question_question');
   $question_panel_answers = $('#next_question_answers');
 
+  var locations_array = JSON.parse($('#scrollable-dropdown-menu').attr('data-locations'));
   // set up basic information panel
   survey_start();
 
-  /* TEST for location search */
+  /* TEST: location search */
   $('.typeahead').typeahead({
+  	hint: true,
   	highlight: true
   },
   {
   	name: 'locations',
-  	source: locations_array
+	  displayKey: 'value',
+	  source: substringMatcher(locations_array)
   });
+
+  function substringMatcher(strs) {
+	  return function findMatches(q, cb) {
+	    var matches, substrRegex;
+	 
+	    // an array that will be populated with substring matches
+	    matches = [];
+	 
+	    // regex used to determine if a string contains the substring `q`
+	    substrRegex = new RegExp(q, 'i');
+	 
+	    // iterate through the pool of strings and for any string that
+	    // contains the substring `q`, add it to the `matches` array
+	    $.each(strs, function(i, str) {
+	      if (substrRegex.test(str.location_name)) {
+	        // the typeahead jQuery plugin expects suggestions to a
+	        // JavaScript object, refer to typeahead docs for more info
+	        matches.push({ value: str.location_name });
+	      }
+	    });
+	 
+	    cb(matches);
+	  };
+	};
+	/* TEST END: location search */
 
 	/* */
 	$('#btn_next_question').on('click', function(){
@@ -55,14 +82,9 @@ $(document).ready(function(){
 	function survey_start() {
 		var start_date = get_date_time(new Date(), true)
 		// date and time when survey started 
-		$('#take_survey_date').text(start_date.date + " at " + start_date.time)
+		$('#take_survey_date').text(start_date.date + " at " + start_date.time);
 		// current logged in user
-  	$('#take_survey_user').html()
-
-  	// get locations
-  	$.getJSON('http://localhost:3000/locations', function(data) {
-  		locations_array = data.locations;
-  	})
+  	$('#take_survey_user').html();
   }
 
 	/* update answered questions */

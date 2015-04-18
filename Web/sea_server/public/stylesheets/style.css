@@ -1,8 +1,4 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00B7FF;
+#scrollable-dropdown-menu .tt-dropdown-menu {
+	max-height: 150px;
+	overflow-y: auto;
 }

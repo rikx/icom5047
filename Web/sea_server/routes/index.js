@@ -140,9 +140,9 @@ router.get('/locations', function(req, res, next) {
 			return console.error('error fetching client from pool', err);
 		}
 		// query for all locations data
+		//WHERE name like '%"+req.query.key+"%'"
 		client.query("SELECT location_id, name AS location_name \
-									FROM location \
-									WHERE name like '%"+req.query.key+"%'", function(err, result){
+									FROM location", function(err, result){
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
