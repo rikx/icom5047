@@ -457,10 +457,8 @@ router.get('/admin', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
 		// query for location data
-		client.query('SELECT location.location_id, location.name AS location_name, cat.name AS location_category, location.address_id, license, address_line1, address_line2, city, zipcode \
+		client.query('SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 			FROM location INNER JOIN address ON location.address_id = address.address_id \
-			LEFT JOIN location_category AS lc ON lc.location_id = location.location_id \
-			LEFT JOIN category AS cat ON lc.category_id = cat.category_id \
 			ORDER BY location_name \
 			LIMIT 20;', function(err, result) {
 				if(err) {
