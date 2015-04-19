@@ -200,162 +200,6 @@ router.get('/admin', function(req, res, next) {
 }
 });
 
-
-/* POST Admin Manejar Dispositivo
- * Add new ganadero to database
- */
- router.post('/admin/dispositivos', function(req, res, next) {
- 	console.log("server executed!!");
- 	console.log(req.body);
- 	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
- 		res.statusCode = 400;
- 		return res.send('Error: Missing fields for post ganadero.');
- 	} else {
-
-
- 		var db = req.db;
- 		db.connect(req.conString, function(err, client, done) {
- 			if(err) {
- 				return console.error('error fetching client from pool', err);
- 			}
-	  	// Verify ganadero does not already exist in db
-	  	client.query("SELECT * FROM devices WHERE id_number = $1", [req.body.dispositivo_id_num], function(err, result) {
-	  		if(err) {
-	  			return console.error('error running query', err);
-	  		} else {
-	  			if(result.rowCount > 0){
-	  				res.send({exists: true});
-	  			} else {
-		  			// Insert new ganadero into db
-		  			client.query("INSERT into devices (name, id_number, user_id) \
-		  				VALUES ($1, $2, $3)", 
-		  				[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
-							//call `done()` to release the client back to the pool
-							done();
-							if(err) {
-								return console.error('error running query', err);
-							} else {
-								res.json(true);
-							}
-						});
-		  		}
-		  	}
-		  });
-	  });
- 	}
- });
-
-/* POST Admin Manejar Usuario
- * Add new user to database
- */
- router.post('/admin/usuarios', function(req, res, next) {
- 	console.log("server executed!! Users");
- 	console.log(req.body);
- 	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
- 		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
- 		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
- 		|| !req.body.hasOwnProperty('usuario_password') 
- 		|| !req.body.hasOwnProperty('usuario_password_confirm') 
- 		|| !req.body.hasOwnProperty('usuario_telefono') 
- 		|| !req.body.hasOwnProperty('usuario_type')) {
- 		res.statusCode = 400;
- 	return res.send('Error: Missing fields for post ganadero.');
- } else {
-
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-	  	// Verify ganadero does not already exist in db
-	  	client.query("SELECT * FROM person WHERE person_id = $1", [req.body.person_id], function(err, result) {
-	  		if(err) {
-	  			return console.error('error running query', err);
-	  		} else {
-	  			if(result.rowCount > 0){
-	  				res.send({exists: true});
-	  			} else {
-
-		  			// Insert new ganadero into db
-		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number) \
-		  				VALUES ($1, $2, $3, $4, $5) RETURNING person_id", 
-		  				[req.body.usuario_name, req.body.usuario_lastname_paternal, req.body.usuario_lastname_maternal, req.body.usuario_email, req.body.usuario_telefono] , function(err, result) {
-							//call `done()` to release the client back to the pool
-							done();
-							if(err) {
-								return console.error('error running query', err);
-							} else {
-		  			// Insert new ganadero into db
-		  			var person_id = result.rows[0].person_id;
-		  			console.log(person_id);
-		  			client.query("INSERT into users (person_id, type, username) \
-		  				VALUES ($1, $2, $3)", 
-		  				[person_id, req.body.usuario_type, req.body.usuario_email] , function(err, result) {
-							//call `done()` to release the client back to the pool
-							done();
-							if(err) {
-								return console.error('error running query', err);
-							} else {
-								console.log("done");
-								res.json(true);
-							}
-						});
-		  		}
-		  	});
-}
-}
-});
-});
-}
-});
-
-
-/* PUT Admin Manejar Usuarios 
- * Edit information of user matching :id
- */
- router.put('/admin/usuarios/:id', function(req, res, next) {
- 	var user_id = req.params.id;
- 	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
- 		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
- 		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
- 		|| !req.body.hasOwnProperty('usuario_password') 
- 		|| !req.body.hasOwnProperty('usuario_password_confirm') 
- 		|| !req.body.hasOwnProperty('usuario_telefono') 
- 		|| !req.body.hasOwnProperty('usuario_type')) {
- 		res.statusCode = 400;
- 	return res.send('Error: Missing fields for post ganadero.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-			// Insert new usuario into db
-			client.query("UPDATE users SET type = $1, username = $2 \
-				WHERE user_id = $3", 
-				[req.body.usuario_type, req.body.usuario_email, user_id], function(err, result) {
-					if(err) {
-						return console.error('error running query', err);
-					} else {
-						client.query("UPDATE person \
-							SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6 \
-							FROM users \
-							WHERE user_id = $3 and users.person_id = person.person_id",
-							[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono], function(err, result) {
-						//call `done()` to release the client back to the pool
-						done();
-						if(err) {
-							return console.error('error running query', err);
-						} else {
-							res.json(true);
-						}
-					});   
-					}
-				});
-		});
-}
-});
-
 /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
  */
@@ -387,66 +231,6 @@ router.get('/admin', function(req, res, next) {
 		});
  }
 });
-
-/* PUT Admin Manejar Dispositivos 
- * Edit ganadero matching :id in database
- */
- router.put('/admin/dispositivos/:id', function(req, res, next) {
- 	var dispositivo_id = req.params.id;
- 	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
- 		res.statusCode = 400;
- 		return res.send('Error: Missing fields for post dispositivo.');
- 	} else {
- 		var db = req.db;
- 		db.connect(req.conString, function(err, client, done) {
- 			if(err) {
- 				return console.error('error fetching client from pool', err);
- 			}
-			// Insert new ganadero into db
-			client.query("UPDATE devices SET name = $1, id_number = $2 \
-				WHERE device_id = $3", 
-				[req.body.dispositivo_name, req.body.dispositivo_id_num, dispositivo_id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					res.json(true);
-				}
-			});
-		});
- 	}
- });
-
-/* PUT Admin Manejar Citas 
- * Edit cita matching :id in database
- */
- router.put('/admin/citas/:id', function(req, res, next) {
- 	var cita_id = req.params.id;
- 	if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time')) {
- 		res.statusCode = 400;
- 		return res.send('Error: Missing fields for post dispositivo.');
- 	} else {
- 		var db = req.db;
- 		db.connect(req.conString, function(err, client, done) {
- 			if(err) {
- 				return console.error('error fetching client from pool', err);
- 			}
-			// Insert new cita into db
-			client.query("UPDATE appointments SET date = $1, time = $2, purpose = $3 \
-										WHERE appointment_id = $4", 
-										[req.body.cita_date, req.body.cita_time, req.body.cita_proposito, cita_id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					res.json(true);
-				}
-			});
-		});
- 	}
- });
 
 /* GET Admin Manejar Reportes 
  * Renders page and includes response with first 10 reportes, 
@@ -548,6 +332,118 @@ router.get('/admin', function(req, res, next) {
 	  	}
 	  });
 	});
+});
+
+
+/* POST Admin Manejar Usuario
+ * Add new user to database
+ */
+ router.post('/admin/usuarios', function(req, res, next) {
+ 	console.log("server executed!! Users");
+ 	console.log(req.body);
+ 	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
+ 		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
+ 		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
+ 		|| !req.body.hasOwnProperty('usuario_password') 
+ 		|| !req.body.hasOwnProperty('usuario_password_confirm') 
+ 		|| !req.body.hasOwnProperty('usuario_telefono') 
+ 		|| !req.body.hasOwnProperty('usuario_type')) {
+ 		res.statusCode = 400;
+ 	return res.send('Error: Missing fields for post user.');
+ } else {
+
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+	  	// Verify ganadero does not already exist in db
+	  	client.query("SELECT * FROM person WHERE person_id = $1", [req.body.person_id], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+	  			if(result.rowCount > 0){
+	  				res.send({exists: true});
+	  			} else {
+
+		  			// Insert new ganadero into db
+		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number) \
+		  				VALUES ($1, $2, $3, $4, $5) RETURNING person_id", 
+		  				[req.body.usuario_name, req.body.usuario_lastname_paternal, req.body.usuario_lastname_maternal, req.body.usuario_email, req.body.usuario_telefono] , function(err, result) {
+							//call `done()` to release the client back to the pool
+							done();
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+		  			// Insert new ganadero into db
+		  			var person_id = result.rows[0].person_id;
+		  			console.log(person_id);
+		  			client.query("INSERT into users (person_id, type, username) \
+		  				VALUES ($1, $2, $3)", 
+		  				[person_id, req.body.usuario_type, req.body.usuario_email] , function(err, result) {
+							//call `done()` to release the client back to the pool
+							done();
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+								console.log("done");
+								res.json(true);
+							}
+						});
+		  		}
+		  	});
+}
+}
+});
+});
+}
+});
+
+
+/* PUT Admin Manejar Usuarios 
+ * Edit information of user matching :id
+ */
+ router.put('/admin/usuarios/:id', function(req, res, next) {
+ 	var user_id = req.params.id;
+ 	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
+ 		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
+ 		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
+ 		|| !req.body.hasOwnProperty('usuario_password') 
+ 		|| !req.body.hasOwnProperty('usuario_password_confirm') 
+ 		|| !req.body.hasOwnProperty('usuario_telefono') 
+ 		|| !req.body.hasOwnProperty('usuario_type')) {
+ 		res.statusCode = 400;
+ 	return res.send('Error: Missing fields for put user.');
+ } else {
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+			// Edit usuario in db
+			client.query("UPDATE users SET type = $1, username = $2 \
+				WHERE user_id = $3", 
+				[req.body.usuario_type, req.body.usuario_email, user_id], function(err, result) {
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						client.query("UPDATE person \
+							SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6 \
+							FROM users \
+							WHERE user_id = $3 and users.person_id = person.person_id",
+							[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono], function(err, result) {
+						//call `done()` to release the client back to the pool
+						done();
+						if(err) {
+							return console.error('error running query', err);
+						} else {
+							res.json(true);
+						}
+					});   
+					}
+				});
+		});
+}
 });
 
 /* GET Admin Manejar Localizaciones 
@@ -737,6 +633,43 @@ router.get('/admin', function(req, res, next) {
  	})
  });
 
+ /* POST cita (done through report page)
+  *
+  */ 
+router.post('/reports/citas', function(req, res, next) {
+
+});
+
+/* PUT Admin Manejar Citas 
+ * Edit cita matching :id in database
+ */
+ router.put('/admin/citas/:id', function(req, res, next) {
+ 	var cita_id = req.params.id;
+ 	if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for edit appointment.');
+ 	} else {
+ 		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+ 			if(err) {
+ 				return console.error('error fetching client from pool', err);
+ 			}
+			// Edit cita in db
+			client.query("UPDATE appointments SET date = $1, time = $2, purpose = $3 \
+										WHERE appointment_id = $4", 
+										[req.body.cita_date, req.body.cita_time, req.body.cita_proposito, cita_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					res.json(true);
+				}
+			});
+		});
+ 	}
+ });
+
 /* GET Admin Manejar Dispositivos
  *
  */
@@ -747,7 +680,7 @@ router.get('/admin', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
-		// to populate devices list
+		// to populate dispositivo list
 		client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
 			FROM devices natural join users \
 			ORDER BY username ASC \
@@ -759,7 +692,7 @@ router.get('/admin', function(req, res, next) {
 				}
 			});
 
-	  // to populate usuario dropdown list
+	  // to populate dispositivo dropdown list
 	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, phone_number \
 	  	FROM (users natural join person) \
 	  	ORDER BY email ASC', function(err, result) {
@@ -775,5 +708,75 @@ router.get('/admin', function(req, res, next) {
 	  });
 	});
 });
+
+/* POST Admin Manejar Dispositivo
+ * Add new dispositivo to database
+ */
+ router.post('/admin/dispositivos', function(req, res, next) {
+ 	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for post device.');
+ 	} else {
+ 		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+ 			if(err) {
+ 				return console.error('error fetching client from pool', err);
+ 			}
+	  	// Verify dispositivo does not already exist in db
+	  	client.query("SELECT * FROM devices WHERE id_number = $1", [req.body.dispositivo_id_num], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+	  			if(result.rowCount > 0){
+	  				res.send({exists: true});
+	  			} else {
+		  			// Insert new dispositivo into db
+		  			client.query("INSERT into devices (name, id_number, user_id) \
+		  				VALUES ($1, $2, $3)", 
+		  				[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
+							//call `done()` to release the client back to the pool
+							done();
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+								res.json(true);
+							}
+						});
+		  		}
+		  	}
+		  });
+	  });
+ 	}
+ });
+
+/* PUT Admin Manejar Dispositivos 
+ * Edit dispositivo matching :id in database
+ */
+ router.put('/admin/dispositivos/:id', function(req, res, next) {
+ 	var dispositivo_id = req.params.id;
+ 	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for put device.');
+ 	} else {
+ 		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+ 			if(err) {
+ 				return console.error('error fetching client from pool', err);
+ 			}
+			// Edit dispositivo in db
+			client.query("UPDATE devices SET name = $1, id_number = $2 \
+				WHERE device_id = $3", 
+				[req.body.dispositivo_name, req.body.dispositivo_id_num, dispositivo_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					res.json(true);
+				}
+			});
+		});
+ 	}
+ });
 
 module.exports = router;

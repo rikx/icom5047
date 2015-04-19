@@ -71,17 +71,6 @@ $(document).ready(function(){
     var seconds = dateTimeObject.getSeconds();
     var theDay = dateTimeObject.getFullYear()+"-"+(month)+"-"+(day);
     var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
-/*
-    var date_object = new Date(this_cita.date);
-    var day = ("0" + date_object.getDate()).slice(-2);
-    var month = ("0" + (date_object.getMonth() + 1)).slice(-2);
-    var theDay = date_object.getFullYear()+"-"+(month)+"-"+(day);
-    
-    var time_object = new Date(this_cita.date+" "+this_cita.time);
-    var hours = time_object.getHours();
-    var minutes = time_object.getMinutes();
-    var seconds = time_object.getSeconds();
-    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);*/
 
     $('#btn_edit').attr('data-id', cita_id);
     $('#cita_location').val(this_cita.location_name);
