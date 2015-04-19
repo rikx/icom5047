@@ -63,15 +63,15 @@ $(document).ready(function(){
     var this_cita = citas_array[arrayPosition];
 
     //date and time logic
-/*    var dateTimeObject = new Date(this_cita.date + " " + this_cita.time);
+    var dateTimeObject = new Date(this_cita.date + " " + this_cita.time);
     var day = ("0" + dateTimeObject.getDate()).slice(-2);
     var month = ("0" + (dateTimeObject.getMonth() + 1)).slice(-2);
     var hours = dateTimeObject.getHours();
     var minutes = dateTimeObject.getMinutes();
     var seconds = dateTimeObject.getSeconds();
     var theDay = dateTimeObject.getFullYear()+"-"+(month)+"-"+(day);
-    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);*/
-
+    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+/*
     var date_object = new Date(this_cita.date);
     var day = ("0" + date_object.getDate()).slice(-2);
     var month = ("0" + (date_object.getMonth() + 1)).slice(-2);
@@ -81,7 +81,7 @@ $(document).ready(function(){
     var hours = time_object.getHours();
     var minutes = time_object.getMinutes();
     var seconds = time_object.getSeconds();
-    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);*/
 
     $('#btn_edit').attr('data-id', cita_id);
     $('#cita_location').val(this_cita.location_name);
