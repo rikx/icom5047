@@ -326,9 +326,9 @@ router.put('/admin/citas/:id', function(req, res, next) {
 	  	     console.log(req.body.cita_time);
 			// Insert new ganadero into db
 
-			client.query("UPDATE appointments SET date = $1, time = $2 \
-										WHERE appointment_id = $3", 
-										[req.body.cita_date, req.body.cita_time, cita_id] , function(err, result) {
+			client.query("UPDATE appointments SET date = $1, time = $2, purpose = $3 \
+										WHERE appointment_id = $4", 
+										[req.body.cita_date, req.body.cita_time, req.body.cita_proposito, cita_id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 			  done();
 			  if(err) {
