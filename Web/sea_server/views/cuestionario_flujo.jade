@@ -64,7 +64,7 @@ block content
 						h3#panel_title_next(class='panel-title', style="display: none;")
 							| Próxima Pregunta
 					.panel-body#next_question
-						p#next_question_question(data-question-id=pregunta[0].item_id)
+						p#next_question_question(data-question-id=pregunta[0].item_id data-question-type=pregunta[0].item_type)
 							= pregunta[0].question
 						#next_question_answers
 							each contestacion, i in pregunta
