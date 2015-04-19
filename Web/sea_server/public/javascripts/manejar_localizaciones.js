@@ -8,6 +8,7 @@ $(document).ready(function(){
 
   // store data for initial 20 locations
   var localizaciones_array = JSON.parse($localizaciones_list.attr('data-localizaciones'));
+  var categorias_array = JSON.parse($localizaciones_list.attr('data-categorias'));
   var agentes_array =  JSON.parse($localizaciones_list.attr('data-agentes'));
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
 
@@ -346,6 +347,7 @@ function populate_localizaciones(){
     localizaciones_array = data.localizaciones;
     agentes_array = data.agentes;
     ganaderos_array = data.ganaderos;
+    categorias_array = data.location_categories;
 
       // contents of localizaciones list
       var table_content = '';
