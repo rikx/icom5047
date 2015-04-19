@@ -12,6 +12,8 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(usuarios_array[0]);
 
+  $('#usuario_type').hide();
+
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';
   });
@@ -59,6 +61,7 @@ $(document).ready(function(){
     e.preventDefault();
     $('#btn_user_type_text').text($(this).text()+' ');
     $('#btn_user_type').val($(this).attr('data-usario-type'));
+    $('#usuario_type').val( $('#btn_user_type_text').text().toLowerCase());
   });
 
   /* Open add panel */
@@ -72,9 +75,44 @@ $(document).ready(function(){
     $('#form_manage_usuario')[0].reset();
   });
 
-  /* POSTs new usuario */
+  /* POSTs new usuario information */
   $('#btn_submit').on('click', function(){
+    // get form data and conver to json format
+    var $the_form = $('#form_manage_usuario');
+    console.log($the_form);
+    var form_data = $the_form.serializeArray();
+    var new_usuario = ConverToJSON(form_data);
+    var user_type = $('#btn_user_type_text').text();
+    console.log("The new user is : ");
+    console.log(new_usuario);
+    console.log(user_type);
 
+    // ajax call to post new ganadero
+    $.ajax({
+      url: "http://localhost:3000/users/admin/usuarios",
+      method: "POST",
+      data: JSON.stringify(new_usuario),
+      contentType: "application/json",
+      dataType: "json",
+
+      success: function(data) {
+        if(data.exists){
+          alert("Ganadero con este correo electrónico o teléfono ya existe");
+        } else {
+          alert("Ganadero ha sido añadido al sistema.");
+          // clear add form
+          $the_form[0].reset();
+        }
+        // update ganadero list after posting 
+        populate_usuarios();
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
   });
 
   /* Open edit panel */
