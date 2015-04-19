@@ -1,10 +1,9 @@
 $(document).ready(function(){
-	// store current element's information and its children
-	var element_family;
+	// store question-answer pairs of answered questions
 	var answered_questions = []; 
 	// answered questions list
   $answered_list = $('#answered_questions');
-  //
+  
   $question_panel_question = $('#next_question_question');
   $question_panel_answers = $('#next_question_answers');
 
@@ -57,12 +56,9 @@ $(document).ready(function(){
 
 	/* Saves pre-survey information and displays first questions */
 	$('#take_survey_start').on('click', function(){
-		// validate location input
-
-		// if not valid 
-		if(false){
-			alert('La localización escrita no existe. Por favor seleccione una localización valida');
-		} else {
+		var location_input = $('#take_survey_location').val();
+		// validate location input 
+		if(valid_input(location_input, locations_array)){
 			// disable location input 
 			$('#take_survey_location').attr('disabled', true);
 
@@ -92,12 +88,14 @@ $(document).ready(function(){
 
 			$('#row_answered, #row_current, #row_buttons').show();
 			$('#take_survey_start, #row_home').attr('disabled', true).hide();
+		} else {
+			alert('La localización escrita no existe. Por favor seleccione una localización valida');
 		}
 	});
 
 	/* Saves answer for current question, gets next questionand updates the interface */
 	$('#btn_next_question').on('click', function(){
-		//
+		// get question and answer input information
 		var the_question = $('#next_question_question');
 		var the_answer;
 		switch(the_question.attr('data-question-type')){
@@ -115,7 +113,7 @@ $(document).ready(function(){
 				the_answer = the_question.text();
 				break;
 		}
-		// 
+		// create new question-answer pair to post in db
 		var question_answer_pair = {
 			flowchart_id: $('#flowchart').attr('data-flowchart-id'),
 			item_id: the_question.attr('data-question-id'),
@@ -124,22 +122,25 @@ $(document).ready(function(){
 			answer: the_answer.val()
 		};
 		console.log(question_answer_pair);
+
+		// ajax post
+
 		// push new question-answer pair to array
 		answered_questions.push(question_answer_pair);
-		// 
+		// update answered questions list
 		update_answered_questions();
-		//
-		var next_question = the_answer.attr('data-next-id');
-		update_next_question(next_question);
+		// get next question info
+		update_next_question(the_answer.attr('data-next-id'));
 	});
 
 	/* Save Survey progress */
 	$('#btn_save_progress').on('click', function(){
 		// ajax post
-		var save = prompt('Guardar progreso?');
-		if(save){
-			// redirect to user home
-			window.location.href = '/users';
+			//ajax success
+			var save = prompt('Guardar progreso?');
+			if(save){
+				// redirect to user home
+				window.location.href = '/users';
 		}
 	});
 
