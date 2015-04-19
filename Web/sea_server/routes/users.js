@@ -309,6 +309,53 @@ router.get('/admin', function(req, res, next) {
 }
 });
 
+
+/* PUT Admin Manejar Usuarios 
+ * Edit information of user matching :id
+ */
+ router.put('/admin/usuarios/:id', function(req, res, next) {
+ 	var user_id = req.params.id;
+ 	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
+ 		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
+ 		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
+ 		|| !req.body.hasOwnProperty('usuario_password') 
+ 		|| !req.body.hasOwnProperty('usuario_password_confirm') 
+ 		|| !req.body.hasOwnProperty('usuario_telefono') 
+ 		|| !req.body.hasOwnProperty('usuario_type')) {
+ 		res.statusCode = 400;
+ 	return res.send('Error: Missing fields for post ganadero.');
+ } else {
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+			// Insert new usuario into db
+			client.query("UPDATE users SET type = $1, username = $2 \
+				WHERE user_id = $3", 
+				[req.body.usuario_type, req.body.usuario_email, user_id], function(err, result) {
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						client.query("UPDATE person \
+							SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6 \
+							FROM users \
+							WHERE user_id = $3 and users.person_id = person.person_id",
+							[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono], function(err, result) {
+						//call `done()` to release the client back to the pool
+						done();
+						if(err) {
+							return console.error('error running query', err);
+						} else {
+							res.json(true);
+						}
+					});   
+					}
+				});
+		});
+}
+});
+
 /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
  */

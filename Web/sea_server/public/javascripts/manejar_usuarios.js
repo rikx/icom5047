@@ -126,6 +126,7 @@ $(document).ready(function(){
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
+    //console.log(this_usuario);
     
     $('#btn_edit').attr('data-id', usuario_id);
     $('#usuario_name').val(this_usuario.first_name);
@@ -133,12 +134,43 @@ $(document).ready(function(){
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
     $('#usuario_email').val(this_usuario.email);
     $('#usuario_telefono').val(this_usuario.phone_number);
+    //$('#btn_user_type_text').text(this_usuario.type);
+
   });
 
   /* PUTs edited ganadero information */
   $('#btn_edit').on('click', function(){
+    console.log("editing");
+    var usuario_id = $(this).attr('data-id');
+    alert(usuario_id);
+  // get form data and conver to json format
+  var $the_form = $('#form_manage_usuario');
+  var form_data = $the_form.serializeArray();
+  var new_usuario = ConverToJSON(form_data);
+    console.log(new_usuario);
 
+
+  // ajax call to update ganadero
+  $.ajax({
+    url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+    method: "PUT",
+    data: JSON.stringify(new_usuario),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      alert("Informacion de usuario ha sido editada en el sistema.");
+      // update ganadero list after posting 
+      populate_usuarios();
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
   });
+});
 
   $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
