@@ -296,7 +296,7 @@ router.get('/admin', function(req, res, next) {
  * Renders page with first 20 usuarios, alphabetically ordered 
  */
  router.get('/admin/usuarios', function(req, res, next) {
- 	var usuarios_list, locations_list;
+ 	var usuarios_list, specialties_list, locations_list;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
@@ -314,6 +314,22 @@ router.get('/admin', function(req, res, next) {
 				}
 			});
 
+		// get user specialties
+		client.query('WITH usuarios AS (SELECT user_id, email \
+								  	FROM users natural join person \
+								  	ORDER BY email ASC \
+								  	LIMIT 20) \
+									SELECT usuarios.user_id, email, us.spec_id, spec.name \
+									FROM usuarios \
+									LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
+									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id ', function(err, result) {
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				specialties_list = result.rows;
+			}
+		});
+
 	  // get locations associated with users
 	  client.query('WITH usuarios AS (SELECT user_id, email \
 	  	FROM users natural join person \
@@ -328,7 +344,7 @@ router.get('/admin', function(req, res, next) {
 	  		return console.error('error running query', err);
 	  	} else {
 	  		locations_list = result.rows;
-	  		res.render('manejar_usuarios', { title: 'Manejar Usuarios', usuarios : usuarios_list, locations : locations_list});
+	  		res.render('manejar_usuarios', { title: 'Manejar Usuarios', usuarios : usuarios_list, user_specialties: specialties_list, locations : locations_list});
 	  	}
 	  });
 	});
@@ -339,8 +355,6 @@ router.get('/admin', function(req, res, next) {
  * Add new user to database
  */
  router.post('/admin/usuarios', function(req, res, next) {
- 	console.log("server executed!! Users");
- 	console.log(req.body);
  	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
  		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
@@ -351,13 +365,12 @@ router.get('/admin', function(req, res, next) {
  		res.statusCode = 400;
  	return res.send('Error: Missing fields for post user.');
  } else {
-
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
-	  	// Verify ganadero does not already exist in db
+	  	// Verify user does not already exist in db
 	  	client.query("SELECT * FROM person WHERE person_id = $1", [req.body.person_id], function(err, result) {
 	  		if(err) {
 	  			return console.error('error running query', err);
@@ -366,7 +379,7 @@ router.get('/admin', function(req, res, next) {
 	  				res.send({exists: true});
 	  			} else {
 
-		  			// Insert new ganadero into db
+		  			// Insert new person into db
 		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number) \
 		  				VALUES ($1, $2, $3, $4, $5) RETURNING person_id", 
 		  				[req.body.usuario_name, req.body.usuario_lastname_paternal, req.body.usuario_lastname_maternal, req.body.usuario_email, req.body.usuario_telefono] , function(err, result) {
@@ -375,7 +388,7 @@ router.get('/admin', function(req, res, next) {
 							if(err) {
 								return console.error('error running query', err);
 							} else {
-		  			// Insert new ganadero into db
+		  			// Insert new user into db
 		  			var person_id = result.rows[0].person_id;
 		  			console.log(person_id);
 		  			client.query("INSERT into users (person_id, type, username) \
@@ -498,7 +511,7 @@ router.get('/admin', function(req, res, next) {
 	  		agentes_list = result.rows;
 	  	}
 	  });
-	  
+
 	  // query for associated ganaderos
 	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
 	  	FROM location natural join address \

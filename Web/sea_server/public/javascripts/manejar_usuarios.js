@@ -7,6 +7,7 @@ $(document).ready(function(){
   
   // store data for 20 initial usuarios
   var usuarios_array =  JSON.parse($usuarios_list.attr('data-usuarios'));
+  var specialties_array = JSON.parse($usuarios_list.attr('data-specialties'));
   var locations_array = JSON.parse($usuarios_list.attr('data-locations'));
 
   // initial info panel population
@@ -232,6 +233,7 @@ $(document).ready(function(){
     $.getJSON('http://localhost:3000/list_usuarios', function(data) {
       usuarios_array = data.usuarios;
       locations_array = data.locations;
+      specialties_array = data.user_specialties;
 
       // contents of usuarios list
       var table_content = '';

@@ -291,7 +291,7 @@ router.get('/list_cuestionarios', function(req, res, next) {
  * Responds with first 20 usuarios, alphabetically ordered 
  */
 router.get('/list_usuarios', function(req, res, next) {
-	var usuarios_list, locations_list;
+	var usuarios_list, specialties_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -309,6 +309,22 @@ router.get('/list_usuarios', function(req, res, next) {
 	    }
 	  });
 
+		// get user specialties
+		client.query('WITH usuarios AS (SELECT user_id, email \
+								  	FROM users natural join person \
+								  	ORDER BY email ASC \
+								  	LIMIT 20) \
+									SELECT usuarios.user_id, email, us.spec_id, spec.name \
+									FROM usuarios \
+									LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
+									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id ', function(err, result) {
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				specialties_list = result.rows;
+			}
+		});
+
 	  // get locations associated with users
 	  client.query('WITH usuarios AS (SELECT user_id, email \
 										FROM users natural join person \
@@ -323,7 +339,7 @@ router.get('/list_usuarios', function(req, res, next) {
 
 	  	} else {
 	  		locations_list = result.rows;
-	    	res.json({usuarios : usuarios_list, locations : locations_list});
+	    	res.json({usuarios : usuarios_list, user_specialties: specialties_list, locations : locations_list});
 	  	}
 	  });
 	});
