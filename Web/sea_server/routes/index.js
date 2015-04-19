@@ -334,7 +334,7 @@ router.get('/list_usuarios', function(req, res, next) {
  * alphabetically ordered by location_name
  */
 router.get('/list_localizaciones', function(req, res, next) {
-	var localizaciones_list, agentes_list, ganaderos_list;
+	var localizaciones_list, categories_list, agentes_list, ganaderos_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -351,8 +351,23 @@ router.get('/list_localizaciones', function(req, res, next) {
 	    	localizaciones_list = result.rows;
 	    }
 	  });
+		// query for location categories
+		client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+										FROM location \
+										ORDER BY location_name \
+										LIMIT 20) \
+									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
+									FROM locations \
+									LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
+									LEFT JOIN category AS cat ON lc.category_id = cat.category_id', function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				categories_list = result.rows;
+			}
+		});
 	  // query for associated agentes
-	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
+	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 										FROM location natural join address \
 										ORDER BY location_name \
 										LIMIT 20) \
@@ -384,7 +399,7 @@ router.get('/list_localizaciones', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	ganaderos_list = result.rows;
-	    	res.json({localizaciones : localizaciones_list, agentes : agentes_list, ganaderos : ganaderos_list});
+	    	res.json({localizaciones : localizaciones_list, location_categories: categories_list, agentes : agentes_list, ganaderos : ganaderos_list});
 	    }
 	  });
 	});

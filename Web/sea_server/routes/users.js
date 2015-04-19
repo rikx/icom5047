@@ -450,7 +450,7 @@ router.get('/admin', function(req, res, next) {
  *
  */
  router.get('/admin/localizaciones', function(req, res, next) {
- 	var localizaciones_list, agentes_list, ganaderos_list;
+ 	var localizaciones_list, categories_list, agentes_list, ganaderos_list;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
@@ -467,9 +467,26 @@ router.get('/admin', function(req, res, next) {
 					localizaciones_list = result.rows;
 				}
 			});
+
+		// query for location categories
+		client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+										FROM location \
+										ORDER BY location_name \
+										LIMIT 20) \
+									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
+									FROM locations \
+									LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
+									LEFT JOIN category AS cat ON lc.category_id = cat.category_id', function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				categories_list = result.rows;
+			}
+		});
+
 	  // query for associated agentes
-	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
-	  	FROM location natural join address \
+	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+	  	FROM location \
 	  	ORDER BY location_name \
 	  	LIMIT 20) \
 	  SELECT location_id, agent_id, username \
@@ -481,6 +498,7 @@ router.get('/admin', function(req, res, next) {
 	  		agentes_list = result.rows;
 	  	}
 	  });
+	  
 	  // query for associated ganaderos
 	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
 	  	FROM location natural join address \
@@ -500,7 +518,7 @@ router.get('/admin', function(req, res, next) {
 	  		return console.error('error running query', err);
 	  	} else {
 	  		ganaderos_list = result.rows;
-	  		res.render('manejar_localizaciones', { title: 'Manejar Localizaciones', localizaciones: localizaciones_list, agentes: agentes_list, ganaderos: ganaderos_list});
+	  		res.render('manejar_localizaciones', { title: 'Manejar Localizaciones', localizaciones: localizaciones_list, location_categories: categories_list, agentes: agentes_list, ganaderos: ganaderos_list});
 	  	}
 	  });
 	});
