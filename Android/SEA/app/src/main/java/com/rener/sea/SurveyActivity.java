@@ -126,16 +126,21 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		//inflater.inflate(R.menu.main_activity_actions, menu);
+		inflater.inflate(R.menu.survey_activity_actions, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			default :
-				return super.onOptionsItemSelected(item);
+			case R.id.save_report :
+				//TODO: handle save report
+				break;
+			case R.id.discard_report :
+				//TODO: handle discard report
+				break;
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public boolean isBound() {
