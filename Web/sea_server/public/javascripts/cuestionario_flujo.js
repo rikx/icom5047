@@ -113,27 +113,33 @@ $(document).ready(function(){
 				the_answer = the_question.text();
 				break;
 		}
-		// create new question-answer pair to post in db
-		var question_answer_pair = {
-			flowchart_id: $('#flowchart').attr('data-flowchart-id'),
-			item_id: the_question.attr('data-question-id'),
-			question: the_question.text(),
-			option_id: the_answer.attr('data-answer-id'),
-			answer: the_answer.val()
-		};
-		console.log(question_answer_pair);
 
-		// ajax post
+		// check if user selected or wrote an answer
+		var answer_value = the_answer.val();
+		if(answer_value == null || answer_value == '') {
+			alert("Por favor seleccione una contestacion o escriba en el espacio proveido.");
+		} else {
+			// create new question-answer pair to post in db
+			var question_answer_pair = {
+				flowchart_id: $('#flowchart').attr('data-flowchart-id'),
+				item_id: the_question.attr('data-question-id'),
+				question: the_question.text(),
+				option_id: the_answer.attr('data-answer-id'),
+				answer: answer_value
+			};
 
-		// push new question-answer pair to array
-		answered_questions.push(question_answer_pair);
-		// update answered questions list
-		update_answered_questions();
-		// get next question info
-		update_next_question(the_answer.attr('data-next-id'));
+			// ajax post
+
+			// push new question-answer pair to array
+			answered_questions.push(question_answer_pair);
+			// update answered questions list
+			update_answered_questions();
+			// get next question info
+			update_next_question(the_answer.attr('data-next-id'));
+		}
 	});
 
-	/* Save Survey progress */
+	/* Save (Abort) Survey progress */
 	$('#btn_save_progress').on('click', function(){
 		// ajax post
 			//ajax success

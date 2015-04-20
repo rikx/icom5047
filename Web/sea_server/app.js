@@ -4,8 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var pg = require('pg');
-var session = require('express-session');
+
+var pg = require('pg')
+  , session = require('express-session')
+  , pgSession = require('connect-pg-simple')(session);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -28,7 +30,7 @@ app.use(function(req,res,next){
 
   // change default pool size later
   // change to actual host ip
-  //var conString = "pg://postgres:RENeR2015DB@136.145.116.231:5432/postgres";
+  //var conString = "postgres://postgres:RENeR2015DB@136.145.116.231:5432/SEA";
   var conString = {
     user: 'postgres',
     password: 'RENeR2015DB',
@@ -44,10 +46,18 @@ app.use(function(req,res,next){
 
 //TODO: finish session options
 /*app.use(session({
+  store: new (require('connect-pg-simple')(session))(),
   secret: 'Ramon2Enrique0Nelson1Ricardo5icom5047',
-  resave: false,
-  saveUninitialized: true
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 }));*/
+app.use(session({
+  store: new pgSession({
+    pg : pg,
+    conString : 'postgres://postgres:RENeR2015DB@localhost:5432/SEA'
+  }),
+  secret: 'Ramon2Enrique0Nelson1Ricardo5icom5047',
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
+}));
 
 app.use('/', routes);
 app.use('/users', users);
