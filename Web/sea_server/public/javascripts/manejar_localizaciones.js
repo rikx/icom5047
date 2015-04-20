@@ -8,6 +8,7 @@ $(document).ready(function(){
 
   // store data for initial 20 locations
   var localizaciones_array = JSON.parse($localizaciones_list.attr('data-localizaciones'));
+  var categorias_array = JSON.parse($localizaciones_list.attr('data-categorias'));
   var agentes_array =  JSON.parse($localizaciones_list.attr('data-agentes'));
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
 
@@ -289,7 +290,6 @@ $('#btn_edit').on('click', function(){
 function populate_info_panel($this_location){
   $('#info_panel_heading').text($this_location.location_name);
   $('#localizacion_info_name').text($this_location.location_name);
-  $('#localizacion_info_category').text($this_location.location_category);
   $('#localizacion_info_license').text($this_location.license);
   if($this_location.address_line2 == null) {
     $('#localizacion_info_address').text($this_location.address_line1);
@@ -347,6 +347,7 @@ function populate_localizaciones(){
     localizaciones_array = data.localizaciones;
     agentes_array = data.agentes;
     ganaderos_array = data.ganaderos;
+    categorias_array = data.location_categories;
 
       // contents of localizaciones list
       var table_content = '';

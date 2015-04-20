@@ -33,7 +33,7 @@ block content
 						.list-group(style='overflow:auto; height:300px;')
 							table(class='table')
 								thead
-								tbody#usuarios_list(data-usuarios=usuarios, data-locations=locations)
+								tbody#usuarios_list(data-usuarios=usuarios, data-locations=locations, data-specialties=user_specialties)
 
 			#edit_panel.col-md-4(style="display:none")
 					.jumbotron
@@ -63,6 +63,8 @@ block content
 							.form-group
 								label(for='usuario_password_confirm') Confirmar Contraseña:
 								input#usuario_password_confirm(class='form-control', name='usuario_password_confirm', type='password', placeholder='Confirmar Contraseña')
+							.form-group
+								input#usuario_type(class='form-control', name='usuario_type', placeholder='Type')
 							.form-group
 								label(for='btn_user_type') Tipo de Cuenta:
 								.dropdown

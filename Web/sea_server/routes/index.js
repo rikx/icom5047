@@ -291,7 +291,7 @@ router.get('/list_cuestionarios', function(req, res, next) {
  * Responds with first 20 usuarios, alphabetically ordered 
  */
 router.get('/list_usuarios', function(req, res, next) {
-	var usuarios_list, locations_list;
+	var usuarios_list, specialties_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -309,6 +309,22 @@ router.get('/list_usuarios', function(req, res, next) {
 	    }
 	  });
 
+		// get user specialties
+		client.query('WITH usuarios AS (SELECT user_id, email \
+								  	FROM users natural join person \
+								  	ORDER BY email ASC \
+								  	LIMIT 20) \
+									SELECT usuarios.user_id, email, us.spec_id, spec.name \
+									FROM usuarios \
+									LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
+									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id ', function(err, result) {
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				specialties_list = result.rows;
+			}
+		});
+
 	  // get locations associated with users
 	  client.query('WITH usuarios AS (SELECT user_id, email \
 										FROM users natural join person \
@@ -323,7 +339,7 @@ router.get('/list_usuarios', function(req, res, next) {
 
 	  	} else {
 	  		locations_list = result.rows;
-	    	res.json({usuarios : usuarios_list, locations : locations_list});
+	    	res.json({usuarios : usuarios_list, user_specialties: specialties_list, locations : locations_list});
 	  	}
 	  });
 	});
@@ -334,17 +350,15 @@ router.get('/list_usuarios', function(req, res, next) {
  * alphabetically ordered by location_name
  */
 router.get('/list_localizaciones', function(req, res, next) {
-	var localizaciones_list, agentes_list, ganaderos_list;
+	var localizaciones_list, categories_list, agentes_list, ganaderos_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// query for location data
-	  client.query('SELECT location.location_id, location.name AS location_name, cat.name AS location_category, location.address_id, license, address_line1, address_line2, city, zipcode \
+	  client.query('SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 									FROM location INNER JOIN address ON location.address_id = address.address_id \
-									LEFT JOIN location_category AS lc ON lc.location_id = location.location_id \
-									LEFT JOIN category AS cat ON lc.category_id = cat.category_id \
 									ORDER BY location_name \
 									LIMIT 20;', function(err, result) {
     	if(err) {
@@ -353,8 +367,23 @@ router.get('/list_localizaciones', function(req, res, next) {
 	    	localizaciones_list = result.rows;
 	    }
 	  });
+		// query for location categories
+		client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+										FROM location \
+										ORDER BY location_name \
+										LIMIT 20) \
+									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
+									FROM locations \
+									LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
+									LEFT JOIN category AS cat ON lc.category_id = cat.category_id', function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				categories_list = result.rows;
+			}
+		});
 	  // query for associated agentes
-	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
+	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 										FROM location natural join address \
 										ORDER BY location_name \
 										LIMIT 20) \
@@ -386,7 +415,7 @@ router.get('/list_localizaciones', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	ganaderos_list = result.rows;
-	    	res.json({localizaciones : localizaciones_list, agentes : agentes_list, ganaderos : ganaderos_list});
+	    	res.json({localizaciones : localizaciones_list, location_categories: categories_list, agentes : agentes_list, ganaderos : ganaderos_list});
 	    }
 	  });
 	});
@@ -433,7 +462,7 @@ router.get('/list_citas', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		
-	  client.query("SELECT appointment_id, appointments.date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
+	  client.query("SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
 									FROM (appointments natural join report natural join location), users \
 									WHERE user_id = agent_id \
 									ORDER BY date ASC, time ASC \

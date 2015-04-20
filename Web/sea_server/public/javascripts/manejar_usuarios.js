@@ -7,10 +7,13 @@ $(document).ready(function(){
   
   // store data for 20 initial usuarios
   var usuarios_array =  JSON.parse($usuarios_list.attr('data-usuarios'));
+  var specialties_array = JSON.parse($usuarios_list.attr('data-specialties'));
   var locations_array = JSON.parse($usuarios_list.attr('data-locations'));
 
   // initial info panel population
   populate_info_panel(usuarios_array[0]);
+
+  $('#usuario_type').hide();
 
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';
@@ -59,6 +62,7 @@ $(document).ready(function(){
     e.preventDefault();
     $('#btn_user_type_text').text($(this).text()+' ');
     $('#btn_user_type').val($(this).attr('data-usario-type'));
+    $('#usuario_type').val( $('#btn_user_type_text').text().toLowerCase());
   });
 
   /* Open add panel */
@@ -72,9 +76,44 @@ $(document).ready(function(){
     $('#form_manage_usuario')[0].reset();
   });
 
-  /* POSTs new usuario */
+  /* POSTs new usuario information */
   $('#btn_submit').on('click', function(){
+    // get form data and conver to json format
+    var $the_form = $('#form_manage_usuario');
+    console.log($the_form);
+    var form_data = $the_form.serializeArray();
+    var new_usuario = ConverToJSON(form_data);
+    var user_type = $('#btn_user_type_text').text();
+    console.log("The new user is : ");
+    console.log(new_usuario);
+    console.log(user_type);
 
+    // ajax call to post new ganadero
+    $.ajax({
+      url: "http://localhost:3000/users/admin/usuarios",
+      method: "POST",
+      data: JSON.stringify(new_usuario),
+      contentType: "application/json",
+      dataType: "json",
+
+      success: function(data) {
+        if(data.exists){
+          alert("Ganadero con este correo electrónico o teléfono ya existe");
+        } else {
+          alert("Ganadero ha sido añadido al sistema.");
+          // clear add form
+          $the_form[0].reset();
+        }
+        // update ganadero list after posting 
+        populate_usuarios();
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
   });
 
   /* Open edit panel */
@@ -88,6 +127,7 @@ $(document).ready(function(){
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
+    //console.log(this_usuario);
     
     $('#btn_edit').attr('data-id', usuario_id);
     $('#usuario_name').val(this_usuario.first_name);
@@ -95,12 +135,43 @@ $(document).ready(function(){
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
     $('#usuario_email').val(this_usuario.email);
     $('#usuario_telefono').val(this_usuario.phone_number);
+    //$('#btn_user_type_text').text(this_usuario.type);
+
   });
 
   /* PUTs edited ganadero information */
   $('#btn_edit').on('click', function(){
+    console.log("editing");
+    var usuario_id = $(this).attr('data-id');
+    alert(usuario_id);
+  // get form data and conver to json format
+  var $the_form = $('#form_manage_usuario');
+  var form_data = $the_form.serializeArray();
+  var new_usuario = ConverToJSON(form_data);
+    console.log(new_usuario);
 
+
+  // ajax call to update ganadero
+  $.ajax({
+    url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+    method: "PUT",
+    data: JSON.stringify(new_usuario),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      alert("Informacion de usuario ha sido editada en el sistema.");
+      // update ganadero list after posting 
+      populate_usuarios();
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
   });
+});
 
   $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
@@ -162,6 +233,7 @@ $(document).ready(function(){
     $.getJSON('http://localhost:3000/list_usuarios', function(data) {
       usuarios_array = data.usuarios;
       locations_array = data.locations;
+      specialties_array = data.user_specialties;
 
       // contents of usuarios list
       var table_content = '';

@@ -34,7 +34,7 @@ block content
 						.list-group(style='overflow:auto; height:300px;')
 							table(class='table')
 								thead
-								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos)
+								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories)
 
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
@@ -74,9 +74,6 @@ block content
 							tr
 								td Nombre:
 								td#localizacion_info_name
-							tr
-								td Categoría:
-								td#localizacion_info_category
 							tr
 								td Numero de Licencia:
 								td#localizacion_info_license

@@ -61,10 +61,6 @@ $(document).ready(function(){
     var cita_id = $(this).attr('data-id');
     var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(cita_id);
     var this_cita = citas_array[arrayPosition];
-    console.log("editing");
-    console.log(cita_id);
-    console.log(this_cita);
-
 
     //date and time logic
     var dateTimeObject = new Date(this_cita.date + " " + this_cita.time);
@@ -75,8 +71,9 @@ $(document).ready(function(){
     var seconds = dateTimeObject.getSeconds();
     var theDay = dateTimeObject.getFullYear()+"-"+(month)+"-"+(day);
     var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
-    
+
     $('#btn_edit').attr('data-id', cita_id);
+    $('#cita_location').val(this_cita.location_name);
     $('#cita_proposito').val(this_cita.purpose);
     $('#cita_date').val(theDay);
     $('#cita_time').val(theTime);
@@ -89,7 +86,6 @@ $('#btn_edit').on('click', function(){
   var $the_form = $('#form_manage_cita');
   var form_data = $the_form.serializeArray();
   var new_cita = ConverToJSON(form_data);
-  console.log(new_cita);
 
   // ajax call to update ganadero
   $.ajax({
@@ -200,7 +196,6 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
   function populate_citas(){
     $.getJSON('http://localhost:3000/list_citas', function(data) {
       citas_array = data.citas;
-      console.log(citas_array);
 
       // contents of localizaciones list
       var table_content = '';
