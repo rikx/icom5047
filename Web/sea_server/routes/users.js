@@ -80,11 +80,16 @@ var router = express.Router();
 	});
 });
 
-//TODO: add :id or :username after /admin
-//TODO: fix it so you cant access it directly (with sesions)
 /* GET Admin Home. */
 router.get('/admin', function(req, res, next) {
-	res.render('admin', { title: 'Admin Home'});
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (username != null && user_type == 'admin') {
+  	res.render('admin', { title: 'Admin Home'});
+  } else {
+  	res.redirect('/users');
+  }
 });
 
 /* GET Admin Manejar Cuestionarios
