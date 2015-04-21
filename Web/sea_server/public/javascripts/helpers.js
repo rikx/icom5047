@@ -14,7 +14,22 @@
 
   // logout current session
  	function logout_helper(){
+	  // ajax call to get logout
+	  $.ajax({
+	    url: "http://localhost:3000/logout",
+	    method: "GET",
 
+	    success: function() {
+	    	alert("Has sido deslogeado, del verbo logout");
+	    	window.location.href = '/';
+	    },
+	    error: function( xhr, status, errorThrown ) {
+	      alert( "Sorry, there was a problem!" );
+	      console.log( "Error: " + errorThrown );
+	      console.log( "Status: " + status );
+	      console.dir( xhr );
+	    }
+	  });
 	}
 
 	// verifies input value is in array and returns boolean result

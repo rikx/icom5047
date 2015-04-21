@@ -2,11 +2,19 @@ var express = require('express');
 var router = express.Router();
 
 /* GET users listing. 
- * TODO: make this route redirect to the proper home page
- * TODO: depending on the currently signed in user type
+ *
  */
  router.get('/', function(req, res, next) {
- 	res.redirect('/users/admin');
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (!username) {
+    username = req.session.username = '';
+    user_type = req.session.user_type = '';
+    res.redirect('/');
+  } else {
+  	res.redirect('/users/'+user_type);
+  }
  });
 
 /* GET Tomar Cuestionario 

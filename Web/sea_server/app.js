@@ -48,6 +48,8 @@ app.use(function(req,res,next){
 /*app.use(session({
   store: new (require('connect-pg-simple')(session))(),
   secret: 'Ramon2Enrique0Nelson1Ricardo5icom5047',
+  resave: false,
+  saveUninitialized: true,
   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 }));*/
 app.use(session({
@@ -56,6 +58,8 @@ app.use(session({
     conString : 'postgres://postgres:RENeR2015DB@localhost:5432/SEA'
   }),
   secret: 'Ramon2Enrique0Nelson1Ricardo5icom5047',
+  resave: false,
+  saveUninitialized: true,
   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 }));
 

@@ -1,39 +1,36 @@
 $(document).ready(function() {
 
-/*        if(typeof data.redirect == 'string') {
-          window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
-        }*/
+ // if(typeof data.redirect == 'string') {
+ //    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+ //  }
         
-// $('#btn-login').click(function() {
-//     var form = $('#form-login');
-//     var formData = form.serializeArray();
-//     console.log("form Data: " + formData);
-//     var userLogin = ConverToJSON(formData);
-//     console.log("User Login: " + JSON.stringify(userLogin));
-//     var userLoginJSON = JSON.stringify(userLogin);
-//     $.ajax({
-//         url: "http://localhost:3000/login",
-//         data: userLoginJSON,
-//         type: "POST",
-//         dataType : "json",
-     
-//         success: function( json ) {
+	/* POSTs new ganadero information */
+	$('#btn-login').on('click', function(){
+	  // get form data and conver to json format
+	  var $the_form = $('#form-login');
+	  var form_data = $the_form.serializeArray();
+	  var new_user = ConverToJSON(form_data);
 
-//         },
-     
-//         // Code to run if the request fails; the raw request and
-//         // status codes are passed to the function
-//         error: function( xhr, status, errorThrown ) {
-//             alert( "Sorry, there was a problem!" );
-//             console.log( "Error: " + errorThrown );
-//             console.log( "Status: " + status );
-//             console.dir( xhr );
-//         },
-     
-//         // Code to run regardless of success or failure
-//         complete: function( xhr, status ) {
-//             alert( "The request is complete!" );
-//         }
-//     });
-// });
+	  // ajax call to post login
+	  $.ajax({
+	    url: "http://localhost:3000/login",
+	    method: "POST",
+	    data: JSON.stringify(new_user),
+	    contentType: "application/json",
+	    dataType: "json",
+
+	    success: function(data) {
+			 	if(typeof data.redirect == 'string') {
+			    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+			  }
+
+	    },
+	    error: function( xhr, status, errorThrown ) {
+	      alert( "Sorry, there was a problem!" );
+	      console.log( "Error: " + errorThrown );
+	      console.log( "Status: " + status );
+	      console.dir( xhr );
+	    }
+	  });
+	});
 });
