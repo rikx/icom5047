@@ -355,7 +355,7 @@ router.get('/list_usuarios', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number \
+	  client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, username, type \
 									FROM (users natural join person) \
 									ORDER BY email ASC \
 									LIMIT 20;', function(err, result) {

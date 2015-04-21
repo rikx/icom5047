@@ -1,10 +1,5 @@
-$(document).ready(function() {
-
- // if(typeof data.redirect == 'string') {
- //    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
- //  }
-        
-	/* POSTs new ganadero information */
+$(document).ready(function() {      
+	/* POSTs login user */
 	$('#btn-login').on('click', function(){
 	  // get form data and conver to json format
 	  var $the_form = $('#form-login');

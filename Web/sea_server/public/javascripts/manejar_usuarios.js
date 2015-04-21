@@ -9,6 +9,7 @@ $(document).ready(function(){
   var usuarios_array =  JSON.parse($usuarios_list.attr('data-usuarios'));
   var specialties_array = JSON.parse($usuarios_list.attr('data-specialties'));
   var locations_array = JSON.parse($usuarios_list.attr('data-locations'));
+  var all_specialties_array = JSON.parse($('#specialty_panel').attr('data-all-specialties'));
 
   // initial info panel population
   populate_info_panel(usuarios_array[0]);

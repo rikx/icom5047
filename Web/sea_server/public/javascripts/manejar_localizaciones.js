@@ -11,6 +11,7 @@ $(document).ready(function(){
   var categorias_array = JSON.parse($localizaciones_list.attr('data-categorias'));
   var agentes_array =  JSON.parse($localizaciones_list.attr('data-agentes'));
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
+  //var all_categorias_array = JSON.parse($('#categorias_panel').attr('data-all-categorias'));
 
   // initial info panel population
   populate_info_panel(localizaciones_array[0]);
