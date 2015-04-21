@@ -10,9 +10,9 @@ block content
 				.jumbotron
 					center
 						h2 Servicio de Extensión Agrícola
-						h3#flowchart(data-flowchart-id=pregunta[0].flowchart_id) 
+						h3#flowchart(data-flowchart-id=flowchart.flowchart_id) 
 							| Cuestionario 
-							= pregunta[0].flowchart_name
+							= flowchart.flowchart_name
 			.col-md-2
 
 		.row
@@ -27,7 +27,7 @@ block content
 							.form-group
 								label(for='take_survey_name') Cuestionario: 
 								span#take_survey_name(class='form-control', disabled)
-									= pregunta[0].flowchart_name
+									= flowchart.flowchart_name
 							.form-group
 								label(for='take_survey_date') Fecha Comenzado:
 								span#take_survey_date(class='form-control', disabled)
@@ -58,21 +58,15 @@ block content
 		.row#row_current(style="display: none;")
 			.col-md-2
 			.col-md-8
-				.panel.panel-success(data-question=pregunta)
+				.panel.panel-success
 					.panel-heading 
 						h3#panel_title_first(class='panel-title')
 							| Primera Pregunta
 						h3#panel_title_next(class='panel-title', style="display: none;")
 							| Próxima Pregunta
 					.panel-body#next_question
-						p#next_question_question(data-question-id=pregunta[0].item_id data-question-type=pregunta[0].item_type)
-							= pregunta[0].question
+						p#next_question_question(data-question-id=flowchart.first_id, data-question-type='')
 						#next_question_answers
-							each contestacion, i in pregunta
-								.radio
-									label
-										input(id='#answer'+i, name='answer_radios', type='radio', value=contestacion.answer, data-answer-id=contestacion.option_id, data-next-id=contestacion.next_id)
-										= contestacion.answer
 		
 		.row#row_buttons(style="display: none;")
 			.col-md-2

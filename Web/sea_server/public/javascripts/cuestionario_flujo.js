@@ -14,8 +14,9 @@ $(document).ready(function(){
     window.location.href = '/users';
   });
 
-  // set up basic information panel
-  survey_start();
+  // set up survey start date and time in basic information panel
+	var start_date = get_date_time(new Date(), true)
+	$('#take_survey_date').text(start_date.date + " at " + start_date.time);
 
   /* TEST: location search */
   $('.typeahead').typeahead({
@@ -86,6 +87,9 @@ $(document).ready(function(){
 	      }
 	    });*/
 
+			// populate question panel
+			update_next_question($question_panel_question.attr('data-question-id'));
+			//
 			$('#row_answered, #row_current, #row_buttons').show();
 			$('#take_survey_start, #row_home').attr('disabled', true).hide();
 		} else {
@@ -160,15 +164,6 @@ $(document).ready(function(){
 			//window.location.href = '/users/reports/'+report_id;
 	});
 
-	/* */
-	function survey_start() {
-		var start_date = get_date_time(new Date(), true)
-		// date and time when survey started 
-		$('#take_survey_date').text(start_date.date + " at " + start_date.time);
-		// current logged in user
-  	$('#take_survey_user').html();
-  }
-
 	/* update answered questions */
 	function update_answered_questions() {
 		var answered_content = '';
@@ -180,11 +175,11 @@ $(document).ready(function(){
 	}
 
 	/* */
-	function update_next_question(next_question) {
+	function update_next_question(next_question_id) {
 		$('#panel_title_first').hide();
 		$('#panel_title_next').show();
 
-		$.getJSON('http://localhost:3000/element/'+next_question, function(data) {
+		$.getJSON('http://localhost:3000/element/'+next_question_id, function(data) {
 			var this_question = data.question_family[0];
 			// populate question heading with question
 			$question_panel_question.html(this_question.question);
@@ -205,7 +200,7 @@ $(document).ready(function(){
 					break;
 				case 'CONDITIONAL':
 					// TODO finish how conditionals work
-					next_content_answers += "<input name='answer_conditional_text' type='text' data-answer-id='' data-next-id=''></input>";
+					next_content_answers += "<input name='answer_conditional_text' type='text' data-answer-id='' data-conditional-type='' data-next-id=''></input>";
 					break;
 				case 'RECOM': {
 					$('#btn_save_progress, #btn_next_question').hide();
@@ -221,5 +216,10 @@ $(document).ready(function(){
 			// inject html with answer input(s)
 			$question_panel_answers.html(next_content_answers);
 		});
+	}
+
+	/* */
+	function regex_conditional(){
+		
 	}
 });

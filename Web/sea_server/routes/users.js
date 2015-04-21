@@ -67,9 +67,10 @@ var router = express.Router();
 				}
 			});
 	  // query for flowchart info and first question
-	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, item_id, item.label AS question, type AS item_type, option_id, option.label AS answer, next_id \
-	  	FROM flowchart, item, option \
-	  	WHERE flowchart.flowchart_id = $1 AND item_id = first_id AND first_id = parent_id', [cuestionario_id], function(err, result) {
+	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, first_id \
+									FROM flowchart \
+							  	WHERE flowchart.flowchart_id = $1', 
+							  	[cuestionario_id], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
 
@@ -82,7 +83,7 @@ var router = express.Router();
 	  		}
 	  		res.render('cuestionario_flujo', { 
 	  			title: 'Cuestionario con Flujo', 
-	  			pregunta: result.rows, 
+	  			flowchart: result.rows[0], 
 	  			locations: locations_list, 
 	  			current_user: current_user 
 	  		});
