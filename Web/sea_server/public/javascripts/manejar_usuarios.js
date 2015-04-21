@@ -123,38 +123,65 @@ $(document).ready(function(){
     });
   });
 
-  /* Open edit panel */
-  $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
-    $('#btn_edit, #heading_edit').show();
-    $('#btn_submit, #heading_create').hide();
-    $('#edit_panel').show();
-    $('#info_panel').hide();
+/* Open edit panel */
+$usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
+  $('#btn_edit, #heading_edit').show();
+  $('#btn_submit, #heading_create').hide();
+  $('#edit_panel').show();
+  $('#info_panel').hide();
+  $('#specialty_panel').hide();
 
+    var type = "Test";
     // contains usuario id
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
-    
+    console.log("The ususario is " );
+    console.log(this_usuario);
     $('#btn_edit').attr('data-id', usuario_id);
     $('#usuario_name').val(this_usuario.first_name);
     $('#usuario_lastname_paternal').val(this_usuario.last_name1);
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
     $('#usuario_email').val(this_usuario.email);
     $('#usuario_telefono').val(this_usuario.phone_number);
-    //$('#btn_user_type_text').text(this_usuario.type);
+
+
+    
+    if(this_usuario.type == 'agent')
+    {
+      type = 'Agente';
+    } 
+    else if (this_usuario.type == 'specialist')
+    {
+      type = 'Especialista';
+    } 
+    else 
+    {
+      type = 'Admin';
+    }
+
+    $('#btn_user_type_text').text(type);
+
+    if(type == 'Especialista')
+    {
+      populate_specialties();
+      $('#specialty_panel').show();
+    }
+
+
 
   });
 
-  /* PUTs edited ganadero information */
-  $('#btn_edit').on('click', function(){
-    console.log("editing");
-    var usuario_id = $(this).attr('data-id');
-    alert(usuario_id);
+/* PUTs edited ganadero information */
+$('#btn_edit').on('click', function(){
+
+  var usuario_id = $(this).attr('data-id');
+  alert(usuario_id);
   // get form data and conver to json format
   var $the_form = $('#form_manage_usuario');
   var form_data = $the_form.serializeArray();
   var new_usuario = ConverToJSON(form_data);
-    console.log(new_usuario);
+  console.log(new_usuario);
 
 
   // ajax call to update ganadero
@@ -179,7 +206,7 @@ $(document).ready(function(){
   });
 });
 
-  $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
+$('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -211,9 +238,10 @@ $(document).ready(function(){
 
   });
 
-  /* Populates info panel with $this_usuario information */
-  function populate_info_panel($this_usuario){
+/* Populates info panel with $this_usuario information */
+function populate_info_panel($this_usuario){
     // populate basic information panel
+    var type;
     $('#info_panel_heading').text($this_usuario.first_name + " " + $this_usuario.last_name1 + " " + $this_usuario.last_name2);
     if($this_usuario.middle_initial == null) {
       $('#usuario_info_name').text($this_usuario.first_name);
@@ -223,6 +251,22 @@ $(document).ready(function(){
     $('#usuario_info_lastname_paternal').text($this_usuario.last_name1);
     $('#usuario_info_lastname_maternal').text($this_usuario.last_name2);
     $('#usuario_info_contact').text($this_usuario.email + " " + $this_usuario.phone_number);
+
+
+    if($this_usuario.type == 'agent')
+    {
+      type = 'Agente';
+    } 
+    else if ($this_usuario.type == 'specialist')
+    {
+      type = 'Especialista';
+    } 
+    else 
+    {
+      type = 'Administrador';
+    }
+
+    $('#usuario_info_type').text(type);
 
     // populate associated locations panel
     var table_content = '';
@@ -261,36 +305,53 @@ $(document).ready(function(){
       // inject content string into html
       $usuarios_list.html(table_content);
     });
-  }
+}
 
- function populate_specialties(){
+function populate_specialties(){
 
   var user_id =  $('#btn_edit').attr('data-id');
-  console.log("User id is " + user_id);
   var matches = [];
-  // var agent_found = false;
-  // var table_content = '';
+  //find matches
   $.each(specialties_array, function(i){
-    if(user_id == specialties_array[i].user_id){      // agent_found = true;
-      console.log("User id is " + user_id +"and specialty id is " + specialties_array[i].user_id);
-       // table_content += '<tr><td>'+agentes_array[i].username+'</td></tr>';
-       matches.push(specialties_array[i]);
-    }
-  }); 
-
- console.log(matches);
+    if(user_id == specialties_array[i].user_id){      
+     matches.push(specialties_array[i]);
+   }
+ }); 
 
   var content = '';
+  var found = false;
+  var i = 0;
 
-      // for each item in JSON, add table row and cells
-      $.each(matches, function(i){
-        content += '<input';
-        content += "type='checkbox' name='caca' value'caca'>" + matches[i].name + " <br>";
+  //solid algorithm
+  $.each(all_specialties_array, function(i){
+    //for each specialty, check if it is present in the matches array
+    //if so then check property "checked" as true
+    $.each(matches, function(j){
+      if(matches[j].spec_id == all_specialties_array[i].spec_id)
+      {
+        found = true;
+      }
+      else
+      {
+            //do nothing
+          }
+        });
+    if(found)
+    {
+      content += '<input ';
+      content += "type='checkbox' checked='true'> " + all_specialties_array[i].spec_name + " <br>";
+    }
+    else
+    {
+      content += '<input ';
+      content += "type='checkbox'> " + all_specialties_array[i].spec_name + " <br>";
+    }
+    found = false;
+  });
 
-      });
 
-      $('#ramon').html(content);
-  
-  }
+  $('#specialist_categories_list').html(content);
+
+}
 
 });
