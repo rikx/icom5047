@@ -145,8 +145,6 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
     $('#usuario_email').val(this_usuario.email);
     $('#usuario_telefono').val(this_usuario.phone_number);
 
-
-    
     if(this_usuario.type == 'agent')
     {
       type = 'Agente';
@@ -167,8 +165,6 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
       populate_specialties();
       $('#specialty_panel').show();
     }
-
-
 
   });
 
