@@ -112,6 +112,7 @@ $(document).ready(function(){
 				break;
 			case 'CONDITIONAL':
 				// TODO finish how conditionals work
+				the_answer = answer_conditional();
 				break;
 			case 'RECOM': 
 				the_answer = the_question.text();
@@ -120,7 +121,7 @@ $(document).ready(function(){
 
 		// check if user selected or wrote an answer
 		var answer_value = the_answer.val();
-		if(answer_value == null || answer_value == '') {
+		if(answer_value === null || answer_value === '') {
 			alert("Por favor seleccione una contestacion o escriba en el espacio proveido.");
 		} else {
 			// create new question-answer pair to post in db
@@ -142,6 +143,11 @@ $(document).ready(function(){
 			update_next_question(the_answer.attr('data-next-id'));
 		}
 	});
+
+	/* */
+	function answer_conditional(){
+
+	}
 
 	/* Save (Abort) Survey progress */
 	$('#btn_save_progress').on('click', function(){
@@ -219,7 +225,11 @@ $(document).ready(function(){
 	}
 
 	/* */
-	function regex_conditional(){
+	function regex_conditional(item_label){
+
+		switch(item_label){
+
+		}
 		
 	}
 });
