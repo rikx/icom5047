@@ -11,7 +11,7 @@ $(document).ready(function(){
   var categorias_array = JSON.parse($localizaciones_list.attr('data-categorias'));
   var agentes_array =  JSON.parse($localizaciones_list.attr('data-agentes'));
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
-  //var all_categorias_array = JSON.parse($('#categorias_panel').attr('data-all-categorias'));
+  var all_categorias_array = JSON.parse($('#categoria_panel').attr('data-all-categorias'));
 
   // initial info panel population
   populate_info_panel(localizaciones_array[0]);
@@ -95,15 +95,15 @@ $(document).ready(function(){
       agentes_content += "<a class='btn btn-sm btn-danger' data-toggle='tooltip' type='button href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-minus'></i></a></div></td></tr>";
     });
     // Add table row with adding associated agent button
-      agentes_content += '<tr><td><strong>Agente Nuevo </strong>';
-      agentes_content += "<a id='btn_add_associate_agente' class='btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a></td></tr>";
+    agentes_content += '<tr><td><strong>Agente Nuevo </strong>';
+    agentes_content += "<a id='btn_add_associate_agente' class='btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a></td></tr>";
     // inject content stirngs into html
     $('#associated_agentes').html(agentes_content);
   });
 
 
-  /* Add associated ganadero */
-  $('#associated_ganaderos').on('click', 'tr td a#btn_add_associate_ganadero', function(e){
+/* Add associated ganadero */
+$('#associated_ganaderos').on('click', 'tr td a#btn_add_associate_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
     $('#edit_panel').hide();
@@ -112,14 +112,14 @@ $(document).ready(function(){
     $('#add_ganaderos_dropdown_panel').show();
   });
 
-  /* */
-  $('#btn_add_ganadero').on('click', function(){
-    
+/* */
+$('#btn_add_ganadero').on('click', function(){
+
     // ajax POST call to assign ganadero as owner or manager of location
   });
 
-  /* Change add associated ganadero dropdown selected value */
-  $('#list_associated_ganadero').on('click', 'li a', function(e){
+/* Change add associated ganadero dropdown selected value */
+$('#list_associated_ganadero').on('click', 'li a', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -128,8 +128,8 @@ $(document).ready(function(){
   });
 
 
-  /* Add associated agente  */
-  $('#associated_agentes').on('click', 'tr td a#btn_add_associate_agente', function(e){
+/* Add associated agente  */
+$('#associated_agentes').on('click', 'tr td a#btn_add_associate_agente', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -139,14 +139,14 @@ $(document).ready(function(){
     $('#add_ganaderos_dropdown_panel').hide();
   });
 
-  /* */
-  $('#btn_add_agente').on('click', function(){
-    
+/* */
+$('#btn_add_agente').on('click', function(){
+
     //ajax POST call to assign a user to a location 
   });
 
-  /* Change add associated agente dropdown selected value */
-  $('#list_associated_agente').on('click', 'li a', function(e){
+/* Change add associated agente dropdown selected value */
+$('#list_associated_agente').on('click', 'li a', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -154,8 +154,8 @@ $(document).ready(function(){
     $('#btn_associated_agente').val($(this).attr('data-id'));
   });
 
-  /* Open info panel */
-  $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
+/* Open info panel */
+$localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     // prevents link from firing
     e.preventDefault();
     $('#info_panel_heading').show();
@@ -180,7 +180,7 @@ $(document).ready(function(){
 
     // Populate info panel with selected item's information
     populate_info_panel(this_location);
- });
+  });
 
 /* Add localizacion */
 $('#btn_add_localizacion').on('click', function(){
@@ -255,6 +255,7 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
     $(".user_type_dropdown:first-child").text($(this).text());
     $(".user_type_dropdown:first-child").val($(this).text());
   });
+  populate_categories_edit();
 });
 
 /* PUTs edited location information */
@@ -277,7 +278,7 @@ $('#btn_edit').on('click', function(){
       alert("Localización ha sido editada en el sistema.");
       // update locations list after posting 
       populate_localizaciones();
-     },
+    },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
       console.log( "Error: " + errorThrown );
@@ -289,6 +290,7 @@ $('#btn_edit').on('click', function(){
 
 /* Populates info panel with $this_location's information */
 function populate_info_panel($this_location){
+  populate_categories_info($this_location.location_id);
   $('#info_panel_heading').text($this_location.location_name);
   $('#localizacion_info_name').text($this_location.location_name);
   $('#localizacion_info_license').text($this_location.license);
@@ -374,11 +376,11 @@ function populate_localizaciones(){
       // populate info panel with first location's information
       //populate_info_panel(localizaciones_array[0]);
     });
-  };
+};
 
-  /* Populates dropdowns with all ganaderos and users in system */
-  function populate_dropdowns(){
-    var list_content = '';
+/* Populates dropdowns with all ganaderos and users in system */
+function populate_dropdowns(){
+  var list_content = '';
     // ajax call to GET all ganaderos and usuarios
     $.getJSON('http://localhost:3000/modify_location_dropdowns', function(data) {
       // populate ganaderos dropdown
@@ -397,4 +399,117 @@ function populate_localizaciones(){
       $('#list_associated_agente').html(list_content);
     });
   }
+
+
+  function populate_categories_info(variable){
+
+    var location_id =  variable;
+    var matches = [];
+  //find matches
+  console.log("locations is ");
+  console.log(categorias_array);
+  console.log("location id is ");
+  console.log(location_id);
+  console.log("all categories is ");
+  console.log(all_categorias_array);
+  $.each(categorias_array, function(i){
+    if(location_id == categorias_array[i].location_id){      
+     matches.push(categorias_array[i]);
+   }
+ }); 
+
+  console.log("matches is ");
+  console.log(matches);
+
+  var content = '';
+  var found = false;
+  var i = 0;
+  //solid algorithm
+  $.each(all_categorias_array, function(i){
+    //for each specialty, check if it is present in the matches array
+    //if so then check property "checked" as true
+    $.each(matches, function(j){
+      if(matches[j].category_id == all_categorias_array[i].category_id)
+      {
+        found = true;
+      }
+      else
+      {
+            //do nothing
+          }
+        });
+    if(found)
+    {
+      content += '<li> ';
+      content += "" + all_categorias_array[i].category_name + "</li>";
+    }
+    else
+    {
+      // content += '<input ';
+      // content += "type='checkbox'> " + all_categorias_array[i].category_name + " <br>";
+    }
+    found = false;
+  });
+
+  
+  $('#categories_list').html(content);
+
+}
+
+
+function populate_categories_edit(){
+
+  var location_id =  $('#btn_edit').attr('data-id');
+  var matches = [];
+  //find matches
+  console.log("locations is ");
+  console.log(categorias_array);
+  console.log("location id is ");
+  console.log(location_id);
+  console.log("all categories is ");
+  console.log(all_categorias_array);
+  $.each(categorias_array, function(i){
+    if(location_id == categorias_array[i].location_id){      
+     matches.push(categorias_array[i]);
+   }
+ }); 
+
+  console.log("matches is ");
+  console.log(matches);
+
+  var content = '';
+  var found = false;
+  var i = 0;
+  //solid algorithm
+  $.each(all_categorias_array, function(i){
+    //for each specialty, check if it is present in the matches array
+    //if so then check property "checked" as true
+    $.each(matches, function(j){
+      if(matches[j].category_id == all_categorias_array[i].category_id)
+      {
+        found = true;
+      }
+      else
+      {
+            //do nothing
+          }
+        });
+    if(found)
+    {
+       content += '<input ';
+       content += "type='checkbox' checked='true'> " + all_categorias_array[i].category_name + " <br>";
+    }
+    else
+    {
+       content += '<input ';
+       content += "type='checkbox'> " + all_categorias_array[i].category_name + " <br>";
+    }
+    found = false;
+  });
+
+  
+  $('#categories_list').html(content);
+
+}
+
 });
