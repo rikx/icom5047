@@ -5,10 +5,12 @@ var router = express.Router();
  * GET home (login) page
  */
 router.get('/', function(req, res, next) {
+	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
 
   if (!username) {
+  	user_id = req.session.user_id = '';
     username = req.session.username = '';
     user_type = req.session.user_type = '';
     res.render('index', { title: 'Servicio De Extension Agricola'});
@@ -40,8 +42,10 @@ router.post('/login', function(req, res, next) {
 		    if(result.rowCount == 0){
 					res.send({user_found: false});
   			} else {
-				  var user_type = req.session.user_type = result.rows[0].type;
-				  var username = req.session.username = result.rows[0].username;
+  				var user = result.rows[0];
+  				var user_id = req.session.user_id = user.user_id;
+  				var username = req.session.username = user.username;
+				  var user_type = req.session.user_type = user.type;
 				  res.send({redirect: '/users/'+user_type});
   			}
 		  });

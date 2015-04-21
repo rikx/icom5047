@@ -143,7 +143,7 @@ $(document).ready(function(){
 	$('#btn_save_progress').on('click', function(){
 		// ajax post
 			//ajax success
-			var save = prompt('Guardar progreso?');
+			var save = confirm('Guardar progreso?');
 			if(save){
 				// redirect to user home
 				window.location.href = '/users';

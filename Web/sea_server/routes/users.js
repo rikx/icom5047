@@ -5,10 +5,12 @@ var router = express.Router();
  *
  */
  router.get('/', function(req, res, next) {
+ 	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
 
   if (!username) {
+  	user_id = req.session.user_id = '';
     username = req.session.username = '';
     user_type = req.session.user_type = '';
     res.redirect('/');
@@ -74,7 +76,16 @@ var router = express.Router();
 	  	if(err) {
 	  		return console.error('error running query', err);
 	  	} else {
-	  		res.render('cuestionario_flujo', { title: 'Cuestionario con Flujo', pregunta: result.rows, locations: locations_list});
+	  		var current_user = {
+	  			user_id: req.session.user_id,
+	  			username: req.session.username
+	  		}
+	  		res.render('cuestionario_flujo', { 
+	  			title: 'Cuestionario con Flujo', 
+	  			pregunta: result.rows, 
+	  			locations: locations_list, 
+	  			current_user: current_user 
+	  		});
 	  	}
 	  });
 	});

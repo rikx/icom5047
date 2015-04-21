@@ -33,7 +33,8 @@ block content
 								span#take_survey_date(class='form-control', disabled)
 							.form-group
 								label(for='take_survey_user') Llenado por:
-								span#take_survey_user(class='form-control', disabled)
+								span#take_survey_user(class='form-control', disabled, data-id=current_user.user_id)
+									= current_user.username
 							.form-group
 								label(for='take_survey_location') Localización:
 								#scrollable-dropdown-menu(data-locations=locations) 
