@@ -14,6 +14,8 @@ $(document).ready(function(){
   populate_info_panel(usuarios_array[0]);
 
   $('#usuario_type').hide();
+  $('#specialty_panel').hide();
+
 
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';
@@ -63,6 +65,10 @@ $(document).ready(function(){
     $('#btn_user_type_text').text($(this).text()+' ');
     $('#btn_user_type').val($(this).attr('data-usario-type'));
     $('#usuario_type').val( $('#btn_user_type_text').text().toLowerCase());
+    $('#specialty_panel').show();
+    console.log(specialties_array);
+    populate_specialties();
+
   });
 
   /* Open add panel */
@@ -127,7 +133,6 @@ $(document).ready(function(){
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
-    //console.log(this_usuario);
     
     $('#btn_edit').attr('data-id', usuario_id);
     $('#usuario_name').val(this_usuario.first_name);
@@ -256,4 +261,35 @@ $(document).ready(function(){
       $usuarios_list.html(table_content);
     });
   }
+
+ function populate_specialties(){
+
+  var user_id =  $('#btn_edit').attr('data-id');
+  console.log("User id is " + user_id);
+  var matches = [];
+  // var agent_found = false;
+  // var table_content = '';
+  $.each(specialties_array, function(i){
+    if(user_id == specialties_array[i].user_id){      // agent_found = true;
+      console.log("User id is " + user_id +"and specialty id is " + specialties_array[i].user_id);
+       // table_content += '<tr><td>'+agentes_array[i].username+'</td></tr>';
+       matches.push(specialties_array[i]);
+    }
+  }); 
+
+ console.log(matches);
+
+  var content = '';
+
+      // for each item in JSON, add table row and cells
+      $.each(matches, function(i){
+        content += '<input';
+        content += "type='checkbox' name='caca' value'caca'>" + matches[i].name + " <br>";
+
+      });
+
+      $('#ramon').html(content);
+  
+  }
+
 });
