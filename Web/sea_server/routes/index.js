@@ -38,8 +38,7 @@ router.post('/login', function(req, res, next) {
 		      return console.error('error running query', err);
 		    }
 		    if(result.rowCount == 0){
-  				res.statusCode = 404;
-					res.send("User not found.");
+					res.send({user_found: false});
   			} else {
 				  var user_type = req.session.user_type = result.rows[0].type;
 				  var username = req.session.username = result.rows[0].username;

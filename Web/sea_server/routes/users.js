@@ -80,7 +80,23 @@ var router = express.Router();
 	});
 });
 
-/* GET Admin Home. */
+/* 
+ * GET Agente Home
+ */
+router.get('/agent', function(req, res, next) {
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (username != null && user_type == 'agent') {
+  	res.render('agente', { title: 'Agente Home'});
+  } else {
+  	res.redirect('/users');
+  }
+});
+
+/* 
+ * GET Admin Home
+ */
 router.get('/admin', function(req, res, next) {
 	var username = req.session.username;
 	var user_type = req.session.user_type;

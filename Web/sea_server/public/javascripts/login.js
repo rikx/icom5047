@@ -20,6 +20,9 @@ $(document).ready(function() {
 	    dataType: "json",
 
 	    success: function(data) {
+	    	if(typeof data.user_found == 'boolean'){
+	    		alert('Usuario "'+new_user.input_username+'" no existe en el sistema. Verifique que el nombre de usuario sea correcto.');
+	    	}
 			 	if(typeof data.redirect == 'string') {
 			    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
 			  }
