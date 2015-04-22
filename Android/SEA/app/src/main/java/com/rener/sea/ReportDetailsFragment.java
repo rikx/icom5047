@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
 /**
  * An Android fragment class used to manage the display of data pertaining to a report.
  */
@@ -33,7 +31,6 @@ public class ReportDetailsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.report_details_fragment, container, false);
-		Context context = view.getContext();
 
 		//Set the static views
 		textName = (TextView) view.findViewById(R.id.report_text_name);
@@ -108,8 +105,8 @@ public class ReportDetailsFragment extends Fragment {
 
 	/**
 	 * Set this fragment's corresponding Report object by setting it's views with the report data.
-	 * @param report
-	 * @return
+	 * @param report the report associated with this details fragment
+	 * @return the report that was set
 	 */
 	public Report setReport(Report report) {
 		this.report = report;

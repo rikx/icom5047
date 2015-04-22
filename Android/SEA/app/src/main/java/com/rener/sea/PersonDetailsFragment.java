@@ -24,7 +24,7 @@ public class PersonDetailsFragment extends Fragment {
 	private TextView textName, textEmail, textPhoneNumber;
 	private EditText editFirstName, editMiddleName, editLastName1, editLastName2;
 	private EditText editEmail, editPhoneNumber;
-	private boolean viewCreated, editable;
+	private boolean viewCreated;
 	private Menu options;
 
 	@Override
@@ -163,8 +163,8 @@ public class PersonDetailsFragment extends Fragment {
 
 	/**
 	 * Set this fragment's corresponding Person object by setting it's views with the person data
-	 * @param person
-	 * @return
+	 * @param person the person to be associated with this details fragment
+	 * @return the person that was set
 	 */
 	public Person setPerson(Person person) {
 		this.person = person;

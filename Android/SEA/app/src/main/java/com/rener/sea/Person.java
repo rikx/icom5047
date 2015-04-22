@@ -1,22 +1,12 @@
 package com.rener.sea;
 
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.support.annotation.NonNull;
 
 /**
  * A class representing a person.
  */
 public class Person implements Comparable<Person> {
 
-	public final static String PERSON_ID = "person_id";
-	public final static String FIRST_NAME = "first_name";
-	public final static String MIDDLE_NAME = "middle_name";
-	public final static String LAST_NAME1 = "last_name1";
-	public final static String LAST_NAME2 = "last_name2";
-	public final static String EMAIL = "email";
-	public final static String PHONE_NUMBER = "phone_number";
 	private long id;
 	private String first_name = "";
 	private String middle_name = "";
@@ -138,9 +128,8 @@ public class Person implements Comparable<Person> {
 	}
 
 	@Override
-	public int compareTo(Person other) {
-		int compare = toString().compareTo(other.toString());
-		return compare;
+	public int compareTo(@NonNull Person other) {
+		return toString().compareTo(other.toString());
 	}
 
 	/**

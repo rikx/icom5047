@@ -9,7 +9,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -34,7 +36,7 @@ import java.util.List;
  */
 public class SurveyActivity extends FragmentActivity implements AdapterView
 		.OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
-		TextView.OnEditorActionListener {
+		TextView.OnEditorActionListener, TextWatcher {
 
 	private static final String GREATER_THAN_REGEX = "gt\\d+(\\.\\d+)?";
 	private static final String LESS_THAN_REGEX = "lt\\d+(\\.\\d+)?";
@@ -60,6 +62,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
 		//Set the static views
 		editName = (EditText) findViewById(R.id.survey_edit_name);
+		editName.addTextChangedListener(this);
 		editNotes = (EditText) findViewById(R.id.survey_edit_notes);
 		spinnerLocation = (Spinner) findViewById(R.id.survey_location_spinner);
 		spinnerSubject = (Spinner) findViewById(R.id.survey_subject_spinner);
@@ -145,10 +148,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		return super.onOptionsItemSelected(item);
 	}
 
-	public boolean isBound() {
-		return mBound;
-	}
-
 	@Override
 	public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 		if(i != 0) {
@@ -178,7 +177,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
 	private void setServiceData() {
 		List<Location> locations = new ArrayList<>(dbService.getLocations());
-		List<Person> people = new ArrayList(dbService.getPeople());
+		List<Person> people = new ArrayList<>(dbService.getPeople());
 		List<Flowchart> flowcharts = new ArrayList<>(dbService.getFlowcharts());
 		Collections.sort(people);
 		Collections.sort(flowcharts);
@@ -231,50 +230,55 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		TextView textQuestion = new TextView(this);
 		textQuestion.setText(question.getLabel());
 		String type = question.getType();
-		if(type.equals(Item.BOOLEAN) || type.equals(Item.MULTIPLE_CHOICE)) {
-			progressLayout.addView(textQuestion);
-			RadioGroup group = new RadioGroup(this);
-			group.setOrientation(RadioGroup.VERTICAL);
-			group.setOnCheckedChangeListener(this);
-			for(int i=0; i<options.size(); i++) {
-				Option o = options.get(i);
-				RadioButton button = new RadioButton(this);
-				button.setId(i);
-				button.setText(o.getLabel());
-				group.addView(button);
+		switch (type) {
+			case Item.BOOLEAN:
+			case Item.MULTIPLE_CHOICE:
+				progressLayout.addView(textQuestion);
+				RadioGroup group = new RadioGroup(this);
+				group.setOrientation(RadioGroup.VERTICAL);
+				group.setOnCheckedChangeListener(this);
+				for (int i = 0; i < options.size(); i++) {
+					Option o = options.get(i);
+					RadioButton button = new RadioButton(this);
+					button.setId(i);
+					button.setText(o.getLabel());
+					group.addView(button);
+				}
+				progressLayout.addView(group);
+				path.addEntry(question, null);
+				break;
+			case Item.OPEN: {
+				progressLayout.addView(textQuestion);
+				EditText input = new EditText(this);
+				input.setInputType(InputType.TYPE_CLASS_TEXT);
+				input.setHint(getString(R.string.open_hint));
+				input.setOnEditorActionListener(this);
+				input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
+				progressLayout.addView(input);
+				path.addEntry(question, null);
+				break;
 			}
-			progressLayout.addView(group);
-			path.addEntry(question, null);
-		}
-		else if(type.equals(Item.OPEN)) {
-			progressLayout.addView(textQuestion);
-			EditText input = new EditText(this);
-			input.setInputType(InputType.TYPE_CLASS_TEXT);
-			input.setHint(getString(R.string.open_hint));
-			input.setOnEditorActionListener(this);
-			input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
-			progressLayout.addView(input);
-			path.addEntry(question, null);
-		}
-		else if(type.equals(Item.CONDITIONAL)) {
-			EditText input = new EditText(this);
-			input.setInputType(InputType.TYPE_CLASS_NUMBER);
-			input.setHint(getString(R.string.open_hint));
-			input.setOnEditorActionListener(this);
-			input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
-			progressLayout.addView(input);
-			path.addEntry(question, null);
-		}
-		else if(type.equals(Item.RECOMMENDATION)) {
-			progressLayout.addView(textQuestion);
-			Option only = question.getOptions().get(0);
-			path.addEntry(question, only);
-			Item next = only.getNext();
-			newQuestion(next);
-		}
-		else {
-			surveyEnded = true;
-			checkSubmittable();
+			case Item.CONDITIONAL: {
+				EditText input = new EditText(this);
+				input.setInputType(InputType.TYPE_CLASS_NUMBER);
+				input.setHint(getString(R.string.open_hint));
+				input.setOnEditorActionListener(this);
+				input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
+				progressLayout.addView(input);
+				path.addEntry(question, null);
+				break;
+			}
+			case Item.RECOMMENDATION:
+				progressLayout.addView(textQuestion);
+				Option only = question.getOptions().get(0);
+				path.addEntry(question, only);
+				Item next = only.getNext();
+				newQuestion(next);
+				break;
+			default:
+				surveyEnded = true;
+				checkSubmittable();
+				break;
 		}
 	}
 
@@ -318,6 +322,21 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		editInput.setEnabled(false);
 		handleUserInput(input);
 		return true;
+	}
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		checkSubmittable();
+	}
+
+	@Override
+	public void afterTextChanged(Editable s) {
+
 	}
 
 	private void handleUserInput(String input) {
