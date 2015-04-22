@@ -110,10 +110,12 @@ $(document).ready(function(){
 			case 'OPEN':
 				the_answer = $('#answer_open_text');
 				break;
-			case 'CONDITIONAL':
+			case 'CONDITIONAL': {
 				// TODO finish how conditionals work
-				the_answer = answer_conditional();
+				the_answer = $('#answer_conditional_text');
+				regex_conditional(the_answer.val(), the_answer);
 				break;
+			}
 			case 'RECOM': 
 				the_answer = the_question.text();
 				break;
@@ -132,7 +134,9 @@ $(document).ready(function(){
 				option_id: the_answer.attr('data-answer-id'),
 				answer: answer_value
 			};
-
+			console.log('answer info');
+			console.log(the_answer.attr('data-answer-id'));
+			console.log(the_answer.attr('data-next-id'));
 			// ajax post
 
 			// push new question-answer pair to array
@@ -144,9 +148,59 @@ $(document).ready(function(){
 		}
 	});
 
-	/* */
-	function answer_conditional(){
+	/* Returns answer_id (option_id) of matching */
+	function regex_conditional(user_input, input_field){
+		var possible_answers = JSON.parse($question_panel_answers.attr('data-answers'));
+		var reg_ex, comp_value;
 
+		$.each(possible_answers, function(){
+			reg_ex = /lt\d+/;
+			comp_value = this.answer.match(/\d+/)[0];
+
+			if(reg_ex.test(this.answer)){
+				if(user_input < comp_value){
+					input_field.attr('data-answer-id', this.option_id);
+					input_field.attr('data-next-id', this.next_id);
+					return;
+				}
+			}
+			reg_ex = /gt\d+/;
+			if(reg_ex.test(this.answer)){
+				if(user_input > comp_value){
+					input_field.attr('data-answer-id', this.option_id);
+					input_field.attr('data-next-id', this.next_id);
+					return;
+				}
+			}
+			reg_ex = /eq\d+/;
+			if(reg_ex.test(this.answer)){
+				if(user_input == comp_value){
+					input_field.attr('data-answer-id', this.option_id);
+					input_field.attr('data-next-id', this.next_id);
+					return;
+				}
+			}
+			reg_ex = /le\d+/;
+			if(reg_ex.test(this.answer)){
+				if(user_input <= comp_value){
+					input_field.attr('data-answer-id', this.option_id);
+					input_field.attr('data-next-id', this.next_id);
+					return;
+				}
+			}
+			reg_ex = /ge\d+/;
+			if(reg_ex.test(this.answer)){
+				if(user_input >= comp_value){
+					input_field.attr('data-answer-id', this.option_id);
+					input_field.attr('data-next-id', this.next_id);
+					return;
+				}
+			}
+			reg_ex = /rg(\[|\C)\d+\d+(\]|\))/;
+			if(reg_ex.test(this.answer)){
+				//TODO
+			}
+		});
 	}
 
 	/* Save (Abort) Survey progress */
@@ -204,10 +258,11 @@ $(document).ready(function(){
 				case 'OPEN':
 					next_content_answers += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+this_question.option_id+"' data-next-id='"+this_question.next_id+"'></textarea>";
 					break;
-				case 'CONDITIONAL':
+				case 'CONDITIONAL': {
 					// TODO finish how conditionals work
-					next_content_answers += "<input name='answer_conditional_text' type='text' data-answer-id='' data-conditional-type='' data-next-id=''></input>";
+					next_content_answers += "<input id='answer_conditional_text' name='answer_conditional_text' type='text' data-answer-id='' data-next-id=''></input>";
 					break;
+				}
 				case 'RECOM': {
 					$('#btn_save_progress, #btn_next_question').hide();
 					$('#btn_end_survey').show();
@@ -219,17 +274,10 @@ $(document).ready(function(){
 					return;
 				}
 			}
+			// put possible answers in data attribute
+			$question_panel_answers.attr('data-answers', JSON.stringify(data.question_family));
 			// inject html with answer input(s)
 			$question_panel_answers.html(next_content_answers);
 		});
-	}
-
-	/* */
-	function regex_conditional(item_label){
-
-		switch(item_label){
-
-		}
-		
 	}
 });
