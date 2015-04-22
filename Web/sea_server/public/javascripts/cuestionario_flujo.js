@@ -123,7 +123,7 @@ $(document).ready(function(){
 
 		// check if user selected or wrote an answer
 		var answer_value = the_answer.val();
-		if(answer_value === null || answer_value === '') {
+		if(answer_value === null || answer_value === undefined || answer_value === '') {
 			alert("Por favor seleccione una contestacion o escriba en el espacio proveido.");
 		} else {
 			// create new question-answer pair to post in db
@@ -134,7 +134,7 @@ $(document).ready(function(){
 				option_id: the_answer.attr('data-answer-id'),
 				answer: answer_value
 			};
-			
+
 			// ajax post
 
 			// push new question-answer pair to array
