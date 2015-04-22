@@ -155,7 +155,7 @@ $(document).ready(function(){
 
 		$.each(possible_answers, function(){
 			// get number to compare with
-			comp_value = this.answer.match(/\d+/)[0];
+			comp_value = this.answer.match(/\d+(\.\d+)?/)[0];
 
 			// less than
 			reg_ex = /lt\d+(\.\d+)?/;
@@ -267,7 +267,7 @@ $(document).ready(function(){
 					break;
 				case 'CONDITIONAL': {
 					// TODO finish how conditionals work
-					next_content_answers += "<input id='answer_conditional_text' name='answer_conditional_text' type='text' data-answer-id='' data-next-id=''></input>";
+					next_content_answers += "<input id='answer_conditional_text' name='answer_conditional_text' type='number' min='1.0' pattern='\d+(\.\d+)?' data-answer-id='' data-next-id=''></input>";
 					break;
 				}
 				case 'RECOM': {
