@@ -15,7 +15,7 @@ $(document).ready(function(){
   populate_info_panel(usuarios_array[0]);
 
   $('#usuario_type').hide();
-  $('#specialty_panel').hide();
+  
 
 
   $('#btn_home').on('click', function(){
@@ -68,7 +68,7 @@ $(document).ready(function(){
     $('#usuario_type').val( $('#btn_user_type_text').text().toLowerCase());
     $('#specialty_panel').show();
     console.log(specialties_array);
-    populate_specialties();
+    
 
   });
 
@@ -131,7 +131,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
   $('#info_panel').hide();
   $('#specialty_panel').hide();
 
-    var type = "Test";
+  var type = "Test";
     // contains usuario id
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
@@ -162,7 +162,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
 
     if(type == 'Especialista')
     {
-      populate_specialties();
+      populate_specialties_edit();
       $('#specialty_panel').show();
     }
 
@@ -272,6 +272,9 @@ function populate_info_panel($this_usuario){
       }
     });  
     $('#usuario_locations').html(table_content);
+
+    $('#specialty_panel').show();
+    populate_specialties_info($this_usuario);
   }
 
   /* */
@@ -303,7 +306,7 @@ function populate_info_panel($this_usuario){
     });
 }
 
-function populate_specialties(){
+function populate_specialties_edit(){
 
   var user_id =  $('#btn_edit').attr('data-id');
   var matches = [];
@@ -317,7 +320,6 @@ function populate_specialties(){
   var content = '';
   var found = false;
   var i = 0;
-
   //solid algorithm
   $.each(all_specialties_array, function(i){
     //for each specialty, check if it is present in the matches array
@@ -345,6 +347,56 @@ function populate_specialties(){
     found = false;
   });
 
+  $('#specialist_categories_list').html(content);
+
+}
+
+function populate_specialties_info(usuario){
+
+  var user_id =  usuario.user_id;
+  var matches = [];
+  //find matches
+  console.log(user_id);
+  $.each(specialties_array, function(i){
+    if(user_id == specialties_array[i].user_id){      
+     matches.push(specialties_array[i]);
+   }
+ }); 
+
+  var content = '';
+  var found = false;
+  var i = 0;
+
+  console.log("matches is ");
+  console.log(matches);
+  //solid algorithm
+  $.each(all_specialties_array, function(i){
+    //for each specialty, check if it is present in the matches array
+    //if so then check property "checked" as true
+    $.each(matches, function(j){
+      if(matches[j].spec_id == all_specialties_array[i].spec_id)
+      {
+        found = true;
+      }
+      else
+      {
+            //do nothing
+          }
+        });
+    if(found)
+    {
+       content += '<li> ';
+      content += "" + all_specialties_array[i].spec_name + "</li>";
+    }
+    else
+    {
+     //do nothing
+    }
+    found = false;
+  });
+
+  console.log("content is ");
+  console.log(content);
 
   $('#specialist_categories_list').html(content);
 
