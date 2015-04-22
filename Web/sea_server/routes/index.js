@@ -67,6 +67,10 @@ router.get('/logout', function(req, res, next) {
 	});
 });
 
+/* POST answered survey
+ *
+ */
+
 /* GET all ganaderos and users
  * For use in manejar localizaciones dropdowns
  */

@@ -158,7 +158,7 @@ $(document).ready(function(){
 			comp_value = this.answer.match(/\d+/)[0];
 
 			// less than
-			reg_ex = /lt\d+/;
+			reg_ex = /lt\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				if(user_input < comp_value){
 					input_field.attr('data-answer-id', this.option_id);
@@ -167,7 +167,7 @@ $(document).ready(function(){
 				}
 			}
 			// greater than
-			reg_ex = /gt\d+/;
+			reg_ex = /gt\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				if(user_input > comp_value){
 					input_field.attr('data-answer-id', this.option_id);
@@ -176,7 +176,7 @@ $(document).ready(function(){
 				}
 			}
 			// equal
-			reg_ex = /eq\d+/;
+			reg_ex = /eq\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				if(user_input == comp_value){
 					input_field.attr('data-answer-id', this.option_id);
@@ -185,7 +185,7 @@ $(document).ready(function(){
 				}
 			}
 			// less or equal than
-			reg_ex = /le\d+/;
+			reg_ex = /le\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				if(user_input <= comp_value){
 					input_field.attr('data-answer-id', this.option_id);
@@ -194,7 +194,7 @@ $(document).ready(function(){
 				}
 			}
 			// greater or equal to
-			reg_ex = /ge\d+/;
+			reg_ex = /ge\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				if(user_input >= comp_value){
 					input_field.attr('data-answer-id', this.option_id);
@@ -203,7 +203,7 @@ $(document).ready(function(){
 				}
 			}
 			// within range
-			reg_ex = /rg(\[|\C)\d+\d+(\]|\))/;
+			reg_ex = /rg(\[|\C)\d+(\.\d+)?,\d+(\.\d+)?(\]|\))/;
 			if(reg_ex.test(this.answer)){
 				//TODO
 			}
