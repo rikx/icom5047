@@ -22,6 +22,7 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
 		this.reports = reports;
 	}
 
+	//TODO: review this method
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;

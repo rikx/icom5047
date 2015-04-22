@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -35,7 +34,7 @@ import java.util.List;
  */
 public class SurveyActivity extends FragmentActivity implements AdapterView
 		.OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
-		TextView.OnEditorActionListener, View.OnClickListener {
+		TextView.OnEditorActionListener {
 
 	private static final String GREATER_THAN_REGEX = "gt\\d+(\\.\\d+)?";
 	private static final String LESS_THAN_REGEX = "lt\\d+(\\.\\d+)?";
@@ -47,9 +46,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	private Report report;
 	private EditText editName, editNotes;
 	private Spinner spinnerLocation, spinnerSubject, spinnerFlowchart;
-	private boolean viewCreated;
 	private Path path;
 	private LinearLayout progressLayout;
+	private boolean surveyEnded = false;
+	private MenuItem submitItem;
 
 
 	@Override
@@ -68,7 +68,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		progressLayout = (LinearLayout) findViewById(R.id.survey_progress_layout);
 
 		report = new Report();
-		viewCreated = true;
     }
 
 	@Override
@@ -121,9 +120,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     @Override
     public void onBackPressed() {
-	    dbService.getFlowcharts().remove(0);
-	    dbService.getLocations().remove(0);
-	    dbService.getPeople().remove(0);
 	    startActivity(new Intent(this, MainActivity.class));
 	    finish();
     }
@@ -132,6 +128,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.survey_activity_actions, menu);
+		submitItem = menu.findItem(R.id.save_report);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -139,10 +136,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.save_report :
-				//TODO: handle save report
+				submit();
 				break;
 			case R.id.discard_report :
-				//TODO: handle discard report
+				onBackPressed();
 				break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -170,12 +167,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 					report.setLocation(location);
 					break;
 			}
+			checkSubmittable();
 		}
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> adapterView) {
-
+		checkSubmittable();
 	}
 
 	private void setServiceData() {
@@ -275,12 +273,20 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 			newQuestion(next);
 		}
 		else {
-			Button buttonSubmit = new Button(this);
-			buttonSubmit.setText(getString(R.string.submit));
-			buttonSubmit.setOnClickListener(this);
-			//path.addEntry(question, null);
-			progressLayout.addView(buttonSubmit);
+			surveyEnded = true;
+			checkSubmittable();
 		}
+	}
+
+	private void checkSubmittable() {
+		boolean submittable =
+						(!editName.getText().toString().equals("") &&
+						spinnerLocation.getSelectedItemPosition() != 0 &&
+						spinnerSubject.getSelectedItemPosition() != 0 &&
+						spinnerFlowchart.getSelectedItemPosition() != 0 &&
+								surveyEnded);
+		submitItem.setVisible(submittable);
+
 	}
 
 	private void questionAnswered(Item question, Option answer) {
@@ -324,48 +330,57 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		else if(type.equals(Item.CONDITIONAL)) {
 			//TODO: validate input
 			double d = Double.valueOf(input);
-			handleConditional(d, item.getOptions());
-		}
-	}
-
-	@Override
-	public void onClick(View view) {
-		Button clicked = (Button) view;
-		if(clicked.getText().toString().equals(getString(R.string.submit))) {
-			submit();
+			Option option = handleConditional(d, item.getOptions());
+			questionAnswered(item, option, input);
 		}
 	}
 
 	private Option handleConditional(double input, List<Option> options) {
-		Option option = null;
 		for(Option o : options) {
 			String label = o.getLabel();
 			if(label.matches(LESS_THAN_REGEX)) {
-				//TODO: extract the operand
-				double op = 0;
-				if(input < op) option = o;
+				String str = label.substring(2, label.length());
+				double op = Double.valueOf(str);
+				if(input < op) return o;
 			}
 			else if(label.matches(LESS_EQUAL_REGEX)) {
-				//TODO: extract the operand
-				double op = 0;
-				if(input <= op) option = o;
+				String str = label.substring(2, label.length());
+				double op = Double.valueOf(str);
+				if(input <= op) return o;
 			}
 			else if(label.matches(GREATER_THAN_REGEX)) {
-				//TODO: extract the operand
-				double op = 0;
-				if(input > op) option = o;
+				String str = label.substring(2, label.length());
+				double op = Double.valueOf(str);
+				if(input > op) return o;
 			}
 			else if(label.matches(GREATER_EQUAL_REGEX)) {
-				//TODO: extract the operand
-				double op = 0;
-				if(input >= op) option = o;
+				String str = label.substring(2, label.length());
+				double op = Double.valueOf(str);
+				if(input >= op) return o;
 			}
 			else if(label.matches(RANGE_REGEX)) {
-				//Determine the range
-				//Check if the input is within the range
+				char left = label.charAt(2);
+				char right = label.charAt(label.length()-1);
+				int comma = label.indexOf(',');
+				String strA = label.substring(3, comma);
+				String strB = label.substring(comma+1, label.length()-1);
+				double opA = Double.valueOf(strA);
+				double opB = Double.valueOf(strB);
+				if(left == '(' && right == ')') {
+					if(input > opA && input < opB) return o;
+				}
+				else if(left == '[' && right == ')') {
+					if(input >= opA && input < opB) return o;
+				}
+				else if(left == '[' && right == ']') {
+					if(input >= opA && input <= opB) return o;
+				}
+				else if(left == '(' && right == ']') {
+					if(input > opA && input >= opB) return o;
+				}
 			}
 		}
-		return option;
+		return null;
 	}
 
 	private void submit() {

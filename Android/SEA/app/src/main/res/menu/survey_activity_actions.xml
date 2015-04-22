@@ -12,7 +12,7 @@
 		  android:title="@string/save_report"
 		  android:icon="@drawable/ic_action_save"
 		  android:showAsAction="always"
-		  android:visible="true"
+		  android:visible="false"
 		  />
 
 </menu>
