@@ -134,9 +134,7 @@ $(document).ready(function(){
 				option_id: the_answer.attr('data-answer-id'),
 				answer: answer_value
 			};
-			console.log('answer info');
-			console.log(the_answer.attr('data-answer-id'));
-			console.log(the_answer.attr('data-next-id'));
+			
 			// ajax post
 
 			// push new question-answer pair to array
@@ -148,15 +146,19 @@ $(document).ready(function(){
 		}
 	});
 
-	/* Returns answer_id (option_id) of matching */
+	/* Sets option_id and next_id data attributes to the 
+	 * answer field, based on the outcome of the conditional
+	 */
 	function regex_conditional(user_input, input_field){
 		var possible_answers = JSON.parse($question_panel_answers.attr('data-answers'));
 		var reg_ex, comp_value;
 
 		$.each(possible_answers, function(){
-			reg_ex = /lt\d+/;
+			// get number to compare with
 			comp_value = this.answer.match(/\d+/)[0];
 
+			// less than
+			reg_ex = /lt\d+/;
 			if(reg_ex.test(this.answer)){
 				if(user_input < comp_value){
 					input_field.attr('data-answer-id', this.option_id);
@@ -164,6 +166,7 @@ $(document).ready(function(){
 					return;
 				}
 			}
+			// greater than
 			reg_ex = /gt\d+/;
 			if(reg_ex.test(this.answer)){
 				if(user_input > comp_value){
@@ -172,6 +175,7 @@ $(document).ready(function(){
 					return;
 				}
 			}
+			// equal
 			reg_ex = /eq\d+/;
 			if(reg_ex.test(this.answer)){
 				if(user_input == comp_value){
@@ -180,6 +184,7 @@ $(document).ready(function(){
 					return;
 				}
 			}
+			// less or equal than
 			reg_ex = /le\d+/;
 			if(reg_ex.test(this.answer)){
 				if(user_input <= comp_value){
@@ -188,6 +193,7 @@ $(document).ready(function(){
 					return;
 				}
 			}
+			// greater or equal to
 			reg_ex = /ge\d+/;
 			if(reg_ex.test(this.answer)){
 				if(user_input >= comp_value){
@@ -196,6 +202,7 @@ $(document).ready(function(){
 					return;
 				}
 			}
+			// within range
 			reg_ex = /rg(\[|\C)\d+\d+(\]|\))/;
 			if(reg_ex.test(this.answer)){
 				//TODO
