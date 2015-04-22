@@ -35,14 +35,6 @@
 				android:text="@string/no_data"
 					/>
 	
-			<Button
-				android:id="@+id/button_edit_person"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center_horizontal"
-				android:text="@string/edit"
-				/>
-	
 		</LinearLayout>
 	
 		<LinearLayout
@@ -99,14 +91,7 @@
 				android:hint="@string/person_phone_number"
 				android:inputType="phone"
 				/>
-	
-			<Button
-				android:id="@+id/button_save_person"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center_horizontal"
-				android:text="@string/save"
-				/>
+
 		</LinearLayout>
 
 	</ViewFlipper>

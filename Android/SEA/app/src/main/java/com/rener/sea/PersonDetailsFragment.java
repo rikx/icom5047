@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -14,7 +15,7 @@ import android.widget.ViewFlipper;
 /**
  * An Android fragment class used to display data pertaining to a person.
  */
-public class PersonDetailsFragment extends Fragment implements View.OnClickListener {
+public class PersonDetailsFragment extends Fragment {
 
 	private static final int SHOW_LAYOUT = 0;
 	private static final int EDIT_LAYOUT = 1;
@@ -24,6 +25,7 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 	private EditText editFirstName, editMiddleName, editLastName1, editLastName2;
 	private EditText editEmail, editPhoneNumber;
 	private boolean viewCreated, editable;
+	private Menu options;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,13 +56,9 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 		textPhoneNumber = (TextView) view.findViewById(R.id.person_text_phone);
 		editPhoneNumber = (EditText) view.findViewById(R.id.person_edit_phone_number);
 
-		//Set the button listeners
-		view.findViewById(R.id.button_edit_person).setOnClickListener(this);
-		view.findViewById(R.id.button_save_person).setOnClickListener(this);
-
 		viewCreated= true;
 		setFields();
-		flipToShowLayout();
+		flipper.setDisplayedChild(SHOW_LAYOUT);
 
 		return view;
 	}
@@ -76,26 +74,27 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 	}
 
 	@Override
-	public void onClick(View view) {
-		switch (view.getId()) {
-			case R.id.button_edit_person :
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		//super.onCreateOptionsMenu(menu, inflater);
+		this.options = menu;
+		inflater.inflate(R.menu.person_actions, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.edit_person_action :
 				flipToEditLayout();
 				break;
-			case R.id.button_save_person :
+			case R.id.save_person_action :
 				getFields();
 				setFields();
 				flipToShowLayout();
 				break;
 		}
+
+		return super.onOptionsItemSelected(item);
 	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		//super.onCreateOptionsMenu(menu, inflater);
-		inflater.inflate(R.menu.person_actions, menu);
-	}
-
-
 
 	private void setFields() {
 
@@ -131,10 +130,14 @@ public class PersonDetailsFragment extends Fragment implements View.OnClickListe
 
 	private void flipToEditLayout() {
 		flipper.setDisplayedChild(EDIT_LAYOUT);
+		options.findItem(R.id.edit_person_action).setVisible(false);
+		options.findItem(R.id.save_person_action).setVisible(true);
 	}
 
 	private void flipToShowLayout() {
 		flipper.setDisplayedChild(SHOW_LAYOUT);
+		options.findItem(R.id.save_person_action).setVisible(false);
+		options.findItem(R.id.edit_person_action).setVisible(true);
 	}
 
 	private void getFields() {

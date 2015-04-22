@@ -37,6 +37,11 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		.OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
 		TextView.OnEditorActionListener, View.OnClickListener {
 
+	private static final String GREATER_THAN_REGEX = "gt\\d+(\\.\\d+)?";
+	private static final String LESS_THAN_REGEX = "lt\\d+(\\.\\d+)?";
+	private static final String GREATER_EQUAL_REGEX = "ge\\d+(\\.\\d+)?";
+	private static final String LESS_EQUAL_REGEX = "gt\\d+(\\.\\d+)?";
+	private static final String RANGE_REGEX = "ra(\\[|\\()\\d+(\\.\\d+)?,\\d+(\\.\\d+)?(\\]|\\))";
 	private DBService dbService;
 	private boolean mBound = false;
 	private Report report;
@@ -317,8 +322,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 			questionAnswered(item, option, input);
 		}
 		else if(type.equals(Item.CONDITIONAL)) {
+			//TODO: validate input
 			double d = Double.valueOf(input);
-			//TODO: handle conditional
+			handleConditional(d, item.getOptions());
 		}
 	}
 
@@ -328,6 +334,38 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		if(clicked.getText().toString().equals(getString(R.string.submit))) {
 			submit();
 		}
+	}
+
+	private Option handleConditional(double input, List<Option> options) {
+		Option option = null;
+		for(Option o : options) {
+			String label = o.getLabel();
+			if(label.matches(LESS_THAN_REGEX)) {
+				//TODO: extract the operand
+				double op = 0;
+				if(input < op) option = o;
+			}
+			else if(label.matches(LESS_EQUAL_REGEX)) {
+				//TODO: extract the operand
+				double op = 0;
+				if(input <= op) option = o;
+			}
+			else if(label.matches(GREATER_THAN_REGEX)) {
+				//TODO: extract the operand
+				double op = 0;
+				if(input > op) option = o;
+			}
+			else if(label.matches(GREATER_EQUAL_REGEX)) {
+				//TODO: extract the operand
+				double op = 0;
+				if(input >= op) option = o;
+			}
+			else if(label.matches(RANGE_REGEX)) {
+				//Determine the range
+				//Check if the input is within the range
+			}
+		}
+		return option;
 	}
 
 	private void submit() {
