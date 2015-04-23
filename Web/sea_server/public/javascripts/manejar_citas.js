@@ -185,11 +185,11 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
   /* Populate info panel with $this_cita information */
   function populate_info_panel($this_cita){
     $('#cita_info_location').html("<a class='show_location_info' href='#' data-location-id='"+$this_cita.location_id+"'>"+$this_cita.location_name+"</a>");
-    $('#cita_info_date').text(get_date_time($this_cita.date, false));   
-    $('#cita_info_hour').text($this_cita.time);
+    $('#cita_info_date').text(get_date_time($this_cita.date, false));
     $('#cita_info_purpose').text($this_cita.purpose);
     $('#cita_info_agent').text($this_cita.username);   
     $('#cita_info_report').html("<a href='/users/reportes/" + $this_cita.report_id + "'> Reporte " + $this_cita.report_id + "</a>");
+    $('#cita_info_hour').text(the_time);
   }
 
   /* */
@@ -209,7 +209,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
           table_content +=  'active ';
         }
         table_content += "show_info_cita' href='#', data-id='"+this.appointment_id+"'>"+this.location_name+"</a></td>";
-        table_content += '<td><center>'+get_date_time(this.date, false)+' at '+this.time+'</center></td>';
+        table_content += '<td><center>'+get_date_time(this.date, false)+' @ '+this.time+'</center></td>';
         table_content += "<td><button class='btn_edit_cita btn btn-sm btn-success btn-block' type='button' data-id='"+this.appointment_id+"'>Editar</button></td>";
         table_content += "<td><a class='btn_delete_cita btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.appointment_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
         table_content += '</tr>';

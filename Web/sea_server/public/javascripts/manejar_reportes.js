@@ -10,7 +10,7 @@ $(document).ready(function(){
 
   /* Button: Return home */
   $('#btn_home').on('click', function(){
-      window.location.href = '/users';
+    window.location.href = '/users';
   });
 
   /* Open info panel */
@@ -50,7 +50,7 @@ $(document).ready(function(){
     $('#reporte_info_id').html("<a href='/users/reportes/" +$this_report.report_id+ "'> Reporte " +$this_report.report_id+ "</a>");
     $('#reporte_info_location').text($this_report.location_name);
     $('#reporte_info_creator').text($this_report.username);
-    $('#report_info_date').text($this_report.date_filed);
+    $('#report_info_date').text(get_date_time($this_report.date_filed, false));
     $('#reporte_info_flowchart').text($this_report.flowchart_name);
   }
 
