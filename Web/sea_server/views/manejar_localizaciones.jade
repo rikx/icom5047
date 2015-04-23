@@ -40,6 +40,18 @@ block content
 									.panel-heading Categoria de Localizacion
 									.panel-body
 											ul#categories_list
+											button#btn_add_categories(class='btn btn-default btn-success', type='button') Agregar Categorias
+				#add_categoria_panel.form-group
+								.panel.panel-success
+									.panel-heading Categorías De Localizaciones
+									.panel-body
+										form#form_new_category(role='form')
+											.form-group
+											label(for='new_category') Nueva Categoría:
+											input#new_category(class='form-control', name='new_category', type='text', placeholder='Nueva Categoría')
+										br
+										.btn-group(role='group', aria-label='edit panel buttons')
+											button#btn_post_new_category(class='btn btn-default') Someter
 
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron

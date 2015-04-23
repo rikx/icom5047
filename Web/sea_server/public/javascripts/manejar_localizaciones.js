@@ -16,6 +16,15 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(localizaciones_array[0]);
 
+  $('#add_categoria_panel').hide();
+
+  /* Button: Add Categories */
+  $('#btn_add_categories').on('click', function(){
+    $('#categoria_panel').hide();
+    $('#add_categoria_panel').show();
+  });
+
+
   /* Button: Return home */
   $('#btn_home').on('click', function(){
     window.location.href = '/users/admin';
@@ -206,6 +215,45 @@ $('#btn_submit').on('click', function(){
     url: "http://localhost:3000/users/admin/localizaciones",
     method: "POST",
     data: JSON.stringify(new_location),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      if(data.exists){
+        alert("Localización con este número de licensia ya existe");
+      } else {
+        alert("Localización ha sido añadido al sistema.");
+        // clear add form
+        $the_form[0].reset();
+        // update locations list after posting 
+        populate_localizaciones();
+      }
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+});
+
+/* POSTs new category information */
+$('#btn_post_new_category').on('click', function(){
+  // get form data and conver to json format
+  var $the_form = $('#form_new_category');
+  var form_data = $the_form.serializeArray();
+  var new_category = ConverToJSON(form_data);
+
+  console.log("Posting New Category.New category is ");
+  console.log(new_category);
+
+
+  // ajax call to post new category
+  $.ajax({
+    url: "http://localhost:3000/users/admin/new_category",
+    method: "POST",
+    data: JSON.stringify(new_category),
     contentType: "application/json",
     dataType: "json",
 
@@ -496,16 +544,16 @@ function populate_categories_edit(){
         });
     if(found)
     {
-       content += '<input ';
-       content += "type='checkbox' checked='true'> " + all_categorias_array[i].category_name + " <br>";
-    }
-    else
-    {
-       content += '<input ';
-       content += "type='checkbox'> " + all_categorias_array[i].category_name + " <br>";
-    }
-    found = false;
-  });
+     content += '<input ';
+     content += "type='checkbox' checked='true'> " + all_categorias_array[i].category_name + " <br>";
+   }
+   else
+   {
+     content += '<input ';
+     content += "type='checkbox'> " + all_categorias_array[i].category_name + " <br>";
+   }
+   found = false;
+ });
 
   
   $('#categories_list').html(content);
