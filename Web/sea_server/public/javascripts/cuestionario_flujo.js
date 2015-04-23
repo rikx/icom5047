@@ -251,10 +251,10 @@ $(document).ready(function(){
 
 	/* Save (Abort) Survey progress */
 	$('#btn_save_progress').on('click', function(){
-		// ajax post
-			//ajax success
-			var save = confirm('Guardar progreso?');
-			if(save){
+		var save = confirm('Guardar progreso?');
+		if(save){
+			// ajax post to abort survey
+				//ajax success
 				// redirect to user home
 				window.location.href = '/users';
 		}

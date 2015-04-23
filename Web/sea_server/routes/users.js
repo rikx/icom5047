@@ -301,59 +301,6 @@ router.get('/admin', function(req, res, next) {
  	});
  });
 
-/* GET Admin Ver Reporte TODO DONT USE THIS ROUTE ANYMORE
- *
- */
- router.get('/admin/reportes/:id', function(req, res, next) {
- 	var report_id = req.params.id;
- 	var report_details, survey_details;
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
- 		// report basic info
-		client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
-										flowchart.version AS survey_version, report.note, report.date_filed AS report_date, appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose \
-									FROM report \
-									LEFT JOIN appointments ON report.report_id = appointments.report_id \
-									INNER JOIN users ON users.user_id = report.creator_id \
-									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
-									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE report.report_id = $1", [report_id], function(err, result) {
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		report_details = result.rows[0];
-	  	}
-	  });
-		// get answered survey details
-		// SELECT distinct to avoid item duplicates
-		client.query('SELECT * \
-									FROM path INNER JOIN option ON path.option_id = option.option_id \
-									INNER JOIN item ON item.item_id = option.parent_id \
-									WHERE path.report_id = $1', [report_id], function(err, result) {
-			//call `done()` to release the client back to the pool
-	  	done();
-
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		survey_details = result.rows;
-	  		var current_user = {
-	  			user_id: req.session.user_id,
-	  			username: req.session.username
-	  		}
-	  		res.render('reporte', { 
-	  			title: 'Reporte ' + report_id,
-	  			reporte: report_details,
-	  			survey: survey_details,
-	  			current_user: current_user
-	  		});
-	  	}
-		})
-	});
-});
 /* GET User Ver Reporte 
  *
  */
@@ -382,7 +329,7 @@ router.get('/admin', function(req, res, next) {
 	  });
 		// get answered survey details
 		// SELECT distinct to avoid item duplicates
-		client.query('SELECT * \
+		client.query('SELECT item.label as question, option.label as answer, path.data as path_data, type \
 									FROM path INNER JOIN option ON path.option_id = option.option_id \
 									INNER JOIN item ON item.item_id = option.parent_id \
 									WHERE path.report_id = $1', [report_id], function(err, result) {
@@ -392,7 +339,7 @@ router.get('/admin', function(req, res, next) {
 	  	if(err) {
 	  		return console.error('error running query', err);
 	  	} else {
-	  		survey_details = result.rows;
+	  		survey_details = result.rows; 
 	  		var current_user = {
 	  			user_id: req.session.user_id,
 	  			username: req.session.username

@@ -9,20 +9,36 @@ block content
 				.jumbotron
 					center
 						h2 Servicio de Extensión Agricola
-						h3 
-							= title
+						h3
+							if locals.reporte.name
+								= reporte.name
+							else 
+								| Reporte sin título (TODO: click para asignarle nombre)
 			.col-md-2
 
 		.row
 			.col-md-6
 				center
 					h2 Entrevista Contestada
-				.jumbotron
-					button(class='btn btn-sm btn-success') Continuar Entrevista
+				#answered_survey(class='jumbotron', data-survey=survey)
+					if locals.survey
+						ol
+							each item in survey
+								li
+									strong
+										= item.question
+									br
+									em
+										= item.answer
+					else
+						center
+							button(class='btn btn-sm btn-success') Continuar Entrevista
 			.col-md-6
 				center
 					h2 Información General
 				.jumbotron
+					p Reporte ID: 
+						= reporte.report_id
 					p Usuario: 
 						= reporte.report_creator
 					p Fecha: 
@@ -60,8 +76,10 @@ block content
 				center
 					h2 Recomendaciones
 				.jumbotron
-					p 
-						= reporte.recomendation
+					p
+						each item in survey 
+							if item.type == 'RECOM'
+								= item.question
 			.col-md-6
 				center
 					h2 Fecha de Seguimiento
