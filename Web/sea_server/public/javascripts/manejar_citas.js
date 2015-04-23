@@ -189,7 +189,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     $('#cita_info_purpose').text($this_cita.purpose);
     $('#cita_info_agent').text($this_cita.username);   
     $('#cita_info_report').html("<a href='/users/reportes/" + $this_cita.report_id + "'> Reporte " + $this_cita.report_id + "</a>");
-    $('#cita_info_hour').text(the_time);
+    $('#cita_info_hour').text($this_cita.time);
   }
 
   /* */
@@ -218,5 +218,5 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
       // inject content string into html
       $citas_list.html(table_content);
     });
-};
+  };
 });
