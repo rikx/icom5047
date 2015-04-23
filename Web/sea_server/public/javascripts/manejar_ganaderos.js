@@ -237,9 +237,6 @@ $(document).ready(function(){
 
       // inject content string into html
       $ganaderos_list.html(table_content);
-
-      //populate info panel with information regarding the first person on the list
-      //populate_info_panel(localizaciones_array[0]);
     });
-};
+  };
 });

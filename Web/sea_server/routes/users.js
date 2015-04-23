@@ -281,23 +281,24 @@ router.get('/admin', function(req, res, next) {
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
-
+ 			return console.error('error fetching client from pool', err);
  		}
- 		client.query("SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, \
- 			subject_id, (person.first_name||' '||person.last_name1||' '||person.last_name2) AS ganadero_name, \
- 			report.flowchart_id, flowchart.name AS flowchart_name \
- 			FROM report, location, person, flowchart, users \
- 			WHERE report.creator_id = user_id and subject_id = person.person_id and report.location_id = location.location_id \
- 			ORDER BY location_name ASC \
- 			LIMIT 20;", function(err, result) {
- 				done();
-
- 				if(err) {
- 					return console.error('error running query', err);
- 				} else {
- 					res.render('manejar_reportes', { title: 'Manejar Reportes', reports: result.rows});
- 				}
- 			});
+ 		client.query("SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+									FROM report INNER JOIN location ON report.location_id = location.location_id \
+									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+									INNER JOIN users ON report.creator_id = user_id \
+									ORDER BY location_name ASC \
+									LIMIT 20;", function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.render('manejar_reportes', { 
+					title: 'Manejar Reportes', 
+					reports: result.rows});
+			}
+		});
  	});
  });
 

@@ -114,9 +114,9 @@ router.post('/cuestionario/path', function(req, res, next) {
 		  	return console.error('error fetching client from pool', err);
 			}
 			// insert new report
-		  client.query('INSERT into path (report_id, option_id) \
-										VALUES ($1, $2)', 
-										[req.body.report_id, req.body.option_id], function(err, result) {
+		  client.query('INSERT into path (report_id, option_id, data) \
+										VALUES ($1, $2, $3)', 
+										[req.body.report_id, req.body.option_id, req.body.user_input], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		    done();
 	    	if(err) {
@@ -550,7 +550,11 @@ router.get('/list_reportes', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// TODO: modify query to also give you account type
-	  client.query(' \
+	  client.query('SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+									FROM report INNER JOIN location ON report.location_id = location.location_id \
+									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+									INNER JOIN users ON report.creator_id = user_id \
+									ORDER BY location_name ASC \
 									LIMIT 20;', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();

@@ -2,33 +2,21 @@ $(document).ready(function(){
 	// reportes list
 	$reportes_list = $('#reportes_list');
 	
-	// store data for initial 10 reports
-	var reportes_data = $reportes_list.attr('data-reports');
-	var reportes_array = JSON.parse(reportes_data);
+	// store data for initial 20 reports
+	var reportes_array = JSON.parse($reportes_list.attr('data-reports'));
 
+  // initial info panel population
+  populate_info_panel(reportes_array[0]);
 
-    populate_info_panel();
+  /* Button: Return home */
+  $('#btn_home').on('click', function(){
+      window.location.href = '/users';
+  });
 
-    function populate_info_panel(){
-     var firstElement = [];
-     firstElement = reportes_array[0]; 
-     $('#reporte_info_id').html("<a href='/users/reportes/" + firstElement.report_id + "'> Reporte " +  firstElement.report_id + "</a>");
-     $('#reporte_info_location').text( firstElement.location_name);
-     $('#reporte_info_creator').text( firstElement.username);
-     $('#report_info_date').text( firstElement.date_filed);
-     $('#reporte_info_ganadero').text( firstElement.ganadero_name);
-     $('#reporte_info_flowchart').text( firstElement.flowchart_name);
- }
-
-    /* Button: Return home */
-    $('#btn_home').on('click', function(){
-        window.location.href = '/users';
-    });
-
- $reportes_list.on('click', 'tr td a.show_info_reporte', function(e){
+  /* Open info panel */
+  $reportes_list.on('click', 'tr td a.show_info_reporte', function(e){
     // prevents link from firing
     e.preventDefault();
-    var table_content = '';
 
     $('#edit_panel').hide();
     $('#info_panel').show();
@@ -41,30 +29,56 @@ $(document).ready(function(){
     	$this.addClass('active');
     }
 
-    // contains ganadero id
-   // var myVar = $(this).attr('data-id');
-   var myVar = $this.attr('data-id');
-   var arrayPosition = reportes_array.map(function(arrayItem) { return arrayItem.report_id; }).indexOf(myVar);
-   var thisUserObject = reportes_array[arrayPosition];
+    // contains report id
+    var report_id = $this.attr('data-id');
+    var arrayPosition = reportes_array.map(function(arrayItem) { return arrayItem.report_id; }).indexOf(report_id);
+    var this_report = reportes_array[arrayPosition];
 
-    //#info_panel_heading
-    $('#reporte_info_id').html("<a href='/users/reportes/" + thisUserObject.report_id + "'> Reporte " + thisUserObject.report_id + "</a>");
-    $('#reporte_info_location').text(thisUserObject.location_name);
-    $('#reporte_info_creator').text(thisUserObject.username);
-    $('#report_info_date').text(thisUserObject.date_filed);
-    $('#reporte_info_ganadero').text(thisUserObject.ganadero_name);
-    $('#reporte_info_flowchart').text(thisUserObject.flowchart_name);
+    // populate info panel with this_report info
+    populate_info_panel(this_report);
+  });
 
+  /* Redirect to report page to edit it */
+  $reportes_list.on('click', 'tr td button.btn_edit_reporte', function(){
+    // contains cuestionario id
+    var this_reporte_id = $(this).attr('data-id');
+    window.location.href = '/users/reportes/'+this_reporte_id;
+  });
 
-});
+  /* Populates info panel with $this_report information */
+  function populate_info_panel($this_report){
+    $('#reporte_info_id').html("<a href='/users/reportes/" +$this_report.report_id+ "'> Reporte " +$this_report.report_id+ "</a>");
+    $('#reporte_info_location').text($this_report.location_name);
+    $('#reporte_info_creator').text($this_report.username);
+    $('#report_info_date').text($this_report.date_filed);
+    $('#reporte_info_flowchart').text($this_report.flowchart_name);
+  }
 
+  /* Populates reportes list */
+  function populate_reportes(){
+    $.getJSON('http://localhost:3000/list_reportes', function(data) {
+      reportes_array = data.reports;
 
-$reportes_list.on('click', 'tr td button.btn_edit_reporte', function(){
+      // contents of reports list
+      var table_content = '';
 
-// contains cuestionario id
-var this_reporte_id = $(this).attr('data-id');
-window.location.href = '/users/reportes/'+this_reporte_id;
+      // for each item in JSON, add table row and cells
+      $.each(data.reports, function(i){
+        table_content += '<tr>';
+        table_content += "<td><a class='list-group-item ";
+        // if initial list item, set to active
+        if(i==0) {
+          table_content +=  'active ';
+        }
+        table_content += "show_info_ganadero' href='#', data-id='"+this.report_id+"'>Reporte "+this.report_id+"</a></td>";
+        table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
+        table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
+        table_content += "<td><a class='btn_delete_reporte btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+        table_content += '</tr>';
+      });  
 
-});
-
+      // inject content string into html
+      $reportes_list.html(table_content);
+    });
+  };
 });

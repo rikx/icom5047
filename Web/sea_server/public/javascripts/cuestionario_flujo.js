@@ -157,7 +157,8 @@ $(document).ready(function(){
 			// ajax post
 			var new_path = {
 				report_id: $question_panel_answers.attr('data-report-id'),
-				option_id: the_answer.attr('data-answer-id')
+				option_id: the_answer.attr('data-answer-id'),
+				user_input: answer_value
 			};
 
 	    $.ajax({
@@ -265,7 +266,8 @@ $(document).ready(function(){
 		// ajax post to end survey
 		var end_path = {
 			report_id: $question_panel_answers.attr('data-report-id'),
-			option_id: $question_panel_answers.attr('data-answer-id')
+			option_id: $question_panel_answers.attr('data-answer-id'),
+			user_input: 'RECOM'
 		};
 		console.log(end_path);
     $.ajax({
