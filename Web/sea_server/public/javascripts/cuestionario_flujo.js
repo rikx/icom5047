@@ -15,8 +15,21 @@ $(document).ready(function(){
   });
 
   // set up survey start date and time in basic information panel
-	var start_date = get_date_time(new Date(), true)
-	$('#take_survey_date').text(start_date.date + " at " + start_date.time);
+  var survey_date = new Date();
+	var start_date = get_date_time(survey_date, true);
+	$('#survey_date').text(start_date.date + " @ " + start_date.time);
+
+	// convert survey_date to 'yyyy-mm-dd format'
+	start_date = survey_date.getFullYear() +'-';
+	var month = survey_date.getMonth();
+	month++; // account for JavaScript months being from 0-11; 
+	if(month < 10){
+		start_date += '0';
+	}
+	start_date += month +'-';
+	start_date += survey_date.getDate();
+	// set formatted date in hidden input field for report creation form
+	$('#take_survey_date').attr('value', start_date);
 
   /* TEST: location search */
   $('.typeahead').typeahead({
@@ -46,31 +59,39 @@ $(document).ready(function(){
 	      if (substrRegex.test(str.location_name)) {
 	        // the typeahead jQuery plugin expects suggestions to a
 	        // JavaScript object, refer to typeahead docs for more info
-	        matches.push({ value: str.location_name });
+	        matches.push({ 
+	        	location_id: str.location_id,
+	        	value: str.location_name 
+	        });
 	      }
 	    });
 	 
 	    cb(matches);
 	  };
 	};
+	// location name select event listener
+	$('#take_survey_location_name').bind('typeahead:selected', function(obj, datum, name) {
+    // add location_id value to input form
+    $('#take_survey_location_id').attr('value', datum.location_id);
+	});
 	/* TEST END: location search */
 
 	/* Saves pre-survey information and displays first questions */
 	$('#take_survey_start').on('click', function(){
-		var location_input = $('#take_survey_location').val();
+		var location_input = $('#take_survey_location_name').val();
 		// validate location input 
 		if(valid_input(location_input, locations_array)){
 			// disable location input 
-			$('#take_survey_location').attr('disabled', true);
+			$('#take_survey_location_name').attr('disabled', true);
 
 			// get form data and conver to json format
 	    var $the_form = $('#form_survey_flow');
 	    var form_data = $the_form.serializeArray();
 	    var new_cuestionario = ConverToJSON(form_data);
 
-	    // ajax call to post new ganadero
-	/*    $.ajax({
-	      url: "http://localhost:3000/cuestionarios/start",
+	    // ajax call to post new report
+	    $.ajax({
+	      url: "http://localhost:3000/report",
 	      method: "POST",
 	      data: JSON.stringify(new_cuestionario),
 	      contentType: "application/json",
@@ -78,6 +99,13 @@ $(document).ready(function(){
 
 	      success: function(data) {
 	      	alert("Cuestionario ha sido comenzado.");
+	      	// save new report id
+	      	$question_panel_answers.attr('data-report-id', data.report_id);
+			    // populate question panel
+					update_next_question($question_panel_question.attr('data-question-id'));
+					//
+					$('#row_answered, #row_current, #row_buttons').show();
+					$('#take_survey_start, #row_home').attr('disabled', true).hide();
 	      },
 	      error: function( xhr, status, errorThrown ) {
 	        alert( "Sorry, there was a problem!" );
@@ -85,19 +113,13 @@ $(document).ready(function(){
 	        console.log( "Status: " + status );
 	        console.dir( xhr );
 	      }
-	    });*/
-
-			// populate question panel
-			update_next_question($question_panel_question.attr('data-question-id'));
-			//
-			$('#row_answered, #row_current, #row_buttons').show();
-			$('#take_survey_start, #row_home').attr('disabled', true).hide();
+	    });
 		} else {
 			alert('La localización escrita no existe. Por favor seleccione una localización valida');
 		}
 	});
 
-	/* Saves answer for current question, gets next questionand updates the interface */
+	/* Saves answer for current question, gets next question and updates the interface */
 	$('#btn_next_question').on('click', function(){
 		// get question and answer input information
 		var the_question = $('#next_question_question');
@@ -116,9 +138,6 @@ $(document).ready(function(){
 				regex_conditional(the_answer.val(), the_answer);
 				break;
 			}
-			case 'RECOM': 
-				the_answer = the_question.text();
-				break;
 		}
 
 		// check if user selected or wrote an answer
@@ -136,13 +155,33 @@ $(document).ready(function(){
 			};
 
 			// ajax post
+			var new_path = {
+				report_id: $question_panel_answers.attr('data-report-id'),
+				option_id: the_answer.attr('data-answer-id')
+			};
 
-			// push new question-answer pair to array
-			answered_questions.push(question_answer_pair);
-			// update answered questions list
-			update_answered_questions();
-			// get next question info
-			update_next_question(the_answer.attr('data-next-id'));
+	    $.ajax({
+	      url: "http://localhost:3000/cuestionario/path",
+	      method: "POST",
+	      data: JSON.stringify(new_path),
+	      contentType: "application/json",
+	      dataType: "json",
+
+	      success: function(data) {
+					// push new question-answer pair to array
+					answered_questions.push(question_answer_pair);
+					// update answered questions list
+					update_answered_questions();
+					// get next question info
+					update_next_question(the_answer.attr('data-next-id'));
+	      },
+	      error: function( xhr, status, errorThrown ) {
+	        alert( "Sorry, there was a problem!" );
+	        console.log( "Error: " + errorThrown );
+	        console.log( "Status: " + status );
+	        console.dir( xhr );
+	      }
+	    });
 		}
 	});
 
@@ -223,12 +262,32 @@ $(document).ready(function(){
 
 	/* Save Survey and redirect to report page */
 	$('#btn_end_survey').on('click', function(){
-		// ajax post
+		// ajax post to end survey
+		var end_path = {
+			report_id: $question_panel_answers.attr('data-report-id'),
+			option_id: $question_panel_answers.attr('data-answer-id')
+		};
+		console.log(end_path);
+    $.ajax({
+      url: "http://localhost:3000/cuestionario/path",
+      method: "POST",
+      data: JSON.stringify(end_path),
+      contentType: "application/json",
+      dataType: "json",
 
-			// if ajax successful
-			// redirect to report page using returned id
-			//var report_id = data.report_id;
-			//window.location.href = '/users/reports/'+report_id;
+      success: function(data) {
+      	alert("Cuestionario terminado.");
+				// redirect to report page using returned id
+				var report_id = data.report_id;
+				window.location.href = '/users/reportes/'+report_id;
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
 	});
 
 	/* update answered questions */
@@ -247,14 +306,14 @@ $(document).ready(function(){
 		$('#panel_title_next').show();
 
 		$.getJSON('http://localhost:3000/element/'+next_question_id, function(data) {
-			var this_question = data.question_family[0];
+			var this_item = data.question_family[0];
 			// populate question heading with question
-			$question_panel_question.html(this_question.question);
-			$question_panel_question.attr('data-question-id', this_question.item_id);
-			$question_panel_question.attr('data-question-type', this_question.item_type);
+			$question_panel_question.html(this_item.question);
+			$question_panel_question.attr('data-question-id', this_item.item_id);
+			$question_panel_question.attr('data-question-type', this_item.item_type);
 			//
 			var next_content_answers = '';
-			switch(this_question.item_type){
+			switch(this_item.item_type){
 				case 'BOOLEAN':
 				case 'MULTI':
 					$.each(data.question_family, function(i){
@@ -263,7 +322,7 @@ $(document).ready(function(){
 					});
 					break;
 				case 'OPEN':
-					next_content_answers += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+this_question.option_id+"' data-next-id='"+this_question.next_id+"'></textarea>";
+					next_content_answers += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+this_item.option_id+"' data-next-id='"+this_item.next_id+"'></textarea>";
 					break;
 				case 'CONDITIONAL': {
 					// TODO finish how conditionals work
@@ -276,9 +335,11 @@ $(document).ready(function(){
 					$('#panel_title_next').html('Recommendaciones:');
 
 					$question_panel_question.hide();
-					next_content_answers += "<p class='lead'>"+this_question.question+"</p>"; // probably modify query so, in case item_type is recom, instead of question call it recommendation
-					$question_panel_answers.html(next_content_answers);
-					return;
+					// probably modify query so, in case item_type is recom, instead of question call it recommendation
+					next_content_answers += "<p class='lead' id='answer_recommendation_text' data-answer-id='"+this_item.option_id+"' data-next-id='"+this_item.next_id+"'>"+this_item.question+"</p>";
+					// assign option id to data attribute
+					$question_panel_answers.attr('data-answer-id', this_item.option_id);
+					break;
 				}
 			}
 			// put possible answers in data attribute

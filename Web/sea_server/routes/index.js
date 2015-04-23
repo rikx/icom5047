@@ -67,9 +67,68 @@ router.get('/logout', function(req, res, next) {
 	});
 });
 
-/* POST answered survey
+/* POST survey start
+ * Creates new report
+ */
+router.post('/report', function(req, res, next) {
+ 	if(!req.body.hasOwnProperty('take_survey_user_id')
+ 		|| !req.body.hasOwnProperty('take_survey_location_id')
+ 		|| !req.body.hasOwnProperty('take_survey_id')
+ 		|| !req.body.hasOwnProperty('take_survey_date')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for post report.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+		  	return console.error('error fetching client from pool', err);
+			}
+			// insert new report
+		  client.query('INSERT into report (creator_id, location_id, flowchart_id, date_filed) \
+										VALUES ($1, $2, $3, $4) \
+										RETURNING report_id', 
+										[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date], function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		    done();
+	    	if(err) {
+		      return console.error('error running query', err);
+		    } else {
+		    	var report_id = req.session.report_id = result.rows[0].report_id;
+		    	res.json({report_id: report_id});
+		    }
+		  });
+		});
+	}
+});
+
+/* POST survey answer
  *
  */
+router.post('/cuestionario/path', function(req, res, next) {
+ 	if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('option_id') ) {
+ 		return res.send('Error: Missing fields for post path.');
+ 	} else {
+		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+		  	return console.error('error fetching client from pool', err);
+			}
+			// insert new report
+		  client.query('INSERT into path (report_id, option_id) \
+										VALUES ($1, $2)', 
+										[req.body.report_id, req.body.option_id], function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		    done();
+	    	if(err) {
+		      return console.error('error running query', err);
+		    } else {
+		    	var report_id = req.session.report_id;
+		    	res.json({report_id: report_id});
+		    }
+		  });
+		});
+ 	}
+});
 
 /* GET all ganaderos and users
  * For use in manejar localizaciones dropdowns
@@ -135,14 +194,6 @@ router.get('/ganaderos', function(req, res, next) {
 	  });
 	});
 });
-
-/* This query returns all persons that are not associated with a location
-//SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-//								FROM person \
-//									WHERE person_id NOT IN ( \
-//										SELECT person_id \
-//										FROM person, location \
-//										WHERE person_id = owner_id or person_id = manager_id)
 
 /* 
  * GET usuarios 

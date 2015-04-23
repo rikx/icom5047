@@ -23,22 +23,31 @@ block content
 						h3(class='panel-title')
 							| Información Básica
 					.panel-body
-						form#form_survey_flow(role='form')
+						form
 							.form-group
 								label(for='take_survey_name') Cuestionario: 
 								span#take_survey_name(class='form-control', disabled)
 									= flowchart.flowchart_name
 							.form-group
-								label(for='take_survey_date') Fecha Comenzado:
-								span#take_survey_date(class='form-control', disabled)
+								label(for='survey_date') Fecha Comenzado:
+								span#survey_date(class='form-control', disabled)
 							.form-group
-								label(for='take_survey_user') Llenado por:
-								span#take_survey_user(class='form-control', disabled, data-id=current_user.user_id)
+								label(for='take_survey_username') Llenado por:
+								span#take_survey_username(class='form-control', disabled, data-id=current_user.user_id)
 									= current_user.username
 							.form-group
-								label(for='take_survey_location') Localización:
+								label(for='take_survey_location_name') Localización:
 								#scrollable-dropdown-menu(data-locations=locations) 
-									input#take_survey_location(class="form-control typeahead", name="take_survey_location", type='text', placeholder='Nombre de Localización')
+									input#take_survey_location_name(class="form-control typeahead", name="take_survey_location_name", type='text', placeholder='Nombre de Localización')
+						form#form_survey_flow(role='form', style="display: none;")
+							.form-group
+								input#take_survey_id(name='take_survey_id', type='text', value=flowchart.flowchart_id)
+							.form-group
+								input#take_survey_date(name='take_survey_date', type='text', value='')
+							.form-group
+								input#take_survey_user_id(name='take_survey_user_id', type='text', value=current_user.user_id)
+							.form-group
+								input#take_survey_location_id(name='take_survey_location_id', type='text', value='')
 						.row
 							.col-md-2
 							.col-md-7

@@ -109,7 +109,9 @@
 		var minutes = date.getMinutes();
 		if(hours > 12) {
 			time += hours-12 + ':';
-			time += date.getMinutes();
+			if (minutes < 10)
+				time += '0';
+			time += minutes;
 			time += ' PM';
 		} else {
 			if (hours == 0) {
