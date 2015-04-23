@@ -148,6 +148,8 @@ public class LocationDetailsFragment extends Fragment
 				getFields();
 				setFields();
 				flipToShowLayout();
+				//Notify the activity that data has changed
+				((MainActivity)getActivity()).OnDataSetChanged();
 				break;
 		}
 	}

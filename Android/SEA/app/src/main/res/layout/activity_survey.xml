@@ -42,9 +42,10 @@
 
 		<LinearLayout
 			android:id="@+id/survey_progress_layout"
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="16dp"
+			android:gravity="center_horizontal"
 			android:orientation="vertical"
 			/>
 

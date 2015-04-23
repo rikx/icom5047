@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 /**
  * An Android fragment class used to manage the display of data pertaining to a report.
  */
@@ -48,7 +50,7 @@ public class ReportDetailsFragment extends Fragment {
 
 		//Recreate the path taken through the flowchart
 		Path path = report.getPath();
-		for(Path.PathEntry e : path) {
+		for(PathEntry e : path) {
 			Item item = e.getItem();
 			Option option = e.getOption();
 			String data = e.getData();
@@ -86,7 +88,9 @@ public class ReportDetailsFragment extends Fragment {
 	 */
 	private void setFields() {
 		textName.setText(report.getName());
-		textDate.setText(report.getDateString());
+		Locale locale = Locale.getDefault();
+		String dateFormat = getResources().getString(R.string.date_format);
+		textDate.setText(report.getDateString(dateFormat, locale));
 		textType.setText(report.getType());
 		textLocation.setText(report.getLocation().toString());
 		textFlowchart.setText(report.getFlowchart().getName());

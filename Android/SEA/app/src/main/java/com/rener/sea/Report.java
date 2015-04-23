@@ -1,7 +1,10 @@
 package com.rener.sea;
 
+import android.support.annotation.NonNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Represents a Report in the system
@@ -9,7 +12,6 @@ import java.util.Date;
  */
 public class Report implements Comparable<Report> {
 
-	public static final String DATE_FORMAT = "dd/LLL/yy";
 	public static final int NEW_REPORT_ID = -1;
 	private long id;
 	private String name;
@@ -109,8 +111,8 @@ public class Report implements Comparable<Report> {
 		this.date = date;
 	}
 
-	public String getDateString() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+	public String getDateString(String format, Locale locale) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
 		return sdf.format(date);
 	}
 
@@ -151,15 +153,11 @@ public class Report implements Comparable<Report> {
 	}
 
 	public String toString() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		String s = name+"\n"+location.getName()+"\t"+sdf.format(date);
-		//Log.i("REPORT", s);
-		return s;
+		return super.toString();
 	}
 
 	@Override
-	public int compareTo(Report r) {
-		int compare = this.date.compareTo(r.getDate());
-		return compare;
+	public int compareTo(@NonNull Report r) {
+		return this.date.compareTo(r.getDate());
 	}
 }

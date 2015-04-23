@@ -260,7 +260,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 			}
 			case Item.CONDITIONAL: {
 				EditText input = new EditText(this);
-				input.setInputType(InputType.TYPE_CLASS_NUMBER);
+				//Set this field to allow signed decimals
+				input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL
+						|InputType.TYPE_NUMBER_FLAG_SIGNED);
 				input.setHint(getString(R.string.open_hint));
 				input.setOnEditorActionListener(this);
 				input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);

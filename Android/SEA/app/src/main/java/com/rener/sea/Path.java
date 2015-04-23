@@ -7,7 +7,7 @@ import java.util.Stack;
  * A class representing an "answered survey" by making a path of options (edges) through a
  * flowchart. It's underlying data structure is that of a stack.
  */
-public class Path implements Iterable<Path.PathEntry> {
+public class Path implements Iterable<PathEntry> {
 
 	private Stack<PathEntry> path;
 
@@ -21,11 +21,11 @@ public class Path implements Iterable<Path.PathEntry> {
 	/**
 	 * Add a new entry to this Path object by pushing it to it's stack.
 	 * The new entry represents an "answered question" that has no associated data.
-	 * @param item the
-	 * @param option
+	 * @param item the item object for the entry
+	 * @param option the option object for the entry
 	 */
 	public void addEntry(Item item, Option option) {
-		path.add(new PathEntry(item, option));
+		path.push(new PathEntry(item, option));
 	}
 
 	/**
@@ -45,9 +45,10 @@ public class Path implements Iterable<Path.PathEntry> {
 	 * @param option some Option object
 	 */
 	public void setLastEntry(Item item, Option option) {
-		PathEntry entry = path.peek();
+		PathEntry entry = path.pop();
 		entry.setItem(item);
 		entry.setOption(option);
+		path.push(entry);
 	}
 
 	/**
@@ -58,10 +59,11 @@ public class Path implements Iterable<Path.PathEntry> {
 	 * @param data the associated data
 	 */
 	public void setLastEntry(Item item, Option option, String data) {
-		PathEntry entry = path.peek();
+		PathEntry entry = path.pop();
 		entry.setItem(item);
 		entry.setOption(option);
 		entry.setData(data);
+		path.push(entry);
 	}
 
 	/**
@@ -69,59 +71,12 @@ public class Path implements Iterable<Path.PathEntry> {
 	 * @return the Item object for this path's to of stack
 	 */
 	public Item getLastItem() {
-		return path.get(path.size()-1).getItem();
+		return path.peek().getItem();
 	}
 
 	@Override
 	public Iterator<PathEntry> iterator() {
 		return path.iterator();
-	}
-
-	/**
-	 * Wrapper class representing a trio of an Item, Option, and String.
-	 * This class is used as a helper to facilitate navigating through a flowchart.
-	 * It is made public simply so it can be iterated upon.
-	 */
-	public class PathEntry {
-		private Item item;
-		private Option option;
-		private String data;
-
-		PathEntry(Item item, Option option) {
-			this.item = item;
-			this.option = option;
-			this.data = "";
-		}
-
-		PathEntry(Item item, Option option, String data) {
-			this.item = item;
-			this.option = option;
-			this.data = data;
-		}
-
-		public Item getItem() {
-			return item;
-		}
-
-		public void setItem(Item item) {
-			this.item = item;
-		}
-
-		public Option getOption() {
-			return option;
-		}
-
-		public void setOption(Option option) {
-			this.option = option;
-		}
-
-		public String getData() {
-			return data;
-		}
-
-		public void setData(String data) {
-			this.data = data;
-		}
 	}
 
 }

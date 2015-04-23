@@ -67,4 +67,12 @@
 		<item>Localizaciones</item>
 		<item>Personas</item>
 	</string-array>
+	<string name="report_location">localización del reporte</string>
+	<string name="report_name">nombre del reporte</string>
+	<string name="select_location">selecciona una localización</string>
+	<string name="select_subject">seleccione persona entrevistada</string>
+	<string name="select_survey">seleccione una entrevista</string>
+	<string name="date">fecha</string>
+	<string name="date_format">dd/LLL/yy</string>
+	<string name="discard_report">descarta reporte</string>
 </resources>

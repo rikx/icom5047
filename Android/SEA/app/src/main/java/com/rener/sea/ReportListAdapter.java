@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ReportListAdapter extends ArrayAdapter<Report> {
 
@@ -25,11 +27,13 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
 	//TODO: review this method
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View row = convertView;
+		View row = null;
 		ReportHolder holder;
+		Report report = getItem(position);
 
-		//Inflate the layout if necessary
-		if(row == null) {
+		//Inflate the layout and set it's views if necessary
+		if(convertView == null) {
+			//View hasn't been created and must be initialized
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			row = inflater.inflate(R.layout.report_list_item, parent, false);
@@ -39,22 +43,23 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
 			holder.locationText = (TextView) row.findViewById(R.id.report_list_item_location);
 			holder.dateText = (TextView) row.findViewById(R.id.report_list_item_date);
 			row.setTag(holder);
+
+			//Get the data
+			String name = report.getName();
+			String location = report.getLocation().getName();
+
+			//Set the views
+			holder.nameText.setText(name);
+			holder.locationText.setText(location);
+			//Set the date format according to the locale
+			String dateFormat = getContext().getResources().getString(R.string.date_format);
+			Locale locale = Locale.getDefault();
+			holder.dateText.setText(report.getDateString(dateFormat, locale));
 		}
 		else {
-			holder = (ReportHolder) row.getTag();
+			//View can be recycled
+			row = convertView;
 		}
-
-		//Get the data
-		Report report = reports.get(position);
-		String name = report.getName();
-		String location = report.getLocation().getName();
-		Date date = report.getDate();
-
-		//Set the views
-		holder.nameText.setText(name);
-		holder.locationText.setText(location);
-		holder.dateText.setText(new SimpleDateFormat("dd/LLL/yy").format(date));
-
 		return row;
 
 	}

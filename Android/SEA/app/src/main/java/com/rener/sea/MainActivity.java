@@ -1,9 +1,9 @@
 package com.rener.sea;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ListFragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
@@ -85,7 +86,21 @@ public class MainActivity extends FragmentActivity {
 		super.onConfigurationChanged(newConfig);
 	}
 
-    @Override
+	/**
+	 * Dispatch onResume() to fragments.  Note that for better inter-operation
+	 * with older versions of the platform, at the point of this call the
+	 * fragments attached to the activity are <em>not</em> resumed.  This means
+	 * that in some cases the previous state may still be saved, not allowing
+	 * fragment transactions that modify the state.  To correctly interact
+	 * with fragments in their proper state, you should instead override
+	 * {@link #onResumeFragments()}.
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	@Override
     public void onBackPressed() {
 	    super.onBackPressed();
     }
@@ -186,24 +201,32 @@ public class MainActivity extends FragmentActivity {
 	public void OnMenuItemSelectedListener(String type, ListView listView, int position) {
 		if(type.equals(MenuListFragment.TYPE_PEOPLE)) {
 			Person person = (Person) listView.getAdapter().getItem(position);
-			showPerson(person, position);
+			showPerson(person);
 		}
 		else if(type.equals(MenuListFragment.TYPE_LOCATIONS)) {
 			Location location = (Location) listView.getAdapter().getItem(position);
-			showLocation(location, position);
+			showLocation(location);
 		}
 		else if(type.equals(MenuListFragment.TYPE_REPORTS)) {
 			Report report = (Report) listView.getAdapter().getItem(position);
-			showReport(report, position);
+			showReport(report);
 		}
+	}
+
+	/**
+	 * A listener method that listens for a some changes in the data being displayed
+	 */
+	public void OnDataSetChanged() {
+		MenuListFragment fragment = (MenuListFragment) leftFragment;
+		fragment.notifyDataChanged();
 	}
 
 	/**
 	 * Set the right fragment as a person fragment and display it
 	 * @param person the Person object to be displayed
-	 * @param index the list index for the MenuListFragment
+	 *
 	 */
-	private void showPerson(Person person, int index) {
+	private void showPerson(Person person) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 		PersonDetailsFragment details = new PersonDetailsFragment();
@@ -216,9 +239,9 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * Set the right fragment as a location fragment and display it
 	 * @param location the Location object to be displayed
-	 * @param index the list index for the MenuListFragment
+	 *
 	 */
-	private void showLocation(Location location, int index) {
+	private void showLocation(Location location) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 		LocationDetailsFragment details = new LocationDetailsFragment();
@@ -231,9 +254,9 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * Set the right fragment as a report fragment and display it
 	 * @param report the Report object to be displayed
-	 * @param index the list index for the MenuListFragment
+	 *
 	 */
-	private void showReport(Report report, int index) {
+	private void showReport(Report report) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 		ReportDetailsFragment details = new ReportDetailsFragment();

@@ -26,6 +26,7 @@ public class MenuListFragment extends ListFragment {
 	public static String TYPE_LOCATIONS = "LOCATIONS";
 	private int curPos = -1;
 	private String type;
+	private ArrayAdapter adapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class MenuListFragment extends ListFragment {
 		//Set the list and it's respective adapter
 		List list = new ArrayList();
 		DBService db = ((MainActivity)getActivity()).getDBService();
-		ArrayAdapter adapter = null;
+		//ArrayAdapter adapter = null;
 		if(type.equals(TYPE_PEOPLE)) {
 			list = db.getPeople();
 			adapter = new ArrayAdapter<Person>(getActivity(),
@@ -106,6 +107,10 @@ public class MenuListFragment extends ListFragment {
 			inflater.inflate(R.menu.locations_actions, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void notifyDataChanged() {
+		adapter.notifyDataSetChanged();
 	}
 
 	public String getType() {
