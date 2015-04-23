@@ -11,7 +11,7 @@
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
-		window.location.href = '/users/admin';
+		window.location.href = '/users';
 	});
 
   // Close info panel

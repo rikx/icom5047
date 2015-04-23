@@ -10,7 +10,7 @@ $(document).ready(function(){
 
   /* Button: Return home */
   $('#btn_home').on('click', function(){
-    window.location.href = '/users/admin';
+    window.location.href = '/users';
   });
 
   /* Close edit panel */
@@ -189,7 +189,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     $('#cita_info_hour').text($this_cita.time);
     $('#cita_info_purpose').text($this_cita.purpose);
     $('#cita_info_agent').text($this_cita.username);   
-    $('#cita_info_report').html("<a href='/users/admin/reportes/" + $this_cita.report_id + "'> Reporte " + $this_cita.report_id + "</a>");
+    $('#cita_info_report').html("<a href='/users/reportes/" + $this_cita.report_id + "'> Reporte " + $this_cita.report_id + "</a>");
   }
 
   /* */
