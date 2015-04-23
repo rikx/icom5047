@@ -199,12 +199,13 @@ router.get('/admin', function(req, res, next) {
  	});
 });
 
-/* POST Admin Manejar Localizaciones
+/* POST Admin Manejar Ganaderos
  * Add new ganadero to database
  */
- router.post('/admin/new_category', function(req, res, next) {
- 	console.log("category success");
- 	if(!req.body.hasOwnProperty('new_category')) {
+ router.post('/admin/ganaderos', function(req, res, next) {
+ 	if(!req.body.hasOwnProperty('ganadero_name') || !req.body.hasOwnProperty('ganadero_apellido1')
+ 		|| !req.body.hasOwnProperty('ganadero_apellido2') || !req.body.hasOwnProperty('ganadero_email')
+ 		|| !req.body.hasOwnProperty('ganadero_telefono') || !req.body.hasOwnProperty('ganadero_m_initial')) {
  		res.statusCode = 400;
  	return res.send('Error: Missing fields for post ganadero.');
  } else {
@@ -214,7 +215,7 @@ router.get('/admin', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
 	  	// Verify ganadero does not already exist in db
-	  	client.query("SELECT * FROM category WHERE name = $1", [req.body.new_category], function(err, result) {
+	  	client.query("SELECT email FROM person WHERE email = $1 OR phone_number = $2", [req.body.ganadero_email, req.body.ganadero_telefono], function(err, result) {
 	  		if(err) {
 	  			return console.error('error running query', err);
 	  		} else {
@@ -222,9 +223,9 @@ router.get('/admin', function(req, res, next) {
 	  				res.send({exists: true});
 	  			} else {
 		  			// Insert new ganadero into db
-		  			client.query("INSERT into category (name) \
-		  				VALUES ($1)", 
-		  				[req.body.new_category] , function(err, result) {
+		  			client.query("INSERT into person (first_name, middle_initial, last_name1, last_name2, email, phone_number) \
+		  				VALUES ($1, $2, $3, $4, $5, $6)", 
+		  				[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono] , function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
@@ -677,6 +678,47 @@ router.get('/admin', function(req, res, next) {
 		  	}
 		  });
 });
+}
+});
+
+/* POST Admin Manejar Localizaciones
+ * Add new ganadero to database
+ */
+ router.post('/admin/new_category', function(req, res, next) {
+  console.log("category success");
+  if(!req.body.hasOwnProperty('new_category')) {
+   res.statusCode = 400;
+  return res.send('Error: Missing fields for post ganadero.');
+ } else {
+  var db = req.db;
+  db.connect(req.conString, function(err, client, done) {
+   if(err) {
+    return console.error('error fetching client from pool', err);
+   }
+    // Verify ganadero does not already exist in db
+    client.query("SELECT * FROM category WHERE name = $1", [req.body.new_category], function(err, result) {
+     if(err) {
+      return console.error('error running query', err);
+     } else {
+      if(result.rowCount > 0){
+       res.send({exists: true});
+      } else {
+       // Insert new ganadero into db
+       client.query("INSERT into category (name) \
+        VALUES ($1)", 
+        [req.body.new_category] , function(err, result) {
+       //call `done()` to release the client back to the pool
+       done();
+       if(err) {
+        return console.error('error running query', err);
+       } else {
+        res.json(true);
+       }
+      });
+      }
+     }
+    });
+   });
 }
 });
 
