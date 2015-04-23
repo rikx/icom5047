@@ -160,7 +160,6 @@ $(document).ready(function(){
 				option_id: the_answer.attr('data-answer-id'),
 				user_input: answer_value
 			};
-
 	    $.ajax({
 	      url: "http://localhost:3000/cuestionario/path",
 	      method: "POST",
@@ -269,7 +268,6 @@ $(document).ready(function(){
 			option_id: $question_panel_answers.attr('data-answer-id'),
 			user_input: 'RECOM'
 		};
-		console.log(end_path);
     $.ajax({
       url: "http://localhost:3000/cuestionario/path",
       method: "POST",
