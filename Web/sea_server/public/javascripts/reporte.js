@@ -26,6 +26,6 @@ $(document).ready(function(){
 										= item.answer
 					else
 						center
-							button(class='btn btn-sm btn-success') Continuar Entrevista
-	}*/
+							button(class='btn btn-sm btn-success') Continuar Entrevista*/
+	}
 });
