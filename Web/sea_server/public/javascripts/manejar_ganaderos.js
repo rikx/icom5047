@@ -12,10 +12,22 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(ganaderos_array[0]);
 
-  /* Search */
+  /* Search Code start */
   $('#btn_search').on('click', function() {
-
+    // populate list with search results
+    populate_list(ganaderos_set, locations_set);
   });
+
+  $('.typeahead').typeahead({
+    hint: false,
+    highlight: true
+  },
+  {
+    name: 'locations',
+    displayKey: 'value',
+    source: substringMatcher(locations_array)
+  });
+  /* Search Code End */
 
   /* Return home */
   $('#btn_home').on('click', function(){
@@ -211,12 +223,11 @@ $(document).ready(function(){
    $('#ganadero_locations').html(table_content);
  }
 
- /* */
- function populate_ganaderos(){
-  $.getJSON('http://localhost:3000/list_ganaderos', function(data) {
-    ganaderos_array = data.ganaderos;
-    localizaciones_array = data.locations;
-    var firstElement = ganaderos_array[0];
+  /* */
+  function populate_ganaderos(){
+    $.getJSON('http://localhost:3000/list_ganaderos', function(data) {
+      ganaderos_array = data.ganaderos;
+      localizaciones_array = data.locations;
 
       // contents of ganaderos list
       var table_content = '';
@@ -238,5 +249,31 @@ $(document).ready(function(){
       // inject content string into html
       $ganaderos_list.html(table_content);
     });
+  };
+  
+  /* Populate list from search results */
+  function populate_list(ganaderos_set, locations_set){
+    ganaderos_array = ganaderos_set;
+    localizaciones_array = locations_set;
+
+    // contents of ganaderos list
+    var table_content = '';
+
+    // for each item in JSON, add table row and cells
+    $.each(ganaderos_set, function(i){
+      table_content += '<tr>';
+      table_content += "<td><a class='list-group-item ";
+      // if initial list item, set to active
+      if(i==0) {
+        table_content +=  'active ';
+      }
+      table_content += "show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.first_name+' '+this.last_name1+' '+this.last_name2+"</a></td>";
+      table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
+      table_content += "<td><a class='btn_delete_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+      table_content += '</tr>';
+    });  
+
+    // inject content string into html
+    $ganaderos_list.html(table_content);
   };
 });

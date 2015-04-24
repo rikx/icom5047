@@ -343,8 +343,7 @@ router.get('/list_ganaderos', function(req, res, next) {
 	  client.query('SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
 									FROM person \
 									WHERE person_id NOT IN (SELECT person_id FROM users) \
-									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-									LIMIT 20;', function(err, result) {
+									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC', function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
