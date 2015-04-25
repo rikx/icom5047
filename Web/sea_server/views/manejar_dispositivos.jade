@@ -1,4 +1,6 @@
 extends layout
+block css
+	link(rel='stylesheet', href='/stylesheets/style.css')
 
 block content
 	.container
@@ -14,13 +16,8 @@ block content
 
 		.row
 			.col-md-1
-			.col-md-2
-			.col-md-4
-				.input-group
-					input#search_bar(class='form-control', type='text', placeholder='Buscar')
-					span(class='input-group-btn')
-						button#btn_search(class='btn btn-default', type='button')
-							i(class='glyphicon glyphicon-search')
+			.col-md-6
+				input#search_bar(class='form-control typeahead', type='text', placeholder='Buscar dispositivos por # de identificación')
 			.col-md-4
 			.col-md-1
 
@@ -52,15 +49,20 @@ block content
 							label(for='dispositivo_id_num') Numero de Identificación:
 							input#dispositivo_id_num(class='form-control', name='dispositivo_id_num', type='text', placeholder='# de identificación')
 						.form-group
-							input#dispositivo_usuario(class='form-control', name='dispositivo_id_usuario', type='text', placeholder='# de identificación')
+							input#dispositivo_usuario(class='form-control', name='dispositivo_id_usuario', type='text')
 						.form-group
-							label(for='btn_dropdown_agentes') Agentes:
+							label(for='btn_dropdown_agentes') Usuarios:
 							.dropdown
 								.btn-group
-									button#btn_dropdown_agentes(class='btn btn-default dropdown-toggle', type='button', name='btn_dropdown_agentes', data-toggle='dropdown', aria-expanded='false') 
-										span#btn_dropdown_agentes_text Lista de Agentes 
+									button#btn_dropdown_agentes(class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-expanded='false') 
+										span#btn_dropdown_agentes_text Lista de Usuarios 
 										span(class='caret')
 									ul#list_dropdown_agentes(class='dropdown-menu', role='menu')
+										each user in usuarios
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-id=user.user_id)
+													= user.username
+
 					.btn-group(role='group', aria-label='info panel buttons')
 						button#btn_close_edit_panel(class='btn btn-default') Cerrar
 						button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
@@ -100,6 +102,6 @@ block content
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
-	script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js')
+	script(src='/javascripts/typeahead.bundle.min.js')
 	script(src='/javascripts/manejar_dispositivos.js')
 	script(src='/javascripts/helpers.js')

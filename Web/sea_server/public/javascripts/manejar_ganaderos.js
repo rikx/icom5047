@@ -10,11 +10,6 @@ $(document).ready(function(){
   populate_info_panel(ganaderos_array[0]);
 
   /* Search Code start */
-  // not used atm
-  $('#btn_search').on('click', function() {
-
-  });
-
   // constructs the suggestion engine
   var search_source = new Bloodhound({
     // user input is tokenized and compard with ganadero full names or emails
@@ -139,6 +134,7 @@ $(document).ready(function(){
         }
         // update ganadero list after posting 
         populate_ganaderos();
+        $('#edit_panel').hide();
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -190,6 +186,7 @@ $(document).ready(function(){
       alert("Informacion de ganadero ha sido editada en el sistema.");
       // update ganadero list after posting 
       populate_ganaderos();
+      $('#edit_panel').hide();
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );

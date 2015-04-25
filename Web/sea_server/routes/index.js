@@ -185,7 +185,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 										FROM person \
 										WHERE person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) as ganaderos \
-									WHERE person_name LIKE '%"+req.params.user_input+"%'", function(err, result) {
+									WHERE person_name ILIKE '%"+req.params.user_input+"%' OR email LIKE '%"+req.params.user_input+"%'", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -202,7 +202,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 									SELECT person_id, location_id, location.name AS location_name \
 									FROM ganaderos, location \
-									WHERE person_name LIKE '%"+req.params.user_input+"%' AND (person_id = owner_id OR person_id = manager_id)", function(err, result){
+									WHERE person_name ILIKE '%"+req.params.user_input+"%' OR email LIKE '%"+req.params.user_input+"%' AND (person_id = owner_id OR person_id = manager_id)", function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
@@ -265,6 +265,28 @@ router.get('/locations', function(req, res, next) {
 	    	res.json({locations: result.rows});
 	    }
 		});
+	});
+});
+
+router.get('/dispositivos/:user_input', function(req, res, next) {
+	var dispositivos_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// get devices and their assigned user (if any)
+	  client.query("SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
+									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
+									WHERE id_number LIKE '%"+req.params.user_input+"%' OR username ILIKE '%"+req.params.user_input+"%' OR name ILIKE '%"+req.params.user_input+"%' \
+									ORDER BY username ASC ", function(err, result) {
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	dispositivos_list = result.rows;
+	    	res.json({devices: dispositivos_list});
+	    }
+	  });
 	});
 });
 // SEARCH FUNCTIONS END
@@ -628,39 +650,25 @@ router.get('/list_citas', function(req, res, next) {
 
 /* GET Dispositivos List data 
  * Responds with first 20 dispositivos, 
- * ordered by assigned person
+ * ordered by assigned user
  */
 router.get('/list_dispositivos', function(req, res, next) {
-	var dispositivos_list, usuarios_list;
+	var dispositivos_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-		
-	  client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
-									FROM devices natural join users \
+		// get devices and their assigned user (if any)
+	  client.query('SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
+									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
 									ORDER BY username ASC \
-									LIMIT 20;', function(err, result) {
+									LIMIT 20', function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
 	    	dispositivos_list = result.rows;
-	    }
-	  });
-
-	  // to populate usuario dropdown list
-	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, phone_number \
-									FROM (users natural join person) \
-									ORDER BY email ASC', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	usuarios_list = result.rows;
-	    	res.json({dispositivos: dispositivos_list, usuarios: usuarios_list});
+	    	res.json({dispositivos: dispositivos_list});
 	    }
 	  });
 	});

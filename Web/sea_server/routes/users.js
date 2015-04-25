@@ -841,7 +841,7 @@ router.post('/reports/citas', function(req, res, next) {
  });
 
 /* GET Admin Manejar Dispositivos
- *
+ * renders manejar dispositivos page with first 20 dispositivos, ordered by assigned user
  */
  router.get('/admin/dispositivos', function(req, res, next) {
  	var dispositivos_list, usuarios_list;
@@ -851,10 +851,10 @@ router.post('/reports/citas', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
 		// to populate dispositivo list
-		client.query('SELECT device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username \
-			FROM devices natural join users \
-			ORDER BY username ASC \
-			LIMIT 20;', function(err, result) {
+		client.query('SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
+									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
+									ORDER BY username ASC \
+									LIMIT 20', function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -863,9 +863,9 @@ router.post('/reports/citas', function(req, res, next) {
 			});
 
 	  // to populate dispositivo dropdown list
-	  client.query('SELECT person_id, email, first_name, middle_initial, last_name1, last_name2, phone_number \
-	  	FROM (users natural join person) \
-	  	ORDER BY email ASC', function(err, result) {
+	  client.query('SELECT user_id, username \
+							  	FROM users \
+							  	ORDER BY username ASC', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
 
@@ -873,7 +873,11 @@ router.post('/reports/citas', function(req, res, next) {
 	  		return console.error('error running query', err);
 	  	} else {
 	  		usuarios_list = result.rows;
-	  		res.render('manejar_dispositivos', { title: 'Manejar Dispositivos', dispositivos: dispositivos_list, usuarios: usuarios_list});
+	  		res.render('manejar_dispositivos', { 
+	  			title: 'Manejar Dispositivos', 
+	  			dispositivos: dispositivos_list, 
+	  			usuarios: usuarios_list
+	  		});
 	  	}
 	  });
 	});
@@ -924,7 +928,9 @@ router.post('/reports/citas', function(req, res, next) {
  */
  router.put('/admin/dispositivos/:id', function(req, res, next) {
  	var dispositivo_id = req.params.id;
- 	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
+ 	if(!req.body.hasOwnProperty('dispositivo_name') 
+ 		|| !req.body.hasOwnProperty('dispositivo_id_num')
+ 		|| !req.body.hasOwnProperty('dispositivo_id_usuario')) {
  		res.statusCode = 400;
  		return res.send('Error: Missing fields for put device.');
  	} else {
@@ -934,9 +940,9 @@ router.post('/reports/citas', function(req, res, next) {
  				return console.error('error fetching client from pool', err);
  			}
 			// Edit dispositivo in db
-			client.query("UPDATE devices SET name = $1, id_number = $2 \
-				WHERE device_id = $3", 
-				[req.body.dispositivo_name, req.body.dispositivo_id_num, dispositivo_id] , function(err, result) {
+			client.query("UPDATE devices SET name = $1, id_number = $2, user_id = $3 \
+										WHERE device_id = $4", 
+				[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario, dispositivo_id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
