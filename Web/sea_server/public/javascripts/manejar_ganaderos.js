@@ -17,27 +17,27 @@ $(document).ready(function(){
 
   // constructs the suggestion engine
   var search_source = new Bloodhound({
-    local: ganaderos_array,
+    // user input is tokenized and compard with ganadero full names or emails
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('person_name', 'email'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
+    dupDetector: function(remoteMatch, localMatch) {
+      return remoteMatch.value === localMatch.value;
+    },
+    local: ganaderos_array,
     remote: {
       url: 'http://localhost:3000/ganaderos/%QUERY',
       filter: function(list) {
+        // populate global arrays with matching results
         ganaderos_array = list.ganaderos;
         localizaciones_array = list.locations;
-        // populate list
+        // populate list with matching results
         populate_list(ganaderos_array);
         return $.map(list.ganaderos, function(ganadero) { 
           return ganadero;
         });
       }
-    },
-    // user input is tokenized and compard with ganadero full names or emails
-    datumTokenizer: function(d) {
-      var name_tokens = Bloodhound.tokenizers.whitespace(d.full_name);
-      var email_tokens = Bloodhound.tokenizers.whitespace(d.email);
-      return name_tokens.concat(email_tokens);
-    },
-    queryTokenizer: Bloodhound.tokenizers.whitespace, 
+    }
   });
 
   // kicks off loading and processing of 'local' and 'prefetch'
@@ -274,10 +274,6 @@ $(document).ready(function(){
     $.each(ganaderos_set, function(i){
       table_content += '<tr>';
       table_content += "<td><a class='list-group-item ";
-      // if initial list item, set to active
-      if(i==0) {
-        table_content +=  'active ';
-      }
       table_content += "show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.person_name+"</a></td>";
       table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
       table_content += "<td><a class='btn_delete_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
@@ -286,5 +282,8 @@ $(document).ready(function(){
 
     // inject content string into html
     $ganaderos_list.html(table_content);
+
+    // close current info panel 
+    $('#btn_close_info_panel').trigger('click');
   };
 });

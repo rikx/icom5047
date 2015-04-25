@@ -173,7 +173,7 @@ router.get('/admin', function(req, res, next) {
 						 			FROM person \
 						 			WHERE person_id NOT IN (SELECT person_id FROM users) \
 						 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-						 			LIMIT 20;", function(err, result) {
+						 			LIMIT 20", function(err, result) {
  				if(err) {
  					return console.error('error running query', err);
  				} else {
@@ -188,7 +188,7 @@ router.get('/admin', function(req, res, next) {
 							 			LIMIT 20) \
 							 		SELECT person_id, location_id, location.name AS location_name \
 							 		FROM ganaderos, location \
-							 		WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
+							 		WHERE person_id = owner_id OR person_id = manager_id', function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
