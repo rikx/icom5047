@@ -17,7 +17,7 @@ $(document).ready(function(){
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
     dupDetector: function(remoteMatch, localMatch) {
-      return remoteMatch.value === localMatch.value;
+      return remoteMatch.person_name === localMatch.person_name;
     },
     local: ganaderos_array,
     remote: {

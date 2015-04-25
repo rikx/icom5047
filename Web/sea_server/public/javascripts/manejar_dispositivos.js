@@ -21,7 +21,7 @@ $(document).ready(function(){
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
     dupDetector: function(remoteMatch, localMatch) {
-      return remoteMatch.value === localMatch.value;
+      return remoteMatch.device_name === localMatch.device_name;
     },
     local: dispositivos_array,
     remote: {
