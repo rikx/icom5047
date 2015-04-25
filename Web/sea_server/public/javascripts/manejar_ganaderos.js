@@ -46,7 +46,12 @@ $(document).ready(function(){
   {
     name: 'ganaderos',
     displayKey: 'person_name',
-    source: search_source.ttAdapter()
+    source: search_source.ttAdapter(),
+    templates: {
+      suggestion: function(ganadero){
+        return '<p><strong>Nombre: </strong>'+ganadero.person_name+'</p><p><strong>Email: </strong>'+ganadero.email+'</p>';
+      }
+    }
   });
 
   // search bar input select event listener

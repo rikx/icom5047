@@ -49,7 +49,12 @@ $(document).ready(function(){
   {
     name: 'devices',
     displayKey: 'id_number',
-    source: search_source.ttAdapter()
+    source: search_source.ttAdapter(),
+    templates: {
+      suggestion: function(device){
+        return '<p><strong>Dispositivo: </strong>'+device.device_name+'</p><p><strong># de identificación: </strong>'+device.id_number+'</p>';
+      }
+    }
   });
 
   // search bar input select event listener
@@ -215,7 +220,7 @@ $(document).ready(function(){
     $('#dispositivo_info_usuario').text($this_dispositivo.username);
 
     var date_time = get_date_time($this_dispositivo.latest_sync, true);
-    $('#dispositivo_info_last_sync').text(date_time.date + " at " + date_time.time);
+    $('#dispositivo_info_last_sync').text(date_time.date + " @ " + date_time.time);
   }
 
   /* Populate list with first 20 ganaderos, ordered by assigned user */
