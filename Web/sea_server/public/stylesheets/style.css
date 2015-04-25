@@ -51,10 +51,11 @@
 }
 
 /* Fix input group separation bug */
+.twitter-typeahead { width: 100%; } 
 /*
 .input-group .twitter-typeahead .form-control:not(:first-child):not(:last-child) {
   border-radius: 4px 0px 0px 4px;
 }
 .twitter-typeahead > .form-control{
   width: inherit !important;
-}*/
+}
