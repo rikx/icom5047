@@ -185,7 +185,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 										FROM person \
 										WHERE person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) as ganaderos \
-									WHERE person_name ILIKE '%"+req.params.user_input+"%' OR email LIKE '%"+req.params.user_input+"%'", function(err, result) {
+									WHERE LOWER(person_name) LIKE LOWER('%"+req.params.user_input+"%') OR email LIKE '%"+req.params.user_input+"%'", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -201,8 +201,8 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 										WHERE person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 									SELECT person_id, location_id, location.name AS location_name \
-									FROM ganaderos, location \
-									WHERE person_name ILIKE '%"+req.params.user_input+"%' OR email LIKE '%"+req.params.user_input+"%' AND (person_id = owner_id OR person_id = manager_id)", function(err, result){
+									FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id) \
+									WHERE LOWER(person_name) LIKE LOWER('%"+req.params.user_input+"%') OR email LIKE '%"+req.params.user_input+"%'", function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
@@ -406,8 +406,7 @@ router.get('/list_ganaderos', function(req, res, next) {
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 										LIMIT 20) \
 									SELECT person_id, location_id, location.name AS location_name \
-									FROM ganaderos, location \
-									WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
+									FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {

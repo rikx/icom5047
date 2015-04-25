@@ -1,6 +1,4 @@
-
-
-	jsPlumb.ready(function() {
+jsPlumb.ready(function() {
 	$preguntas_list = $('#preguntas_list');
 	// stores current elements in the jsPlumb container
 	var elements_array = [];
