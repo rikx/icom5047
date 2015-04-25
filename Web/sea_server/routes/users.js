@@ -158,7 +158,9 @@ router.get('/admin', function(req, res, next) {
  	res.render('cuestionario', { title: 'Cuestionario'});
  });
 
- /* GET Admin Manejar Ganaderos */
+ /* GET Admin Manejar Ganaderos
+ 	* renders manejar ganaderos page with first 20 ganaderos and their associated information
+ 	*/
  router.get('/admin/ganaderos', function(req, res, next) {
  	var ganaderos_list, locations_list;
  	var db = req.db;
@@ -166,34 +168,38 @@ router.get('/admin', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
-
- 		client.query('SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
- 			FROM person \
- 			WHERE person_id NOT IN (SELECT person_id FROM users) \
- 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
- 			LIMIT 20;', function(err, result) {
+ 		// get ganaderos
+ 		client.query("SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+						 			FROM person \
+						 			WHERE person_id NOT IN (SELECT person_id FROM users) \
+						 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+						 			LIMIT 20;", function(err, result) {
  				if(err) {
  					return console.error('error running query', err);
  				} else {
  					ganaderos_list = result.rows;
  				}
  			});
-
+ 		// get associated locations
  		client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
- 			FROM person \
- 			WHERE person_id NOT IN (SELECT person_id FROM users) \
- 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
- 			LIMIT 20) \
- 		SELECT person_id, location_id, location.name AS location_name \
- 		FROM ganaderos, location \
- 		WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
+							 			FROM person \
+							 			WHERE person_id NOT IN (SELECT person_id FROM users) \
+							 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+							 			LIMIT 20) \
+							 		SELECT person_id, location_id, location.name AS location_name \
+							 		FROM ganaderos, location \
+							 		WHERE person_id = owner_id OR person_id = manager_id;', function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
 				return console.error('error running query', err);
 			} else {
 				locations_list = result.rows;
-				res.render('manejar_ganaderos', { title: 'Manejar Ganaderos', ganaderos: ganaderos_list, locations: locations_list});
+				res.render('manejar_ganaderos', { 
+					title: 'Manejar Ganaderos', 
+					ganaderos: ganaderos_list, 
+					locations: locations_list
+				});
 			}
 		});	
  	});
