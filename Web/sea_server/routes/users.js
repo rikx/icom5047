@@ -247,6 +247,104 @@ router.get('/admin', function(req, res, next) {
 }
 });
 
+
+/* PUT Admin Category_Locations 
+ */
+router.put('/admin/category_location', function(req, res, next) {
+var theCategory;
+var location_category_array;
+var included;
+if(!req.body.hasOwnProperty('categories') || !req.body.hasOwnProperty('location') ) {
+   res.statusCode = 400;
+  return res.send('Error: Missing fields for post ganadero.');
+ } else {
+  var db = req.db;
+
+  db.connect(req.conString, function(err, client, done) {
+   if(err) {
+    return console.error('error fetching client from pool', err);
+   }
+    // Verify ganadero does not already exist in db
+    client.query("SELECT * FROM location_category WHERE location_id = $1", [req.body.location], function(err, result) {
+     if(err) {
+      return console.error('error running query', err);
+     } else {
+      if(result.rowCount > 0){
+       //res.send({exists: true});
+        location_category_array = result.rows;
+        for(i = 0 ; i < req.body.categories.length; i++)
+        {
+        for(j = 0; j < location_category_array.length; j++)
+        if(req.body.categories[i] == location_category_array[j].category_id)
+        {
+			included = true;
+        }
+ 
+
+
+        if(included)
+        {
+        	console.log(" dont need to add category " + req.body.categories[i]);
+        }
+        else
+        {
+        console.log("adding category " + req.body.categories[i]);
+        client.query("INSERT into location_category (location_id, category_id) \
+        VALUES ($1, $2)", 
+        [req.body.location,req.body.categories[i]] , function(err, result) {
+       //call `done()` to release the client back to the pool
+       done();
+       if(err) {
+        return console.error('error running query', err);
+       } else {
+        //res.json(true);
+       }
+      });
+        }
+
+        included = false;
+        } //end for loop 1
+
+        res.json(true);
+        
+
+      } else {
+
+
+      	for(i = 0 ; i < req.body.categories.length; i++){
+       
+       console.log("hi");
+       client.query("INSERT into location_category (location_id, category_id) \
+        VALUES ($1, $2)", 
+        [req.body.location,req.body.categories[i]] , function(err, result) {
+       //call `done()` to release the client back to the pool
+       done();
+       if(err) {
+        return console.error('error running query', err);
+       } else {
+        //res.json(true);
+       }
+      });
+
+   }
+
+   res.json(true);
+      }
+     }
+    });
+
+
+
+
+   });
+
+
+} //end else
+
+
+
+});
+
 /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
  */

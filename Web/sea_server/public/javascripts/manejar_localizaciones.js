@@ -17,11 +17,16 @@ $(document).ready(function(){
   populate_info_panel(localizaciones_array[0]);
 
   $('#add_categoria_panel').hide();
+  $('#btn_edit_categories').hide();
+
 
   /* Button: Add Categories */
   $('#btn_add_categories').on('click', function(){
     $('#categoria_panel').hide();
     $('#add_categoria_panel').show();
+
+
+
   });
 
 
@@ -127,6 +132,50 @@ $('#btn_add_ganadero').on('click', function(){
     // ajax POST call to assign ganadero as owner or manager of location
   });
 
+
+//updates categories associated to current location
+$('#btn_edit_categories').on('click', function(){
+
+  //get location id and category ids associated to said location id
+  var location_id =  $('#btn_edit').attr('data-id');
+  var checkedCategories = [];
+  $(':checkbox:checked').each(function(i){
+    checkedCategories[i] = $(this).val();
+  });
+
+ //json object for category_location
+ var category_location = {
+  location: location_id,
+  categories: checkedCategories,
+};
+
+console.log("category location is ");
+console.log(category_location);
+
+
+$.ajax({
+  url: "http://localhost:3000/users/admin/category_location",
+  method: "PUT",
+  data: JSON.stringify(category_location),
+  contentType: "application/json",
+  dataType: "json",
+
+  success: function(data) {
+
+    alert("server fucntion executed succesful");
+
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+
+
+});
+
 /* Change add associated ganadero dropdown selected value */
 $('#list_associated_ganadero').on('click', 'li a', function(e){
     // prevents link from firing
@@ -166,7 +215,10 @@ $('#list_associated_agente').on('click', 'li a', function(e){
 /* Open info panel */
 $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     // prevents link from firing
+
     e.preventDefault();
+    $('#btn_add_categories').show();
+    $('#btn_edit_categories').hide();
     $('#info_panel_heading').show();
     $('#localizacion_info').show();
     $('#edit_associates_heading').hide();
@@ -279,6 +331,8 @@ $('#btn_post_new_category').on('click', function(){
 
 /* Open edit location panel */
 $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(){
+  $('#btn_add_categories').hide();
+  $('#btn_edit_categories').show();
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
@@ -545,12 +599,12 @@ function populate_categories_edit(){
     if(found)
     {
      content += '<input ';
-     content += "type='checkbox' checked='true'> " + all_categorias_array[i].category_name + " <br>";
+     content += "type='checkbox' checked='true' value='" + all_categorias_array[i].category_id + "'> " + all_categorias_array[i].category_name + " <br>";
    }
    else
    {
      content += '<input ';
-     content += "type='checkbox'> " + all_categorias_array[i].category_name + " <br>";
+     content += "type='checkbox' value='" + all_categorias_array[i].category_id + "'> " + all_categorias_array[i].category_name + " <br>";
    }
    found = false;
  });
