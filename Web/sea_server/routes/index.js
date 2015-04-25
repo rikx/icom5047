@@ -168,20 +168,24 @@ router.get('/modify_location_dropdowns', function(req, res, next) {
 	});
 });
 
-/* 
- * GET ganaderos 
+// SEARCH FUNCTIONS START
+/* GET ganaderos search
+ * returns ganaderos matching :user_input and their associated information 
  */
-router.get('/ganaderos', function(req, res, next) {
-	var ganaderos_list;
+router.get('/ganaderos/:user_input', function(req, res, next) {
+	var ganaderos_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query("SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-									FROM person \
-									WHERE person_id NOT IN (SELECT person_id FROM users) \
-									ORDER BY person_name ASC;", function(err, result) {
+		// get ganaderos
+	  client.query("SELECT * \
+									FROM (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+										FROM person \
+										WHERE person_id NOT IN (SELECT person_id FROM users) \
+										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) as ganaderos \
+									WHERE person_name like '%"+req.params.user_input+"%'", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -189,14 +193,35 @@ router.get('/ganaderos', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	ganaderos_list = result.rows;
-	    	res.json({ganaderos : ganaderos_list});
 	    }
 	  });
+	  // get associated locations
+	  client.query("WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+										FROM person \
+										WHERE person_id NOT IN (SELECT person_id FROM users) \
+										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
+									SELECT person_id, location_id, location.name AS location_name \
+									FROM ganaderos, location \
+									WHERE person_name like '%"+req.params.user_input+"%' AND (person_id = owner_id OR person_id = manager_id)", function(err, result){
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	locations_list = result.rows;
+	    	// response
+				res.json({
+					ganaderos: ganaderos_list, 
+					locations: locations_list
+				});
+	    }
+		});	
 	});
 });
 
 /* 
  * GET usuarios 
+ * return returns users matching :user_input and their associated information 
  */
 router.get('/usuarios', function(req, res, next) {
 	var usuarios_list;
@@ -221,6 +246,29 @@ router.get('/usuarios', function(req, res, next) {
 	});
 });
 
+/* GET all locations
+ * returns locations matching :user_input and their associated information 
+ */
+router.get('/locations', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// query for all locations data
+		//WHERE name like '%"+req.query.key+"%'"
+		client.query("SELECT location_id, name AS location_name \
+									FROM location", function(err, result){
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({locations: result.rows});
+	    }
+		});
+	});
+});
+// SEARCH FUNCTIONS END
+
 /* GET flowchart element family 
  * returns family info of element matching :id
  */
@@ -243,28 +291,6 @@ router.get('/element/:id', function(req, res, next) {
 	    	res.json({question_family : result.rows});
 	    }
 	  });
-	});
-});
-
-/* GET all locations
- * responds JSON object with all locations
- */
-router.get('/locations', function(req, res, next) {
-	var db = req.db;
-	db.connect(req.conString, function(err, client, done) {
-		if(err) {
-			return console.error('error fetching client from pool', err);
-		}
-		// query for all locations data
-		//WHERE name like '%"+req.query.key+"%'"
-		client.query("SELECT location_id, name AS location_name \
-									FROM location", function(err, result){
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	res.json({locations: result.rows});
-	    }
-		});
 	});
 });
 
@@ -340,10 +366,11 @@ router.get('/list_ganaderos', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 	
-	  client.query('SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+	  client.query("SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 									FROM person \
 									WHERE person_id NOT IN (SELECT person_id FROM users) \
-									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC', function(err, result) {
+									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+									LIMIT 20", function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {

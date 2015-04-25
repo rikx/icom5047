@@ -1,4 +1,6 @@
 extends layout
+block css
+	link(rel='stylesheet', href='/stylesheets/style.css')
 
 block content
 	.container
@@ -14,14 +16,12 @@ block content
 
 		.row
 			.col-md-1
-			.col-md-2
-			.col-md-4
-				form#form_search(role='form')
-					.input-group
-						input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar Ganadero')
-						span(class='input-group-btn')
-							button#btn_search(class='btn btn-default', type='button')
-								i(class='glyphicon glyphicon-search')
+			.col-md-6
+				.input-group
+					input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar Ganadero')
+					span(class='input-group-btn')
+						button#btn_search(class='btn btn-default', type='button')
+							i(class='glyphicon glyphicon-search')
 			.col-md-4
 			.col-md-1
 
@@ -96,5 +96,6 @@ block content
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
+	script(src='/javascripts/typeahead.bundle.min.js')
 	script(src='/javascripts/manejar_ganaderos.js')
 	script(src='/javascripts/helpers.js')
