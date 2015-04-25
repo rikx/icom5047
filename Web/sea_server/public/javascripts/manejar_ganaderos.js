@@ -2,9 +2,6 @@ $(document).ready(function(){
   // ganaderos list
   $ganaderos_list = $('#ganaderos_list');
 
-  // initial population of ganaderos list
-  populate_ganaderos();
-
   // store data for initial 20 ganaderos
   var ganaderos_array =  JSON.parse($ganaderos_list.attr('data-ganaderos'));
   var localizaciones_array = JSON.parse($ganaderos_list.attr('data-localizaciones'));
@@ -281,7 +278,7 @@ $(document).ready(function(){
       if(i==0) {
         table_content +=  'active ';
       }
-      table_content += "show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.first_name+' '+this.last_name1+' '+this.last_name2+"</a></td>";
+      table_content += "show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.person_name+"</a></td>";
       table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
       table_content += "<td><a class='btn_delete_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
