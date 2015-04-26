@@ -43,7 +43,7 @@ jsPlumb.ready(function() {
 	    	table_content +=  'active ';
 	    }
 	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.type+' '+this.id+': '+this.name+"</a></td></tr>";
-	});
+		});
 
 		$('#preguntas_list').html(table_content);
 	}
@@ -70,27 +70,20 @@ jsPlumb.ready(function() {
  		loadGraphTest();
  	});
 
- 	var j =0;
+ 	var j =0; // item id
  	var array = [];
  	var arrayConnection = [];
  	var trigger = "yes";
  	jsPlumb.Defaults.Container = $('#container_plumbjs');
 
  	$('#list_question_type').on('click', 'li a', function(e){
-     // prevents link from firing
-     e.preventDefault();
-     $('#btn_question_type_text').text($(this).text()+' ');
-     $('#btn_question_type').val($(this).attr('data-usario-type'));
-     var questionType = $('#btn_question_type_text').text($(this).text()+' ').text();
-     if(questionType == 'Tipo de Pregunta'){
-     	$('#btn_add_question').prop('disabled', true);
-     }else
-     {
-     	$('#btn_add_question').prop('disabled', false);
-
-     }
-
- });
+		// prevents link from firing
+		e.preventDefault();
+		$('#btn_question_type_text').text($(this).text()+' ');
+		$('#btn_question_type').val($(this).attr('data-question-type'));
+		// enable add question button
+		$('#btn_add_question').prop('disabled', false);
+	});
 
  	function AddQuestion() {
  		jsPlumb.ready(function() {
