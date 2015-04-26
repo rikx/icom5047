@@ -355,6 +355,117 @@ router.put('/admin/category_location', function(req, res, next) {
 	}
 });
 
+/* PUT Admin User Specialties
+ *
+ */
+router.put('/admin/user_specialties', function(req, res, next) {
+	//var location_category_array, included;
+	console.log("user specialties call");
+    var user_specialties_array, included;
+
+	if(!req.body.hasOwnProperty('specialties') || !req.body.hasOwnProperty('user') ) {
+	  res.statusCode = 400;
+	  return res.send('Error: Missing fields for post ganadero.');
+	} else {
+	  var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	  		return console.error('error fetching client from pool', err);
+	  	}
+	    // Get categories (if any) associated to location
+	    client.query("SELECT * FROM users_specialization WHERE user_id = $1", [req.body.user], function(err, result) {
+	    	if(err) {
+	      	return console.error('error running query', err);
+	      } else {
+		     	// if location has categories assocciated to it
+		      if(result.rowCount > 0){
+		        user_specialties_array = result.rows;
+
+		        /*
+		         * Code for addding to location_category
+		         */
+		        // loop through checkmarked categories
+		        for(i = 0 ; i < req.body.specialties.length; i++) {
+		        	// loop through categories associated to location
+		        	for(j = 0; j < user_specialties_array.length; j++) {
+		        		// if match is found then category is already associated with location
+		        		if(req.body.specialties[i] == user_specialties_array[j].spec_id) {
+									included = true;
+		       			}
+		       		}
+							// if included then category is already associated with location; else, add association
+							if(!included) {
+								// add association
+								client.query("INSERT into users_specialization (user_id, spec_id) \
+														VALUES ($1, $2)", 
+														[req.body.user,req.body.specialties[i]] , function(err, result) {
+									//call `done()` to release the client back to the pool
+									done();
+									if(err) {
+										return console.error('error running query', err);
+									} else {
+
+									}
+								});
+							}
+							// reset included value
+							included = false;
+		      	} //end for loop 1
+
+		      	/* 
+		      	 * Code for removing from location_category 
+		      	 */
+		    	  // loop through categories associated to location
+		      	for(j = 0; j < user_specialties_array.length; j++) {
+		      		// loop through checkmarked categories
+		       		for(i = 0 ; i < req.body.specialties.length; i++) {
+		       			// if match is found then category is already associated with location
+		        		if(req.body.specialties[i] == user_specialties_array[j].spec_id) {
+		       				included = true;
+		       			}
+		       		}
+		       		// if included then category remained checkmarked; else, remove association
+		       		if(!included) {
+		       			// remove association
+								client.query("DELETE FROM users_specialization \
+															WHERE user_id =$1 AND spec_id = $2", 
+														[req.body.user,user_specialties_array[j].spec_id] , function(err, result) {
+									//call `done()` to release the client back to the pool
+									done();
+									if(err) {
+										return console.error('error running query', err);
+									} else {
+										// do nothing
+									}
+								});
+		       		}
+		       		// reset included value
+							included = false;
+		      	}
+		      } else {
+		      	// location has no categories so add the ones the user checkmarked
+		      	for(i = 0 ; i < req.body.specialties.length; i++){
+							client.query("INSERT into users_specialization (user_id, spec_id) \
+														VALUES ($1, $2)", 
+														[req.body.user,req.body.specialties[i]] , function(err, result) {
+								//call `done()` to release the client back to the pool
+								done();
+								if(err) {
+									return console.error('error running query', err);
+								} else {
+									// do nothing
+								}
+		      		});
+						}
+		      }
+		    	// location_category associations were succesfully updated
+					res.json(true);
+		   	}
+		  });
+	  });
+	}
+});
+
 /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
  */

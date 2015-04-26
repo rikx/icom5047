@@ -15,6 +15,8 @@ $(document).ready(function(){
   populate_info_panel(usuarios_array[0]);
 
   $('#usuario_type').hide();
+  $('#btn_edit_specialty').hide();
+
   
 
 
@@ -130,6 +132,8 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
   $('#edit_panel').show();
   $('#info_panel').hide();
   $('#specialty_panel').hide();
+  $('#btn_add_specialty').hide()
+  $('#btn_edit_specialty').show()
 
   var type = "Test";
     // contains usuario id
@@ -201,6 +205,54 @@ $('#btn_edit').on('click', function(){
     }
   });
 });
+
+//updates categories associated to current location
+$('#btn_edit_specialty').on('click', function(){
+
+alert("edit specialty");
+
+
+  //get location id and category ids associated to said location id
+  var usuario_id =  $('#btn_edit').attr('data-id');
+  var checkedSpecialties = [];
+  $(':checkbox:checked').each(function(i){
+    checkedSpecialties[i] = $(this).val();
+  });
+
+
+ //json object for category_location
+ var specialties = {
+  user: usuario_id,
+  specialties: checkedSpecialties
+};
+
+console.log("user_specialty is ");
+console.log(specialties);
+
+
+$.ajax({
+  url: "http://localhost:3000/users/admin/user_specialties",
+  method: "PUT",
+  data: JSON.stringify(specialties),
+  contentType: "application/json",
+  dataType: "json",
+
+  success: function(data) {
+
+    alert("server fucntion executed succesful");
+
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+
+
+});
+
 
 $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     // prevents link from firing
@@ -317,6 +369,8 @@ function populate_specialties_edit(){
    }
  }); 
 
+  console.log("all specialties");
+  console.log(all_specialties_array);
   var content = '';
   var found = false;
   var i = 0;
@@ -336,13 +390,13 @@ function populate_specialties_edit(){
         });
     if(found)
     {
-      content += '<input ';
-      content += "type='checkbox' checked='true'> " + all_specialties_array[i].spec_name + " <br>";
+  content += '<input ';
+     content += "type='checkbox' checked='true' value='" + all_specialties_array[i].spec_id + "'> " + all_specialties_array[i].spec_name + " <br>";
     }
     else
     {
       content += '<input ';
-      content += "type='checkbox'> " + all_specialties_array[i].spec_name + " <br>";
+     content += "type='checkbox' value='" + all_specialties_array[i].spec_id + "'> " + all_specialties_array[i].spec_name + " <br>";
     }
     found = false;
   });
@@ -387,6 +441,8 @@ function populate_specialties_info(usuario){
     {
        content += '<li> ';
       content += "" + all_specialties_array[i].spec_name + "</li>";
+
+
     }
     else
     {
