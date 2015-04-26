@@ -139,14 +139,19 @@ $('#btn_edit_categories').on('click', function(){
   //get location id and category ids associated to said location id
   var location_id =  $('#btn_edit').attr('data-id');
   var checkedCategories = [];
+  var unCheckedCategories = [];
   $(':checkbox:checked').each(function(i){
     checkedCategories[i] = $(this).val();
   });
 
+$("input:checkbox:not(:checked)").each(function(i){
+    unCheckedCategories[i] = $(this).val();
+  });
  //json object for category_location
  var category_location = {
   location: location_id,
   categories: checkedCategories,
+  unchecked_categories: unCheckedCategories
 };
 
 console.log("category location is ");
