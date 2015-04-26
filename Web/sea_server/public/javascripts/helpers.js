@@ -135,6 +135,6 @@
 		$.each(elements, function(){
 			var date = $(this).attr('data-date');
 			var time = $(this).attr('data-time');
-			$(this).html(get_date_time(date, false)+' at '+time);
+			$(this).html(get_date_time(date, false)+' @ '+time);
 		});
 	};
