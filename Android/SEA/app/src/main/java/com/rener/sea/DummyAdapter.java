@@ -13,24 +13,24 @@ import java.util.List;
  */
 public class DummyAdapter extends ArrayAdapter<String> {
 
-	private int hidingItemIndex;
+    private int hidingItemIndex;
 
-	public DummyAdapter(Context context, int resource, List objects,
-	                    int hidingItemIndex) {
-		super(context, resource, objects);
-		this.hidingItemIndex = hidingItemIndex;
-	}
+    public DummyAdapter(Context context, int resource, List objects,
+                        int hidingItemIndex) {
+        super(context, resource, objects);
+        this.hidingItemIndex = hidingItemIndex;
+    }
 
-	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		View v = null;
-		if (position == hidingItemIndex) {
-			TextView tv = new TextView(getContext());
-			tv.setVisibility(View.GONE);
-			v = tv;
-		} else {
-			v = super.getDropDownView(position, null, parent);
-		}
-		return v;
-	}
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        View v = null;
+        if (position == hidingItemIndex) {
+            TextView tv = new TextView(getContext());
+            tv.setVisibility(View.GONE);
+            v = tv;
+        } else {
+            v = super.getDropDownView(position, null, parent);
+        }
+        return v;
+    }
 }

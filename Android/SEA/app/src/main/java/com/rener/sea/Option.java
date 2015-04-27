@@ -1,67 +1,158 @@
 package com.rener.sea;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 /**
  * A class representing an "edge" in a flowchart
  */
 public class Option {
 
-	private long id;
-	private Item next;
-	private String label;
+    private long id;
+    private Item next;
+    private String label;
+    private SEASchema dbHelper = null;
 
-	/**
-	 * Construct a new Option object with the given ID, next Item in the flow, and a text label.
-	 * @param id a unique ID
-	 * @param next the next Item in the flow
-	 * @param label some text
-	 */
-	public Option(long id, Item next, String label) {
-		this.id = id;
-		this.next = next;
-		this.label = label;
-	}
+    /**
+     * Construct a new Option object with the given ID, next Item in the flow, and a text label.
+     *
+     * @param id    a unique ID
+     * @param next  the next Item in the flow
+     * @param label some text
+     */
+    public Option(long id, Item next, String label) {
+        this.id = id;
+        this.next = next;
+        this.label = label;
+    }
 
-	/**
-	 * Construct a new Option object with the given ID and next Item in the flow.
-	 * @param id a unique ID
-	 * @param next the next Item object in thw flow
-	 */
-	public Option(long id, Item next) {
-		this.id = id;
-		this.next = next;
-		this.label = "";
-	}
+    /**
+     * Construct a new Option object with the given ID and next Item in the flow.
+     *
+     * @param id   a unique ID
+     * @param next the next Item object in thw flow
+     */
+    public Option(long id, Item next) {
+        this.id = id;
+        this.next = next;
+        this.label = "";
+    }
 
-	public long getId() {
-		return id;
-	}
+    public Option(long optionID, SEASchema db) {
+        this.dbHelper = db;
+        invoke(id);
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    private long create(long parent_id, long next_id, String label) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.OPTION_PARENT_ID, parent_id);
+        values.put(DBSchema.OPTION_NEXT_ID, next_id);
+        values.put(DBSchema.OPTION_LABEL, label);
+        long id = db.insert(DBSchema.TABLE_OPTION, null, values);
+        db.close();
+        return id;
 
-	public Item getNext() {
-		return next;
-	}
+    }
 
-	public void setNext(Item next) {
-		this.next = next;
-	}
 
-	public String getLabel() {
-		return label;
-	}
+    private boolean exist(long option_id) {
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+        if (option_id == -1) {
+            return false;
+        }
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_ID},
+                DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(option_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            db.close();
+            cursor.close();
+            return true;
+        }
+        return false;
 
-	/**
-	 * Check whether the two Option objects are the equivalent by comparing their IDs
-	 * @param other the other Option object
-	 * @return true if their IDs match
-	 */
-	public boolean equals(Option other) {
-		return this.id == other.getId();
-	}
+    }
+
+    private boolean invoke(long user_id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_ID},
+                DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            this.id = cursor.getLong(0);
+            db.close();
+            cursor.close();
+            return true;
+        }
+        return false;
+
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        invoke(id);
+    }
+
+    public Item getNext() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        long nextItem = -1;
+        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_NEXT_ID},
+                DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            nextItem = cursor.getLong(0);
+            db.close();
+            cursor.close();
+        }
+
+        return new Item(nextItem, dbHelper);
+    }
+
+    public long setNext(Item next) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.OPTION_NEXT_ID, next.getId());
+        long id = db.update(DBSchema.TABLE_OPTION, values, DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
+
+    public String getLabel() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String label = null;
+        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_NEXT_ID},
+                DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            label = cursor.getString(0);
+            db.close();
+            cursor.close();
+        }
+
+        return label;
+    }
+
+    public long setLabel(String label) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.OPTION_LABEL, String.valueOf(label));
+        long id = db.update(DBSchema.TABLE_OPTION, values, DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
+
+    /**
+     * Check whether the two Option objects are the equivalent by comparing their IDs
+     *
+     * @param other the other Option object
+     * @return true if their IDs match
+     */
+    public boolean equals(Option other) {
+        return this.id == other.getId();
+    }
 }

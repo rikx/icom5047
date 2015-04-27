@@ -1,61 +1,192 @@
 package com.rener.sea;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 /**
  * A class representing a single user.
  */
 public class User {
 
-	private long user_id;
-	private String username;
-	private String salt;
-	private String password;
-	private Person person;
+    private long user_id = -1;
+    //	private String username;
+//	private String salt;
+//	private String password;
+//	private Person person;
+    private SEASchema dbHelper = null;
 
-	public User(long user_id, String username, String password) {
-		this.user_id = user_id;
-		this.username = username;
-		this.password = password;
-		this.salt = "";
-	}
 
-	public User(long user_id, String username, String password, Person person) {
-		this.user_id = user_id;
-		this.username = username;
-		this.password = password;
-		this.salt = "";
-		this.person = person;
-	}
+    public User(long user_id, SEASchema dbHelper) {
+        this.dbHelper = dbHelper;
+        invoke(user_id);
+    }
 
-	public long getId() {
-		return user_id;
-	}
+    // to create a user
+    public User(long user_id, long person_id, String username, String password, SEASchema dbHelper) {
+        this.dbHelper = dbHelper;
+        //verify if exit
+        if (exist(user_id)) { // can also verify if id == -1
 
-	public long setId(long user_id) {
-		return this.user_id = user_id;
-	}
+        } else {
+            this.user_id = create(person_id, username, password);
+        }
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public User(long user_id, String username, String password, Person person) {
+        this.user_id = user_id;
+//        this.username = username;
+//        this.password = password;
+//        this.salt = "";
+//        this.person = person;
+    }
 
-	public String setUsername(String username) {
-		return this.username = username;
-	}
+    private long create(long person_id, String username, String password) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.USER_USERNAME, username);
+        values.put(DBSchema.USER_PASSHASH, password);
+        values.put(DBSchema.USER_PERSON_ID, person_id);
+        // generate a new salt
+//            values.put(DBSchema.USER_SALT      , salt);
 
-	public String getPassword() {
-		return password;
-	}
+        long id = db.insert(DBSchema.TABLE_USERS, null, values);
+        db.close();
+        return id;
 
-	public String setPassword(String password) {
-		return this.password = password;
-	}
+    }
 
-	public Person getPerson() {
-		return person;
-	}
 
-	public Person setPerson(Person person) {
-		return this.person = person;
-	}
+    private boolean exist(long user_id) {
+        if (user_id == -1) {
+            return false;
+        }
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID},//,DBSchema.USER_USERNAME,DBSchema.USER_PASSHASH,DBSchema.USER_PASSHASH,DBSchema.USER_SALT
+                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+//            this.user_id = cursor.getLong(0);
+            db.close();
+            cursor.close();
+            return true;
+        }
+        return false;
+
+    }
+
+    private boolean invoke(long user_id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID},
+                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            this.user_id = cursor.getLong(0);
+            db.close();
+            cursor.close();
+            return true;
+        }
+        return false;
+
+    }
+
+    public long getId() {
+
+        return user_id;
+    }
+
+//    public long setId(long user_id) {
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        long id = -1;
+//        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID},
+//                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            id = cursor.getLong(0);
+//            db.close();
+//            cursor.close();
+//            this.user_id = id;
+//        }
+//
+//        return id;
+////        return this.user_id = user_id;
+//    }
+
+    public String getUsername() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String username = null;
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_USERNAME},
+                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            username = cursor.getString(0);
+            db.close();
+            cursor.close();
+        }
+
+        return username;
+    }
+
+    public long setUsername(String username) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.USER_USERNAME, String.valueOf(username));
+        long id = db.update(DBSchema.TABLE_USERS, values, DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)});
+        db.close();
+        return id;// if -1 error during update
+    }
+
+    public String getPassword() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String pass = null;
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PASSHASH},
+                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            pass = cursor.getString(0);
+            db.close();
+            cursor.close();
+        }
+
+        return pass;
+    }
+
+    public long setPassword(String password) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.USER_PASSHASH, String.valueOf(password));
+        long id = db.update(DBSchema.TABLE_USERS, values, DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)});
+        db.close();
+        return id;// if -1 error during update
+
+    }
+
+    public Person getPerson() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        long personID = 0;
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PERSON_ID},
+                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            personID = cursor.getLong(0);
+            db.close();
+            cursor.close();
+        }
+
+        Person person = new Person(personID, dbHelper);
+
+        return person;
+
+    }
+
+    public long setPerson(Person person) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.USER_PERSON_ID, person.getId());
+        long id = db.update(DBSchema.TABLE_USERS, values, DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)});
+        db.close();
+        return id;// if -1 error during update
+    }
 
 }

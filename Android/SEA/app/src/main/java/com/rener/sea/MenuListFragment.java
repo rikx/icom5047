@@ -1,7 +1,6 @@
 package com.rener.sea;
 
 
-import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,131 +20,130 @@ import java.util.List;
  */
 public class MenuListFragment extends ListFragment {
 
-	public static String TYPE_PEOPLE = "PEOPLE";
-	public static String TYPE_REPORTS = "REPORTS";
-	public static String TYPE_LOCATIONS = "LOCATIONS";
-	private int curPos = -1;
-	private String type;
-	private ArrayAdapter adapter;
+    public static String TYPE_PEOPLE = "PEOPLE";
+    public static String TYPE_REPORTS = "REPORTS";
+    public static String TYPE_LOCATIONS = "LOCATIONS";
+    private int curPos = -1;
+    private String type;
+    private ArrayAdapter adapter;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    /**
+     * Create a MenuListFragment instance with a given type
+     *
+     * @param type the MenuListFragment type
+     * @return a new MenuListFragment object
+     */
+    public static MenuListFragment newInstance(String type) {
+        MenuListFragment fragment = new MenuListFragment();
+        Bundle args = new Bundle();
+        args.putString("type", type);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-		//Restore the state
-		if(savedInstanceState != null) {
-			type = savedInstanceState.getString("type");
-			curPos = savedInstanceState.getInt("index");
-		}
-		setHasOptionsMenu(true);
-	}
+    /**
+     * Create a MenuListFragment instance with a given type and preselected index
+     *
+     * @param type  the MenuListFragment type
+     * @param index the preselected index
+     * @return a new MenuListFragment object
+     */
+    public static MenuListFragment newInstance(String type, int index) {
+        MenuListFragment fragment = new MenuListFragment();
+        Bundle args = new Bundle();
+        args.putString("type", type);
+        args.putInt("index", index);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.menu_list_fragment, container, false);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+        //Restore the state
+        if (savedInstanceState != null) {
+            type = savedInstanceState.getString("type");
+            curPos = savedInstanceState.getInt("index");
+        }
+        setHasOptionsMenu(true);
+    }
 
-		//Restore arguments if they exist
-		curPos = getArguments().getInt("index", -1);
-		type = getArguments().getString("type");
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.menu_list_fragment, container, false);
+    }
 
-		//Set the list and it's respective adapter
-		List list = new ArrayList();
-		DBService db = ((MainActivity)getActivity()).getDBService();
-		//ArrayAdapter adapter = null;
-		if(type.equals(TYPE_PEOPLE)) {
-			list = db.getPeople();
-			adapter = new ArrayAdapter<Person>(getActivity(),
-					android.R.layout.simple_list_item_1, list);
-		}
-		else if(type.equals(TYPE_LOCATIONS)) {
-			list = db.getLocations();
-			adapter = new ArrayAdapter<Location>(getActivity(),
-					android.R.layout.simple_list_item_1, list);
-		}
-		else if(type.equals(TYPE_REPORTS)) {
-			list = db.getReports();
-			adapter = new ReportListAdapter(getActivity(), list);
-		}
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-		//Sort the list
-		Collections.sort(list);
+        //Restore arguments if they exist
+        curPos = getArguments().getInt("index", -1);
+        type = getArguments().getString("type");
 
-		//Set the list adapter
-		setListAdapter(adapter);
-	}
+        //Set the list and it's respective adapter
+        List list = new ArrayList();
+        DBService db = ((MainActivity) getActivity()).getDBService();
+        //ArrayAdapter adapter = null;
+        if (type.equals(TYPE_PEOPLE)) {
+            list = db.getPeople();
+            adapter = new ArrayAdapter<Person>(getActivity(),
+                    android.R.layout.simple_list_item_1, list);
+        } else if (type.equals(TYPE_LOCATIONS)) {
+            list = db.getLocations();
+            adapter = new ArrayAdapter<Location>(getActivity(),
+                    android.R.layout.simple_list_item_1, list);
+        } else if (type.equals(TYPE_REPORTS)) {
+            list = db.getReports();
+            adapter = new ReportListAdapter(getActivity(), list);
+        }
 
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putString("type", type);
-		savedInstanceState.putInt("index", curPos);
-		super.onSaveInstanceState(savedInstanceState);
-	}
+        //Sort the list
+        Collections.sort(list);
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		if(curPos != position) {
-			MainActivity callback = (MainActivity) getActivity();
-			callback.OnMenuItemSelectedListener(type, l, position);
-		}
-		curPos = position;
-	}
+        //Set the list adapter
+        setListAdapter(adapter);
+    }
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if(type.equals(TYPE_REPORTS)) {
-			inflater.inflate(R.menu.reports_actions, menu);
-		}
-		else if(type.equals(TYPE_PEOPLE))
-			inflater.inflate(R.menu.people_actions, menu);
-		else if(type.equals(TYPE_LOCATIONS))
-			inflater.inflate(R.menu.locations_actions, menu);
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString("type", type);
+        savedInstanceState.putInt("index", curPos);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
-		super.onCreateOptionsMenu(menu, inflater);
-	}
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (curPos != position) {
+            MainActivity callback = (MainActivity) getActivity();
+            callback.OnMenuItemSelectedListener(type, l, position);
+        }
+        curPos = position;
+    }
 
-	public void notifyDataChanged() {
-		adapter.notifyDataSetChanged();
-	}
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (type.equals(TYPE_REPORTS)) {
+            inflater.inflate(R.menu.reports_actions, menu);
+        } else if (type.equals(TYPE_PEOPLE))
+            inflater.inflate(R.menu.people_actions, menu);
+        else if (type.equals(TYPE_LOCATIONS))
+            inflater.inflate(R.menu.locations_actions, menu);
 
-	public String getType() {
-		return type;
-	}
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
-	public int getPosition() {
-		return curPos;
-	}
+    public void notifyDataChanged() {
+        adapter.notifyDataSetChanged();
+    }
 
-	/**
-	 * Create a MenuListFragment instance with a given type
-	 * @param type the MenuListFragment type
-	 * @return a new MenuListFragment object
-	 */
-	public static MenuListFragment newInstance(String type) {
-		MenuListFragment fragment = new MenuListFragment();
-		Bundle args = new Bundle();
-		args.putString("type", type);
-		fragment.setArguments(args);
-		return fragment;
-	}
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Create a MenuListFragment instance with a given type and preselected index
-	 * @param type the MenuListFragment type
-	 * @param index the preselected index
-	 * @return a new MenuListFragment object
-	 */
-	public static MenuListFragment newInstance(String type, int index) {
-		MenuListFragment fragment = new MenuListFragment();
-		Bundle args = new Bundle();
-		args.putString("type", type);
-		args.putInt("index", index);
-		fragment.setArguments(args);
-		return fragment;
-	}
+    public int getPosition() {
+        return curPos;
+    }
 }

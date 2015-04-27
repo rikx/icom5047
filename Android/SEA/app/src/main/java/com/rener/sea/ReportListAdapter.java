@@ -7,66 +7,62 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class ReportListAdapter extends ArrayAdapter<Report> {
 
-	private Context context;
-	private List<Report> reports;
+    private Context context;
+    private List<Report> reports;
 
-	public ReportListAdapter(Context context, List<Report> reports) {
-		super(context, R.layout.report_list_item, reports);
-		this.context = context;
-		this.reports = reports;
-	}
+    public ReportListAdapter(Context context, List<Report> reports) {
+        super(context, R.layout.report_list_item, reports);
+        this.context = context;
+        this.reports = reports;
+    }
 
-	//TODO: review this method
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View row = null;
-		ReportHolder holder;
-		Report report = getItem(position);
+    //TODO: review this method
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View row = null;
+        ReportHolder holder;
+        Report report = getItem(position);
 
-		//Inflate the layout and set it's views if necessary
-		if(convertView == null) {
-			//View hasn't been created and must be initialized
-			LayoutInflater inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			row = inflater.inflate(R.layout.report_list_item, parent, false);
+        //Inflate the layout and set it's views if necessary
+        if (convertView == null) {
+            //View hasn't been created and must be initialized
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            row = inflater.inflate(R.layout.report_list_item, parent, false);
 
-			holder = new ReportHolder();
-			holder.nameText = (TextView) row.findViewById(R.id.report_list_item_name);
-			holder.locationText = (TextView) row.findViewById(R.id.report_list_item_location);
-			holder.dateText = (TextView) row.findViewById(R.id.report_list_item_date);
-			row.setTag(holder);
+            holder = new ReportHolder();
+            holder.nameText = (TextView) row.findViewById(R.id.report_list_item_name);
+            holder.locationText = (TextView) row.findViewById(R.id.report_list_item_location);
+            holder.dateText = (TextView) row.findViewById(R.id.report_list_item_date);
+            row.setTag(holder);
 
-			//Get the data
-			String name = report.getName();
-			String location = report.getLocation().getName();
+            //Get the data
+            String name = report.getName();
+            String location = report.getLocation().getName();
 
-			//Set the views
-			holder.nameText.setText(name);
-			holder.locationText.setText(location);
-			//Set the date format according to the locale
-			String dateFormat = getContext().getResources().getString(R.string.date_format);
-			Locale locale = Locale.getDefault();
-			holder.dateText.setText(report.getDateString(dateFormat, locale));
-		}
-		else {
-			//View can be recycled
-			row = convertView;
-		}
-		return row;
+            //Set the views
+            holder.nameText.setText(name);
+            holder.locationText.setText(location);
+            //Set the date format according to the locale
+            String dateFormat = getContext().getResources().getString(R.string.date_format);
+            Locale locale = Locale.getDefault();
+            holder.dateText.setText(report.getDateString(dateFormat, locale));
+        } else {
+            //View can be recycled
+            row = convertView;
+        }
+        return row;
 
-	}
+    }
 
-	private static class ReportHolder {
-		TextView nameText;
-		TextView locationText;
-		TextView dateText;
-	}
+    private static class ReportHolder {
+        TextView nameText;
+        TextView locationText;
+        TextView dateText;
+    }
 }

@@ -9,74 +9,79 @@ import java.util.Stack;
  */
 public class Path implements Iterable<PathEntry> {
 
-	private Stack<PathEntry> path;
+    private Stack<PathEntry> path;
 
-	/**
-	 * Constructs a new Path object by initializing it's stack structure.
-	 */
-	public Path() {
-		this.path = new Stack<>();
-	}
+    /**
+     * Constructs a new Path object by initializing it's stack structure.
+     */
+    public Path() {
+        this.path = new Stack<>();
+    }
 
-	/**
-	 * Add a new entry to this Path object by pushing it to it's stack.
-	 * The new entry represents an "answered question" that has no associated data.
-	 * @param item the item object for the entry
-	 * @param option the option object for the entry
-	 */
-	public void addEntry(Item item, Option option) {
-		path.push(new PathEntry(item, option));
-	}
+    /**
+     * Add a new entry to this Path object by pushing it to it's stack.
+     * The new entry represents an "answered question" that has no associated data.
+     *
+     * @param item   the item object for the entry
+     * @param option the option object for the entry
+     */
+    public void addEntry(Item item, Option option) {
+        path.push(new PathEntry(item, option));
+    }
 
-	/**
-	 * Add a new entry to this Path object by pushing it to it's stack.
-	 * The new entry represents an "answered question" that has some associated data.
-	 * @param item some Item object
-	 * @param option some Option object
-	 * @param data the associated data
-	 */
-	public void addEntry(Item item, Option option, String data) {
-		path.push(new PathEntry(item, option, data));
-	}
+    /**
+     * Add a new entry to this Path object by pushing it to it's stack.
+     * The new entry represents an "answered question" that has some associated data.
+     *
+     * @param item   some Item object
+     * @param option some Option object
+     * @param data   the associated data
+     */
+    public void addEntry(Item item, Option option, String data) {
+        path.push(new PathEntry(item, option, data));
+    }
 
-	/**
-	 * Explicitly set the top of stack entry  for this Path with some Item and Option objects.
-	 * @param item some Item object
-	 * @param option some Option object
-	 */
-	public void setLastEntry(Item item, Option option) {
-		PathEntry entry = path.pop();
-		entry.setItem(item);
-		entry.setOption(option);
-		path.push(entry);
-	}
+    /**
+     * Explicitly set the top of stack entry  for this Path with some Item and Option objects.
+     *
+     * @param item   some Item object
+     * @param option some Option object
+     */
+    public void setLastEntry(Item item, Option option) {
+        PathEntry entry = path.pop();
+        entry.setItem(item);
+        entry.setOption(option);
+        path.push(entry);
+    }
 
-	/**
-	 * Explicitly set the top of of stack entry for this Path with some Item and Option objects.
-	 * This method implies the entry has some associated data.
-	 * @param item some Item obejct
-	 * @param option some Option object
-	 * @param data the associated data
-	 */
-	public void setLastEntry(Item item, Option option, String data) {
-		PathEntry entry = path.pop();
-		entry.setItem(item);
-		entry.setOption(option);
-		entry.setData(data);
-		path.push(entry);
-	}
+    /**
+     * Explicitly set the top of of stack entry for this Path with some Item and Option objects.
+     * This method implies the entry has some associated data.
+     *
+     * @param item   some Item obejct
+     * @param option some Option object
+     * @param data   the associated data
+     */
+    public void setLastEntry(Item item, Option option, String data) {
+        PathEntry entry = path.pop();
+        entry.setItem(item);
+        entry.setOption(option);
+        entry.setData(data);
+        path.push(entry);
+    }
 
-	/**
-	 * Get this Path object's top of stack entry.
-	 * @return the Item object for this path's to of stack
-	 */
-	public Item getLastItem() {
-		return path.peek().getItem();
-	}
+    /**
+     * Get this Path object's top of stack entry.
+     *
+     * @return the Item object for this path's to of stack
+     */
+    public Item getLastItem() {
+        return path.peek().getItem();
+    }
 
-	@Override
-	public Iterator<PathEntry> iterator() {
-		return path.iterator();
-	}
+    @Override
+    public Iterator<PathEntry> iterator() {
+        return path.iterator();
+    }
 
 }
