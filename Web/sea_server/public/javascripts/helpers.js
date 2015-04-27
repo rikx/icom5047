@@ -32,16 +32,6 @@
 	  });
 	}
 
-	// verifies input value is in array and returns boolean result
-	function valid_input(user_input, array) {
-		for(var i=0; i < array.length; i++){
-			if(user_input == array[i].location_name){
-				return true;
-			}
-		}
-		return false;
-	}
-
 	// converts date yyyy-mm-dd to spanish Month Day, Year format
 	// if get_time is true create {date, time} object and return it
 	function get_date_time(date, want_time){

@@ -75,6 +75,16 @@ $(document).ready(function(){
     $('#take_survey_location_id').attr('value', datum.location_id);
 	});
 	/* TEST END: location search */
+	
+		// verifies input value is in array and returns boolean result
+	function valid_input(user_input, array) {
+		for(var i=0; i < array.length; i++){
+			if(user_input == array[i].location_name){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/* Saves pre-survey information and displays first questions */
 	$('#take_survey_start').on('click', function(){

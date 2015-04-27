@@ -3,7 +3,7 @@ $(document).ready(function(){
   $ganaderos_list = $('#ganaderos_list');
 
   // store data for initial 20 ganaderos
-  var ganaderos_array =  JSON.parse($ganaderos_list.attr('data-ganaderos'));
+  var ganaderos_array = JSON.parse($ganaderos_list.attr('data-ganaderos'));
   var localizaciones_array = JSON.parse($ganaderos_list.attr('data-localizaciones'));
 
   // initial info panel population
@@ -58,12 +58,6 @@ $(document).ready(function(){
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
     populate_list({datum});
-  });
-
-  // executed if user clears search bar contents
-  $('#search_bar').keyup(function(){
-    // populate list with first 20 ganaderos
-    populate_ganaderos();
   });
   /* Search Code End */
 

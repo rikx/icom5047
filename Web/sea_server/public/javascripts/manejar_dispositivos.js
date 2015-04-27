@@ -62,12 +62,6 @@ $(document).ready(function(){
     // populate list with selected search result
     populate_list({datum});
   });
-
-  // executed if user clears search bar contents
-  $('#search_bar').keyup(function(){
-    // populate list with first 20 devices
-    populate_dispositivos();
-  });
   /* Search Code End */
 
   /* Return home */
