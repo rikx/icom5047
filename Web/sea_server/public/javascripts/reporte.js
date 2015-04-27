@@ -1,23 +1,135 @@
 $(document).ready(function(){
 	// answered questions list
-  $answered_survey_panel = $('#answered_survey');
+
+	var titleText = $('<input>').attr('type', 'text');
+	$answered_survey_panel = $('#answered_survey');
+	$('#btn_submit_notes').hide();
+
+
+
+
+ // $('#title').html('Penis Balls');
+
+ // $('#title').dblclick(function(e) {
+
+ // 	$('#title').html(titleText);
+ // }); 
+
+ // titleText.keyup(function(e) {
+ // 	if (e.keyCode === 13) {
+
+
+ // 		$('#title').text(this.value);
+
+ // 	}
+ // });
 
   // user_data is of the currently signed in user
   var user_data = JSON.parse($('#info_current_user').attr('data-user'));
   var report_data = JSON.parse($('#info_report').attr('data-report'));
   var survey_data = JSON.parse($answered_survey_panel.attr('data-survey'));
 
+  console.log(user_data);
+  console.log(report_data);
+  console.log(survey_data);
+
+
   /* Button: Return home */
-	$('#btn_home').on('click', function(){
-    window.location.href = '/users';
-	});
+  $('#btn_home').on('click', function(){
+  	window.location.href = '/users';
+  });
 
-	/* Button: Return to Reportes */
-	$('#btn_reportes').on('click', function(){
+  /* Button: Return to Reportes */
+  $('#btn_reportes').on('click', function(){
     window.location.href = '/users/reportes'; //TODO CHANGE manejar reportes so this works
-	});
+});
 
-	function populate_survey(){
+
+  $('#btn_notes').on('click', function(){
+  	var currentText = $('#notas').text();
+  	$('#btn_notes').hide();
+  	$('#btn_submit_notes').show();
+  	$('#notas').html("<textarea id='note_text' rows='10' cols='40'>" + currentText + "</textarea>");
+  });
+
+  $('#btn_submit_notes').on('click', function(){
+  	$('#btn_notes').show();
+  	$('#btn_submit_notes').hide();
+
+  var notes = {
+  	report_id: report_data.report_id,
+  	note_text: $('#note_text').val(),
+  };
+
+  // ajax call to update location
+  $.ajax({
+  	url: "http://localhost:3000/users/admin/note_edit",
+  	method: "PUT",
+  	data: JSON.stringify(notes),
+  	contentType: "application/json",
+  	dataType: "json",
+
+  	success: function(data) {
+  		alert("Se han agregado las notas exitosamente.");
+  		$('#notas').html($('#note_text').val());
+  },
+  error: function( xhr, status, errorThrown ) {
+  	alert( "Sorry, there was a problem!" );
+  	console.log( "Error: " + errorThrown );
+  	console.log( "Status: " + status );
+  	console.dir( xhr );
+  }
+});
+
+
+  $('#btn_appointment').on('click', function(){
+  	var currentText = $('#notas').text();
+  	$('#btn_notes').hide();
+  	$('#btn_submit_notes').show();
+  	$('#notas').html("<textarea id='note_text' rows='10' cols='40'>" + currentText + "</textarea>");
+  });
+
+  $('#btn_submit_appointment').on('click', function(){
+  	$('#btn_notes').show();
+  	$('#btn_submit_notes').hide();
+
+  var notes = {
+  	report_id: report_data.report_id,
+  	note_text: $('#note_text').val(),
+  };
+
+  // ajax call to update location
+  $.ajax({
+  	url: "http://localhost:3000/users/admin/note_edit",
+  	method: "PUT",
+  	data: JSON.stringify(notes),
+  	contentType: "application/json",
+  	dataType: "json",
+
+  	success: function(data) {
+  		alert("Se han agregado las notas exitosamente.");
+  		$('#notas').html($('#note_text').val());
+  },
+  error: function( xhr, status, errorThrown ) {
+  	alert( "Sorry, there was a problem!" );
+  	console.log( "Error: " + errorThrown );
+  	console.log( "Status: " + status );
+  	console.dir( xhr );
+  }
+});
+
+  
+
+
+
+
+});
+
+
+
+});
+
+function populate_survey(){
 /*		if locals.survey
 						ol
 							each item in survey
@@ -29,6 +141,7 @@ $(document).ready(function(){
 										= item.answer
 					else
 						center
-							button(class='btn btn-sm btn-success') Continuar Entrevista*/
-	}
-});
+					button(class='btn btn-sm btn-success') Continuar Entrevista*/
+				}
+			});
+

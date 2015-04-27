@@ -9,7 +9,7 @@ block content
 				.jumbotron#info_current_user(data-user=current_user)
 					center
 						h2 Servicio de Extensión Agricola
-						h3
+						h3#title
 							if locals.reporte.name
 								= reporte.name
 							else 
@@ -59,17 +59,19 @@ block content
 						.col-xs-6.col-md-3
 							a(class='thumbnail', href='#')
 								img(src='', alt='img1')
-					a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
+					a(class='btn btn-sm btn-success', type='button', data-toggle='tooltip')
 						i(class='glyphicon glyphicon-plus')
 				// For use in phase 3
 				div(style="display:none")
 				center
 					h2 Notas
 				.jumbotron
-					p 
+					p#notas
 						= reporte.note
-					a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
+					a(class='btn btn-sm btn-success', id='btn_notes' type='button', data-toggle='tooltip')
 						i(class='glyphicon glyphicon-edit')
+					button#btn_submit_notes(class='btn btn-default btn-success', type='button') Someter
+
 
 		.row
 			.col-md-6
@@ -93,8 +95,9 @@ block content
 					p
 						strong Propósito: 
 						= reporte.appointment_purpose
-					a(class='btn btn-sm btn-success', href='#', type='button', data-toggle='tooltip')
+					a(class='btn btn-sm btn-success', id='btn_appointment' type='button', data-toggle='tooltip')
 						i(class='glyphicon glyphicon-edit')
+					button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
 
 		.row
 			.col-md-2
