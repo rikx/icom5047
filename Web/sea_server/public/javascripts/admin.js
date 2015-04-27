@@ -28,7 +28,7 @@ $(document).ready(function(){
 	});
 
 	$('#btn_manejar_reportes').click(function(){
-		window.location.href = '/users/admin/reportes'
+		window.location.href = '/users/reportes'
 	});
 
 	$('#btn_manejar_citas').click(function(){

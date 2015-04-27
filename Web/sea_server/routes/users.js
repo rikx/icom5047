@@ -499,7 +499,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 });
 
 /* GET Admin Manejar Reportes 
- * Renders page and includes response with first 10 reportes, 
+ * Renders page and includes response with first 20 reportes, 
  * alphabetically ordered by location name
  */
  router.get('/admin/reportes', function(req, res, next) {
@@ -528,12 +528,14 @@ router.put('/admin/user_specialties', function(req, res, next) {
  });
 
 /* GET User Manejar Reportes
- *	TODO: not finished yet
+ * Renders page and includes response with first 20 reportes, 
+ * alphabetically ordered by location name
  */
 	router.get('/reportes', function(req, res, next) {
 		var user_id = req.session.user_id;
 		var username = req.session.username;
 		var user_type = req.session.user_type;
+		console.log(user_type);
 
 	  if (!username) {
 	  	user_id = req.session.user_id = '';
@@ -541,8 +543,47 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	    user_type = req.session.user_type = '';
 	    res.redirect('/');
 	  } else {
-	  	// TODO: not finished yet - placeholde redirect is here in the mean time
-	  	res.redirect(user_type+'/reportes');
+			var db = req.db;
+		 	db.connect(req.conString, function(err, client, done) {
+		 		if(err) {
+		 			return console.error('error fetching client from pool', err);
+		 		}
+				var query_config = {};
+		 		if(user_type != 'admin' || user_type != 'specialist') {
+					query_config = {
+						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+										FROM report INNER JOIN location ON report.location_id = location.location_id \
+										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+										INNER JOIN users ON report.creator_id = user_id \
+										WHERE report.creator_id = $1 \
+							 			ORDER BY location_name ASC \
+										LIMIT 20',
+						values: [user_id]
+					};
+		 		} else {
+		 			// else user type is admin or specialist so get all reports
+					query_config = {
+						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+										FROM report INNER JOIN location ON report.location_id = location.location_id \
+										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+										INNER JOIN users ON report.creator_id = user_id \
+							 			ORDER BY location_name ASC \
+										LIMIT 20'
+					}
+			 	}
+		 						// get all reports 
+		 		client.query(query_config, function(err, result) {
+					//call `done()` to release the client back to the pool
+					done();
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						res.render('manejar_reportes', { 
+							title: 'Manejar Reportes', 
+							reports: result.rows});
+					}
+				});
+		 	});
 	  }
 	});
 
