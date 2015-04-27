@@ -527,6 +527,25 @@ router.put('/admin/user_specialties', function(req, res, next) {
  	});
  });
 
+/* GET User Manejar Reportes
+ *	TODO: not finished yet
+ */
+	router.get('/reportes', function(req, res, next) {
+		var user_id = req.session.user_id;
+		var username = req.session.username;
+		var user_type = req.session.user_type;
+
+	  if (!username) {
+	  	user_id = req.session.user_id = '';
+	    username = req.session.username = '';
+	    user_type = req.session.user_type = '';
+	    res.redirect('/');
+	  } else {
+	  	// TODO: not finished yet - placeholde redirect is here in the mean time
+	  	res.redirect(user_type+'/reportes');
+	  }
+	});
+
 /* GET User Ver Reporte 
  *
  */

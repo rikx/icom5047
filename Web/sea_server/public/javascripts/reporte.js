@@ -2,6 +2,9 @@ $(document).ready(function(){
 	// answered questions list
   $answered_survey_panel = $('#answered_survey');
 
+  // user_data is of the currently signed in user
+  var user_data = JSON.parse($('#info_current_user').attr('data-user'));
+  var report_data = JSON.parse($('#info_report').attr('data-report'));
   var survey_data = JSON.parse($answered_survey_panel.attr('data-survey'));
 
   /* Button: Return home */

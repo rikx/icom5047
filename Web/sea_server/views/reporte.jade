@@ -6,7 +6,7 @@ block content
 		.row
 			.col-md-2
 			.col-md-8
-				.jumbotron
+				.jumbotron#info_current_user(data-user=current_user)
 					center
 						h2 Servicio de Extensión Agricola
 						h3
@@ -36,7 +36,7 @@ block content
 			.col-md-6
 				center
 					h2 Información General
-				.jumbotron
+				.jumbotron#info_report(data-report=reporte)
 					p Reporte ID: 
 						= reporte.report_id
 					p Usuario: 
