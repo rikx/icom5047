@@ -161,7 +161,7 @@ router.get('/admin', function(req, res, next) {
  /* GET Admin Manejar Ganaderos
  	* renders manejar ganaderos page with first 20 ganaderos and their associated information
  	*/
- router.get('/admin/ganaderos', function(req, res, next) {
+ router.get('/ganaderos', function(req, res, next) {
  	var ganaderos_list, locations_list;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
@@ -193,11 +193,16 @@ router.get('/admin', function(req, res, next) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
-				locations_list = result.rows;
+				locations_list = result.rows;	  		
+				var current_user = {
+	  			user_id: req.session.user_id,
+	  			username: req.session.username
+	  		}
 				res.render('manejar_ganaderos', { 
 					title: 'Manejar Ganaderos', 
 					ganaderos: ganaderos_list, 
-					locations: locations_list
+					locations: locations_list,
+					user: current_user 
 				});
 			}
 		});	
@@ -581,7 +586,8 @@ router.put('/admin/user_specialties', function(req, res, next) {
 					} else {
 						res.render('manejar_reportes', { 
 							title: 'Manejar Reportes', 
-							reports: result.rows});
+							reports: result.rows
+						});
 					}
 				});
 		 	});
@@ -828,7 +834,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 /* GET Admin Manejar Localizaciones 
  *
  */
- router.get('/admin/localizaciones', function(req, res, next) {
+ router.get('/localizaciones', function(req, res, next) {
  	var localizaciones_list, categories_list, all_categories, agentes_list, ganaderos_list;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
@@ -903,14 +909,19 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	  	if(err) {
 	  		return console.error('error running query', err);
 	  	} else {
-	  		ganaderos_list = result.rows;
+	  		ganaderos_list = result.rows; 		
+				var current_user = {
+	  			user_id: req.session.user_id,
+	  			username: req.session.username
+	  		}
 	  		res.render('manejar_localizaciones', { 
 	  			title: 'Manejar Localizaciones', 
 	  			localizaciones: localizaciones_list, 
 	  			location_categories: categories_list, 
 	  			agentes: agentes_list, 
 	  			ganaderos: ganaderos_list, 
-	  			categorias: all_categories
+	  			categorias: all_categories,
+	  			user: current_user
 	  		});
 	  	}
 	  });
@@ -1051,37 +1062,71 @@ router.put('/admin/user_specialties', function(req, res, next) {
 }
 });
 
-/* PUT Admin Manejar Localizaciones Associates
- * Edit associates of location matching :id
- */
- router.put('/admin/localizaciones/:id/associates', function(req, res, next) {
- 	var location_id = req.params.id;
- });
+	/* PUT Admin Manejar Localizaciones Associates
+	 * Edit associates of location matching :id
+	 */
+	router.put('/admin/localizaciones/:id/associates', function(req, res, next) {
+		var location_id = req.params.id;
+	});
 
- /* GET Admin Manejar Citas */
- router.get('/admin/citas', function(req, res, next) {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
+	/* GET Admin Manejar Citas
+	 * renders citas page with first 20 citas associated with a user
+	 */
+	router.get('/citas', function(req, res, next) {
+		var user_id = req.session.user_id;
+		var username = req.session.username;
+		var user_type = req.session.user_type;
 
- 		client.query("SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
- 			FROM (appointments natural join report natural join location), users \
- 			WHERE user_id = agent_id \
- 			ORDER BY date ASC, time ASC \
- 			LIMIT 10;", function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	  	done();
-
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		res.render('manejar_citas', { title: 'Manejar Citas', citas: result.rows});
-	  	}
-	  });
- 	})
- });
+	  if (!username) {
+	  	user_id = req.session.user_id = '';
+	    username = req.session.username = '';
+	    user_type = req.session.user_type = '';
+	    res.redirect('/');
+	  } else {
+		 	var db = req.db;
+		 	db.connect(req.conString, function(err, client, done) {
+		 		if(err) {
+		 			return console.error('error fetching client from pool', err);
+		 		}
+				var query_config = {};
+		 		if(user_type == 'admin' || user_type == 'specialist') {
+		 			// get first 20 citas regardless of creator
+		 			query_config = {
+		 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+										FROM appointments natural join report \
+										LEFT JOIN users ON user_id = maker_id \
+										INNER JOIN location ON report.location_id = location.location_id \
+										ORDER BY date ASC, time ASC \
+										LIMIT 20"
+		 			}
+		 		} else {
+		 			//get first 20 citas created by this user
+		 			query_config = {
+		 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+										FROM appointments natural join report \
+										LEFT JOIN users ON user_id = maker_id \
+										INNER JOIN location ON report.location_id = location.location_id \
+										WHERE appointments.maker_id = $1 \
+										ORDER BY date ASC, time ASC \
+										LIMIT 20",
+						values: [user_id]
+		 			}
+		 		}
+		 		client.query(query_config, function(err, result) {
+			  	//call `done()` to release the client back to the pool
+			  	done();
+			  	if(err) {
+			  		return console.error('error running query', err);
+			  	} else {
+			  		res.render('manejar_citas', { 
+			  			title: 'Manejar Citas', 
+			  			citas: result.rows
+			  		});
+			  	}
+			  });
+		 	});
+		}
+	});
 
  /* POST cita (done through report page)
   *
