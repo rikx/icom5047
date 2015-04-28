@@ -35,47 +35,52 @@ block content
 							button(class='btn btn-sm btn-success') Continuar Entrevista
 			.col-md-6
 				center
-					h2 Información General
-				.jumbotron#info_report(data-report=reporte)
-					p Reporte ID: 
-						= reporte.report_id
-					p Usuario: 
-						= reporte.report_creator
-					p Fecha: 
-						= reporte.report_date
-					p Localización: 
-						= reporte.location_name
-					p Tipo de Encuesta: 
-						= reporte.survey_type
-					p Nombre de Encuesta: 
-						= reporte.survey_name
-						|  
-						= reporte.survey_version
+					
+					.panel.panel-success
+							.panel-heading Información General
+							.panel-body#info_report(data-report=reporte)
+								p Reporte ID: 
+									= reporte.report_id
+								p Usuario: 
+									= reporte.report_creator
+								p Fecha: 
+									= reporte.report_date
+								p Localización: 
+									= reporte.location_name
+								p Tipo de Encuesta: 
+									= reporte.survey_type
+								p Nombre de Encuesta: 
+									= reporte.survey_name
+									|  
+									= reporte.survey_version
 				// For use in phase 3
 				center
-					h2 Micelania
-				.jumbotron
-					.row
-						.col-xs-6.col-md-3
-							a(class='thumbnail', href='#')
-								img(src='', alt='img1')
-					a(class='btn btn-sm btn-success', type='button', data-toggle='tooltip')
-						i(class='glyphicon glyphicon-plus')
+					
+					.panel.panel-success
+							.panel-heading Micelania
+							.panel-body
+								.row
+									.col-xs-6.col-md-3
+										a(class='thumbnail', href='#')
+											img(src='', alt='img1')
+								a(class='btn btn-sm btn-success', type='button', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-plus')
 				// For use in phase 3
 				div(style="display:none")
 				center
-					h2 Notas
-				.jumbotron
-					#notas
-						if reporte.note == null
-							p
-								| Agregue notas aqui.
-						else
-							p 
-								= reporte.note
-					a(class='btn btn-sm btn-success', id='btn_notes' type='button', data-toggle='tooltip')
-						i(class='glyphicon glyphicon-edit')
-					button#btn_submit_notes(class='btn btn-default btn-success', type='button') Someter
+					.panel.panel-success
+								.panel-heading Notas Asociadas
+								.panel-body
+									#notas
+										if reporte.note == null
+											p
+												| Agregue notas aqui.
+										else
+											p 
+												= reporte.note
+									a(class='btn btn-sm btn-success', id='btn_notes' type='button', data-toggle='tooltip')
+										i(class='glyphicon glyphicon-edit')
+									button#btn_submit_notes(class='btn btn-default btn-success', type='button') Someter
 
 
 		.row
@@ -89,28 +94,43 @@ block content
 								= item.question
 			.col-md-6
 				center
-					h2 Cita de Seguimiento
-				.jumbotron
-					if appointment == undefined
-						p
-							| No appintment nigga
-					else
-						p 
-							strong Fecha: 
-							= appointment.appointment_date
-						p
-							strong Hora: 
-							= appointment.appointment_time
-						p
-							strong 
-								| Creador de cita: 
-							= appointment.maker
-						p
-							strong Propósito: 
-							= appointment.appointment_purpose
-					a(class='btn btn-sm btn-success', id='btn_appointment' type='button', data-toggle='tooltip')
-						i(class='glyphicon glyphicon-edit')
-					button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
+					.panel.panel-success
+						.panel-heading Cita de Seguimiento
+						.panel-body
+							#citas
+								if appointment == undefined
+									p#no_appointment_text
+										| No hay cita pendiente.
+								else
+									p 
+										strong Fecha: 
+										= appointment.appointment_date
+									p
+										strong Hora: 
+										= appointment.appointment_time
+									p
+										strong 
+											| Creador de cita: 
+										= appointment.maker
+									p
+										strong Propósito: 
+										= appointment.appointment_purpose
+							form#form_post_appointment(role='form')
+								.form-group
+									label(for='cita_location') Localización:
+									input#cita_location(class='form-control', name='cita_location', type='text')
+								.form-group
+									label(for='cita_date') Fecha:
+									input#cita_date(class='form-control', name='cita_date', type='date')
+								.form-group
+									label(for='cita_time') Hora:
+									input#cita_time(class='form-control', name='cita_time', type='time')
+								.form-group
+									label(for='cita_proposito') Proposito:
+									textarea#cita_proposito(class='form-control', name='cita_proposito', type='text', placeholder='Proposito')
+							a(class='btn btn-sm btn-success', id='btn_appointment' type='button', data-toggle='tooltip')
+								i(class='glyphicon glyphicon-edit')
+							button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
 
 		.row
 			.col-md-2

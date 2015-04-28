@@ -4,6 +4,10 @@ $(document).ready(function(){
 	var titleText = $('<input>').attr('type', 'text');
 	$answered_survey_panel = $('#answered_survey');
 	$('#btn_submit_notes').hide();
+	$('#btn_submit_appointment').hide();
+	$('#form_post_appointment').hide();
+
+
 
 
 
@@ -42,7 +46,7 @@ $(document).ready(function(){
   /* Button: Return to Reportes */
   $('#btn_reportes').on('click', function(){
     window.location.href = '/users/reportes'; //TODO CHANGE manejar reportes so this works
-});
+  });
 
 
   $('#btn_notes').on('click', function(){
@@ -56,10 +60,11 @@ $(document).ready(function(){
   	$('#btn_notes').show();
   	$('#btn_submit_notes').hide();
 
-  var notes = {
-  	report_id: report_data.report_id,
-  	note_text: $('#note_text').val(),
-  };
+    var notes = {
+    
+     report_id: report_data.report_id,
+     note_text: $('#note_text').val()
+   };
 
   // ajax call to update location
   $.ajax({
@@ -72,64 +77,57 @@ $(document).ready(function(){
   	success: function(data) {
   		alert("Se han agregado las notas exitosamente.");
   		$('#notas').html($('#note_text').val());
-  },
-  error: function( xhr, status, errorThrown ) {
-  	alert( "Sorry, there was a problem!" );
-  	console.log( "Error: " + errorThrown );
-  	console.log( "Status: " + status );
-  	console.dir( xhr );
-  }
+    },
+    error: function( xhr, status, errorThrown ) {
+     alert( "Sorry, there was a problem!" );
+     console.log( "Error: " + errorThrown );
+     console.log( "Status: " + status );
+     console.dir( xhr );
+   }
+ });
 });
 
-
   $('#btn_appointment').on('click', function(){
-  	var currentText = $('#notas').text();
-  	$('#btn_notes').hide();
-  	$('#btn_submit_notes').show();
-  	$('#notas').html("<textarea id='note_text' rows='10' cols='40'>" + currentText + "</textarea>");
+    //var currentText = $('#notas').text();
+    $('#no_appointment_text').hide();
+    $('#form_post_appointment').show();
+    $('#btn_appointment').hide();
+    $('#btn_submit_appointment').show();
+    //$('#notas').html("<textarea id='note_text' rows='10' cols='40'>" + currentText + "</textarea>");
   });
 
   $('#btn_submit_appointment').on('click', function(){
-  	$('#btn_notes').show();
-  	$('#btn_submit_notes').hide();
 
-  var notes = {
-  	report_id: report_data.report_id,
-  	note_text: $('#note_text').val(),
-  };
+    var $the_form = $('#form_post_appointment');
+    var form_data = $the_form.serializeArray();
+    var new_appointment = ConverToJSON(form_data);
+    console.log(new_appointment);
+    console.log("submitting!");
+    console.log(report_data.report_id);
+//    url: "http://localhost:3000/users/admin/localizaciones/" + location_id,
+
 
   // ajax call to update location
   $.ajax({
-  	url: "http://localhost:3000/users/admin/note_edit",
-  	method: "PUT",
-  	data: JSON.stringify(notes),
-  	contentType: "application/json",
-  	dataType: "json",
+    url: "http://localhost:3000/users/admin/new_appointment/" + report_data.report_id + "/" + user_data.user_id,
+    method: "POST",
+    data: JSON.stringify(new_appointment),
+    contentType: "application/json",
+    dataType: "json",
 
-  	success: function(data) {
-  		alert("Se han agregado las notas exitosamente.");
-  		$('#notas').html($('#note_text').val());
-  },
-  error: function( xhr, status, errorThrown ) {
-  	alert( "Sorry, there was a problem!" );
-  	console.log( "Error: " + errorThrown );
-  	console.log( "Status: " + status );
-  	console.dir( xhr );
-  }
+    success: function(data) {
+      alert("Se ha agregado una nueva cita.");
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
 });
 
-  
-
-
-
-
-});
-
-
-
-});
-
-function populate_survey(){
+  function populate_survey(){
 /*		if locals.survey
 						ol
 							each item in survey
