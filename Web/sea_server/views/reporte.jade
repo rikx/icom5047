@@ -66,8 +66,13 @@ block content
 				center
 					h2 Notas
 				.jumbotron
-					p#notas
-						= reporte.note
+					#notas
+						if reporte.note == null
+							p
+								| Agregue notas aqui.
+						else
+							p 
+								= reporte.note
 					a(class='btn btn-sm btn-success', id='btn_notes' type='button', data-toggle='tooltip')
 						i(class='glyphicon glyphicon-edit')
 					button#btn_submit_notes(class='btn btn-default btn-success', type='button') Someter
@@ -84,17 +89,25 @@ block content
 								= item.question
 			.col-md-6
 				center
-					h2 Fecha de Seguimiento
+					h2 Cita de Seguimiento
 				.jumbotron
-					p 
-						strong Fecha: 
-						= reporte.appointment_date
-					p
-						strong Hora: 
-						= reporte.appointment_time
-					p
-						strong Propósito: 
-						= reporte.appointment_purpose
+					if reporte.appointment_date == null
+						p
+							| No appintment nigga
+					else
+						p 
+							strong Fecha: 
+							= reporte.appointment_date
+						p
+							strong Hora: 
+							= reporte.appointment_time
+						p
+							strong Propósito: 
+							= reporte.appointment_purpose
+						p
+							strong 
+								| Creador de cita: 
+								= reporte.appointment_maker
 					a(class='btn btn-sm btn-success', id='btn_appointment' type='button', data-toggle='tooltip')
 						i(class='glyphicon glyphicon-edit')
 					button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
