@@ -629,17 +629,16 @@ router.put('/admin/user_specialties', function(req, res, next) {
  */
  router.get('/reportes/:id', function(req, res, next) {
  	var report_id = req.params.id;
- 	var report_details, survey_details;
+ 	var report_details, survey_details, appointment_details;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		// report basic info
+ 		// get report basic info
 		client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
-										flowchart.version AS survey_version, report.note, report.date_filed AS report_date, appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose \
+										flowchart.version AS survey_version, report.note, report.date_filed AS report_date \
 									FROM report \
-									LEFT JOIN appointments ON report.report_id = appointments.report_id \
 									INNER JOIN users ON users.user_id = report.creator_id \
 									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 									INNER JOIN location ON report.location_id = location.location_id \
@@ -650,8 +649,19 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	  		report_details = result.rows[0];
 	  	}
 	  });
+	  // get appointment details
+	  client.query('SELECT appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose, username AS maker \
+									FROM appointments natural join report \
+									INNER JOIN users ON appointments.maker_id = user_id \
+									WHERE report_id = $1', [report_id], function(err, result){
+	  	if(err) {
+	  		return console.error('error running query', err);
+	  	} else {
+	  		appointment_details = result.rows[0];
+	  	}
+	  });
 		// get answered survey details
-		// SELECT distinct to avoid item duplicates
+		// TODO: need SELECT distinct to avoid item duplicates?
 		client.query('SELECT item.label as question, option.label as answer, path.data as path_data, type \
 									FROM path INNER JOIN option ON path.option_id = option.option_id \
 									INNER JOIN item ON item.item_id = option.parent_id \
