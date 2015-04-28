@@ -543,7 +543,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		client.query("SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+ 		client.query("SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 									FROM report INNER JOIN location ON report.location_id = location.location_id \
 									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 									INNER JOIN users ON report.creator_id = user_id \
@@ -586,7 +586,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		 		if(user_type == 'admin' || user_type == 'specialist') {
 		 			// get first 20 reports regardles of creator
 		 			query_config = {
-						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 										FROM report INNER JOIN location ON report.location_id = location.location_id \
 										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 										INNER JOIN users ON report.creator_id = user_id \
@@ -596,7 +596,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		 		} else {
 		 			// get first 20 reports created by this user
 					query_config = {
-						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 										FROM report INNER JOIN location ON report.location_id = location.location_id \
 										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 										INNER JOIN users ON report.creator_id = user_id \
@@ -635,7 +635,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
  		// get report basic info
-		client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
+		client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
 										flowchart.version AS survey_version, report.note, report.date_filed AS report_date \
 									FROM report \
 									INNER JOIN users ON users.user_id = report.creator_id \

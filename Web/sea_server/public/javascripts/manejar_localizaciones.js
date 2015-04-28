@@ -266,6 +266,16 @@ $(document).ready(function(){
     // add person_id value to input form
     $('#change_agent').attr('data-id', datum.person_id);
   });
+  
+  // verifies input value is in array and returns boolean result
+  function valid_input(user_input, array) {
+    for(var i=0; i < array.length; i++){
+      if(user_input == array[i].location_name){
+        return true;
+      }
+    }
+    return false;
+  }
 
   /* Ajax PUT call to assign an agent to a location  */
   $('#btn_submit_agent').on('click', function(){

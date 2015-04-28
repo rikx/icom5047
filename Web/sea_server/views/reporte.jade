@@ -18,10 +18,10 @@ block content
 											input#report_title(class='form-control', name='report_title', type='text', placeholder='Titulo')
 									button#btn_submit_title(class='btn btn-default') Someter
 						h3#title
-							if reporte.name == null
+							if reporte.report_name == null
 								| Reporte sin título (click para asignarle nombre)
 							else 
-								= reporte.name
+								= reporte.report_name
 			.col-md-2
 
 		.row
