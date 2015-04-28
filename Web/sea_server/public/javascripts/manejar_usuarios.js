@@ -21,7 +21,7 @@ $(document).ready(function(){
 
 
   $('#btn_home').on('click', function(){
-    window.location.href = '/users/admin';
+    window.location.href = '/users';
   });
 
   /* Close edit panel */
