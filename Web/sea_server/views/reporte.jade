@@ -9,11 +9,19 @@ block content
 				.jumbotron#info_current_user(data-user=current_user)
 					center
 						h2 Servicio de Extensión Agricola
+						#title_panel.panel.panel-success
+							.panel-heading Titulo
+							.panel-body
+									form#form_title(role='form')
+										.form-group
+											label(for='report_title')
+											input#report_title(class='form-control', name='report_title', type='text', placeholder='Titulo')
+									button#btn_submit_title(class='btn btn-default') Someter
 						h3#title
-							if locals.reporte.name
-								= reporte.name
+							if reporte.name == null
+								| Reporte sin título (click para asignarle nombre)
 							else 
-								| Reporte sin título (TODO: click para asignarle nombre)
+								= reporte.name
 			.col-md-2
 
 		.row

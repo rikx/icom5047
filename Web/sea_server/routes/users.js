@@ -871,6 +871,34 @@ router.put('/admin/user_specialties', function(req, res, next) {
 }
 });
 
+/* PUT Admin Report Title
+ * 
+ */
+ router.put('/admin/new_title/:id', function(req, res, next) {
+ 	var report_id = req.params.id;
+ 	if(!req.body.hasOwnProperty('report_title')) {
+ 		res.statusCode = 400;
+ 	return res.send('Error: Missing fields for put user.');
+ } else {
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+			// Edit usuario in db
+			client.query("UPDATE report SET name = $1 \
+				WHERE report_id = $2", 
+				[req.body.report_title,  report_id], function(err, result) {
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+					 res.json(true);
+					}
+				});
+		});
+}
+});
+
 /* GET Admin Manejar Localizaciones 
  *
  */

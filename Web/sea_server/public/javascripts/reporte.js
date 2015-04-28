@@ -6,27 +6,15 @@ $(document).ready(function(){
 	$('#btn_submit_notes').hide();
 	$('#btn_submit_appointment').hide();
 	$('#form_post_appointment').hide();
+  $('#title_panel').hide();
 
 
+  //double click title to display title edit form
+  $('#title').dblclick(function(e) {
+    $('#title_panel').show();
+    $('#title').hide();
+  }); 
 
-
-
-
- // $('#title').html('Penis Balls');
-
- // $('#title').dblclick(function(e) {
-
- // 	$('#title').html(titleText);
- // }); 
-
- // titleText.keyup(function(e) {
- // 	if (e.keyCode === 13) {
-
-
- // 		$('#title').text(this.value);
-
- // 	}
- // });
 
   // user_data is of the currently signed in user
   var user_data = JSON.parse($('#info_current_user').attr('data-user'));
@@ -61,7 +49,7 @@ $(document).ready(function(){
   	$('#btn_submit_notes').hide();
 
     var notes = {
-    
+
      report_id: report_data.report_id,
      note_text: $('#note_text').val()
    };
@@ -97,15 +85,9 @@ $(document).ready(function(){
   });
 
   $('#btn_submit_appointment').on('click', function(){
-
     var $the_form = $('#form_post_appointment');
     var form_data = $the_form.serializeArray();
     var new_appointment = ConverToJSON(form_data);
-    console.log(new_appointment);
-    console.log("submitting!");
-    console.log(report_data.report_id);
-//    url: "http://localhost:3000/users/admin/localizaciones/" + location_id,
-
 
   // ajax call to update location
   $.ajax({
@@ -117,6 +99,39 @@ $(document).ready(function(){
 
     success: function(data) {
       alert("Se ha agregado una nueva cita.");
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+});
+
+  $('#btn_submit_title').on('click', function(){
+    var $the_form = $('#form_title');
+    var form_data = $the_form.serializeArray();
+    var new_title = ConverToJSON(form_data);
+    console.log(new_title);
+    var title = new_title.report_title;
+
+  // ajax call to update location
+  $.ajax({
+    url: "http://localhost:3000/users/admin/new_title/" + report_data.report_id,
+    method: "PUT",
+    data: JSON.stringify(new_title),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+    $('#title_panel').hide();
+    $('#title').html(title);
+    $('#title').show();
+
+
+
+
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
