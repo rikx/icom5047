@@ -503,6 +503,36 @@ router.put('/admin/user_specialties', function(req, res, next) {
  }
 });
 
+/* PUT Edit Notes 
+ * 
+ */
+ router.put('/admin/note_edit', function(req, res, next) {
+ 	console.log("notes edit");
+ 	if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('note_text')) {
+ 		res.statusCode = 400;
+ 	return res.send('Error: Missing fields for put ganadero.');
+ } else {
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+			// Insert new ganadero into db
+			client.query("UPDATE report SET note = $1 \
+				WHERE report_id = $2", 
+				[req.body.note_text, req.body.report_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					res.json(true);
+				}
+			});
+		});
+ }
+});
+
 /* GET Admin Manejar Reportes 
  * Renders page and includes response with first 20 reportes, 
  * alphabetically ordered by location name
@@ -540,7 +570,6 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		var user_id = req.session.user_id;
 		var username = req.session.username;
 		var user_type = req.session.user_type;
-		console.log(user_type);
 
 	  if (!username) {
 	  	user_id = req.session.user_id = '';
