@@ -91,23 +91,23 @@ block content
 				center
 					h2 Cita de Seguimiento
 				.jumbotron
-					if reporte.appointment_date == null
+					if appointment == undefined
 						p
 							| No appintment nigga
 					else
 						p 
 							strong Fecha: 
-							= reporte.appointment_date
+							= appointment.appointment_date
 						p
 							strong Hora: 
-							= reporte.appointment_time
-						p
-							strong Propósito: 
-							= reporte.appointment_purpose
+							= appointment.appointment_time
 						p
 							strong 
 								| Creador de cita: 
-								= reporte.appointment_maker
+							= appointment.maker
+						p
+							strong Propósito: 
+							= appointment.appointment_purpose
 					a(class='btn btn-sm btn-success', id='btn_appointment' type='button', data-toggle='tooltip')
 						i(class='glyphicon glyphicon-edit')
 					button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
