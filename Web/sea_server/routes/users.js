@@ -1065,16 +1065,16 @@ router.put('/admin/user_specialties', function(req, res, next) {
  router.put('/admin/localizaciones/:id', function(req, res, next) {
  	var location_id = req.params.id;
  	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
- 		|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
- 		|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
+ 			|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
+ 			|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
  		res.statusCode = 400;
- 	return res.send('Error: Missing fields for put location.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
+ 		return res.send('Error: Missing fields for put location.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+				return console.error('error fetching client from pool', err);
+			}
 			// Insert new ganadero into db
 			client.query("UPDATE location SET name = $1, license = $2 \
 				WHERE location_id = $3", 
@@ -1102,11 +1102,70 @@ router.put('/admin/user_specialties', function(req, res, next) {
 }
 });
 
-	/* PUT Admin Manejar Localizaciones Associates
-	 * Edit associates of location matching :id
+	/* PUT Admin Manejar Localizaciones associated ganadero
+	 * Edit associated ganadero of location matching :id
 	 */
-	router.put('/admin/localizaciones/:id/associates', function(req, res, next) {
-		var location_id = req.params.id;
+	router.put('/admin/localizaciones/ganadero', function(req, res, next) {
+		if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('ganadero_id')
+ 				|| !req.body.hasOwnProperty('relation_type')) {
+ 			res.statusCode = 400;
+ 			return res.send('Error: Missing fields for put location associated ganadero.');
+		} else {
+			var db = req.db;
+			db.connect(req.conString, function(err, client, done) {
+		 		if(err) {
+		 			return console.error('error fetching client from pool', err);
+		 		}
+		 		var query_config = {};
+		 		if(req.body.relation_type == 'owner'){
+		 			query_config = {
+		 				text: 'UPDATE location SET owner_id = $1 \
+										WHERE location_id = $2'
+		 			}
+		 		} else if(req.body.relation_type == 'manager'){
+		 			query_config = {
+		 				text: 'UPDATE location SET manager_id = $1 \
+										WHERE location_id = $2' 
+		 			}
+		 		}
+		 		client.query(query_config, [req.body.ganadero_id, req.body.location_id], function(err, result) {
+					//call `done()` to release the client back to the pool
+					done();
+	 				if(err) {
+			  		return console.error('error running query', err);
+			  	} else {
+			  		res.json(true);
+			  	}
+		 		});
+		 	});
+		}
+	});
+
+	/* PUT Admin Manejar Localizaciones associated agent
+	 * Edit associated agent of location matching :id
+	 */
+	router.put('/admin/localizaciones/agent', function(req, res, next) {
+		if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('agent_id')) {
+ 			res.statusCode = 400;
+ 			return res.send('Error: Missing fields for put location associated agent.');
+		} else {
+			var db = req.db;
+			db.connect(req.conString, function(err, client, done) {
+		 		if(err) {
+		 			return console.error('error fetching client from pool', err);
+		 		}
+		 		client.query('UPDATE location SET agent_id = $1 \
+											WHERE location_id = $2', [req.body.agent_id, req.body.location_id], function(err, result) {
+					//call `done()` to release the client back to the pool
+					done();
+	 				if(err) {
+			  		return console.error('error running query', err);
+			  	} else {
+			  		res.json(true);
+			  	}
+		 		});
+		 	});
+		}
 	});
 
 	/* GET Admin Manejar Citas
