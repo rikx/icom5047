@@ -1178,7 +1178,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	/* PUT Admin Manejar Localizaciones associated ganadero
 	 * Edit associated ganadero of location matching :id
 	 */
-	router.put('/admin/localizaciones/ganadero', function(req, res, next) {
+	router.put('/admin/associated/ganadero', function(req, res, next) {
 		if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('ganadero_id')
  				|| !req.body.hasOwnProperty('relation_type')) {
  			res.statusCode = 400;
@@ -1217,7 +1217,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	/* PUT Admin Manejar Localizaciones associated agent
 	 * Edit associated agent of location matching :id
 	 */
-	router.put('/admin/localizaciones/agent', function(req, res, next) {
+	router.put('/admin/associated/agent', function(req, res, next) {
 		if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('agent_id')) {
  			res.statusCode = 400;
  			return res.send('Error: Missing fields for put location associated agent.');

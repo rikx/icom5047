@@ -1,4 +1,6 @@
 extends layout
+block css
+	link(rel='stylesheet', href='/stylesheets/style.css')
 
 block content
 	.container
@@ -142,41 +144,26 @@ block content
 									td#add_associates_manager
 											a(class='btn_add_associate_ganadero btn btn-sm btn-success', data-toggle='tooltip', type='button', href='#') 
 												i(class='glyphicon glyphicon-plus')
+					#add_ganaderos_dropdown_panel(class='panel panel-info', style="display:none")
+						.panel-heading Añadir Ganaderos Asociados
+						.panel-body
+							.form-group
+								label(for='change_ganadero') Ganaderos:
+								input#change_ganadero(class='typeahead form-control', name='change_ganadero', type='text', placeholder='Buscar por nombre o correo electrónico')
+							button#btn_submit_ganadero(class='btn btn-default btn-success', type='button') Someter
+
 					.panel.panel-info
 						.panel-heading
 							h4.panel-title Agentes Asignados
 						.panel-body
 							table#associated_agentes(class='table')
-
-					#add_ganaderos_dropdown_panel.panel.panel-info(style="display:none")
-						.panel-heading Añadir Ganaderos Asociados
-						.panel-body
-							form(role='form')
-								.form-group
-									label(for='btn_associated_ganadero') Ganaderos:
-									.dropdown
-										.btn-group
-											button#btn_associated_ganadero(class='btn btn-default dropdown-toggle', type='button', name='btn_associated_ganadero', data-toggle='dropdown', aria-expanded='false') 
-												span#btn_associated_ganadero_text Lista de Ganaderos 
-												span(class='caret')
-											ul#list_associated_ganadero(class='dropdown-menu', role='menu')
-
-								button#btn_submit_ganadero(class='btn btn-default btn-success', type='button') Someter
-
-					#add_agente_dropdown_panel.panel.panel-info(style="display:none")
+					#add_agent_dropdown_panel(class='panel panel-info', style="display:none")
 						.panel-heading Añadir Agente Asociado
 						.panel-body
-							form(role='form')
-								.form-group
-									label(for='btn_associated_agente') Agentes:
-									.dropdown
-										.btn-group
-											button#btn_associated_agente(class='btn btn-default dropdown-toggle', type='button', name='btn_associated_agente', data-toggle='dropdown', aria-expanded='false') 
-												span#btn_associated_agente_text Lista de Agentes 
-												span(class='caret')
-											ul#list_associated_agente(class='dropdown-menu', role='menu')
-
-								button#btn_submit_agent(class='btn btn-default btn-success', type='button') Someter
+							.form-group
+								label(for='change_agent') Agentes:
+								input#change_agent(class='typeahead form-control', name='change_agent', type='text', placeholder='Buscar por correo electrónico')
+							button#btn_submit_agent(class='btn btn-default btn-success', type='button') Someter
 
 					button#btn_close_add_panel(class='btn btn-default') Cerrar
 			.col-md-1
@@ -192,5 +179,6 @@ block content
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
+	script(src='/javascripts/typeahead.bundle.min.js')
 	script(src='/javascripts/manejar_localizaciones.js')
 	script(src='/javascripts/helpers.js')

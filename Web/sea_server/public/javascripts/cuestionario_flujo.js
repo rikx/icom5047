@@ -76,7 +76,7 @@ $(document).ready(function(){
 	});
 	/* TEST END: location search */
 	
-		// verifies input value is in array and returns boolean result
+	// verifies input value is in array and returns boolean result
 	function valid_input(user_input, array) {
 		for(var i=0; i < array.length; i++){
 			if(user_input == array[i].location_name){
