@@ -192,31 +192,36 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     $('#cita_info_hour').text($this_cita.time);
   }
 
-  /* */
+  /* Populate list with first 20 reportes, organized alphabetically by location */
   function populate_citas(){
     $.getJSON('http://localhost:3000/list_citas', function(data) {
       citas_array = data.citas;
 
-      // contents of localizaciones list
-      var table_content = '';
-
-      // for each item in JSON, add table row and cells
-      $.each(data.citas, function(i){
-        table_content += '<tr>';
-        table_content += "<td><a class='list-group-item ";
-        // if initial list item, set to active
-        if(i==0) {
-          table_content +=  'active ';
-        }
-        table_content += "show_info_cita' href='#', data-id='"+this.appointment_id+"'>"+this.location_name+"</a></td>";
-        table_content += '<td><center>'+get_date_time(this.date, false)+' @ '+this.time+'</center></td>';
-        table_content += "<td><button class='btn_edit_cita btn btn-sm btn-success btn-block' type='button' data-id='"+this.appointment_id+"'>Editar</button></td>";
-        table_content += "<td><a class='btn_delete_cita btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.appointment_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
-        table_content += '</tr>';
-      });  
-
-      // inject content string into html
-      $citas_list.html(table_content);
+      populate_list(data.citas);
     });
   };
+
+  /* Populate list with reportes_set information */
+  function populate_list(cita_set) {
+    // contents of citas list
+    var table_content = '';
+
+    // for each item in JSON, add table row and cells
+    $.each(cita_set, function(i){
+      table_content += '<tr>';
+      table_content += "<td><a class='list-group-item ";
+      // if initial list item, set to active
+      if(i==0) {
+        table_content +=  'active ';
+      }
+      table_content += "show_info_cita' href='#', data-id='"+this.appointment_id+"'>"+this.location_name+"</a></td>";
+      table_content += '<td><center>'+get_date_time(this.date, false)+' @ '+this.time+'</center></td>';
+      table_content += "<td><button class='btn_edit_cita btn btn-sm btn-success btn-block' type='button' data-id='"+this.appointment_id+"'>Editar</button></td>";
+      table_content += "<td><a class='btn_delete_cita btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.appointment_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+      table_content += '</tr>';
+    });  
+
+    // inject content string into html
+    $citas_list.html(table_content);
+  }
 });

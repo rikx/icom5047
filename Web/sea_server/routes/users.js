@@ -635,7 +635,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 										FROM report INNER JOIN location ON report.location_id = location.location_id \
 										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 										INNER JOIN users ON report.creator_id = user_id \
-							 			ORDER BY location_name ASC \
+							 			ORDER BY report_name ASC \
 										LIMIT 20'
 					}
 		 		} else {
@@ -646,7 +646,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 										INNER JOIN users ON report.creator_id = user_id \
 										WHERE report.creator_id = $1 \
-							 			ORDER BY location_name ASC \
+							 			ORDER BY report_name ASC \
 										LIMIT 20',
 						values: [user_id]
 					};

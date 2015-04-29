@@ -482,10 +482,10 @@ router.get('/list_cuestionarios', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
-									FROM flowchart, users \
-									WHERE user_id = creator_id \
-									ORDER BY flowchart_name \
-									LIMIT 20;', function(err, result) {
+									FROM flowchart \
+									INNER JOIN users ON user_id = creator_id \
+						 			ORDER BY flowchart_name \
+						 			LIMIT 20', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

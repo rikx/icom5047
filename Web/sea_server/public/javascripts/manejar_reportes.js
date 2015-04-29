@@ -47,14 +47,14 @@ $(document).ready(function(){
 
   /* Populates info panel with $this_report information */
   function populate_info_panel($this_report){
-    $('#reporte_info_id').html("<a href='/users/reportes/" +$this_report.report_id+ "'> Reporte " +$this_report.report_id+ "</a>");
+    $('#reporte_info_id').html("<a href='/users/reportes/" +$this_report.report_id+ "'>"+$this_report.report_id+"</a>");
     $('#reporte_info_location').text($this_report.location_name);
     $('#reporte_info_creator').text($this_report.username);
     $('#report_info_date').text(get_date_time($this_report.date_filed, false));
     $('#reporte_info_flowchart').text($this_report.flowchart_name);
   }
 
-  /* Populate list with first 20 reportes, organized alphabetically */
+  /* Populate list with first 20 reportes, organized alphabetically by report name */
   function populate_reportes(){
     $.getJSON('http://localhost:3000/list_reportes', function(data) {
       reportes_array = data.reports;
@@ -76,7 +76,7 @@ $(document).ready(function(){
       if(i==0) {
         table_content +=  'active ';
       }
-      table_content += "show_info_ganadero' href='#', data-id='"+this.report_id+"'>Reporte "+this.report_id+"</a></td>";
+      table_content += "show_info_ganadero' href='#', data-id='"+this.report_id+"'>"+this.report_name+"</a></td>";
       table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
       table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
       table_content += "<td><a class='btn_delete_reporte btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";

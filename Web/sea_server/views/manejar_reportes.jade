@@ -41,11 +41,11 @@ block content
 												if i!=0
 													a(class='list-group-item show_info_reporte', href='#', data-id=report.report_id)
 														| Reporte 
-														= report.report_id
+														= report.report_name
 												else 
 													a(class='list-group-item active show_info_reporte', href='#', data-id=report.report_id)
 														| Reporte 
-														= report.report_id
+														= report.report_name
 											td
 												center(data-id=report.location_id)= report.location_name
 											td
