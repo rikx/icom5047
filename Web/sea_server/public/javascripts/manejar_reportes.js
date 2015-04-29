@@ -76,6 +76,12 @@ $(document).ready(function(){
       if(i==0) {
         table_content +=  'active ';
       }
+      var report_name;
+      if(this.report_name != null) {
+        report_name = this.report_name;
+      } else {
+        report_name = 'Reporte sin título';
+      }
       table_content += "show_info_ganadero' href='#', data-id='"+this.report_id+"'>"+this.report_name+"</a></td>";
       table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
       table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";

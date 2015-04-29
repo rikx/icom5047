@@ -135,6 +135,7 @@ router.post('/cuestionario/path', function(req, res, next) {
  * returns ganaderos matching :user_input and their associated information 
  */
 router.get('/ganaderos/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
 	var ganaderos_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -147,7 +148,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 										FROM person \
 										WHERE person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) as ganaderos \
-									WHERE LOWER(person_name) LIKE LOWER('%"+req.params.user_input+"%') OR email LIKE '%"+req.params.user_input+"%'", function(err, result) {
+									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -164,7 +165,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 									SELECT person_id, location_id, location.name AS location_name \
 									FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id) \
-									WHERE LOWER(person_name) LIKE LOWER('%"+req.params.user_input+"%') OR email LIKE '%"+req.params.user_input+"%'", function(err, result){
+									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
@@ -185,8 +186,8 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
  * returns users matching :user_input and their associated information 
  */
 router.get('/usuarios/:user_input', function(req, res, next) {
-	var usuarios_list, specialties_list, locations_list;
 	var user_input = req.params.user_input;
+	var usuarios_list, specialties_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -281,7 +282,7 @@ router.get('/cuestionarios/:user_input', function(req, res, next){
 		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
-									WHERE LOWER(name) LIKE LOWER('%"+user_input+"t%') \
+									WHERE LOWER(name) LIKE LOWER('%"+user_input+"%') \
 									ORDER BY flowchart_name", function(err, result){
 		if(err) {
       return console.error('error running query', err);
@@ -290,6 +291,57 @@ router.get('/cuestionarios/:user_input', function(req, res, next){
     }
 		});
 	})
+});
+
+/* GET search reportes
+ * returns reportes matching :user_input and their basic information
+ * query results depend on logged in user's type
+ */
+router.get('/reportes/:user_input', function(req, res, next){
+	var user_type = req.session.user_type;
+	var user_id = req.session.user_id;
+	var user_type = req.session.username;
+	var user_input = req.params.user_input;
+
+	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+		var query_config = {};
+ 		if(user_type == 'admin' || user_type == 'specialist') {
+ 			// get first 20 reports regardles of creator
+ 			query_config = {
+				text: "SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+								FROM report INNER JOIN location ON report.location_id = location.location_id \
+								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+								INNER JOIN users ON report.creator_id = user_id \
+								WHERE LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%' \
+					 			ORDER BY report_name ASC"
+			}
+ 		} else {
+ 			// get first 20 reports created by this user
+			query_config = {
+				text: "SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+								FROM report INNER JOIN location ON report.location_id = location.location_id \
+								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+								INNER JOIN users ON report.creator_id = user_id \
+								WHERE report.creator_id = $1 AND  LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%' \
+					 			ORDER BY report_name ASC",
+				values: [user_id]
+			};
+	 	}
+ 		// get reports matching user_type
+ 		client.query(query_config, function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json({reports: result.rows});
+			}
+		});
+ 	});
 });
 
 /* TODO: GET search locations

@@ -17,7 +17,7 @@ block content
 		.row
 			.col-md-1
 			.col-md-6
-				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar reporte por nombre, agente o localizacion')
+				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar reporte por nombre, fecha (dd/mm/aaaa), agente o localización')
 			.col-md-4
 			.col-md-1
 
@@ -40,12 +40,16 @@ block content
 											td
 												if i!=0
 													a(class='list-group-item show_info_reporte', href='#', data-id=report.report_id)
-														| Reporte 
-														= report.report_name
+														if(report.report_name != null)
+															= report.report_name
+														else
+															| Reporte sin título
 												else 
 													a(class='list-group-item active show_info_reporte', href='#', data-id=report.report_id)
-														| Reporte 
-														= report.report_name
+														if(report.report_name != null)
+															= report.report_name
+														else
+															| Reporte sin título
 											td
 												center(data-id=report.location_id)= report.location_name
 											td
