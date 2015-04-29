@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users home 
- *
+/* GET users home redirect
+ * redirects to home page of current user session; else redirects to login
  */
  router.get('/', function(req, res, next) {
  	var user_id = req.session.user_id;
@@ -30,17 +30,20 @@ var router = express.Router();
  			return console.error('error fetching client from pool', err);
  		}
  		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
- 			FROM flowchart, users \
- 			WHERE user_id = creator_id \
- 			ORDER BY flowchart_name \
- 			LIMIT 20;', function(err, result) {
+									FROM flowchart \
+									INNER JOIN users ON user_id = creator_id \
+						 			ORDER BY flowchart_name \
+						 			LIMIT 20', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
 
 	  	if(err) {
 	  		return console.error('error running query', err);
 	  	} else {
-	  		res.render('tomar_cuestionarios', { title: 'Cuestionarios', cuestionarios: result.rows});
+	  		res.render('tomar_cuestionarios', { 
+	  			title: 'Cuestionarios', 
+	  			cuestionarios: result.rows
+	  		});
 	  	}
 	  });
  	});
@@ -120,8 +123,22 @@ router.get('/admin', function(req, res, next) {
   }
 });
 
+/* 
+ * GET Specialist Home
+ */
+router.get('/specialist', function(req, res, next) {
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (username != null && user_type == 'specialist') {
+  	res.render('specialist', { title: 'Especialista Home'});
+  } else {
+  	res.redirect('/users');
+  }
+});
+
 /* GET Admin Manejar Cuestionarios
- * Responds with first 10 cuestionarios, 
+ * Responds with first 20 cuestionarios, 
  * alphabetically ordered by name
  */
  router.get('/admin/cuestionarios', function(req, res, next) {
@@ -131,17 +148,20 @@ router.get('/admin', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
  		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
- 			FROM flowchart, users \
- 			WHERE user_id = creator_id \
- 			ORDER BY flowchart_name \
- 			LIMIT 20;', function(err, result) {
+									FROM flowchart \
+									INNER JOIN users ON user_id = creator_id \
+						 			ORDER BY flowchart_name \
+ 									LIMIT 20', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
 
 	  	if(err) {
 	  		return console.error('error running query', err);
 	  	} else {
-	  		res.render('manejar_cuestionarios', { title: 'Manejar Cuestionarios', cuestionarios: result.rows});
+	  		res.render('manejar_cuestionarios', { 
+	  			title: 'Manejar Cuestionarios', 
+	  			cuestionarios: result.rows
+	  		});
 	  	}
 	  });
  	});
@@ -152,7 +172,7 @@ router.get('/admin', function(req, res, next) {
  	res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
  });
 
- /* GET Admin Cuestionario */
+ /* TODO: GET Admin Cuestionario */
  router.get('/admin/cuestionarios/:id', function(req, res, next) {
  	var cuestionario_id = req.params.id;
  	res.render('cuestionario', { title: 'Cuestionario'});
