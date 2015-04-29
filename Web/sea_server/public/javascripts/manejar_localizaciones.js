@@ -114,22 +114,13 @@ $(document).ready(function(){
 
 
   /* Add associated ganadero */
-  $('#associated_ganaderos').on('click', 'tr td a.btn_add_associate_ganadero', function(e){
+  $('#associated_ganaderos').on('click', 'tr td a.btn_add_associate_ganadero, tr td a.btn_change_ganadero', function(e){
     // prevents link from firing
     e.preventDefault();
     $('#edit_panel').hide();
     $('#info_panel').hide();
-    $('#add_agente_dropdown_panel').hide(); 
+    $('#add_agent_dropdown_panel').hide(); 
     $('#add_ganaderos_dropdown_panel').show();
-
-    // set data attribute in input form for relation type to be changed
-    $('#change_ganadero').attr('data-relation-type', $(this).attr('data-relation-type'));
-  });
-
-  /* */
-  $('#associated_ganaderos').on('click', 'tr td a.btn_change_ganadero', function(e){
-    // prevents link from firing
-    e.preventDefault();
 
     // set data attribute in input form for relation type to be changed
     $('#change_ganadero').attr('data-relation-type', $(this).attr('data-relation-type'));

@@ -131,7 +131,7 @@ router.post('/cuestionario/path', function(req, res, next) {
 });
 
 // SEARCH FUNCTIONS START
-/* GET ganaderos search
+/* GET search ganaderos 
  * returns ganaderos matching :user_input and their associated information 
  */
 router.get('/ganaderos/:user_input', function(req, res, next) {
@@ -181,34 +181,70 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 	});
 });
 
-/* 
- * TODO GET usuarios 
- * return returns users matching :user_input and their associated information 
+/* GET search usuarios 
+ * returns users matching :user_input and their associated information 
  */
-router.get('/usuarios', function(req, res, next) {
-	var usuarios_list;
+router.get('/usuarios/:user_input', function(req, res, next) {
+	var usuarios_list, specialties_list, locations_list;
+	var user_input = req.params.user_input;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query('SELECT user_id, username \
+		// get users
+	  client.query("SELECT user_id, username \
 									FROM users \
-									ORDER BY username ASC', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
+									WHERE username LIKE '%"+user_input+"%'\
+									ORDER BY username ASC", function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
 	    	usuarios_list = result.rows;
-	    	res.json({usuarios : usuarios_list});
+	    }
+	  });
+
+	  // get user associated specialties
+	  client.query("WITH usuarios AS (SELECT user_id, username \
+								  	FROM users \
+								  	WHERE username LIKE '%"+user_input+"%'\
+								  	ORDER BY username ASC) \
+									SELECT usuarios.user_id, us.spec_id, spec.name \
+									FROM usuarios \
+									LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
+									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id", function(err, result){
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	specialties_list = result.rows;
+	    }
+	  });
+
+	  // get user associated locations
+	  client.query("WITH usuarios AS (SELECT user_id, username \
+								  	FROM users \
+								  	WHERE username LIKE '%"+user_input+"%' \
+								  	ORDER BY username ASC \
+								  SELECT user_id, location_id, location.name AS location_name \
+								  FROM usuarios \
+								  INNER JOIN location ON user_id = agent_id", function(err, result){
+	  	//call `done()` to release the client back to the pool
+	    done();
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	locations_list = result.rows;
+	    	res.json({
+	    		usuarios : usuarios_list,
+	    		specialties: specialties_list,
+	    		locations: locations_list
+	    	});
 	    }
 	  });
 	});
 });
 
-/* GET all agents
+/* GET search agents
  * returns agents matching :user_input and their associated information 
  */
 router.get('/agents/:user_input', function(req, res, next) {
@@ -220,7 +256,8 @@ router.get('/agents/:user_input', function(req, res, next) {
 		// get all users 
 		client.query("SELECT user_id, username \
 									FROM users \
-									WHERE type = 'agent' AND username LIKE '%"+req.params.user_input+"%'", function(err, result){
+									WHERE type = 'agent' AND username LIKE '%"+req.params.user_input+"%' \
+									ORDER BY username", function(err, result){
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -230,7 +267,32 @@ router.get('/agents/:user_input', function(req, res, next) {
 	});
 });
 
-/* TODO: GET all locations
+/* GET search flowcharts
+ * returns flowcharts matching :user_input and their basic information
+ */
+router.get('/cuestionarios/:user_input', function(req, res, next){
+	var user_input = req.params.user_input;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done){
+		if(err) {
+		return console.error('error fetching client from pool', err);
+		}
+		// get all matching flowcharts and their basic data
+		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+									FROM flowchart \
+									INNER JOIN users ON user_id = creator_id \
+									WHERE LOWER(name) LIKE LOWER('%"+user_input+"t%') \
+									ORDER BY flowchart_name", function(err, result){
+		if(err) {
+      return console.error('error running query', err);
+    } else {
+    	res.json({cuestionarios: result.rows});
+    }
+		});
+	})
+});
+
+/* TODO: GET search locations
  * returns locations matching :user_input and their associated information 
  */
 router.get('/locations', function(req, res, next) {
@@ -239,7 +301,7 @@ router.get('/locations', function(req, res, next) {
 		if(err) {
 			return console.error('error fetching client from pool', err);
 		}
-		// query for all locations data
+		// get all matching locations data
 		//WHERE name like '%"+req.query.key+"%'"
 		client.query("SELECT location_id, name AS location_name \
 									FROM location", function(err, result){
@@ -252,7 +314,7 @@ router.get('/locations', function(req, res, next) {
 	});
 });
 
-/* GET all dispositivos
+/* GET search dispositivos
  * returns devices matching :user_input and their associated information 
  */
 router.get('/dispositivos/:user_input', function(req, res, next) {
