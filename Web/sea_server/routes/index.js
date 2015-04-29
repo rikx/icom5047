@@ -326,7 +326,7 @@ router.get('/reportes/:user_input', function(req, res, next){
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
-								WHERE report.creator_id = $1 AND  LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%' \
+								WHERE report.creator_id = $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%') \
 					 			ORDER BY report_name ASC",
 				values: [user_id]
 			};
