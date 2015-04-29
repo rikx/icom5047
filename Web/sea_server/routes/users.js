@@ -141,92 +141,146 @@ router.get('/specialist', function(req, res, next) {
  * Responds with first 20 cuestionarios, 
  * alphabetically ordered by name
  */
- router.get('/admin/cuestionarios', function(req, res, next) {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
- 		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
-									FROM flowchart \
-									INNER JOIN users ON user_id = creator_id \
-						 			ORDER BY flowchart_name \
- 									LIMIT 20', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	  	done();
+router.get('/admin/cuestionarios', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		res.render('manejar_cuestionarios', { 
-	  			title: 'Manejar Cuestionarios', 
-	  			cuestionarios: result.rows
-	  		});
-	  	}
-	  });
- 	});
- });
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else if (user_type != 'admin') {
+		res.redirect('/');
+	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+										FROM flowchart \
+										INNER JOIN users ON user_id = creator_id \
+							 			ORDER BY flowchart_name \
+	 									LIMIT 20', function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		  	done();
+
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.render('manejar_cuestionarios', { 
+		  			title: 'Manejar Cuestionarios', 
+		  			cuestionarios: result.rows
+		  		});
+		  	}
+		  });
+	 	});
+	}
+});
 
  /* GET Admin Crear Cuestionario */
  router.get('/admin/cuestionarios/crear', function(req, res, next) {
- 	res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
+ 	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else if (user_type != 'admin') {
+		res.redirect('/');
+	} else {
+ 		res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
+ 	}
  });
 
- /* TODO: GET Admin Cuestionario */
- router.get('/admin/cuestionarios/:id', function(req, res, next) {
- 	var cuestionario_id = req.params.id;
- 	res.render('cuestionario', { title: 'Cuestionario'});
- });
+/* TODO: GET Admin Cuestionario 
+ *
+ */
+router.get('/admin/cuestionarios/:id', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 
- /* GET Admin Manejar Ganaderos
- 	* renders manejar ganaderos page with first 20 ganaderos and their associated information
- 	*/
- router.get('/ganaderos', function(req, res, next) {
- 	var ganaderos_list, locations_list;
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
- 		// get ganaderos
- 		client.query("SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-						 			FROM person \
-						 			WHERE person_id NOT IN (SELECT person_id FROM users) \
-						 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-						 			LIMIT 20", function(err, result) {
- 				if(err) {
- 					return console.error('error running query', err);
- 				} else {
- 					ganaderos_list = result.rows;
- 				}
- 			});
- 		// get associated locations
- 		client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else if (user_type != 'admin') {
+		res.redirect('/');
+	} else {
+	 	var cuestionario_id = req.params.id;
+	 	res.render('cuestionario', { title: 'Cuestionario'});
+	}
+});
+
+/* GET Admin Manejar Ganaderos
+ * renders manejar ganaderos page with first 20 ganaderos and their associated information
+ */
+router.get('/ganaderos', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else {
+	 	var ganaderos_list, locations_list;
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		// get ganaderos
+	 		client.query("SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 							 			FROM person \
 							 			WHERE person_id NOT IN (SELECT person_id FROM users) \
 							 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-							 			LIMIT 20) \
-							 		SELECT person_id, location_id, location.name AS location_name \
-							 		FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', function(err, result){
-			//call `done()` to release the client back to the pool
-			done();
-			if(err) {
-				return console.error('error running query', err);
-			} else {
-				locations_list = result.rows;	  		
-				var current_user = {
-	  			user_id: req.session.user_id,
-	  			username: req.session.username
-	  		}
-				res.render('manejar_ganaderos', { 
-					title: 'Manejar Ganaderos', 
-					ganaderos: ganaderos_list, 
-					locations: locations_list,
-					user: current_user 
-				});
-			}
-		});	
- 	});
+							 			LIMIT 20", function(err, result) {
+	 				if(err) {
+	 					return console.error('error running query', err);
+	 				} else {
+	 					ganaderos_list = result.rows;
+	 				}
+	 			});
+	 		// get associated locations
+	 		client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+								 			FROM person \
+								 			WHERE person_id NOT IN (SELECT person_id FROM users) \
+								 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+								 			LIMIT 20) \
+								 		SELECT person_id, location_id, location.name AS location_name \
+								 		FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', function(err, result){
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					locations_list = result.rows;	  		
+					var current_user = {
+		  			user_id: user_id,
+		  			username: username,
+		  			user_type: user_type
+		  		}
+		  		console.log(current_user);
+					res.render('manejar_ganaderos', { 
+						title: 'Manejar Ganaderos', 
+						ganaderos: ganaderos_list, 
+						locations: locations_list,
+						user: current_user 
+					});
+				}
+			});	
+	 	});
+	}
 });
 
 /* POST Admin Manejar Ganaderos
