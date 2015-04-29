@@ -146,7 +146,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
     $('#usuario_name').val(this_usuario.first_name);
     $('#usuario_lastname_paternal').val(this_usuario.last_name1);
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
-    $('#usuario_email').val(this_usuario.email);
+    $('#usuario_email').val(this_usuario.username);
     $('#usuario_telefono').val(this_usuario.phone_number);
 
     if(this_usuario.type == 'agent')
@@ -298,7 +298,7 @@ function populate_info_panel($this_usuario){
     }
     $('#usuario_info_lastname_paternal').text($this_usuario.last_name1);
     $('#usuario_info_lastname_maternal').text($this_usuario.last_name2);
-    $('#usuario_info_contact').text($this_usuario.email + " " + $this_usuario.phone_number);
+    $('#usuario_info_contact').text($this_usuario.username + " " + $this_usuario.phone_number);
 
 
     if($this_usuario.type == 'agent')
@@ -347,7 +347,7 @@ function populate_info_panel($this_usuario){
         if(i==0) {
           table_content +=  'active ';
         }
-        table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.email+"</a></td>";
+        table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.username+"</a></td>";
         table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
         table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
         table_content += '</tr>';

@@ -511,9 +511,9 @@ router.get('/list_usuarios', function(req, res, next) {
 		}
 		// TODO: modify query to also give you account type
 	  client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, username, type \
-									FROM (users natural join person) \
-									ORDER BY email ASC \
-									LIMIT 20;', function(err, result) {
+									FROM users natural join person \
+									ORDER BY username ASC \
+									LIMIT 20', function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -522,14 +522,14 @@ router.get('/list_usuarios', function(req, res, next) {
 	  });
 
 		// get user specialties
-		client.query('WITH usuarios AS (SELECT user_id, email \
-								  	FROM users natural join person \
-								  	ORDER BY email ASC \
+		client.query('WITH usuarios AS (SELECT user_id, username \
+								  	FROM users \
+								  	ORDER BY username ASC \
 								  	LIMIT 20) \
-									SELECT usuarios.user_id, email, us.spec_id, spec.name \
+									SELECT usuarios.user_id, us.spec_id, spec.name \
 									FROM usuarios \
 									LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
-									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id ', function(err, result) {
+									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id', function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
@@ -538,13 +538,13 @@ router.get('/list_usuarios', function(req, res, next) {
 		});
 
 	  // get locations associated with users
-	  client.query('WITH usuarios AS (SELECT user_id, email \
-										FROM users natural join person \
-										ORDER BY email ASC \
-										LIMIT 20) \
-									SELECT user_id, location_id, location.name AS location_name \
-									FROM usuarios, location \
-									WHERE user_id = agent_id', function(err, result){
+	  client.query('WITH usuarios AS (SELECT user_id, username \
+								  	FROM users \
+								  	ORDER BY username ASC \
+								  	LIMIT 20) \
+								  SELECT user_id, location_id, location.name AS location_name \
+								  FROM usuarios \
+								  INNER JOIN location ON user_id = agent_id', function(err, result){
 	  	//call `done()` to release the client back to the pool
 	  	done();
 	  	if(err) {

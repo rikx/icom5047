@@ -673,7 +673,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 			client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, username, type \
 										FROM users natural join person \
 										ORDER BY username ASC \
-										LIMIT 20;', function(err, result) {
+										LIMIT 20', function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {
