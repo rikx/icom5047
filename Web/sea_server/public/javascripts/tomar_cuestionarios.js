@@ -8,6 +8,57 @@ $(document).ready(function(){
   //initial population of info panel
   populate_info_panel(cuestionarios_array[0]);
 
+  /* Search Code start */
+  // constructs the suggestion engine
+  var search_source = new Bloodhound({
+    // user input is tokenized and compard with ganadero full names or emails
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('flowchart_name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace, 
+    limit: 10,
+    dupDetector: function(remoteMatch, localMatch) {
+      return remoteMatch.flowchart_name === localMatch.flowchart_name;
+    },
+    local: cuestionarios_array,
+    remote: {
+      url: 'http://localhost:3000/cuestionarios/%QUERY',
+      filter: function(list) {
+        // populate global arrays with matching results
+        cuestionarios_array = list.cuestionarios;
+        // populate list with matching results
+        populate_list(cuestionarios_array);
+        return $.map(list.cuestionarios, function(cuestionario) { 
+          return cuestionario;
+        });
+      }
+    }
+  });
+
+  // kicks off loading and processing of 'local' and 'prefetch'
+  search_source.initialize();
+
+  // set typeahead functionality for search bar
+  $('.typeahead').typeahead({
+    hint: false,
+    highlight: true
+  },
+  {
+    name: 'cuestionarios',
+    displayKey: 'flowchart_name',
+    source: search_source.ttAdapter(),
+    templates: {
+      suggestion: function(cuestionario){
+        return '<p><strong>Nombre: </strong>'+cuestionario.flowchart_name+'</p>';
+      }
+    }
+  });
+
+  // search bar input select event listener
+  $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
+    // populate list with selected search result
+    populate_list({datum});
+  });
+  /* Search Code End */
+
  	/* Button: Return home */
  	$('#btn_home').on('click', function(){
   	window.location.href = '/users'; 
@@ -54,29 +105,35 @@ $(document).ready(function(){
     $('#cuestionario_info_creator').text(element.username);
   };
 
+    /* Populate list with first 20 cuestionarios, organized alphabetically */
   function populate_cuestionarios(){
     $.getJSON('http://localhost:3000/list_cuestionarios', function(data) {
       cuestionarios_array = data.cuestionarios;
 
-      // contents of localizaciones list
-      var table_content = '';
-
-      // for each item in JSON, add table row and cells
-      $.each(data.cuestionarios, function(i){
-        table_content += '<tr>';
-        table_content += "<td><a class='list-group-item ";
-        // if initial list item, set to active
-        if(i==0) {
-          table_content +=  'active ';
-        }
-        table_content += "show_info_cuestionario' href='#', data-id='"+this.flowchart_id+"'>"+this.flowchart_name+"</a></td>";
-        table_content += "<td><button class='btn_flujo_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"'>Método con Flujo</button></td>";
-        table_content += "<td><button class='btn_abierto_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"' disabled>Método Abierto</button></td>";
-        table_content += '</tr>';
-      });  
-
-      // inject content string into html
-      $cuestionarios_list.html(table_content);
+      populate_list(data.cuestionarios);
     });
+  };
+
+  /* Populate list with cuestionarios_set information */
+  function populate_list(cuestionarios_set){
+    // contents of cuestionarios list
+    var table_content = '';
+
+    // for each item in JSON, add table row and cells
+    $.each(cuestionarios_set, function(i){
+      table_content += '<tr>';
+      table_content += "<td><a class='list-group-item ";
+      // if initial list item, set to active
+      if(i==0) {
+        table_content +=  'active ';
+      }
+      table_content += "show_info_cuestionario' href='#', data-id='"+this.flowchart_id+"'>"+this.flowchart_name+"</a></td>";
+      table_content += "<td><button class='btn_flujo_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"'>Método con Flujo</button></td>";
+      table_content += "<td><button class='btn_abierto_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"' disabled>Método Abierto</button></td>";
+      table_content += '</tr>';
+    });  
+
+    // inject content string into html
+    $cuestionarios_list.html(table_content);
   };
 });
