@@ -8,6 +8,58 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(reportes_array[0]);
 
+  /* Search Code start */
+  // constructs the suggestion engine
+  var search_source = new Bloodhound({
+    // user input is tokenized and compard with ganadero full names or emails
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username', 'report_name', 'location_name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace, 
+    limit: 10,
+    dupDetector: function(remoteMatch, localMatch) {
+      return remoteMatch.report_id === localMatch.report_id;
+    },
+    local: reportes_array,
+    remote: {
+      url: 'http://localhost:3000/reportes/%QUERY',
+      filter: function(list) {
+        // populate global arrays with matching results
+        reportes_array = list.reports;
+  
+        // populate list with matching results
+        populate_list(reportes_array);
+        return $.map(list.reports, function(reporte) { 
+          return reporte;
+        });
+      }
+    }
+  });
+
+  // kicks off loading and processing of 'local' and 'prefetch'
+  search_source.initialize();
+
+  // set typeahead functionality for search bar
+  $('.typeahead').typeahead({
+    hint: false,
+    highlight: true
+  },
+  {
+    name: 'reportes',
+    displayKey: 'reporte',
+    source: search_source.ttAdapter(),
+    templates: {
+      suggestion: function(reporte){
+        return '<p><strong>Nombre: </strong>'+reporte.report_name+'</p><p><strong>Localizacion: </strong>'+reporte.location_name+'</p>';
+      }
+    }
+  });
+
+  // search bar input select event listener
+  $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
+    // populate list with selected search result
+    populate_list({datum});
+  });
+  /* Search Code End */
+
   /* Button: Return home */
   $('#btn_home').on('click', function(){
     window.location.href = '/users';
@@ -82,7 +134,7 @@ $(document).ready(function(){
       } else {
         report_name = 'Reporte sin título';
       }
-      table_content += "show_info_ganadero' href='#', data-id='"+this.report_id+"'>"+this.report_name+"</a></td>";
+      table_content += "show_info_ganadero' href='#', data-id='"+this.report_id+"'>"+report_name+"</a></td>";
       table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
       table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
       table_content += "<td><a class='btn_delete_reporte btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";

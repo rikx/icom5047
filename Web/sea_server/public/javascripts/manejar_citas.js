@@ -8,6 +8,58 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(citas_array[0]);
 
+   /* Search Code start */
+  // constructs the suggestion engine
+  var search_source = new Bloodhound({
+    // user input is tokenized and compard with ganadero full names or emails
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('appointment_id'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace, 
+    limit: 10,
+    dupDetector: function(remoteMatch, localMatch) {
+      return remoteMatch.appointment_id === localMatch.appointment_id;
+    },
+    local: citas_array,
+    remote: {
+      url: 'http://localhost:3000/ganaderos/%QUERY',
+      filter: function(list) {
+        // populate global arrays with matching results
+        citas_array = list.citas;
+        
+        // populate list with matching results
+        populate_list(citas_array);
+        return $.map(list.citas, function(cita) { 
+          return cita;
+        });
+      }
+    }
+  });
+
+  // kicks off loading and processing of 'local' and 'prefetch'
+  search_source.initialize();
+
+  // set typeahead functionality for search bar
+  $('.typeahead').typeahead({
+    hint: false,
+    highlight: true
+  },
+  {
+    name: 'citas',
+    displayKey: 'appointment_id',
+    source: search_source.ttAdapter(),
+    templates: {
+      suggestion: function(cita){
+        return '<p><strong>Nombre: </strong>'+ganadero.person_name+'</p><p><strong>Email: </strong>'+ganadero.email+'</p>';
+      }
+    }
+  });
+
+  // search bar input select event listener
+  $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
+    // populate list with selected search result
+    populate_list({datum});
+  });
+  /* Search Code End */
+
   /* Button: Return home */
   $('#btn_home').on('click', function(){
     window.location.href = '/users';
