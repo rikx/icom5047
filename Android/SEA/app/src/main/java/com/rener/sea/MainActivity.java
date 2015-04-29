@@ -23,59 +23,16 @@ import android.widget.ListView;
  */
 public class MainActivity extends FragmentActivity {
 
-    private DBService dbService;
+    private DBHelper dbHelper;
     private Fragment leftFragment;
     private Fragment rightFragment;
-    private boolean mBound = false;
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            //Bound to DB Service successful, get the service instance
-            DBService.DBBinder binder = (DBService.DBBinder) iBinder;
-            dbService = binder.getService();
-            mBound = true;
-            Log.i(this.toString(), "bound to " + dbService.toString());
-            showReportsList();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBound = false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Bind to DB Service
-        Intent intent = new Intent(this, DBService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        Log.i(this.toString(), "binding to service...");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(this.toString(), "destroyed");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //Unbind from DB Service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
+		dbHelper = new DBHelper(getApplicationContext());
     }
 
     @Override
@@ -265,8 +222,8 @@ public class MainActivity extends FragmentActivity {
      *
      * @return null if the service isn't bound to anything
      */
-    public DBService getDBService() {
-        return mBound ? dbService : null;
+    public DBHelper getDBHelper() {
+	    return dbHelper;
     }
 
     private void logout() {

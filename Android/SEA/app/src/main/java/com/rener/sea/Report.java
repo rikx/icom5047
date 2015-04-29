@@ -9,6 +9,7 @@ import java.util.Locale;
 /**
  * Represents a Report in the system
  * A report is a survey that has been answered
+ * TODO: implement DBHelper into this class
  */
 public class Report implements Comparable<Report> {
 
@@ -23,9 +24,9 @@ public class Report implements Comparable<Report> {
     private Date date;
     private String type = "";
     private Path path;
-    private SEASchema dbHelper = null;
+    private DBHelper dbHelper = null;
 
-    public Report(long id, SEASchema db) {
+    public Report(long id, DBHelper db) {
         this.dbHelper = db;
     }
     /**

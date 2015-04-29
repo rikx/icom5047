@@ -97,8 +97,8 @@ public class LocationDetailsFragment extends Fragment
 
 
         //Populate the spinner lists
-        DBService dbService = ((MainActivity) getActivity()).getDBService();
-        peopleList = dbService.getPeople();
+        DBHelper dbHelper = ((MainActivity) getActivity()).getDBHelper();
+        peopleList = dbHelper.getAllPersons();
         Collections.sort(peopleList);
         List<Person> managerList = new ArrayList(peopleList);
         List<Person> agentList = new ArrayList(peopleList);

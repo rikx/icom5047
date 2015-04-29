@@ -18,63 +18,16 @@ import android.widget.Toast;
  */
 public class LoginActivity extends Activity {
 
-    String username = null;
-    String password = null;
-    private DBService dbService;
-    private boolean mBound = false;
-    /**
-     * Connection to the database service
-     */
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            //Bound to DB Service successful, get the service instance
-            DBService.DBBinder binder = (DBService.DBBinder) iBinder;
-            dbService = binder.getService();
-            mBound = true;
-            Log.i(this.toString(), "bound to " + dbService.toString());
-            loadLogin();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBound = false;
-        }
-    };
+    private String username = null;
+    private String password = null;
+	private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.i(this.toString(), "created");
-        SEASchema DBHelper = new SEASchema(getApplicationContext());
-//        DBHelper.createUser("enrique.rodriguez2","temp",2,"dkfhbvgidskffnldsk;ho;derkfuhf3489frofovleu4er4");
-//        DBHelper.findUserByUsername("enrique.rodriguez2");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Bind to DB Service
-        Intent intent = new Intent(this, DBService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        Log.i(this.toString(), "binding to service...");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //Unbind from DB Service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(this.toString(), "destroyed");
+        dbHelper = new DBHelper(getApplicationContext());
     }
 
     /**
@@ -121,7 +74,7 @@ public class LoginActivity extends Activity {
     private boolean attemptLogin() {
         //Check login credentials
         Context context = getApplicationContext();
-        if (dbService.authLogin(username, password)) {
+        if (dbHelper.authLogin(username, password)) {
             //Successful login
             saveLogin();
             startActivity(new Intent(this, MainActivity.class));

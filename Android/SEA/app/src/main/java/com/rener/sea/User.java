@@ -10,20 +10,16 @@ import android.database.sqlite.SQLiteDatabase;
 public class User {
 
     private long user_id = -1;
-    //	private String username;
-//	private String salt;
-//	private String password;
-//	private Person person;
-    private SEASchema dbHelper = null;
+    private DBHelper dbHelper = null;
 
 
-    public User(long user_id, SEASchema dbHelper) {
+    public User(long user_id, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         invoke(user_id);
     }
 
     // to create a user
-    public User(long user_id, long person_id, String username, String password, SEASchema dbHelper) {
+    public User(long user_id, long person_id, String username, String password, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
         if (exist(user_id)) { // can also verify if id == -1
@@ -31,14 +27,6 @@ public class User {
         } else {
             this.user_id = create(person_id, username, password);
         }
-    }
-
-    public User(long user_id, String username, String password, Person person) {
-        this.user_id = user_id;
-//        this.username = username;
-//        this.password = password;
-//        this.salt = "";
-//        this.person = person;
     }
 
     private long create(long person_id, String username, String password) {
@@ -161,6 +149,23 @@ public class User {
         return id;// if -1 error during update
 
     }
+
+	public boolean authenticate(String password) {
+		boolean auth = false;
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		String hash = null;
+		Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PASSHASH},
+				DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+		if ((cursor != null) && (cursor.getCount() > 0)) {
+			cursor.moveToFirst();
+			hash = cursor.getString(0);
+			db.close();
+			cursor.close();
+		}
+		//TODO: hashing algorithm
+		if(hash != null) auth = password.equals(hash) ? true : false;
+		return auth;
+	}
 
     public Person getPerson() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();

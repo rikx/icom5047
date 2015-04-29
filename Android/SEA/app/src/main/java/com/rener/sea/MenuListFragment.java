@@ -85,18 +85,18 @@ public class MenuListFragment extends ListFragment {
 
         //Set the list and it's respective adapter
         List list = new ArrayList();
-        DBService db = ((MainActivity) getActivity()).getDBService();
+        DBHelper db = ((MainActivity) getActivity()).getDBHelper();
         //ArrayAdapter adapter = null;
         if (type.equals(TYPE_PEOPLE)) {
-            list = db.getPeople();
+            list = db.getAllPersons();
             adapter = new ArrayAdapter<Person>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_LOCATIONS)) {
-            list = db.getLocations();
+            list = db.getAllLocations();
             adapter = new ArrayAdapter<Location>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_REPORTS)) {
-            list = db.getReports();
+            list = db.getAllReports();
             adapter = new ReportListAdapter(getActivity(), list);
         }
 

@@ -12,7 +12,7 @@ public class Option {
     private long id;
     private Item next;
     private String label;
-    private SEASchema dbHelper = null;
+    private DBHelper dbHelper = null;
 
     /**
      * Construct a new Option object with the given ID, next Item in the flow, and a text label.
@@ -39,7 +39,7 @@ public class Option {
         this.label = "";
     }
 
-    public Option(long optionID, SEASchema db) {
+    public Option(long optionID, DBHelper db) {
         this.dbHelper = db;
         invoke(id);
     }

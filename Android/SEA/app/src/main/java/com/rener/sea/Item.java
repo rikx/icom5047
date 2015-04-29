@@ -22,7 +22,7 @@ public class Item {
     private String label;
     private String type;
     private List<Option> options;
-    private SEASchema dbHelper = null;
+    private DBHelper dbHelper = null;
 
     public Item(long id, String label, String type) {
         this.id = id;
@@ -31,7 +31,7 @@ public class Item {
         options = new ArrayList<>();
     }
 
-    public Item(long id, SEASchema db) {
+    public Item(long id, DBHelper db) {
         this.dbHelper = db;
         invoke(id);
     }

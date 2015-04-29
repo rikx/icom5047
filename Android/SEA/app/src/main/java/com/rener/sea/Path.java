@@ -6,6 +6,7 @@ import java.util.Stack;
 /**
  * A class representing an "answered survey" by making a path of options (edges) through a
  * flowchart. It's underlying data structure is that of a stack.
+ * TODO: implement DBHelper into this class
  */
 public class Path implements Iterable<PathEntry> {
 

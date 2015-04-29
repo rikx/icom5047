@@ -18,9 +18,9 @@ public class Flowchart implements Comparable<Flowchart> {
     private User creator;
     private String version;
     private List<Item> items;
-    private SEASchema dbHelper = null;
+    private DBHelper dbHelper = null;
 
-    public Flowchart(long id, SEASchema db) {
+    public Flowchart(long id, DBHelper db) {
         this.dbHelper = db;
         invoke(id);
     }

@@ -10,22 +10,16 @@ import android.support.annotation.NonNull;
  */
 public class Person implements Comparable<Person> {
 
-    SEASchema dbHelper = null;
+    DBHelper dbHelper = null;
     private long id = -1;
-    private String first_name = "";
-    private String middle_name = "";
-    private String last_name1 = "";
-    private String last_name2 = "";
-    private String email = "";
-    private String phone_number = "";
-    private int specializationID;
+	String dummy = null;
 
-    public Person(long personID, SEASchema dbHelper) {
+    public Person(long personID, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         invoke(personID);
     }
 
-    public Person(long id, String first_name, String initial, String last_name1, String last_name2, String email, String phone_number, SEASchema dbHelper) {
+    public Person(long id, String first_name, String initial, String last_name1, String last_name2, String email, String phone_number, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
         if (exist(id)) {
@@ -35,24 +29,9 @@ public class Person implements Comparable<Person> {
         }
     }
 
-    public Person(long id) {
-        this.id = id;
-    }
-
-    public Person(long id, String first_name, String last_name) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name1 = last_name;
-    }
-
-    public Person(String first_name, String last_name) {
-        this.first_name = first_name;
-        this.last_name1 = last_name;
-    }
-
-    public Person(String name) {
-        this.first_name = name;
-    }
+	public Person(String dummy) {
+		this.dummy = dummy;
+	}
 
     private long create(String first_name, String initial, String last_name1, String last_name2, String email, String phone_number) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -318,7 +297,7 @@ public class Person implements Comparable<Person> {
     }
 
     public String toString() {
-        return getFullNameFirstLast();
+        return id == -1 ? dummy : getFullNameFirstLast();
     }
 
     @Override

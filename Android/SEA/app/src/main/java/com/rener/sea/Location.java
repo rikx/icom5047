@@ -16,44 +16,19 @@ import java.util.Locale;
 public class Location implements Comparable<Location> {
 
     public static final String PUERTO_RICO = "Puerto Rico";
-    private long id;
-    private String name = "";
-    private Person manager = null;
-    private Person owner = null;
-    private Person agent = null;
+    private long id = -1;
     private Address address = null;
-    private long address_id;
-    private String license = "";
-    private SEASchema dbHelper = null;
+    private DBHelper dbHelper = null;
+	String dummy;
 
-    public Location(long id, SEASchema db) {
+    public Location(long id, DBHelper db) {
         this.dbHelper = db;
         invoke(id);
     }
 
-    /**
-     * Constructs a new Location object with the given name.
-     * Used for locations that have been created but haven't been assigned an ID
-     *
-     * @param name
-     */
-    public Location(String name) {
-        this.name = name;
-        this.address = Location.newAddress();
-    }
-
-    /**
-     * Constructs a new Location object with the given ID and name
-     *
-     * @param id
-     * @param name
-     */
-    public Location(long id, String name) {
-        this.id = id;
-        this.name = name;
-        this.address = newAddress();
-    }
-
+	public Location(String dummy) {
+		this.dummy = dummy;
+	}
 
     private static Address newAddress() {
         Address a = new Address(Locale.US);
@@ -237,10 +212,6 @@ public class Location implements Comparable<Location> {
         return getAgent().getId() != -1;
     }
 
-    public String toString() {
-        return getName();
-    }
-
     public Address getAddress() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         long addressId = -1;
@@ -341,34 +312,13 @@ public class Location implements Comparable<Location> {
         return id;// if -1 error during update
     }
 
-    /**
-     * TODO: finish this
-     *
-     * @return
-     */
-    public String toJSON() {
-        JSONObject json = new JSONObject();
-        try {
-            json.put("location_id", id);
-            json.put("name", name);
-            json.put("manager_id", manager.getId());
-            json.put("owner_id", owner.getId());
-            json.put("agent_id", agent.getId());
-            json.put("address_line1", this.getAddressLine(1));
-            json.put("address_line2", this.getAddressLine(2));
-            json.put("city", this.getCity());
-            json.put("zip_code", this.getZipCode());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "";
-        }
-        return json.toString();
-    }
+	public String toString() {
+		return id==-1 ? dummy : getName();
+	}
 
     @Override
     public int compareTo(Location l) {
-        int compare = toString().compareTo(l.toString());
-        return compare;
+	    return toString().compareTo(l.toString());
     }
 
     public boolean equals(Location l) {

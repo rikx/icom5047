@@ -1,13 +1,10 @@
 package com.rener.sea;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.InputType;
@@ -33,6 +30,7 @@ import java.util.List;
 
 /**
  * Represents an activity in which a survey can be completed and submitted as a report.
+ * TODO: implement DBHelper into this class
  */
 public class SurveyActivity extends FragmentActivity implements AdapterView
         .OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
@@ -43,24 +41,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private static final String GREATER_EQUAL_REGEX = "ge\\d+(\\.\\d+)?";
     private static final String LESS_EQUAL_REGEX = "gt\\d+(\\.\\d+)?";
     private static final String RANGE_REGEX = "ra(\\[|\\()\\d+(\\.\\d+)?,\\d+(\\.\\d+)?(\\]|\\))";
-    private DBService dbService;
-    private boolean mBound = false;
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            //Bound to DB Service successful, get the service instance
-            DBService.DBBinder binder = (DBService.DBBinder) iBinder;
-            dbService = binder.getService();
-            mBound = true;
-            Log.i(this.toString(), "bound to " + dbService.toString());
-            setServiceData();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBound = false;
-        }
-    };
+    private DBHelper dbHelper;
     private Report report;
     private EditText editName, editNotes;
     private Spinner spinnerLocation, spinnerSubject, spinnerFlowchart;
@@ -85,32 +66,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         progressLayout = (LinearLayout) findViewById(R.id.survey_progress_layout);
 
+	    dbHelper = new DBHelper(getApplicationContext());
         report = new Report();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Bind to DB Service
-        Intent intent = new Intent(this, DBService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        Log.i(this.toString(), "binding to service...");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(this.toString(), "destroyed");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //Unbind from DB Service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
     }
 
     @Override
@@ -174,9 +131,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void setServiceData() {
-        List<Location> locations = new ArrayList<>(dbService.getLocations());
-        List<Person> people = new ArrayList<>(dbService.getPeople());
-        List<Flowchart> flowcharts = new ArrayList<>(dbService.getFlowcharts());
+        List<Location> locations = new ArrayList<>(dbHelper.getAllLocations());
+        List<Person> people = new ArrayList<>(dbHelper.getAllPersons());
+        List<Flowchart> flowcharts = new ArrayList<>(dbHelper.getAllFlowcharts());
         Collections.sort(people);
         Collections.sort(flowcharts);
         Collections.sort(locations);
@@ -206,13 +163,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     private void setCreator() {
         SharedPreferences sharedPref = this.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
-        List<User> users = dbService.getUsers();
         User creator = null;
-        for (User u : users) {
-            if (u.getUsername().equals(sUsername)) creator = u;
-        }
+        //TODO: set creator
         report.setCreator(creator);
     }
 
@@ -402,7 +356,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         report.setName(name);
         String notes = editNotes.getText().toString();
         report.setNotes(notes);
-        dbService.getReports().add(report);
+        //TODO: actually submit the report
 
         //Finish the activity
         startActivity(new Intent(this, MainActivity.class));
