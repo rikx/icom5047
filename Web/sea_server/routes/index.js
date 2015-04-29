@@ -220,7 +220,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 });
 
 /* 
- * GET usuarios 
+ * TODO GET usuarios 
  * return returns users matching :user_input and their associated information 
  */
 router.get('/usuarios', function(req, res, next) {
@@ -246,7 +246,29 @@ router.get('/usuarios', function(req, res, next) {
 	});
 });
 
-/* GET all locations
+/* GET all agents
+ * returns agents matching :user_input and their associated information 
+ */
+router.get('/agents/:user_input', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// get all users 
+		client.query("SELECT user_id, username \
+									FROM users \
+									WHERE type = 'agent' AND username LIKE '%"+req.params.user_input+"%'", function(err, result){
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({agents: result.rows});
+	    }
+		});
+	});
+});
+
+/* TODO: GET all locations
  * returns locations matching :user_input and their associated information 
  */
 router.get('/locations', function(req, res, next) {
@@ -268,6 +290,9 @@ router.get('/locations', function(req, res, next) {
 	});
 });
 
+/* GET all dispositivos
+ * returns devices matching :user_input and their associated information 
+ */
 router.get('/dispositivos/:user_input', function(req, res, next) {
 	var dispositivos_list;
 	var db = req.db;
@@ -278,7 +303,7 @@ router.get('/dispositivos/:user_input', function(req, res, next) {
 		// get devices and their assigned user (if any)
 	  client.query("SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
 									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
-									WHERE id_number LIKE '%"+req.params.user_input+"%' OR username ILIKE '%"+req.params.user_input+"%' OR name ILIKE '%"+req.params.user_input+"%' \
+									WHERE id_number LIKE '%"+req.params.user_input+"%' OR username LIKE '%"+req.params.user_input+"%' OR LOWER(name) ILIKE LOWER('%"+req.params.user_input+"%') \
 									ORDER BY username ASC ", function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);

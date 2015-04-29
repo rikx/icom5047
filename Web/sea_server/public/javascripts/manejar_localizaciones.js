@@ -101,13 +101,13 @@ $(document).ready(function(){
     var assigned_agents = agents_array.filter(filter_by_id);
     $.each(assigned_agents, function(i){
       agent_content += '<tr><td><span>'+this.username+' </span>';
-      agent_content += "<a class='btn_change_agent btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
+      agent_content += "<a class='btn_change_agent btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
       agent_content += "</td></tr>";
     });
     // Add table row with adding associated agent button
     if(agent_content == '') {
       agent_content += '<tr><td><strong>Agente Nuevo </strong>';
-      agent_content += "<a class='btn_add_associate_agente btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a></td></tr>";
+      agent_content += "<a class='btn_add_associate_agent btn btn-sm btn-success' data-toggle='tooltip' type='button href='#'><i class='glyphicon glyphicon-plus'></i></a></td></tr>";
     }
     // inject content strings into html
     $('#associated_agentes').html(agent_content);
@@ -181,17 +181,16 @@ $(document).ready(function(){
   $('#btn_submit_ganadero').on('click', function(){
     // creat ganadero JSON to submit
     var this_input = $('#change_ganadero');
-    var ganadero_associate = {
+    var ganadero_association = {
       location_id: $('#add_associates_panel').attr('data-location-id'),
       ganadero_id: this_input.attr('data-id'),
       relation_type: this_input.attr('data-relation-type')
     };
-    console.log(ganadero_associate);
 
     $.ajax({
       url: "http://localhost:3000/users/admin/associated/ganadero",
       method: "PUT",
-      data: JSON.stringify(ganadero_associate),
+      data: JSON.stringify(ganadero_association),
       contentType: "application/json",
       dataType: "json",
 
@@ -200,6 +199,11 @@ $(document).ready(function(){
         // update locations list after posting 
         populate_localizaciones();
         $('#add_associates_panel').hide();
+        $('#add_ganaderos_dropdown_panel').hide();
+
+        // reset typeahead input
+        this_input.val('');
+        this_input.removeAttr('data-id');
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -211,33 +215,29 @@ $(document).ready(function(){
   });
 
 
-  /* Add associated agente  */
-  $('#associated_agentes').on('click', 'tr td a.btn_add_associate_agente', function(e){
+  /* Add/change associated agente  */
+  $('#associated_agentes').on('click', 'tr td a.btn_add_associate_agent, tr td a.btn_change_agent', function(e){
     // prevents link from firing
     e.preventDefault();
 
     $('#edit_panel').hide();
     $('#info_panel').hide();
-    $('#add_agente_dropdown_panel').show(); 
+    $('#add_agent_dropdown_panel').show(); 
     $('#add_ganaderos_dropdown_panel').hide();
   });
 
-  /* */
-  $('.btn_change_agente').on('click', function(){
-
-  });
   /* Configuration for change associated ganadero input */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
     // user input is tokenized and compard with ganadero full names or emails
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('person_name', 'email'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 6,
     remote: {
       url: 'http://localhost:3000/agents/%QUERY',
       filter: function(list) {
-        return $.map(list.ganaderos, function(ganadero) { 
-          return ganadero;
+        return $.map(list.agents, function(agent) { 
+          return agent;
         });
       }
     }
@@ -256,43 +256,30 @@ $(document).ready(function(){
     displayKey: 'username',
     source: search_source.ttAdapter(),
     templates: {
-      suggestion: function(ganadero){
-        return '<p><strong>Nombre: </strong>'+agent.usernamename+'</p>';
+      suggestion: function(agent){
+        return '<p><strong>Nombre: </strong>'+agent.username+'</p>';
       }
     }
   });
   // ganadero name select event listener
   $('#change_agent').bind('typeahead:selected', function(obj, datum, name) {
     // add person_id value to input form
-    $('#change_agent').attr('data-id', datum.person_id);
+    $('#change_agent').attr('data-id', datum.user_id);
   });
-  
-  // verifies input value is in array and returns boolean result
-  function valid_input(user_input, array) {
-    for(var i=0; i < array.length; i++){
-      if(user_input == array[i].location_name){
-        return true;
-      }
-    }
-    return false;
-  }
 
   /* Ajax PUT call to assign an agent to a location  */
   $('#btn_submit_agent').on('click', function(){
-    // prevents link from firing
-    e.preventDefault();
-
-    var this_location = $('#add_associates_panel').attr('data-location-id');
+    // creat agent JSON to submit
     var this_input = $('#change_agent');
-    var agent_associate = {
-      location_id: this_location,
-      agent_id: $(this).attr('data-id')
+    var agent_association = {
+      location_id: $('#add_associates_panel').attr('data-location-id'),
+      agent_id: this_input.attr('data-id')
     };
 
     $.ajax({
-      url: "http://localhost:3000/users/admin/localizaciones/agent",
+      url: "http://localhost:3000/users/admin/associated/agent",
       method: "PUT",
-      data: JSON.stringify(agent_associate),
+      data: JSON.stringify(agent_association),
       contentType: "application/json",
       dataType: "json",
 
@@ -302,6 +289,10 @@ $(document).ready(function(){
         populate_localizaciones();
         $('#add_associates_panel').hide();
         $('#add_agent_dropdown_panel').hide();
+
+        // reset typeahead input
+        this_input.val('');
+        this_input.removeAttr('data-id');
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -310,15 +301,6 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
-  });
-
-  /* Change add associated agente dropdown selected value */
-  $('#list_associated_agente').on('click', 'li a', function(e){
-    // prevents link from firing
-    e.preventDefault();
-
-    $('#btn_associated_agente_text').text($(this).text()+' ');
-    $('#btn_associated_agente').val($(this).attr('data-id'));
   });
 
 //updates categories associated to current location
