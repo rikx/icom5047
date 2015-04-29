@@ -669,74 +669,97 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	});
 
 /* GET User Ver Reporte 
- *
+ * TODO make queries depend on current signed in user
  */
- router.get('/reportes/:id', function(req, res, next) {
- 	var report_id = req.params.id;
- 	var report_details, survey_details, appointment_details;
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
- 		// get report basic info
-		client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
-										flowchart.version AS survey_version, report.note, report.date_filed AS report_date \
-									FROM report \
-									INNER JOIN users ON users.user_id = report.creator_id \
-									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
-									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE report.report_id = $1", [report_id], function(err, result) {
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		report_details = result.rows[0];
-	  	}
-	  });
-	  // get appointment details
-	  client.query('SELECT appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose, username AS maker \
-									FROM appointments natural join report \
-									INNER JOIN users ON appointments.maker_id = user_id \
-									WHERE report_id = $1', [report_id], function(err, result){
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		appointment_details = result.rows[0];
-	  	}
-	  });
-		// get answered survey details
-		// TODO: need SELECT distinct to avoid item duplicates?
-		client.query('SELECT item.label as question, option.label as answer, path.data as path_data, type \
-									FROM path INNER JOIN option ON path.option_id = option.option_id \
-									INNER JOIN item ON item.item_id = option.parent_id \
-									WHERE path.report_id = $1', [report_id], function(err, result) {
-			//call `done()` to release the client back to the pool
-	  	done();
+router.get('/reportes/:id', function(req, res, next) {
+ 	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		survey_details = result.rows; 
-	  		var current_user = {
-	  			user_id: req.session.user_id,
-	  			username: req.session.username
-	  		}
-	  		res.render('reporte', { 
-	  			title: 'Reporte ' + report_id,
-	  			reporte: report_details,
-	  			survey: survey_details,
-	  			appointment: appointment_details,
-	  			current_user: current_user
-	  		});
-	  	}
-		})
-	});
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else {
+	 	var report_id = req.params.id;
+	 	var report_details, survey_details, appointment_details;
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		// get report basic info
+			client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
+											flowchart.version AS survey_version, report.note, report.date_filed AS report_date \
+										FROM report \
+										INNER JOIN users ON users.user_id = report.creator_id \
+										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+										INNER JOIN location ON report.location_id = location.location_id \
+										WHERE report.report_id = $1", [report_id], function(err, result) {
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		report_details = result.rows[0];
+		  	}
+		  });
+		  // get appointment details
+		  client.query('SELECT appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose, username AS maker \
+										FROM appointments natural join report \
+										INNER JOIN users ON appointments.maker_id = user_id \
+										WHERE report_id = $1', [report_id], function(err, result){
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		appointment_details = result.rows[0];
+		  	}
+		  });
+			// get answered survey details
+			// TODO: need SELECT distinct to avoid item duplicates?
+			client.query('SELECT item.label as question, option.label as answer, path.data as path_data, type \
+										FROM path INNER JOIN option ON path.option_id = option.option_id \
+										INNER JOIN item ON item.item_id = option.parent_id \
+										WHERE path.report_id = $1', [report_id], function(err, result) {
+				//call `done()` to release the client back to the pool
+		  	done();
+
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		survey_details = result.rows; 
+		  		var current_user = {
+		  			user_id: user_id,
+		  			username: username
+		  		}
+		  		res.render('reporte', { 
+		  			title: 'Reporte ' + report_id,
+		  			reporte: report_details,
+		  			survey: survey_details,
+		  			appointment: appointment_details,
+		  			current_user: current_user
+		  		});
+		  	}
+			})
+		});
+	}
 });
 
-	/* GET Admin Manejar Usuarios 
-	 * Renders page with first 20 usuarios, alphabetically ordered 
-	 */
-	router.get('/admin/usuarios', function(req, res, next) {
+/* GET Admin Manejar Usuarios 
+ * Renders page with first 20 usuarios, alphabetically ordered 
+ */
+router.get('/admin/usuarios', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else if (user_type != 'admin') {
+		res.redirect('/');
+	} else {
 	 	var usuarios_list, specialties_list, locations_list, all_specialties;
 	 	var db = req.db;
 	 	db.connect(req.conString, function(err, client, done) {
@@ -805,7 +828,8 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		  	}
 		  });
 		});
-	});
+	}
+});
 
 
 /* POST Admin Manejar Usuario
@@ -1379,43 +1403,56 @@ router.put('/admin/user_specialties', function(req, res, next) {
  * renders manejar dispositivos page with first 20 dispositivos, ordered by assigned user
  */
  router.get('/admin/dispositivos', function(req, res, next) {
- 	var dispositivos_list, usuarios_list;
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-		// to populate dispositivo list
-		client.query('SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
-									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
-									ORDER BY username ASC \
-									LIMIT 20', function(err, result) {
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					dispositivos_list = result.rows;
-				}
-			});
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 
-	  // to populate dispositivo dropdown list
-	  client.query('SELECT user_id, username \
-							  	FROM users \
-							  	ORDER BY username ASC', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	  	done();
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else if (user_type != 'admin') {
+		res.redirect('/');
+	} else { 	
+	 	var dispositivos_list, usuarios_list;
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// to populate dispositivo list
+			client.query('SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
+										FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
+										ORDER BY username ASC \
+										LIMIT 20', function(err, result) {
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						dispositivos_list = result.rows;
+					}
+				});
 
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		usuarios_list = result.rows;
-	  		res.render('manejar_dispositivos', { 
-	  			title: 'Manejar Dispositivos', 
-	  			dispositivos: dispositivos_list, 
-	  			usuarios: usuarios_list
-	  		});
-	  	}
-	  });
-	});
+		  // to populate dispositivo dropdown list
+		  client.query('SELECT user_id, username \
+								  	FROM users \
+								  	ORDER BY username ASC', function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		  	done();
+
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		usuarios_list = result.rows;
+		  		res.render('manejar_dispositivos', { 
+		  			title: 'Manejar Dispositivos', 
+		  			dispositivos: dispositivos_list, 
+		  			usuarios: usuarios_list
+		  		});
+		  	}
+		  });
+		});
+	}
 });
 
 /* POST Admin Manejar Dispositivo
