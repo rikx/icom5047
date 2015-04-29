@@ -130,44 +130,6 @@ router.post('/cuestionario/path', function(req, res, next) {
  	}
 });
 
-/* GET all ganaderos and users
- * For use in manejar localizaciones dropdowns
- */
-router.get('/modify_location_dropdowns', function(req, res, next) {
-	var ganaderos_list;
-	var db = req.db;
-	db.connect(req.conString, function(err, client, done) {
-		if(err) {
-	  	return console.error('error fetching client from pool', err);
-		}
-		// gets all users
-	  client.query('SELECT user_id, username \
-									FROM users \
-									ORDER BY username ASC', function(err, result) {
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	usuarios_list = result.rows;
-	    }
-	  });
-	  // gets all ganaderos
-	  client.query("SELECT person_id, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-									FROM person \
-									WHERE person_id NOT IN (SELECT person_id FROM users) \
-									ORDER BY person_name ASC;", function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	ganaderos_list = result.rows;
-	    	res.json({ganaderos : ganaderos_list, usuarios : usuarios_list});
-	    }
-	  });
-	});
-});
-
 // SEARCH FUNCTIONS START
 /* GET ganaderos search
  * returns ganaderos matching :user_input and their associated information 

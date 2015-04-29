@@ -533,35 +533,6 @@ router.put('/admin/user_specialties', function(req, res, next) {
  }
 });
 
-/* GET Admin Manejar Reportes 
- * Renders page and includes response with first 20 reportes, 
- * alphabetically ordered by location name
- */
- router.get('/admin/reportes', function(req, res, next) {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
- 		client.query("SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
-									FROM report INNER JOIN location ON report.location_id = location.location_id \
-									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
-									INNER JOIN users ON report.creator_id = user_id \
-									ORDER BY location_name ASC \
-									LIMIT 20;", function(err, result) {
-			//call `done()` to release the client back to the pool
-			done();
-			if(err) {
-				return console.error('error running query', err);
-			} else {
-				res.render('manejar_reportes', { 
-					title: 'Manejar Reportes', 
-					reports: result.rows});
-			}
-		});
- 	});
- });
-
 /* GET User Manejar Reportes
  * Renders page and includes response with first 20 reportes, 
  * alphabetically ordered by location name
@@ -1299,13 +1270,6 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		 	});
 		}
 	});
-
- /* POST cita (done through report page)
-  *
-  */ 
-router.post('/reports/citas', function(req, res, next) {
-
-});
 
 /* PUT Admin Manejar Citas 
  * Edit cita matching :id in database
