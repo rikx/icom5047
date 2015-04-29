@@ -658,9 +658,15 @@ router.put('/admin/user_specialties', function(req, res, next) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {
+						var current_user = {
+			  			user_id: user_id,
+			  			username: username,
+			  			user_type: user_type
+			  		}
 						res.render('manejar_reportes', { 
 							title: 'Manejar Reportes', 
-							reports: result.rows
+							reports: result.rows,
+							current_user: current_user
 						});
 					}
 				});
@@ -971,98 +977,110 @@ router.get('/admin/usuarios', function(req, res, next) {
 /* GET Admin Manejar Localizaciones 
  *
  */
- router.get('/localizaciones', function(req, res, next) {
- 	var localizaciones_list, categories_list, all_categories, agentes_list, ganaderos_list;
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-		// query for location data
-		client.query('SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
-			FROM location INNER JOIN address ON location.address_id = address.address_id \
-			ORDER BY location_name \
-			LIMIT 20;', function(err, result) {
+router.get('/localizaciones', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (!username) {
+  	user_id = req.session.user_id = '';
+    username = req.session.username = '';
+    user_type = req.session.user_type = '';
+    res.redirect('/');
+  } else {
+	 	var localizaciones_list, categories_list, all_categories, agentes_list, ganaderos_list;
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// query for location data
+			client.query('SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
+				FROM location INNER JOIN address ON location.address_id = address.address_id \
+				ORDER BY location_name \
+				LIMIT 20;', function(err, result) {
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						localizaciones_list = result.rows;
+					}
+				});
+			// get all categories
+			client.query('SELECT category_id, name as category_name FROM category', function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
-					localizaciones_list = result.rows;
+					all_categories = result.rows;
 				}
 			});
-		// get all categories
-		client.query('SELECT category_id, name as category_name FROM category', function(err, result) {
-			if(err) {
-				return console.error('error running query', err);
-			} else {
-				all_categories = result.rows;
-			}
+			// query for location categories
+			client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+											FROM location \
+											ORDER BY location_name \
+											LIMIT 20) \
+										SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
+										FROM locations \
+										LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
+										LEFT JOIN category AS cat ON lc.category_id = cat.category_id', function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					categories_list = result.rows;
+				}
+			});
+
+		  // query for associated agentes
+		  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+		  	FROM location \
+		  	ORDER BY location_name \
+		  	LIMIT 20) \
+		  SELECT location_id, agent_id, username \
+		  FROM locations,users \
+		  WHERE user_id = agent_id;', function(err, result) {
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		agentes_list = result.rows;
+		  	}
+		  });
+
+		  // query for associated ganaderos
+		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
+		  	FROM location natural join address \
+		  	ORDER BY location_name \
+		  	LIMIT 20) \
+		  SELECT person_id, location_id,\
+		  CASE WHEN person_id = owner_id THEN 'owner' \
+		  WHEN person_id = manager_id THEN 'manager' \
+		  END AS relation_type, \
+		  (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
+		  FROM locations, person \
+		  WHERE person_id = owner_id or person_id = manager_id", function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		  	done();
+
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		ganaderos_list = result.rows; 		
+					var current_user = {
+		  			user_id: user_id,
+		  			username: username,
+		  			user_type: user_type
+		  		}
+		  		res.render('manejar_localizaciones', { 
+		  			title: 'Manejar Localizaciones', 
+		  			localizaciones: localizaciones_list, 
+		  			location_categories: categories_list, 
+		  			agentes: agentes_list, 
+		  			ganaderos: ganaderos_list, 
+		  			categorias: all_categories,
+		  			user: current_user
+		  		});
+		  	}
+		  });
 		});
-		// query for location categories
-		client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
-										FROM location \
-										ORDER BY location_name \
-										LIMIT 20) \
-									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
-									FROM locations \
-									LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
-									LEFT JOIN category AS cat ON lc.category_id = cat.category_id', function(err, result){
-			if(err) {
-				return console.error('error running query', err);
-			} else {
-				categories_list = result.rows;
-			}
-		});
-
-	  // query for associated agentes
-	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
-	  	FROM location \
-	  	ORDER BY location_name \
-	  	LIMIT 20) \
-	  SELECT location_id, agent_id, username \
-	  FROM locations,users \
-	  WHERE user_id = agent_id;', function(err, result) {
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		agentes_list = result.rows;
-	  	}
-	  });
-
-	  // query for associated ganaderos
-	  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
-	  	FROM location natural join address \
-	  	ORDER BY location_name \
-	  	LIMIT 20) \
-	  SELECT person_id, location_id,\
-	  CASE WHEN person_id = owner_id THEN 'owner' \
-	  WHEN person_id = manager_id THEN 'manager' \
-	  END AS relation_type, \
-	  (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
-	  FROM locations, person \
-	  WHERE person_id = owner_id or person_id = manager_id", function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	  	done();
-
-	  	if(err) {
-	  		return console.error('error running query', err);
-	  	} else {
-	  		ganaderos_list = result.rows; 		
-				var current_user = {
-	  			user_id: req.session.user_id,
-	  			username: req.session.username
-	  		}
-	  		res.render('manejar_localizaciones', { 
-	  			title: 'Manejar Localizaciones', 
-	  			localizaciones: localizaciones_list, 
-	  			location_categories: categories_list, 
-	  			agentes: agentes_list, 
-	  			ganaderos: ganaderos_list, 
-	  			categorias: all_categories,
-	  			user: current_user
-	  		});
-	  	}
-	  });
-	});
+	}
 });
 
 /* POST ADMIN Manejar Localizaciones
@@ -1359,9 +1377,15 @@ router.get('/admin/usuarios', function(req, res, next) {
 			  	if(err) {
 			  		return console.error('error running query', err);
 			  	} else {
+			  		var current_user = {
+			  			user_id: user_id,
+			  			username: username,
+			  			user_type: user_type
+			  		}
 			  		res.render('manejar_citas', { 
 			  			title: 'Manejar Citas', 
-			  			citas: result.rows
+			  			citas: result.rows,
+			  			current_user: current_user
 			  		});
 			  	}
 			  });
