@@ -5,6 +5,57 @@ $(document).ready(function(){
   var cuestionarios_data= $cuestionarios_list.attr('data-cuestionarios');
   var cuestionarios_array = JSON.parse(cuestionarios_data);
 
+   /* Search Code start */
+  // constructs the suggestion engine
+  var search_source = new Bloodhound({
+    // user input is tokenized and compard with ganadero full names or emails
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('flowchart_name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace, 
+    limit: 10,
+    dupDetector: function(remoteMatch, localMatch) {
+      return remoteMatch.flowchart_name === localMatch.flowchart_name;
+    
+    local: cuestionarios_array,
+    remote: {
+      url: 'http://localhost:3000/cuestionarios/%QUERY',
+      filter: function(list) {
+        // populate global arrays with matching results
+        cuestionarios_array = list.cuestionarios;
+        // populate list with matching results
+        populate_list(cuestionarios_array);
+        return $.map(list.cuestionarios, function(cuestionario) { 
+          return cuestionario;
+        });
+      }
+    }
+  });
+
+  // kicks off loading and processing of 'local' and 'prefetch'
+  search_source.initialize();
+
+  // set typeahead functionality for search bar
+  $('.typeahead').typeahead({
+    hint: false,
+    highlight: true
+  },
+  {
+    name: 'cuestionarios',
+    displayKey: 'flowchart_name',
+    source: search_source.ttAdapter(),
+    templates: {
+      suggestion: function(ganadero){
+        return '<p><strong>Nombre: </strong>'+cuestionario.flowchart_name+'</p>';
+      }
+    }
+  });
+
+  // search bar input select event listener
+  $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
+    // populate list with selected search result
+    populate_list({datum});
+  });
+  /* Search Code End */
+
   //initial population of info panel
   populate_info_panel(cuestionarios_array[0]);
 
