@@ -21,14 +21,11 @@
         table_content +=  'active ';
       }
       table_content += "show_info_cuestionario' href='#', data-id='"+this.flowchart_id+"'>"+this.flowchart_name+"</a></td>";
-      table_content += "<td><button class='btn_edit_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"'>Editar</button></td>";
-      table_content += "<td><a class='btn_delete_cuestionario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.flowchart_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+      table_content += "<td><button class='btn_flujo_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"'>Método con Flujo</button></td>";
+      table_content += "<td><button class='btn_abierto_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"' disabled>Método Abierto</button></td>";
       table_content += '</tr>';
     });  
 
     // inject content string into html
     $cuestionarios_list.html(table_content);
-
-    // close current info panel 
-    $('#btn_close_info_panel').trigger('click');
   };
