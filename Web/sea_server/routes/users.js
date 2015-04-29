@@ -1333,7 +1333,7 @@ router.get('/admin/usuarios', function(req, res, next) {
 		 		if(user_type == 'admin' || user_type == 'specialist') {
 		 			// get first 20 citas regardless of creator
 		 			query_config = {
-		 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+		 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
 										FROM appointments natural join report \
 										LEFT JOIN users ON user_id = maker_id \
 										INNER JOIN location ON report.location_id = location.location_id \
@@ -1343,7 +1343,7 @@ router.get('/admin/usuarios', function(req, res, next) {
 		 		} else {
 		 			//get first 20 citas created by this user
 		 			query_config = {
-		 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+		 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
 										FROM appointments natural join report \
 										LEFT JOIN users ON user_id = maker_id \
 										INNER JOIN location ON report.location_id = location.location_id \

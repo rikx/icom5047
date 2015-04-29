@@ -298,10 +298,11 @@ router.get('/cuestionarios/:user_input', function(req, res, next){
  * query results depend on logged in user
  */
 router.get('/reportes/:user_input', function(req, res, next){
+	var user_input = req.params.user_input;
+
 	var user_type = req.session.user_type;
 	var user_id = req.session.user_id;
 	var user_type = req.session.username;
-	var user_input = req.params.user_input;
 
 	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
@@ -348,6 +349,52 @@ router.get('/reportes/:user_input', function(req, res, next){
  * returns appointments matching :user_input and their basic information
  * query results depend on logged in user
  */
+router.get('/citas/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
+
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+		var query_config = {};
+ 		if(user_type == 'admin' || user_type == 'specialist') {
+ 			// get first 20 citas regardless of creator
+ 			query_config = {
+ 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
+								FROM appointments natural join report \
+								LEFT JOIN users ON user_id = maker_id \
+								INNER JOIN location ON report.location_id = location.location_id \
+								WHERE LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%' \
+								ORDER BY date ASC, time ASC"
+ 			}
+ 		} else {
+ 			//get first 20 citas created by this user
+ 			query_config = {
+ 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
+								FROM appointments natural join report \
+								LEFT JOIN users ON user_id = maker_id \
+								INNER JOIN location ON report.location_id = location.location_id \
+								WHERE appointments.maker_id = $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%') \
+								ORDER BY date ASC, time ASC",
+				values: [user_id]
+ 			}
+ 		}
+ 		client.query(query_config, function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+	  	if(err) {
+	  		return console.error('error running query', err);
+	  	} else {
+	  		res.json({citas: result.rows});
+	  	}
+	  });
+ 	});
+});
 
 /* TODO: GET search locations
  * returns locations matching :user_input and their associated information 
@@ -526,10 +573,9 @@ router.get('/list_ganaderos', function(req, res, next) {
 	});
 });
 
-/* NOT USED YET; WILL REQUIRE MODIFICATION: GET Cuestionarios List data 
+/* GET Cuestionarios List data 
  * Responds with 10 cuestionarios, 
  * alphabetically ordered by name
- * for use to fill requested page in pagination
  */
 router.get('/list_cuestionarios', function(req, res, next) {
 	var cuestionarios_list;
@@ -690,10 +736,9 @@ router.get('/list_localizaciones', function(req, res, next) {
 	});
 });
 
-/* NOT USED YET; WILL REQUIRE MODIFICATION: GET Admin Reportes List data 
+/* GET Reportes List data 
  * Responds with 20 reportes, 
- 	* alphabetically ordered by location_name
-	* for use to fill requested page in pagination
+ * alphabetically ordered by location_name
  */
 router.get('/list_reportes', function(req, res, next) {
 	var user_type = req.session.user_type;
@@ -736,44 +781,67 @@ router.get('/list_reportes', function(req, res, next) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
-				res.render('manejar_reportes', { 
-					title: 'Manejar Reportes', 
-					reports: result.rows
-				});
+				res.json({ reports: result.rows});
 			}
 		});
  	});
 });
 
-/* NOT USED YET; WILL REQUIRE MODIFICATION: GET Citas List data 
+/* GET Citas List data 
  * Responds with first 20 citas, 
  * ordered by date and time
- * for use to fill requested page in pagination
  */
 router.get('/list_citas', function(req, res, next) {
-	var citas_list;
-	var db = req.db;
-	db.connect(req.conString, function(err, client, done) {
-		if(err) {
-	  	return console.error('error fetching client from pool', err);
-		}
-		
-	  client.query("SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location_id, location.name AS location_name, report_id, agent_id, username \
-									FROM (appointments natural join report natural join location), users \
-									WHERE user_id = agent_id \
-									ORDER BY date ASC, time ASC \
-									LIMIT 20;", function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	citas_list = result.rows;
-	    	res.json({citas: citas_list});
-	    }
-	  });
-	});
+  if (!username) {
+  	user_id = req.session.user_id = '';
+    username = req.session.username = '';
+    user_type = req.session.user_type = '';
+    res.redirect('/');
+  } else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			var query_config = {};
+	 		if(user_type == 'admin' || user_type == 'specialist') {
+	 			// get first 20 citas regardless of creator
+	 			query_config = {
+	 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+									FROM appointments natural join report \
+									LEFT JOIN users ON user_id = maker_id \
+									INNER JOIN location ON report.location_id = location.location_id \
+									ORDER BY date ASC, time ASC \
+									LIMIT 20"
+	 			}
+	 		} else {
+	 			//get first 20 citas created by this user
+	 			query_config = {
+	 				text: "SELECT appointment_id, to_char(date, 'YYYY-MM-DD') AS date, to_char(appointments.time, 'HH24:MI:SS') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+									FROM appointments natural join report \
+									LEFT JOIN users ON user_id = maker_id \
+									INNER JOIN location ON report.location_id = location.location_id \
+									WHERE appointments.maker_id = $1 \
+									ORDER BY date ASC, time ASC \
+									LIMIT 20",
+					values: [user_id]
+	 			}
+	 		}
+	 		client.query(query_config, function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		  	done();
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.json({citas: result.rows});
+		  	}
+		  });
+	 	});
+	}
 });
 
 /* GET Dispositivos List data 
