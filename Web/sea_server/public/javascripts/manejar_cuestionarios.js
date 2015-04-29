@@ -1,9 +1,8 @@
 $(document).ready(function(){
   // cuestionarios list
   $cuestionarios_list = $('#cuestionarios_list');
-  // store data for initial 10 cuestionarios
-  var cuestionarios_data= $cuestionarios_list.attr('data-cuestionarios');
-  var cuestionarios_array = JSON.parse(cuestionarios_data);
+  // store data for initial 20 cuestionarios
+  var cuestionarios_array = JSON.parse($cuestionarios_list.attr('data-cuestionarios'));
 
    /* Search Code start */
   // constructs the suggestion engine
@@ -13,7 +12,7 @@ $(document).ready(function(){
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
     dupDetector: function(remoteMatch, localMatch) {
-      return remoteMatch.flowchart_name === localMatch.flowchart_name;
+      return remoteMatch.flowchart_id === localMatch.flowchart_id;
     },
     local: cuestionarios_array,
     remote: {
@@ -70,30 +69,35 @@ $(document).ready(function(){
     remove_active_class($usuarios_list);
   });
 
- /* Open edit page */
- $cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
-		// contains cuestionario id
-    var this_cuestionario_id = $(this).attr('data-id');
-    window.location.href = '/users/admin/cuestionarios/'+this_cuestionario_id;
-  });
-
- $cuestionarios_list.on('click', 'tr td a.show_info_cuestionario', function(e){
+  /* Open info panel */
+  $cuestionarios_list.on('click', 'tr td a.show_info_cuestionario', function(e){
     // prevents link from firing
     e.preventDefault();
-    var table_content = '';
 
-    // remove active from previous list item 
+    $('#info_panel').show();
+
+    // remove active from previous clicked list item
     remove_active_class($cuestionarios_list);
     // add active to current clicked list item
     var $this = $(this);
     if (!$this.hasClass('active')) {
       $this.addClass('active');
     }
+
     // contains cuestionario id
-    var this_id = $this.attr('data-id');
-    var arrayPosition = cuestionarios_array.map(function(arrayItem) { return arrayItem.flowchart_id; }).indexOf(this_id);
-    var this_list_element = cuestionarios_array[arrayPosition];
-    populate_info_panel(this_list_element);
+    var cuestionario_id = $this.attr('data-id');
+    var arrayPosition = cuestionarios_array.map(function(arrayItem) { return arrayItem.flowchart_id; }).indexOf(cuestionario_id);
+    var this_cuestionario = cuestionarios_array[arrayPosition];
+
+    // populate info panel with this_cuestionario info
+    populate_info_panel(this_cuestionario);
+  });
+
+  /* Open edit page */
+  $cuestionarios_list.on('click', 'tr td button.btn_edit_cuestionario', function(){
+		// contains cuestionario id
+    var this_cuestionario_id = $(this).attr('data-id');
+    window.location.href = '/users/admin/cuestionarios/'+this_cuestionario_id;
   });
 
   // Populates info panel with list element's information
@@ -135,6 +139,6 @@ $(document).ready(function(){
     $cuestionarios_list.html(table_content);
 
     // close current info panel 
-    $('#btn_close_info_panel').trigger('click');
+    $('#info_panel').hide();
   };
 });
