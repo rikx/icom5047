@@ -329,34 +329,39 @@ function populate_info_panel($this_usuario){
     populate_specialties_info($this_usuario);
   }
 
-  /* */
+  /* Populate list with first 20 usuarios, organized alphabetically */
   function populate_usuarios(){
     $.getJSON('http://localhost:3000/list_usuarios', function(data) {
       usuarios_array = data.usuarios;
       locations_array = data.locations;
       specialties_array = data.user_specialties;
 
-      // contents of usuarios list
-      var table_content = '';
-
-      // for each item in JSON, add table row and cells
-      $.each(data.usuarios, function(i){
-        table_content += '<tr>';
-        table_content += "<td><a class='list-group-item ";
-        // if initial list item, set to active
-        if(i==0) {
-          table_content +=  'active ';
-        }
-        table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.username+"</a></td>";
-        table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
-        table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
-        table_content += '</tr>';
-      });
-
-      // inject content string into html
-      $usuarios_list.html(table_content);
+      populate_list(data.usuarios);
     });
-}
+  };
+
+  /* Populate list with usuarios_set information */
+  function populate_list(usuarios_set){
+    // contents of usuarios list
+    var table_content = '';
+
+    // for each item in JSON, add table row and cells
+    $.each(usuarios_set, function(i){
+      table_content += '<tr>';
+      table_content += "<td><a class='list-group-item ";
+      // if initial list item, set to active
+      if(i==0) {
+        table_content +=  'active ';
+      }
+      table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.username+"</a></td>";
+      table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
+      table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+      table_content += '</tr>';
+    });
+
+    // inject content string into html
+    $usuarios_list.html(table_content);
+  };
 
 function populate_specialties_edit(){
 
