@@ -294,8 +294,8 @@ router.get('/cuestionarios/:user_input', function(req, res, next){
 });
 
 /* GET search reportes
- * returns reportes matching :user_input and their basic information
- * query results depend on logged in user's type
+ * returns reports matching :user_input and their basic information
+ * query results depend on logged in user
  */
 router.get('/reportes/:user_input', function(req, res, next){
 	var user_type = req.session.user_type;
@@ -343,6 +343,11 @@ router.get('/reportes/:user_input', function(req, res, next){
 		});
  	});
 });
+
+/* GET search citas
+ * returns appointments matching :user_input and their basic information
+ * query results depend on logged in user
+ */
 
 /* TODO: GET search locations
  * returns locations matching :user_input and their associated information 
@@ -691,30 +696,53 @@ router.get('/list_localizaciones', function(req, res, next) {
 	* for use to fill requested page in pagination
  */
 router.get('/list_reportes', function(req, res, next) {
-	var reportes_list;
-	var db = req.db;
-	db.connect(req.conString, function(err, client, done) {
-		if(err) {
-	  	return console.error('error fetching client from pool', err);
-		}
-		// TODO: modify query to also give you account type
-	  client.query('SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
-									FROM report INNER JOIN location ON report.location_id = location.location_id \
-									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
-									INNER JOIN users ON report.creator_id = user_id \
-									ORDER BY location_name ASC \
-									LIMIT 20;', function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
+	var user_type = req.session.user_type;
+	var user_id = req.session.user_id;
+	var user_type = req.session.username;
 
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	reportes_list = result.rows;
-	    	res.json({reportes : reportes_list});
-	    }
-	  });
-	});
+	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+		var query_config = {};
+ 		if(user_type == 'admin' || user_type == 'specialist') {
+ 			// get first 20 reports regardles of creator
+ 			query_config = {
+				text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+								FROM report INNER JOIN location ON report.location_id = location.location_id \
+								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+								INNER JOIN users ON report.creator_id = user_id \
+					 			ORDER BY report_name ASC \
+								LIMIT 20'
+			}
+ 		} else {
+ 			// get first 20 reports created by this user
+			query_config = {
+				text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+								FROM report INNER JOIN location ON report.location_id = location.location_id \
+								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+								INNER JOIN users ON report.creator_id = user_id \
+								WHERE report.creator_id = $1 \
+					 			ORDER BY report_name ASC \
+								LIMIT 20',
+				values: [user_id]
+			};
+	 	}
+ 		// get reports 
+ 		client.query(query_config, function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.render('manejar_reportes', { 
+					title: 'Manejar Reportes', 
+					reports: result.rows
+				});
+			}
+		});
+ 	});
 });
 
 /* NOT USED YET; WILL REQUIRE MODIFICATION: GET Citas List data 
