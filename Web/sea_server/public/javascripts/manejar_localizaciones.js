@@ -15,6 +15,59 @@ $(document).ready(function(){
   // initial info panel population
   populate_info_panel(localizaciones_array[0]);
 
+
+  /* Search Code start */
+  // constructs the suggestion engine
+  var search_source = new Bloodhound({
+    // user input is tokenized and compard with ganadero full names or emails
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('location_id'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace, 
+    limit: 10,
+    dupDetector: function(remoteMatch, localMatch) {
+      return remoteMatch.location_id === localMatch.location_id;
+    },
+    local: localizaciones_array,
+    remote: {
+      url: 'http://localhost:3000/localizaciones/%QUERY',
+      filter: function(list) {
+        // populate global arrays with matching results
+        localizaciones_array = list.localizaciones;
+
+        // populate list with matching results
+        populate_list(localizaciones_array);
+        return $.map(list.localizaciones, function(localizacion) { 
+          return localizacion;
+        });
+      }
+    }
+  });
+
+  // kicks off loading and processing of 'local' and 'prefetch'
+  search_source.initialize();
+
+  // set typeahead functionality for search bar
+  $('.typeahead').typeahead({
+    hint: false,
+    highlight: true
+  },
+  {
+    name: 'localizaciones',
+    displayKey: 'location_id',
+    source: search_source.ttAdapter(),
+    templates: {
+      suggestion: function(localizacion){
+        return '<p><strong>Nombre: </strong>'+localizacion.location_name+'</p>' + '<p><strong>Licensia: </strong>'+localizacion.license+'</p>';
+      }
+    }
+  });
+
+  // search bar input select event listener
+  $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
+    // populate list with selected search result
+    populate_list({datum});
+  });
+  /* Search Code End */
+
   $('#add_categoria_panel').hide();
   $('#btn_edit_categories').hide();
 
