@@ -44,10 +44,10 @@ block content
 												else 
 													a(class='list-group-item show_info_cita active', href='#', data-id=cita.appointment_id)= cita.location_name
 											td
-												center(class='show_date_cita' data-date=cita.date, data-time=cita.time)
-												= cita.date
-												|  @ 
-												= cita.time
+												center(class='show_date_cita', data-date=cita.date, data-time=cita.time)
+													= cita.date
+													|  @ 
+													= cita.time
 											td
 												button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
 											td
