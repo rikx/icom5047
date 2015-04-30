@@ -218,9 +218,7 @@ $(document).ready(function(){
     $('#dispositivo_info_name').text($this_dispositivo.device_name);
     $('#dispositivo_info_id_num').text($this_dispositivo.id_number);
     $('#dispositivo_info_usuario').text($this_dispositivo.username);
-
-    var date_time = get_date_time($this_dispositivo.latest_sync, true);
-    $('#dispositivo_info_last_sync').text(date_time.date + " @ " + date_time.time);
+    $('#dispositivo_info_last_sync').text($this_dispositivo.last_sync);
   }
 
   /* Populate list with first 20 ganaderos, ordered by assigned user */
@@ -240,9 +238,6 @@ $(document).ready(function(){
     // device_id, devices.name as device_name, latest_sync, devices.user_id as assigned_user, username
     // for each item in JSON, add table row and cells
     $.each(devices_set, function(i){
-      // get {date, time} object of latest_ sync for this dispositivo
-      var date_time = get_date_time(this.latest_sync, true);
-
       table_content += '<tr>';
       table_content += "<td><a class='list-group-item ";
 
@@ -251,7 +246,7 @@ $(document).ready(function(){
         table_content +=  'active ';
       }
       table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+this.device_name+"</a></td>";
-      table_content += '<td><center>'+date_time.date+' @ '+date_time.time+'</center></td>';
+      table_content += '<td><center>'+this.last_sync+'</center></td>';
       table_content += "<td><button class='btn_edit_dispositivo btn btn-sm btn-success btn-block' type='button' data-id='"+this.device_id+"'>Editar</button></td>";
       table_content += "<td><a class='btn_delete_dispositivo btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.device_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';

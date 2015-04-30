@@ -1446,10 +1446,10 @@ router.get('/localizaciones', function(req, res, next) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
 			// to populate dispositivo list
-			client.query('SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
+			client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
 										FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
 										ORDER BY username ASC \
-										LIMIT 20', function(err, result) {
+										LIMIT 20", function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {

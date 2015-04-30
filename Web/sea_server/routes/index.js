@@ -503,9 +503,9 @@ router.get('/dispositivos/:user_input', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// get devices and their assigned user (if any)
-	  client.query("SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
+	  client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
 									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
-									WHERE id_number LIKE '%"+req.params.user_input+"%' OR username LIKE '%"+req.params.user_input+"%' OR LOWER(name) ILIKE LOWER('%"+req.params.user_input+"%') \
+									WHERE id_number LIKE '%"+req.params.user_input+"%' OR username LIKE '%"+req.params.user_input+"%' OR LOWER(name) LIKE LOWER('%"+req.params.user_input+"%') \
 									ORDER BY username ASC ", function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
@@ -516,6 +516,7 @@ router.get('/dispositivos/:user_input', function(req, res, next) {
 	  });
 	});
 });
+
 // SEARCH FUNCTIONS END
 
 /* GET flowchart element family 
@@ -950,10 +951,10 @@ router.get('/list_dispositivos', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// get devices and their assigned user (if any)
-	  client.query('SELECT device_id, devices.name as device_name, id_number, latest_sync, devices.user_id as assigned_user, username \
+	  client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
 									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
 									ORDER BY username ASC \
-									LIMIT 20', function(err, result) {
+									LIMIT 20", function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
