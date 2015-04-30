@@ -400,23 +400,102 @@ router.get('/citas/:user_input', function(req, res, next) {
 /* TODO: GET search locations
  * returns locations matching :user_input and their associated information 
  */
-router.get('/locations', function(req, res, next) {
-	var db = req.db;
-	db.connect(req.conString, function(err, client, done) {
-		if(err) {
-			return console.error('error fetching client from pool', err);
-		}
-		// get all matching locations data
-		//WHERE name like '%"+req.query.key+"%'"
-		client.query("SELECT location_id, name AS location_name \
-									FROM location", function(err, result){
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	res.json({locations: result.rows});
-	    }
+router.get('/localizaciones/:user_input', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (!username) {
+  	user_id = req.session.user_id = '';
+    username = req.session.username = '';
+    user_type = req.session.user_type = '';
+    res.redirect('/');
+  } else {
+	 	var localizaciones_list, categories_list, all_categories, agentes_list, ganaderos_list;
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// query for location data
+			client.query("SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
+										FROM location INNER JOIN address ON location.address_id = address.address_id \
+										ORDER BY location_name \
+										LIMIT 20", function(err, result) {
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					localizaciones_list = result.rows;
+				}
+			});
+
+			// query for location categories
+			client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+											FROM location \
+											ORDER BY location_name \
+											LIMIT 20) \
+										SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
+										FROM locations \
+										LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
+										LEFT JOIN category AS cat ON lc.category_id = cat.category_id', function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					categories_list = result.rows;
+				}
+			});
+
+		  // query for associated agentes
+		  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+									  	FROM location \
+									  	ORDER BY location_name \
+									  	LIMIT 20) \
+									  SELECT location_id, agent_id, username \
+									  FROM locations,users \
+									  WHERE user_id = agent_id;', function(err, result) {
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		agentes_list = result.rows;
+		  	}
+		  });
+
+		  // query for associated ganaderos
+		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
+									  	FROM location natural join address \
+									  	ORDER BY location_name \
+									  	LIMIT 20) \
+									  SELECT person_id, location_id,\
+									  CASE WHEN person_id = owner_id THEN 'owner' \
+									  WHEN person_id = manager_id THEN 'manager' \
+									  END AS relation_type, \
+									  (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
+									  FROM locations, person \
+									  WHERE person_id = owner_id or person_id = manager_id", function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		  	done();
+
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		ganaderos_list = result.rows; 		
+					var current_user = {
+		  			user_id: user_id,
+		  			username: username,
+		  			user_type: user_type
+		  		}
+		  		res.json({
+		  			localizaciones: localizaciones_list, 
+		  			location_categories: categories_list, 
+		  			agentes: agentes_list, 
+		  			ganaderos: ganaderos_list, 
+		  			categorias: all_categories,
+		  			user: current_user
+		  		});
+		  	}
+		  });
 		});
-	});
+	}
 });
 
 /* GET search dispositivos
@@ -475,7 +554,7 @@ router.get('/element/:id', function(req, res, next) {
  */
 router.get('/location/:id', function(req, res, next) {
 	var location_id = req.params.id;
-	var location_info, agentes_list, ganaderos_list;
+	var location_info, categories_list, agentes_list, ganaderos_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -494,6 +573,18 @@ router.get('/location/:id', function(req, res, next) {
 	    	location_info = result.rows;
 	    }
 	  });
+	  			// query for location categories
+			client.query('SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
+										FROM locations \
+										LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
+										LEFT JOIN category AS cat ON lc.category_id = cat.category_id
+										WHERE location.location_id = $1', [location_id],  function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					categories_list = result.rows;
+				}
+			});
 	  // query for associated agentes
 	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
 										FROM location natural join address \
@@ -525,7 +616,11 @@ router.get('/location/:id', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	ganaderos_list = result.rows;
-	    	res.json({location: location_info[0], agentes: agentes_list, ganaderos: ganaderos_list});
+	    	res.json({location: location_info[0], 
+	    		categories: categories_list,
+	    		agentes: agentes_list, 
+	    		ganaderos: ganaderos_list
+	    	});
 	    }
 	  });
 	});
