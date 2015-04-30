@@ -573,7 +573,7 @@ function populate_info_panel($this_location){
   }  
 };
 
-/* */
+/* Populate list with first 20 locations, organized alphabetically by location_name */
 function populate_localizaciones(){
   $.getJSON('http://localhost:3000/list_localizaciones', function(data) {
     $('#edit_associates_heading').hide();
@@ -583,30 +583,35 @@ function populate_localizaciones(){
     ganaderos_array = data.ganaderos;
     categorias_array = data.location_categories;
 
-      // contents of localizaciones list
-      var table_content = '';
+    populate_list(data.localizaciones);
+  });
+};
 
-      // for each item in JSON, add table row and cells
-      $.each(data.localizaciones, function(i){
-        table_content += '<tr>';
-        table_content += "<td><a class='list-group-item ";
-        // if initial list item, set to active
-        if(i==0) {
-          table_content +=  'active ';
-        }
-        table_content += "show_info_localizacion' href='#', data-id='"+this.location_id+"'>"+this.location_name+"</a></td>";
-        table_content += "<td><button class='btn_add_associates btn btn-sm btn-success btn-block' type='button', data-id='"+this.location_id+"'>Editar Personas Asociadas</button></td>";
-        table_content += "<td><button class='btn_edit_localizacion btn btn-sm btn-success btn-block' type='button' data-id='"+this.location_id+"'>Editar</button></td>";
-        table_content += "<td><a class='btn_delete_localizacion btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.location_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
-        table_content += '</tr>';
-      });  
+/* Populate list with ganaderos_set information */
+function populate_list(locations_set){
+  // contents of localizaciones list
+  var table_content = '';
 
-      // inject content string into html
-      $localizaciones_list.html(table_content);
+  // for each item in JSON, add table row and cells
+  $.each(locations_set, function(i){
+    table_content += '<tr>';
+    table_content += "<td><a class='list-group-item ";
+    // if initial list item, set to active
+    if(i==0) {
+      table_content +=  'active ';
+    }
+    table_content += "show_info_localizacion' href='#', data-id='"+this.location_id+"'>"+this.location_name+"</a></td>";
+    table_content += "<td><button class='btn_add_associates btn btn-sm btn-success btn-block' type='button', data-id='"+this.location_id+"'>Editar Personas Asociadas</button></td>";
+    table_content += "<td><button class='btn_edit_localizacion btn btn-sm btn-success btn-block' type='button' data-id='"+this.location_id+"'>Editar</button></td>";
+    table_content += "<td><a class='btn_delete_localizacion btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.location_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+    table_content += '</tr>';
+  });  
 
-      // populate info panel with first location's information
-      //populate_info_panel(localizaciones_array[0]);
-    });
+  // inject content string into html
+  $localizaciones_list.html(table_content);
+
+  // populate info panel with first location's information
+  //populate_info_panel(localizaciones_array[0]);
 };
 
   function populate_categories_info(variable){

@@ -32,12 +32,13 @@ block content
 					if locals.survey
 						ol
 							each item in survey
-								li
-									strong
-										= item.question
-									br
-									em
-										= item.answer
+								if item.type != 'RECOM'
+									li
+										strong
+											= item.question
+										br
+										em
+											= item.path_data
 					else
 						center
 							button(class='btn btn-sm btn-success') Continuar Entrevista
