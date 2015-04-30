@@ -117,14 +117,3 @@
 		}
 		return time;
 	};
-
-	// given a collection of html elements
-	// injects formated date html into each element, 
-	// using its data-date contents as the date to be formated
-	function format_dates(elements){
-		$.each(elements, function(){
-			var date = $(this).attr('data-date');
-			var time = $(this).attr('data-time');
-			$(this).html(get_date_time(date, false)+' @ '+time);
-		});
-	};

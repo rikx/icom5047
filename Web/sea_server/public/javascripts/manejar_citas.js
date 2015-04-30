@@ -1,8 +1,7 @@
 $(document).ready(function(){
   // citas list
   $citas_list = $('#citas_list');
-  // format dates in initial cita list population
-  // format_dates($('.show_date_cita'));
+  
   // store data for initial 20 citas
   var citas_array = JSON.parse($citas_list.attr('data-citas'));
   // initial info panel population
