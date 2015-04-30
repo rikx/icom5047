@@ -26,7 +26,6 @@ $(document).ready(function(){
         reportes_array = list.reports;
   
         // populate list with matching results
-        console.log(reportes_array);
         populate_list(reportes_array);
         return $.map(list.reports, function(reporte) { 
           return reporte;
