@@ -410,6 +410,11 @@ $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     $('#add_associates_panel').hide();
     $('#edit_panel').hide();
     $('#info_panel').show();
+    $('#add_categoria_panel').hide();
+    $('#categoria_panel').show();
+
+    //carlito
+
 
     // remove active from previous list item 
     remove_active_class($localizaciones_list);
@@ -516,13 +521,17 @@ $('#btn_post_new_category').on('click', function(){
 
 /* Open edit location panel */
 $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(){
-  $('#btn_add_categories').hide();
+  //$('#btn_add_categories').hide();
   $('#btn_edit_categories').show();
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
   $('#info_panel').hide();
   $('#add_associates_panel').hide();
+  $('#add_categoria_panel').hide();
+  $('#categoria_panel').show();
+
+
 
   // contains location id
   var location_id = $(this).attr('data-id');
