@@ -1,7 +1,7 @@
 $(document).ready(function(){
   // citas list
   $citas_list = $('#citas_list');
-  
+
   // store data for initial 20 citas
   var citas_array = JSON.parse($citas_list.attr('data-citas'));
   // initial info panel population
@@ -10,8 +10,8 @@ $(document).ready(function(){
    /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
-    // user input is tokenized and compard with ganadero full names or emails
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('appointment_id'),
+    // user input is tokenized and compared with location_name, report_id, report_name, date or time
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('location_name', 'report_id', 'report_name' ,'date', 'time'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
     dupDetector: function(remoteMatch, localMatch) {
@@ -23,8 +23,6 @@ $(document).ready(function(){
       filter: function(list) {
         // populate global arrays with matching results
         citas_array = list.citas;
-        console.log("citas is ");
-        console.log(citas_array);
         // populate list with matching results
         populate_list(citas_array);
         return $.map(list.citas, function(cita) { 
@@ -44,11 +42,10 @@ $(document).ready(function(){
   },
   {
     name: 'citas',
-    displayKey: 'appointment_id',
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(cita){
-        return '<p><strong>Nombre: </strong>'+cita.location_name+'</p>';
+        return '<p><strong>Nombre: </strong>'+cita.location_name+'</p><p><strong>Fecha: </strong>'+cita.date+'    <strong>Hora: </strong>'+cita.time+'</p>';
       }
     }
   });

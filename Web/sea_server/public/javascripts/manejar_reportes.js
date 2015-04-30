@@ -11,7 +11,7 @@ $(document).ready(function(){
   /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
-    // user input is tokenized and compard with ganadero full names or emails
+    // user input is tokenized and compared with agent, report_name, location_name or date
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username', 'report_name', 'location_name', 'report_date'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,

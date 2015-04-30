@@ -16,7 +16,7 @@ $(document).ready(function(){
   /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
-    // user input is tokenized and compard with ganadero full names or emails
+    // user input is tokenized and compared with device id_number, device_name or agent
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('id_number', 'username', 'device_name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
@@ -48,7 +48,6 @@ $(document).ready(function(){
   },
   {
     name: 'devices',
-    displayKey: 'id_number',
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(device){

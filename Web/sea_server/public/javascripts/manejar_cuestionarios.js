@@ -7,7 +7,7 @@ $(document).ready(function(){
    /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
-    // user input is tokenized and compard with ganadero full names or emails
+    // user input is tokenized and compared with flochart name
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('flowchart_name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
