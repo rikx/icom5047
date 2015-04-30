@@ -12,7 +12,7 @@ $(document).ready(function(){
   // constructs the suggestion engine
   var search_source = new Bloodhound({
     // user input is tokenized and compard with ganadero full names or emails
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username', 'report_name', 'location_name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username', 'report_name', 'location_name', 'report_date'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
     dupDetector: function(remoteMatch, localMatch) {
@@ -26,6 +26,7 @@ $(document).ready(function(){
         reportes_array = list.reports;
   
         // populate list with matching results
+        console.log(reportes_array);
         populate_list(reportes_array);
         return $.map(list.reports, function(reporte) { 
           return reporte;
@@ -44,11 +45,15 @@ $(document).ready(function(){
   },
   {
     name: 'reportes',
-    displayKey: 'reporte',
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(reporte){
-        return '<p><strong>Nombre: </strong>'+reporte.report_name+'</p><p><strong>Localizacion: </strong>'+reporte.location_name+'</p>';
+        var name;
+        if(reporte.report_name != null)
+          name = reporte.report_name;
+        else
+          name = 'Reporte sin título';
+        return '<p><strong>Nombre: </strong>'+name+'</p><p><strong>Localizacion: </strong>'+reporte.location_name+'</p>';
       }
     }
   });
@@ -66,7 +71,7 @@ $(document).ready(function(){
   });
 
   /* Open info panel */
-  $reportes_list.on('click', 'tr td a.show_info_reporte', function(e){
+  $reportes_list.on('click', 'tr td a.show_info_report', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -91,7 +96,7 @@ $(document).ready(function(){
   });
 
   /* Redirect to report page to edit it */
-  $reportes_list.on('click', 'tr td button.btn_edit_reporte', function(){
+  $reportes_list.on('click', 'tr td button.btn_edit_report', function(){
     // contains cuestionario id
     var this_reporte_id = $(this).attr('data-id');
     window.location.href = '/users/reportes/'+this_reporte_id;
@@ -102,7 +107,7 @@ $(document).ready(function(){
     $('#reporte_info_id').html("<a href='/users/reportes/" +$this_report.report_id+ "'>"+$this_report.report_id+"</a>");
     $('#reporte_info_location').text($this_report.location_name);
     $('#reporte_info_creator').text($this_report.username);
-    $('#report_info_date').text(get_date_time($this_report.date_filed, false));
+    $('#report_info_date').text($this_report.report_date);
     $('#reporte_info_flowchart').text($this_report.flowchart_name);
   }
 
@@ -134,10 +139,10 @@ $(document).ready(function(){
       } else {
         report_name = 'Reporte sin título';
       }
-      table_content += "show_info_ganadero' href='#', data-id='"+this.report_id+"'>"+report_name+"</a></td>";
+      table_content += "show_info_report' href='#', data-id='"+this.report_id+"'>"+report_name+"</a></td>";
       table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
-      table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
-      table_content += "<td><a class='btn_delete_reporte btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+      table_content += "<td><button class='btn_edit_report btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
+      table_content += "<td><a class='btn_delete_report btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });  
 

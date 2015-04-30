@@ -631,23 +631,23 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		 		if(user_type == 'admin' || user_type == 'specialist') {
 		 			// get first 20 reports regardles of creator
 		 			query_config = {
-						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+						text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 										FROM report INNER JOIN location ON report.location_id = location.location_id \
 										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 										INNER JOIN users ON report.creator_id = user_id \
 							 			ORDER BY report_name ASC \
-										LIMIT 20'
+										LIMIT 20"
 					}
 		 		} else {
 		 			// get first 20 reports created by this user
 					query_config = {
-						text: 'SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+						text: "SELECT report_id, report.creator_id, users.username, report.date_filed, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 										FROM report INNER JOIN location ON report.location_id = location.location_id \
 										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 										INNER JOIN users ON report.creator_id = user_id \
 										WHERE report.creator_id = $1 \
 							 			ORDER BY report_name ASC \
-										LIMIT 20',
+										LIMIT 20",
 						values: [user_id]
 					};
 			 	}
