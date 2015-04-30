@@ -311,7 +311,6 @@ router.get('/reportes/:user_input', function(req, res, next){
  		}
 		var query_config = {};
  		if(user_type == 'admin' || user_type == 'specialist') {
- 			console.log('ello admin')
  			// get first 20 reports regardles of creator
  			query_config = {
 				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
@@ -401,6 +400,8 @@ router.get('/citas/:user_input', function(req, res, next) {
  * returns locations matching :user_input and their associated information 
  */
 router.get('/localizaciones/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
+
 	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
@@ -420,8 +421,8 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 			// query for location data
 			client.query("SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 										FROM location INNER JOIN address ON location.address_id = address.address_id \
-										ORDER BY location_name \
-										LIMIT 20", function(err, result) {
+										WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
+										ORDER BY location_name", function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -430,14 +431,14 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 			});
 
 			// query for location categories
-			client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+			client.query("WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 											FROM location \
-											ORDER BY location_name \
-											LIMIT 20) \
+											WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
+											ORDER BY location_name) \
 										SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
 										FROM locations \
 										LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
-										LEFT JOIN category AS cat ON lc.category_id = cat.category_id', function(err, result){
+										LEFT JOIN category AS cat ON lc.category_id = cat.category_id", function(err, result){
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -446,13 +447,13 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 			});
 
 		  // query for associated agentes
-		  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 									  	FROM location \
-									  	ORDER BY location_name \
-									  	LIMIT 20) \
+									  	WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
+									  	ORDER BY location_name) \
 									  SELECT location_id, agent_id, username \
 									  FROM locations,users \
-									  WHERE user_id = agent_id;', function(err, result) {
+									  WHERE user_id = agent_id", function(err, result) {
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
@@ -463,8 +464,8 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		  // query for associated ganaderos
 		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
 									  	FROM location natural join address \
-									  	ORDER BY location_name \
-									  	LIMIT 20) \
+									  	WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
+									  	ORDER BY location_name) \
 									  SELECT person_id, location_id,\
 									  CASE WHEN person_id = owner_id THEN 'owner' \
 									  WHEN person_id = manager_id THEN 'manager' \
@@ -479,18 +480,11 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		  		return console.error('error running query', err);
 		  	} else {
 		  		ganaderos_list = result.rows; 		
-					var current_user = {
-		  			user_id: user_id,
-		  			username: username,
-		  			user_type: user_type
-		  		}
 		  		res.json({
 		  			localizaciones: localizaciones_list, 
 		  			location_categories: categories_list, 
 		  			agentes: agentes_list, 
 		  			ganaderos: ganaderos_list, 
-		  			categorias: all_categories,
-		  			user: current_user
 		  		});
 		  	}
 		  });
@@ -573,18 +567,18 @@ router.get('/location/:id', function(req, res, next) {
 	    	location_info = result.rows;
 	    }
 	  });
-	  			// query for location categories
-			client.query('SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
-										FROM locations \
-										LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
-										LEFT JOIN category AS cat ON lc.category_id = cat.category_id
-										WHERE location.location_id = $1', [location_id],  function(err, result){
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					categories_list = result.rows;
-				}
-			});
+  	// query for location categories
+		client.query('SELECT location.location_id, location.name AS location_name, lc.category_id, cat.name \
+									FROM location \
+									LEFT JOIN location_category AS lc ON lc.location_id = location.location_id \
+									LEFT JOIN category AS cat ON lc.category_id = cat.category_id \
+									WHERE location.location_id = $1', [location_id],  function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				categories_list = result.rows;
+			}
+		});
 	  // query for associated agentes
 	  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id, location.name AS location_name \
 										FROM location natural join address \
@@ -826,7 +820,11 @@ router.get('/list_localizaciones', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	ganaderos_list = result.rows;
-	    	res.json({localizaciones : localizaciones_list, location_categories: categories_list, agentes : agentes_list, ganaderos : ganaderos_list});
+	    	res.json({localizaciones : localizaciones_list, 
+	    		location_categories: categories_list, 
+	    		agentes : agentes_list, ganaderos :
+	    		ganaderos_list
+	    	});
 	    }
 	  });
 	});
