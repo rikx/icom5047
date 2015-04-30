@@ -2,7 +2,7 @@ $(document).ready(function(){
   // citas list
   $citas_list = $('#citas_list');
   // format dates in initial cita list population
-  format_dates($('.show_date_cita'));
+  // format_dates($('.show_date_cita'));
   // store data for initial 20 citas
   var citas_array = JSON.parse($citas_list.attr('data-citas'));
   // initial info panel population
@@ -115,7 +115,7 @@ $(document).ready(function(){
     var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(cita_id);
     var this_cita = citas_array[arrayPosition];
 
-    //date and time logic
+/*    //date and time logic
     var dateTimeObject = new Date(this_cita.date + " " + this_cita.time);
     var day = ("0" + dateTimeObject.getDate()).slice(-2);
     var month = ("0" + (dateTimeObject.getMonth() + 1)).slice(-2);
@@ -123,13 +123,13 @@ $(document).ready(function(){
     var minutes = dateTimeObject.getMinutes();
     var seconds = dateTimeObject.getSeconds();
     var theDay = dateTimeObject.getFullYear()+"-"+(month)+"-"+(day);
-    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+    var theTime = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);*/
 
     $('#btn_edit').attr('data-id', cita_id);
     $('#cita_location').val(this_cita.location_name);
     $('#cita_proposito').val(this_cita.purpose);
-    $('#cita_date').val(theDay);
-    $('#cita_time').val(theTime);
+    //$('#cita_date').val(theDay);
+    //$('#cita_time').val(theTime);
   });
 
 /* PUTs edited cita information */
@@ -150,7 +150,7 @@ $('#btn_edit').on('click', function(){
 
     success: function(data) {
       alert("Informacion de cita ha sido editada en el sistema.");
-      // update ganadero list after posting 
+      // update cita list after posting 
       populate_citas();
     },
     error: function( xhr, status, errorThrown ) {
@@ -238,7 +238,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
   /* Populate info panel with $this_cita information */
   function populate_info_panel($this_cita){
     $('#cita_info_location').html("<a class='show_location_info' href='#' data-location-id='"+$this_cita.location_id+"'>"+$this_cita.location_name+"</a>");
-    $('#cita_info_date').text(get_date_time($this_cita.date, false));
+    $('#cita_info_date').text($this_cita.date);
     $('#cita_info_purpose').text($this_cita.purpose);
     $('#cita_info_agent').text($this_cita.username);   
     $('#cita_info_report').html("<a href='/users/reportes/" + $this_cita.report_id + "'> Reporte " + $this_cita.report_id + "</a>");
@@ -268,7 +268,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
         table_content +=  'active ';
       }
       table_content += "show_info_cita' href='#', data-id='"+this.appointment_id+"'>"+this.location_name+"</a></td>";
-      table_content += '<td><center>'+get_date_time(this.date, false)+' @ '+this.time+'</center></td>';
+      table_content += '<td><center>'+this.date+' @ '+this.time+'</center></td>';
       table_content += "<td><button class='btn_edit_cita btn btn-sm btn-success btn-block' type='button' data-id='"+this.appointment_id+"'>Editar</button></td>";
       table_content += "<td><a class='btn_delete_cita btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.appointment_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
