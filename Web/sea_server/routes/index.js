@@ -481,9 +481,9 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		  	} else {
 		  		ganaderos_list = result.rows; 		
 		  		res.json({
-		  			localizaciones: localizaciones_list, 
+		  			locations: localizaciones_list, 
 		  			location_categories: categories_list, 
-		  			agentes: agentes_list, 
+		  			agents: agentes_list, 
 		  			ganaderos: ganaderos_list, 
 		  		});
 		  	}

@@ -19,8 +19,8 @@ $(document).ready(function(){
   /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
-    // user input is tokenized and compard with ganadero full names or emails
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('location_id'),
+    // user input is tokenized and compared with location names or licenses
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('location_name', 'license'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
     dupDetector: function(remoteMatch, localMatch) {
@@ -31,12 +31,15 @@ $(document).ready(function(){
       url: 'http://localhost:3000/localizaciones/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
-        localizaciones_array = list.localizaciones;
+        localizaciones_array = list.locations;
+        categorias_array = list.location_categories;
+        agents_array = list.agents;
+        ganaderos_array = list.ganaderos;
 
         // populate list with matching results
         populate_list(localizaciones_array);
-        return $.map(list.localizaciones, function(localizacion) { 
-          return localizacion;
+        return $.map(list.locations, function(location) { 
+          return location;
         });
       }
     }
@@ -52,11 +55,11 @@ $(document).ready(function(){
   },
   {
     name: 'localizaciones',
-    displayKey: 'location_id',
+    displayKey: 'location_name',
     source: search_source.ttAdapter(),
     templates: {
-      suggestion: function(localizacion){
-        return '<p><strong>Nombre: </strong>'+localizacion.location_name+'</p>' + '<p><strong>Licensia: </strong>'+localizacion.license+'</p>';
+      suggestion: function(location){
+        return '<p><strong>Nombre: </strong>'+location.location_name+'</p>' + '<p><strong>Licensia: </strong>'+location.license+'</p>';
       }
     }
   });
