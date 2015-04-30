@@ -20,11 +20,12 @@ $(document).ready(function(){
     },
     local: citas_array,
     remote: {
-      url: 'http://localhost:3000/ganaderos/%QUERY',
+      url: 'http://localhost:3000/citas/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         citas_array = list.citas;
-        
+        console.log("citas is ");
+        console.log(citas_array);
         // populate list with matching results
         populate_list(citas_array);
         return $.map(list.citas, function(cita) { 
@@ -48,7 +49,7 @@ $(document).ready(function(){
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(cita){
-        return '<p><strong>Nombre: </strong>'+ganadero.person_name+'</p><p><strong>Email: </strong>'+ganadero.email+'</p>';
+        return '<p><strong>Nombre: </strong>'+cita.location_name+'</p>';
       }
     }
   });
