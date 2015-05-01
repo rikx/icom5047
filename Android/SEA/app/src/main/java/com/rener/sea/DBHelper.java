@@ -19,6 +19,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
     private static int DATABASE_VERSION = 1;
+    private boolean dummyDB = false;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,6 +44,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DBSchema.CREATE_SPECIALIZATION_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_TABLE);
         Log.i(this.toString(), "created");
+        dummyDB = true;
+
 
     }
 
@@ -74,7 +77,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         users = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
-            for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 users.add(new User(cursor.getLong(0), this));
             }
 
@@ -92,16 +95,20 @@ public final class DBHelper extends SQLiteOpenHelper {
                 null, null, null, null, null, null);
         ArrayList<Person> persons;
         persons = new ArrayList<>();
+        Log.i(this.toString(), "Cursor "+ cursor);
+        Log.i(this.toString(), "Cursor count "+ cursor.getCount());
         if ((cursor != null) && (cursor.getCount() > 0)) {
-
-            for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+            Log.i(this.toString(), "Inside if");
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 persons.add(new Person(cursor.getLong(0), this));
+                Log.i(this.toString(), "People created "+ cursor.getLong(0));
             }
 
             db.close();
             cursor.close();
 
         }
+        Log.i(this.toString(), "persons not found");
         return persons;
 
     }
@@ -113,7 +120,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         flowcharts = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
-            for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 flowcharts.add(new Flowchart(cursor.getLong(0), this));
             }
 
@@ -132,7 +139,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         location = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
-            for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 location.add(new Location(cursor.getLong(0), this));
             }
 
@@ -151,7 +158,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
-            for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 reports.add(new Report(cursor.getLong(0), this));
             }
 
@@ -186,7 +193,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
 
-            for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 items.add(new Item(cursor.getLong(0), this));
             }
 
@@ -203,7 +210,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
 
-            for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 options.add(new Option(cursor.getLong(0), this));
             }
 
@@ -514,8 +521,29 @@ public final class DBHelper extends SQLiteOpenHelper {
         return new Location(-1,this);
     }
 
-    private boolean fillDB(){
+    public boolean fillDB(){
+        new Person(0,"Temporal",null,"User",null,"temporal.user@rener.com",null,this);
+        new Person(1,"Nelson",null,"Reyes",null,"nelson.reyes@upr.edu",null,this);
+        new Person(2,"Enrique",null,"Rodriguez",null,"enrique.rodriguez2@upr.edu",null,this);
+        new Person(3,"Ricardo",null,"Fuentes",null,"ricardo.fuentes@upr.edu",null,this);
+        new Person(4,"Ramón",null,"Saldaña",null,"ramon.saldana@upr.edu",null,this);
 
+        new User(0,0,"","",this);
+        new User(1,1,"nelson.reyes","iamnelson",this);
+        new User(2,2,"enrique.rodriguez2","iamenrique",this);
+        new User(3,3,"ricardo.fuentes","iamricardo",this);
+        new User(4,4,"ramon.saldana","iamramon",this);
+
+
+        SQLiteDatabase db = getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.ADDRESS_ID, 0);
+        values.put(DBSchema.ADDRESS_LINE1, "Terace");
+        values.put(DBSchema.ADDRESS_LINE2, "apt 1028");
+        values.put(DBSchema.ADDRESS_CITY, "Mayagüez");
+        values.put(DBSchema.ADDRESS_ZIPCODE, 682);
+        long id = db.insert(DBSchema.TABLE_ADDRESS, null, values);
+        Location loc =new Location(0,"El platanal", id, 0, 2,"jhagfljfdsg",1,this);
 
         return true;
     }
@@ -788,5 +816,13 @@ public final class DBHelper extends SQLiteOpenHelper {
     //                return null;
     //            }
     //        }
+
+    public boolean getDummy(){
+        // marron power
+        SQLiteDatabase db = getReadableDatabase();
+//        db.execSQL("select * from users where user_id = -1");
+        db.close();
+        return dummyDB;
+    }
 
 }

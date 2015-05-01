@@ -3,6 +3,7 @@ package com.rener.sea;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -88,7 +89,9 @@ public class MenuListFragment extends ListFragment {
         DBHelper db = ((MainActivity) getActivity()).getDBHelper();
         //ArrayAdapter adapter = null;
         if (type.equals(TYPE_PEOPLE)) {
+
             list = db.getAllPersons();
+            Log.i(this.toString(), " "+getActivity()+" Get all People " + list.toString());
             adapter = new ArrayAdapter<Person>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_LOCATIONS)) {

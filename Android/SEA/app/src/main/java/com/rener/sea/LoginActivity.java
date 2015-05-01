@@ -30,6 +30,9 @@ public class LoginActivity extends Activity {
         // the db is created when accessed for first time
         // when get writable or readable db
         dbHelper = new DBHelper(getApplicationContext());
+        // TODO: fill db with dummy data eliminar despues
+        if(dbHelper.getDummy())
+            dbHelper.fillDB();
     }
 
     /**

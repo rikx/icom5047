@@ -17,13 +17,23 @@ public class Location implements Comparable<Location> {
 
     public static final String PUERTO_RICO = "Puerto Rico";
     private long id = -1;
-    private Address address = null;
+    private Address address = newAddress();
     private DBHelper dbHelper = null;
 	String dummy;
 
     public Location(long id, DBHelper db) {
         this.dbHelper = db;
         invoke(id);
+    }
+
+    public Location(long id,String name, long addressID, long ownerID, long managerID, String license, long agentID, DBHelper dbHelper){
+        this.dbHelper = dbHelper;
+        //verify if exit
+        if (exist(id)) {
+
+        } else {
+            this.id = create(name, addressID, ownerID, managerID, license, agentID);
+        }
     }
 
 	public Location(String dummy) {
@@ -46,7 +56,7 @@ public class Location implements Comparable<Location> {
 //    DBSchema.LOCATION_LICENSE
 //    DBSchema.LOCATION_AGENT_ID
 
-    private long create(String name, String addressID, long ownerID, String managerID, String license, long agentID) {
+    private long create(String name, long addressID, long ownerID, long managerID, String license, long agentID) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.LOCATION_NAME, name);
@@ -58,6 +68,8 @@ public class Location implements Comparable<Location> {
 
         long id = db.insert(DBSchema.TABLE_LOCATION, null, values);
         db.close();
+        //fix later
+        this.address = newAddress();
         return id;
 
     }
@@ -214,7 +226,7 @@ public class Location implements Comparable<Location> {
 
     public Address getAddress() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        long addressId = -1;
+
         Cursor cursor = db.query(DBSchema.TABLE_ADDRESS, new String[]{DBSchema.ADDRESS_LINE1,
                         DBSchema.ADDRESS_LINE2,
                         DBSchema.ADDRESS_CITY,
@@ -284,6 +296,8 @@ public class Location implements Comparable<Location> {
         values.put(DBSchema.LOCATION_ADDRESS_ID, String.valueOf(addressId));
         long id = db.update(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
+        // TODO: modify to proprt work
+        getAddress();
         return id;// if -1 error during update
     }
 

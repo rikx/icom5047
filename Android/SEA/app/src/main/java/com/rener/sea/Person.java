@@ -19,8 +19,8 @@ public class Person implements Comparable<Person> {
         invoke(personID);
     }
 
-    public Person(long id, String first_name, String initial, String last_name1, String last_name2, String email, String phone_number, DBHelper dbHelper) {
-        this.dbHelper = dbHelper;
+    public Person(long id, String first_name, String initial, String last_name1, String last_name2, String email, String phone_number, DBHelper db) {
+        this.dbHelper = db;
         //verify if exit
         if (exist(id)) {
 
@@ -125,7 +125,7 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            name = cursor.getString(0);
+            name = cursor.isNull(0) ? "" :cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -148,7 +148,7 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            initial = cursor.getString(0);
+            initial = cursor.isNull(0) ? "" :cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -166,7 +166,7 @@ public class Person implements Comparable<Person> {
 
     public boolean hasMiddleName() {
         String middle_name = getMiddleName();
-        return middle_name != null || !middle_name.equals("");
+        return middle_name != null || !"".equals(middle_name);
     }
 
     public String getLastName1() {
@@ -176,7 +176,7 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            last1 = cursor.getString(0);
+            last1 = cursor.isNull(0) ? "" :cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -195,11 +195,11 @@ public class Person implements Comparable<Person> {
     public String getLastName2() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String last2 = "";
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_LAST_NAME1},
+        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_LAST_NAME2},
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            last2 = cursor.getString(0);
+            last2 = cursor.isNull(0) ? "" :cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -229,10 +229,11 @@ public class Person implements Comparable<Person> {
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
 
-            if (cursor.getString(1) != null || !cursor.getString(1).equals(""))
-                fullName = (cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2) + " " + cursor.getString(3)).trim();
+            if (cursor.isNull(1) || "".equals(cursor.getString(1)))
+                fullName = (cursor.getString(0) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" :cursor.getString(3))).trim();
             else
-                fullName = (cursor.getString(0) + " " + cursor.getString(2) + " " + cursor.getString(3)).trim();
+
+                fullName = (cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" :cursor.getString(3))).trim();
 
             db.close();
             cursor.close();
@@ -265,7 +266,7 @@ public class Person implements Comparable<Person> {
 
     public boolean hasEmail() {
         String email = getEmail();
-        return email != null || !email.equals("");
+        return email != null || !"".equals(email);
     }
 
     public String getPhoneNumber() {
@@ -293,7 +294,7 @@ public class Person implements Comparable<Person> {
 
     public boolean hasPhoneNumber() {
         String phone_number = getPhoneNumber();
-        return phone_number != null || !phone_number.equals("");
+        return phone_number != null || !"".equals(phone_number);
     }
 
     public String toString() {
