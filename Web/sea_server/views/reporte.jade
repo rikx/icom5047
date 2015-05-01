@@ -29,7 +29,8 @@ block content
 				center
 					h2 Entrevista Contestada
 				#answered_survey(class='jumbotron', data-survey=survey)
-					if locals.survey
+					- var has_recom = false;
+					if survey.length > 0
 						ol
 							each item in survey
 								if item.type != 'RECOM'
@@ -39,9 +40,12 @@ block content
 										br
 										em
 											= item.path_data
-					else
+								else
+									- has_recom=true;
+
+					if !has_recom
 						center
-							button(class='btn btn-sm btn-success') Continuar Entrevista
+							button(class='btn_continue_survey btn btn-sm btn-success') Continuar Entrevista
 			.col-md-6
 				center
 					
