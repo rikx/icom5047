@@ -42,14 +42,13 @@ jsPlumb.ready(function() {
 
   /* Populate's info panel with $this_element's information */
   function populate_info_panel(this_element){
-  	console.log(this_element);
   	$('#pregunta_info_name').html(this_element.name);
   	$('#pregunta_info_type').html(this_element.type);
 
   	var answers_content = '';
   	$.each(connections_array, function(i){
   		if(this_element.id == this.source){
-  			answers_content += '<li>'+this.label+'</li>'; 
+  			answers_content += "<li class='list-group-item'>"+this.label+"</li>"; 
   		}
   	});
   	$('#pregunta_info_responses').html(answers_content);
@@ -87,7 +86,7 @@ jsPlumb.ready(function() {
 	    	table_content +=  'active ';
 	    	populate_info_panel(this);
 	    }
-	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.type+' '+this.id+': '+this.name+"</a></td></tr>";
+	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.id+': '+this.name+"</a></td></tr>";
 		});
 
 		$('#preguntas_list').html(table_content);
@@ -204,16 +203,24 @@ jsPlumb.ready(function() {
 		      $(this).parent().text(this.value);
 		      var state_id = $(this).attr('data-id');
 		      $('#'+state_id).attr('data-state-name', this.value);
-		      // // create element object
-		      // var this_element = {
-		      // 	id: $(this).attr('data-id'),
-		      // 	name: this.value,
-		      // 	type: 'Pregunta'
-		      // };
-		      // // push to elements_array
-		      // elements_array.push(this_element);
+
+					// create item object
+					var this_item = {
+						id: newState.attr('id'),
+						name: $('#'+newState.attr('id')).attr('data-state-name'),
+						type: questionType,
+						left: newState.position().left,
+						top: newState.position().top
+					};
+
+					// check if item is already in array and updates it
+				  if(containsObject(this_item, elements_array)) {
+				   	replace(this_item, elements_array);
+				  } else {
+				   	elements_array.push(this_item);
+					}
 		      // populate elements list with new element
-		      //populate_elements_list();
+		      populate_elements_list();
 			  }
 			});
 
