@@ -139,7 +139,7 @@ $(document).ready(function(){
 
 /* PUTs edited cita information */
 $('#btn_edit').on('click', function(){
-  var cita_id = $(this).attr('data-id');
+  var appointment_id = $(this).attr('data-id');
   // get form data and conver to json format
   var $the_form = $('#form_manage_cita');
   var form_data = $the_form.serializeArray();
@@ -147,7 +147,7 @@ $('#btn_edit').on('click', function(){
 
   // ajax call to update ganadero
   $.ajax({
-    url: "http://localhost:3000/users/admin/citas/" + cita_id,
+    url: "http://localhost:3000/users/admin/citas/" + appointment_id,
     method: "PUT",
     data: JSON.stringify(new_cita),
     contentType: "application/json",
@@ -155,7 +155,7 @@ $('#btn_edit').on('click', function(){
 
     success: function(data) {
       alert("Informacion de cita ha sido editada en el sistema.");
-      // update cita list after posting 
+      // update cita list
       populate_citas();
     },
     error: function( xhr, status, errorThrown ) {

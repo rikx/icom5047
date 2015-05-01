@@ -45,7 +45,7 @@ $(document).ready(function(){
   	$('#notas').html("<textarea id='note_text' rows='10' cols='40'>" + currentText + "</textarea>");
   });
 
-  /* Submit edited note */
+  /* PUTs edited note */
   $('#btn_submit_notes').on('click', function(){
   	$('#btn_notes').show();
   	$('#btn_submit_notes').hide();
@@ -83,7 +83,7 @@ $(document).ready(function(){
     $('#edit_panel').show();
   });
 
-  /* Submit new appointment */
+  /* POSTs new appointment */
   $('#btn_submit_appointment').on('click', function(){
     var $the_form = $('#form_post_appointment');
     var form_data = $the_form.serializeArray();
@@ -111,7 +111,7 @@ $(document).ready(function(){
           citas_content += "<p><strong>Fecha: </strong><span id='appointment_date'>"+appointment_data.date+"</span></p>";
           citas_content += "<p><strong>Hora: </strong><span id='appointment_time'>"+appointment_data.time+"</span></p>";
           citas_content += "<p><strong> Propósito: </strong><span id='appointment_purpose'>"+appointment_data.purpose+"</span></p>";
-          citas_content += "<a id='btn_edit_appointment' class='btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+appointment_data.appointment_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
+          //citas_content += "<a id='btn_edit_appointment' class='btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+appointment_data.appointment_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
 
           // inject html string
           $('#info_panel').html(citas_content);
@@ -162,6 +162,40 @@ $(document).ready(function(){
     $('#cita_time').val(cita_time);
     $('#cita_purpose').val(appointment_data.purpose);
   });
+
+  /* PUTs edited cita information */
+/*  $('#btn_put_appointment').on('click', function(){
+    var appointment_id = $(this).attr('data-id');
+    // get form data and conver to json format
+    var $the_form = $('#form_post_appointment');
+    var form_data = $the_form.serializeArray();
+    var edited_appointment = ConverToJSON(form_data);
+
+    // ajax call to update ganadero
+    $.ajax({
+      url: "http://localhost:3000/users/admin/citas/" + appointment_id,
+      method: "PUT",
+      data: JSON.stringify(edited_appointment),
+      contentType: "application/json",
+      dataType: "json",
+
+      success: function(data) {
+        alert("Informacion de cita ha sido editada en el sistema.");
+        // update cita info
+        appointment_data = data.appointment;
+
+        // hide post form; display info panel
+        $('#edit_panel').hide();
+        $('#info_panel').show();
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
+  });*/
 
   $('#btn_submit_title').on('click', function(){
     var $the_form = $('#form_title');

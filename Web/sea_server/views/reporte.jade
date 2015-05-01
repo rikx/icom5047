@@ -133,7 +133,7 @@ block content
 										strong Propósito: 
 										span(id='appointment_purpose') 
 											= appointment.purpose
-									a(class='btn btn-sm btn-success', id='btn_edit_appointment' type='button', data-toggle='tooltip')
+									//a(class='btn btn-sm btn-success', id='btn_edit_appointment' type='button', data-toggle='tooltip' data-id=appointment.appointment_id)
 										i(class='glyphicon glyphicon-edit')
 							#edit_panel(style="display:none")
 								form#form_post_appointment(role='form')
