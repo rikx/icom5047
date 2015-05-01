@@ -365,7 +365,7 @@ router.get('/citas/:user_input', function(req, res, next) {
  		if(user_type == 'admin' || user_type == 'specialist') {
  			// get first 20 citas regardless of creator
  			query_config = {
- 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HHH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
+ 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
 								FROM appointments natural join report \
 								LEFT JOIN users ON user_id = maker_id \
 								INNER JOIN location ON report.location_id = location.location_id \

@@ -110,28 +110,25 @@ block content
 					.panel.panel-success
 						.panel-heading Cita de Seguimiento
 						.panel-body
-							#citas
+							#citas(data-appointment=appointment)
 								if appointment == undefined
 									p#no_appointment_text
 										| No hay cita pendiente.
 								else
 									p 
 										strong Fecha: 
-										= appointment.appointment_date
+										= appointment.date
 									p
 										strong Hora: 
-										= appointment.appointment_time
+										= appointment.time
 									p
 										strong 
 											| Creador de cita: 
 										= appointment.maker
 									p
 										strong Propósito: 
-										= appointment.appointment_purpose
+										= appointment.purpose
 							form#form_post_appointment(role='form')
-								.form-group
-									label(for='cita_location') Localización:
-									input#cita_location(class='form-control', name='cita_location', type='text')
 								.form-group
 									label(for='cita_date') Fecha:
 									input#cita_date(class='form-control', name='cita_date', type='date')

@@ -697,7 +697,7 @@ router.get('/reportes/:id', function(req, res, next) {
 	 		}
 	 		// get report basic info
 			client.query("SELECT report.report_id, report.creator_id, username AS report_creator, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS survey_name, \
-											flowchart.version AS survey_version, report.note, report.date_filed AS report_date \
+											flowchart.version AS survey_version, report.note, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date \
 										FROM report \
 										INNER JOIN users ON users.user_id = report.creator_id \
 										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
@@ -710,10 +710,10 @@ router.get('/reportes/:id', function(req, res, next) {
 		  	}
 		  });
 		  // get appointment details
-		  client.query('SELECT appointment_id, appointments.date AS appointment_date, appointments.time AS appointment_time, appointments.purpose AS appointment_purpose, username AS maker \
+		  client.query("SELECT appointment_id, to_char(appointments.date, 'DD/MM/YYYY' ) AS date, to_char(appointments.time, 'HH12:MI AM') AS time, appointments.purpose, username AS maker \
 										FROM appointments natural join report \
 										INNER JOIN users ON appointments.maker_id = user_id \
-										WHERE report_id = $1', [report_id], function(err, result){
+										WHERE report_id = $1", [report_id], function(err, result){
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
@@ -1361,7 +1361,7 @@ router.get('/localizaciones', function(req, res, next) {
 		 		} else {
 		 			//get first 20 citas created by this user
 		 			query_config = {
-		 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HHH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
+		 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
 										FROM appointments natural join report \
 										LEFT JOIN users ON user_id = maker_id \
 										INNER JOIN location ON report.location_id = location.location_id \
