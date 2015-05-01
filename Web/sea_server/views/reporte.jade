@@ -95,7 +95,6 @@ block content
 										i(class='glyphicon glyphicon-edit')
 									button#btn_submit_notes(class='btn btn-default btn-success', type='button') Someter
 
-
 		.row
 			.col-md-6
 				center
@@ -110,10 +109,12 @@ block content
 					.panel.panel-success
 						.panel-heading Cita de Seguimiento
 						.panel-body
-							#citas(data-appointment=appointment)
+							#info_panel(data-appointment=appointment)
 								if appointment == undefined
-									p#no_appointment_text
-										| No hay cita pendiente.
+									p
+										| No hay cita pendiente
+									a(class='btn btn-sm btn-success', id='btn_add_appointment' type='button', data-toggle='tooltip')
+										i(class='glyphicon glyphicon-plus')
 								else
 									p
 										strong 
@@ -132,19 +133,21 @@ block content
 										strong Propósito: 
 										span(id='appointment_purpose') 
 											= appointment.purpose
-							form#form_post_appointment(role='form')
-								.form-group
-									label(for='cita_date') Fecha:
-									input#cita_date(class='form-control', name='cita_date', type='date')
-								.form-group
-									label(for='cita_time') Hora:
-									input#cita_time(class='form-control', name='cita_time', type='time')
-								.form-group
-									label(for='cita_purpose') Proposito:
-									textarea#cita_purpose(class='form-control', name='cita_purpose', type='text', placeholder='Proposito')
-							a(class='btn btn-sm btn-success', id='btn_appointment' type='button', data-toggle='tooltip')
-								i(class='glyphicon glyphicon-edit')
-							button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
+									a(class='btn btn-sm btn-success', id='btn_edit_appointment' type='button', data-toggle='tooltip')
+										i(class='glyphicon glyphicon-edit')
+							#edit_panel(style="display:none")
+								form#form_post_appointment(role='form')
+									.form-group
+										label(for='cita_date') Fecha:
+										input#cita_date(class='form-control', name='cita_date', type='date')
+									.form-group
+										label(for='cita_time') Hora:
+										input#cita_time(class='form-control', name='cita_time', type='time')
+									.form-group
+										label(for='cita_purpose') Proposito:
+										textarea#cita_purpose(class='form-control', name='cita_purpose', type='text', placeholder='Proposito')
+								button#btn_close_edit_panel(class='btn btn-default', type='button') Cerrar
+								button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
 
 		.row
 			.col-md-2
