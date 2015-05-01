@@ -33,6 +33,7 @@ public class MainActivity extends FragmentActivity {
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
 		dbHelper = new DBHelper(getApplicationContext());
+	    showReportsList();
     }
 
     @Override

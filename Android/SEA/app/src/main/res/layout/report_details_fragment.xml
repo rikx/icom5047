@@ -74,6 +74,12 @@
 			android:text="@string/no_data"
 			/>
 
+		<FrameLayout
+			android:id="@+id/report_appointment_container"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			</FrameLayout>
+
 	</LinearLayout>
 
 </LinearLayout>
