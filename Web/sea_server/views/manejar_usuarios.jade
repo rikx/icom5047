@@ -36,8 +36,18 @@ block content
 									.panel-heading Tipo de Especializacion
 									.panel-body
 											form#specialist_categories_list(role='form')
-											button#btn_add_specialty(class='btn btn-default btn-success', type='button') Agregar Especialidades
 											button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
+				#add_specialty_panel.form-group
+								.panel.panel-success
+									.panel-heading Especialidades
+									.panel-body
+										form#form_new_specialty(role='form')
+											.form-group
+											label(for='new_specialty') Nueva Especialidad:
+											input#new_specialty(class='form-control', name='new_specialty', type='text', placeholder='Nueva Especialidad')
+										br
+										.btn-group(role='group', aria-label='edit panel buttons')
+											button#btn_post_new_specialty(class='btn btn-default') Someter
 
 
 			#edit_panel.col-md-4(style="display:none")
@@ -119,10 +129,19 @@ block content
 
 		.row
 			.col-md-2
+
 			.col-md-2
-				button#btn_add_usuario(class='btn btn-sm btn-default btn-block', type='button') Añadir Usuario
+				button#btn_add_specialty(class='btn btn-sm btn-default btn-block', type='button') Agregar Especialidades
 			.col-md-2
 				// TODO: add home glyphicon
+				button#btn_add_usuario(class='btn btn-sm btn-default btn-block', type='button') Añadir Usuario
+
+		.row
+
+			.col-md-2
+			.col-md-4
+				// TODO: add home glyphicon
+				br
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript

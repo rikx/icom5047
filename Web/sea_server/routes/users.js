@@ -1175,6 +1175,48 @@ router.get('/localizaciones', function(req, res, next) {
 });
 
 
+/* POST Admin Manejar Localizaciones
+ * Add new ganadero to database
+ */
+ router.post('/admin/new_specialty', function(req, res, next) {
+  console.log("category success");
+  if(!req.body.hasOwnProperty('new_specialty')) {
+   res.statusCode = 400;
+  return res.send('Error: Missing fields for post ganadero.');
+ } else {
+  var db = req.db;
+  db.connect(req.conString, function(err, client, done) {
+   if(err) {
+    return console.error('error fetching client from pool', err);
+   }
+    // Verify ganadero does not already exist in db
+    client.query("SELECT * FROM specialization WHERE name = $1", [req.body.new_specialty], function(err, result) {
+     if(err) {
+      return console.error('error running query', err);
+     } else {
+      if(result.rowCount > 0){
+       res.send({exists: true});
+      } else {
+       // Insert new ganadero into db
+       client.query("INSERT into specialization (name) \
+        VALUES ($1)", 
+        [req.body.new_specialty] , function(err, result) {
+       //call `done()` to release the client back to the pool
+       done();
+       if(err) {
+        return console.error('error running query', err);
+       } else {
+        res.json(true);
+       }
+      });
+      }
+     }
+    });
+   });
+}
+});
+
+
 /* POST Admin New Appointment
  * 
  */

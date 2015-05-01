@@ -68,8 +68,55 @@ $(document).ready(function(){
 
   $('#usuario_type').hide();
   $('#btn_edit_specialty').hide();
+  $('#add_specialty_panel').hide();
 
   
+  $('#btn_add_specialty').on('click', function(){
+    $('#add_specialty_panel').show();
+    $('#specialty_panel').hide();
+  });
+
+
+  $('#btn_post_new_specialty').on('click', function(){
+  // get form data and conver to json format
+  var $the_form = $('#form_new_specialty');
+  var form_data = $the_form.serializeArray();
+  var new_specialty = ConverToJSON(form_data);
+
+  console.log("Posting New Specialty.New Specialty is ");
+  console.log(new_specialty);
+
+
+  // ajax call to post new category
+  $.ajax({
+    url: "http://localhost:3000/users/admin/new_specialty",
+    method: "POST",
+    data: JSON.stringify(new_specialty),
+    contentType: "application/json",
+    dataType: "json",
+
+    success: function(data) {
+      if(data.exists){
+        //alert("Localización con este número de licensia ya existe");
+      } else {
+        alert("Especialidad ha sido añadida al sistema.");
+         $('#add_specialty_panel').hide();
+        // clear add form
+        //$the_form[0].reset();
+        // update locations list after posting 
+        //populate_localizaciones();
+      }
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+});
+
+
 
 
   $('#btn_home').on('click', function(){
@@ -95,6 +142,14 @@ $(document).ready(function(){
 
     $('#edit_panel').hide();
     $('#info_panel').show();
+
+    //button#btn_add_specialty(class='btn btn-default btn-success', type='button') Agregar Especialidades
+    //button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
+
+
+    $('#btn_add_specialty').show();
+    $('#btn_edit_specialty').hide();
+
 
     // remove active from previous list item 
     remove_active_class($usuarios_list);
@@ -186,6 +241,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
   $('#specialty_panel').hide();
   $('#btn_add_specialty').hide()
   $('#btn_edit_specialty').show()
+  $('#btn_add_specialty').show();
 
   var type = "Test";
     // contains usuario id
