@@ -49,7 +49,7 @@ $(document).ready(function(){
   search_source.initialize();
 
   // set typeahead functionality for search bar
-  $('.typeahead').typeahead({
+  $('#search_bar').typeahead({
     hint: false,
     highlight: true
   },
@@ -78,7 +78,7 @@ $(document).ready(function(){
   /* Button: Add Categories */
   $('#btn_add_categories').on('click', function(){
     $('#categoria_panel').hide();
-    $('#add_categoria_panel').show();
+    $('#add_categoria_panel').toggle();
   });
 
   /* Button: Return home */
