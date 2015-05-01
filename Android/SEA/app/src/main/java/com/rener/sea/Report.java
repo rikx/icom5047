@@ -24,6 +24,7 @@ public class Report implements Comparable<Report> {
     private Date date;
     private String type = "";
     private Path path;
+	private Appointment appointment = null;
     private DBHelper dbHelper = null;
 
     public Report(long id, DBHelper db) {
@@ -38,6 +39,7 @@ public class Report implements Comparable<Report> {
         this.name = "";
         this.date = new Date();
         this.path = new Path();
+	    this.appointment = null;
     }
 
     /**
@@ -132,7 +134,15 @@ public class Report implements Comparable<Report> {
         this.type = type;
     }
 
-    public void addToPath(Option option, String data) {
+	public Appointment getAppointment() {
+		return appointment;
+	}
+
+	public void setAppointment(Appointment appointment) {
+		this.appointment = appointment;
+	}
+
+	public void addToPath(Option option, String data) {
         Item item = findOptionParent(option);
         path.addEntry(item, option, data);
     }

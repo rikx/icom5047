@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,12 +16,13 @@ import java.util.Locale;
 /**
  * An Android fragment class used to manage the display of data pertaining to a report.
  */
-public class ReportDetailsFragment extends Fragment {
+public class ReportDetailsFragment extends Fragment implements View.OnClickListener {
 
     private Report report;
     private boolean viewCreated;
     private TextView textName, textLocation, textDate, textSubject, textType, textCreator,
-            textFlowchart, textNotes;
+            textFlowchart, textNotes, textAppointment;
+	private Button addAppointmentButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,9 @@ public class ReportDetailsFragment extends Fragment {
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
+	    textAppointment = (TextView) view.findViewById(R.id.report_appointment);
+	    addAppointmentButton = (Button) view.findViewById(R.id.report_add_appointment_button);
+	    addAppointmentButton.setOnClickListener(this);
         setFields();
 
         //Create dynamic views
@@ -104,6 +109,14 @@ public class ReportDetailsFragment extends Fragment {
             String subject = report.getSubject().toString();
             textSubject.setText(label + ": " + subject);
         }
+	    if(report.getAppointment() != null) {
+		    Appointment a = report.getAppointment();
+		    textAppointment.setText(a.getDateString(dateFormat, locale));
+			addAppointmentButton.setVisibility(View.VISIBLE);
+	    }
+	    else {
+		    addAppointmentButton.setVisibility(View.GONE);
+	    }
     }
 
     /**
@@ -118,4 +131,14 @@ public class ReportDetailsFragment extends Fragment {
             setFields();
         return this.report;
     }
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+			case R.id.report_add_appointment_button :
+				addAppointmentButton.setVisibility(View.GONE);
+				//TODO: add appointment stuff
+		}
+
+	}
 }

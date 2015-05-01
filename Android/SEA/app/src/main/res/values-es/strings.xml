@@ -75,4 +75,7 @@
 	<string name="date">fecha</string>
 	<string name="date_format">dd/LLL/yy</string>
 	<string name="discard_report">descarta reporte</string>
+	<string name="add_appointment">añadir cita</string>
+	<string name="appointment">cita</string>
+	<string name="no_appointment">no hay cita</string>
 </resources>
