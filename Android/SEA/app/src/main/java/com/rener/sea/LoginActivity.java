@@ -27,6 +27,8 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.i(this.toString(), "created");
+        // the db is created when accessed for first time
+        // when get writable or readable db
         dbHelper = new DBHelper(getApplicationContext());
     }
 

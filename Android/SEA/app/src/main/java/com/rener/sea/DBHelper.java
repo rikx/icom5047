@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        Log.i(this.toString(), "instanced "+ context.toString());
     }
 
     @Override
@@ -40,6 +42,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DBSchema.CREATE_REPORT_TABLE);
         db.execSQL(DBSchema.CREATE_SPECIALIZATION_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_TABLE);
+        Log.i(this.toString(), "created");
 
     }
 
@@ -67,90 +70,96 @@ public final class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID},
                 null, null, null, null, null, null);
+        ArrayList<User> users;
+        users = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            ArrayList<User> users;
-            users = new ArrayList<>();
+
             for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
                 users.add(new User(cursor.getLong(0), this));
             }
 
             db.close();
             cursor.close();
-            return users;
+
         }
-        return null;
+        return users;
+
 
     }
     public List<Person> getAllPersons() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
                 null, null, null, null, null, null);
+        ArrayList<Person> persons;
+        persons = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            ArrayList<Person> persons;
-            persons = new ArrayList<>();
+
             for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
                 persons.add(new Person(cursor.getLong(0), this));
             }
 
             db.close();
             cursor.close();
-            return persons;
+
         }
-        return null;
+        return persons;
 
     }
     public List<Flowchart> getAllFlowcharts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_ID},
                 null, null, null, null, null, null);
+        ArrayList<Flowchart> flowcharts;
+        flowcharts = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            ArrayList<Flowchart> flowcharts;
-            flowcharts = new ArrayList<>();
+
             for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
                 flowcharts.add(new Flowchart(cursor.getLong(0), this));
             }
 
             db.close();
             cursor.close();
-            return flowcharts;
+
         }
-        return null;
+        return flowcharts;
 
     }
     public List<Location> getAllLocations() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID},
                 null, null, null, null, null, null);
+        ArrayList<Location> location;
+        location = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            ArrayList<Location> location;
-            location = new ArrayList<>();
+
             for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
                 location.add(new Location(cursor.getLong(0), this));
             }
 
             db.close();
             cursor.close();
-            return location;
+
         }
-        return null;
+        return location;
 
     }
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
 		        null, null, null, null, null, null);
+        ArrayList<Report> reports;
+        reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            ArrayList<Report> reports;
-            reports = new ArrayList<>();
+
             for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
                 reports.add(new Report(cursor.getLong(0), this));
             }
 
             db.close();
             cursor.close();
-            return reports;
+
         }
-        return null;
+        return reports;
 
     }
 
@@ -173,15 +182,16 @@ public final class DBHelper extends SQLiteOpenHelper {
         long id = -1;
         Cursor cursor = db.query(DBSchema.TABLE_ITEM, new String[]{DBSchema.ITEM_ID},
                 DBSchema.ITEM_FLOWCHART_ID + "=?", new String[]{String.valueOf(flowchartID)}, null, null, null, null);
+        ArrayList<Item> items = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            ArrayList<Item> items = new ArrayList<>();
+
 
             for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
                 items.add(new Item(cursor.getLong(0), this));
             }
-            return items;
+
         }
-        return null;
+        return items;
     }
 
     public List<Option> getAllOptions(long itemID) {
@@ -189,15 +199,16 @@ public final class DBHelper extends SQLiteOpenHelper {
         long id = -1;
         Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_ID},
                 DBSchema.OPTION_PARENT_ID + "=?", new String[]{String.valueOf(itemID)}, null, null, null, null);
+        ArrayList<Option> options = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            ArrayList<Option> options = new ArrayList<>();
+
 
             for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
                 options.add(new Option(cursor.getLong(0), this));
             }
-            return options;
+
         }
-        return null;
+        return options;
     }
 
 	public User findUserByUsername(String username){
@@ -217,7 +228,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 			return user;
 		}
-		return null;
+		return new User(-1,this);
 
 	}
 
@@ -500,6 +511,12 @@ public final class DBHelper extends SQLiteOpenHelper {
             return location;
         }
         return null;
+    }
+
+    private boolean fillDB(){
+
+
+        return true;
     }
 //
 //        public Item findItemById(long id){
