@@ -27,20 +27,20 @@ block content
 											span(class='caret')
 										ul#list_question_type(class='dropdown-menu', role='menu')
 											li
-												a(role='menuitem', tabindex='-1', href='#', data-question-type='OPEN') Abierta
-											li
 												a(role='menuitem', tabindex='-1', href='#', data-question-type='BOOLEAN') Booleana
 											li
-												a(role='menuitem', tabindex='-1', href='#', data-question-type='CONDITIONAL') Condicional
-											li
 												a(role='menuitem', tabindex='-1', href='#', data-question-type='MULTI') Multiple
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-question-type='OPEN') Abierta
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-question-type='CONDITIONAL') Condicional
 											li
 												a(role='menuitem', tabindex='-1', href='#', data-question-type='RECOM') Recomendación
 				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button') Agregar Pregunta
 				button#btn_add_recommendation(class='btn btn-lg btn-success btn-block', type='button') Agregar Recomendación
-				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 				button#btn_end(class='btn btn-lg btn-success btn-block', type='button') Agregar Nodo Final
-				button#btn_test(class='btn btn-lg btn-success btn-block', type='button') Test
+				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
+				//button#btn_test(class='btn btn-lg btn-success btn-block', type='button') Test
 
 		br
 		.row
@@ -70,7 +70,7 @@ block content
 						.panel.panel-info
 							.panel-heading Posibles Respuestas
 							.panel-body
-								table#pregunta_info_responses(class='table')
+								ul#pregunta_info_responses
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 			.col-md-1
 		.row

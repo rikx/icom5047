@@ -30,14 +30,49 @@ jsPlumb.ready(function() {
     if (!$this.hasClass('active')) {
     	$this.addClass('active');
     }
-});
+
+    // contains item id
+    var item_id = $this.attr('data-id');
+    var arrayPosition = elements_array.map(function(arrayItem) { return arrayItem.id; }).indexOf(item_id);
+    var this_element = elements_array[arrayPosition];
+
+    // populate info panel with this_ganadero info
+    populate_info_panel(this_element);
+	});
+
+  /* Populate's info panel with $this_element's information */
+  function populate_info_panel(this_element){
+  	console.log(this_element);
+  	$('#pregunta_info_name').html(this_element.name);
+  	$('#pregunta_info_type').html(this_element.type);
+
+  	var answers_content = '';
+  	$.each(connections_array, function(i){
+  		if(this_element.id == this.source){
+  			answers_content += '<li>'+this.label+'</li>'; 
+  		}
+  	});
+  	$('#pregunta_info_responses').html(answers_content);
+  }
 
   /* Check all items are a source in at least one connection 
    * for use when user submits a finished flowchart
    * not used when user just saves a flowchart under construction
    */
   function check_item_connections(){
-
+  	var has_child = false;
+  	for(var i = 0; i < elements_array.length; i++){
+  		for(var j = 0; j < connections_array.length; j++){
+  			if(elements_array[i].id == connections_array[j].source){
+  				has_child = true;
+  			}
+  		}
+  		if(!has_child){
+  			console.log('item '+elements_array[i].id+' necesita una connecion');
+  		} else {
+  			has_child = false;
+  		}
+  	}
   }
 
   /* */
@@ -50,6 +85,7 @@ jsPlumb.ready(function() {
 	    // if initial list item, set to active
 	    if(i==0) {
 	    	table_content +=  'active ';
+	    	populate_info_panel(this);
 	    }
 	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.type+' '+this.id+': '+this.name+"</a></td></tr>";
 		});
