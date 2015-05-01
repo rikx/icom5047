@@ -877,7 +877,7 @@ router.get('/admin/usuarios', function(req, res, next) {
 							} else {
 		  			// Insert new user into db
 		  			var person_id = result.rows[0].person_id;
-		  			console.log(person_id);
+
 		  			client.query("INSERT into users (person_id, type, username) \
 		  				VALUES ($1, $2, $3)", 
 		  				[person_id, req.body.usuario_type, req.body.usuario_email] , function(err, result) {
@@ -1178,45 +1178,52 @@ router.get('/localizaciones', function(req, res, next) {
 /* POST Admin New Appointment
  * 
  */
- router.post('/admin/new_appointment/:id/:uid', function(req, res, next) {
+router.post('/appointment/:id/:uid', function(req, res, next) {
   var report_id = req.params.id;
   var maker = req.params.uid;
-  console.log("report id is " + report_id);
-  console.log("maker is " + maker);
-  if(!req.body.hasOwnProperty('cita_location')) {
-   res.statusCode = 400;
-  return res.send('Error: Missing fields for post ganadero.');
- } else {
-  var db = req.db;
-  db.connect(req.conString, function(err, client, done) {
-   if(err) {
-    return console.error('error fetching client from pool', err);
-   }
-    // Verify ganadero does not already exist in db
-    client.query("SELECT * FROM appointments WHERE report_id = $1", [req.params.id], function(err, result) {
-     if(err) {
-      return console.error('error running query', err);
-     } else {
-      if(result.rowCount > 0){
-       res.send({exists: true});
-      } else {
-       // Insert new ganadero into db
-       client.query("INSERT into appointments (date, time, purpose, report_id, maker_id) \
-        VALUES ($1, $2, $3, $4, $5)", 
-        [req.body.cita_date, req.body.cita_time, req.body.cita_proposito, report_id, maker] , function(err, result) {
-       //call `done()` to release the client back to the pool
-       done();
-       if(err) {
-        return console.error('error running query', err);
-       } else {
-        res.json(true);
-       }
-      });
-      }
-     }
-    });
-   });
-}
+
+	if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time') || !req.body.hasOwnProperty('cita_purpose') ) {
+		res.statusCode = 400;
+		return res.send('Error: Missing fields for post ganadero.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+				return console.error('error fetching client from pool', err);
+			}
+			// Verify appointment does not already exist in db
+			client.query("SELECT * FROM appointments WHERE report_id = $1", [req.params.id], function(err, result) {
+		 		if(err) {
+		  		return console.error('error running query', err);
+		 		} else {
+			 		if(result.rowCount > 0){
+			   		res.send({exists: true});
+		  		} else {
+			   		// Insert new appointment into db
+				   	client.query("INSERT into appointments (date, time, purpose, report_id, maker_id) \
+				    							VALUES ($1, $2, $3, $4, $5) \
+				    							RETURNING appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(time, 'HH12:MI AM') AS time, purpose", 
+				    							[req.body.cita_date, req.body.cita_time, req.body.cita_purpose, report_id, maker] , function(err, result) {
+					   	//call `done()` to release the client back to the pool
+					  	done();
+					  	if(err) {
+					   		return console.error('error running query', err);
+					   	} else {
+					   		var the_result = result.rows[0];
+					   		var new_appointment = {
+					   			appointment_id: the_result.appointment_id,
+					   			date: the_result.date,
+					   			time: the_result.time,
+					   			purpose: the_result.purpose
+					   		};
+								res.json({appointment: new_appointment});
+				   		}
+		  			});
+					}
+	 			}
+			});
+		});
+	}
 });
 
 /* PUT Admin Manejar Localizaciones 

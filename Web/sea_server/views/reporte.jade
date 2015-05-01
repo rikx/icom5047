@@ -115,19 +115,23 @@ block content
 									p#no_appointment_text
 										| No hay cita pendiente.
 								else
-									p 
-										strong Fecha: 
-										= appointment.date
-									p
-										strong Hora: 
-										= appointment.time
 									p
 										strong 
 											| Creador de cita: 
-										= appointment.maker
+										span(id='appointment_maker') 
+											= appointment.maker
+									p 
+										strong Fecha: 
+										span(id='appointment_date') 
+											= appointment.date
+									p
+										strong Hora:
+										span(id='appointment_time')  
+											= appointment.time
 									p
 										strong Propósito: 
-										= appointment.purpose
+										span(id='appointment_purpose') 
+											= appointment.purpose
 							form#form_post_appointment(role='form')
 								.form-group
 									label(for='cita_date') Fecha:
@@ -136,8 +140,8 @@ block content
 									label(for='cita_time') Hora:
 									input#cita_time(class='form-control', name='cita_time', type='time')
 								.form-group
-									label(for='cita_proposito') Proposito:
-									textarea#cita_proposito(class='form-control', name='cita_proposito', type='text', placeholder='Proposito')
+									label(for='cita_purpose') Proposito:
+									textarea#cita_purpose(class='form-control', name='cita_purpose', type='text', placeholder='Proposito')
 							a(class='btn btn-sm btn-success', id='btn_appointment' type='button', data-toggle='tooltip')
 								i(class='glyphicon glyphicon-edit')
 							button#btn_submit_appointment(class='btn btn-default btn-success', type='button') Someter
