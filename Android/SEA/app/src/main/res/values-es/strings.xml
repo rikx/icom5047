@@ -78,4 +78,5 @@
 	<string name="add_appointment">añadir cita</string>
 	<string name="appointment">cita</string>
 	<string name="no_appointment">no hay cita</string>
+	<string name="view_appointments">Ver Citas</string>
 </resources>

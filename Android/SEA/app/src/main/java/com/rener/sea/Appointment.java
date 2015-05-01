@@ -7,11 +7,11 @@ import java.util.Locale;
 public class Appointment {
 
 	private Date date;
-	private String reason;
+	private String purpose;
 
 	public Appointment() {
 		date = new Date();
-		reason = "";
+		purpose = "";
 	}
 
 	public Date getDate() {
@@ -22,12 +22,12 @@ public class Appointment {
 		this.date = date;
 	}
 
-	public String getReason() {
-		return reason;
+	public String getPurpose() {
+		return purpose;
 	}
 
-	public void setReason(String reason) {
-		this.reason = reason;
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
 	}
 
 	public String getDateString(String format, Locale locale) {

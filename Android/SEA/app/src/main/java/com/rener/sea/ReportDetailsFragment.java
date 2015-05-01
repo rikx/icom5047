@@ -2,14 +2,18 @@ package com.rener.sea;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import java.util.Locale;
 
@@ -18,11 +22,14 @@ import java.util.Locale;
  */
 public class ReportDetailsFragment extends Fragment implements View.OnClickListener {
 
+	public static final int NO_APPOINTMENT_LAYOUT = 0;
+	public static final int APPOINTMENT_EDIT_LAYOUT = 1;
+	public static final int APPOINTMENT_VIEW_LAYOUT = 2;
     private Report report;
-    private boolean viewCreated;
     private TextView textName, textLocation, textDate, textSubject, textType, textCreator,
-            textFlowchart, textNotes, textAppointment;
-	private Button addAppointmentButton;
+            textFlowchart, textNotes;
+	private FrameLayout appointmentLayout;
+	private ViewFlipper appointmentFlipper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,10 +51,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
-	    textAppointment = (TextView) view.findViewById(R.id.report_appointment);
-	    addAppointmentButton = (Button) view.findViewById(R.id.report_add_appointment_button);
-	    addAppointmentButton.setOnClickListener(this);
-        setFields();
+	    appointmentLayout = (FrameLayout) view.findViewById(R.id.report_appointment_container);
+	    appointmentLayout.addView(appointmentFlipper);
+        setFields(view);
 
         //Create dynamic views
         LinearLayout layoutInterview = (LinearLayout) view.findViewById(R.id.report_interview_layout);
@@ -67,8 +73,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             layoutInterview.addView(textQuestion);
             layoutInterview.addView(textAnswer);
         }
-
-        viewCreated = true;
         return view;
     }
 
@@ -90,7 +94,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     /**
      * Set the static views for this fragment
      */
-    private void setFields() {
+    private void setFields(View view) {
         textName.setText(report.getName());
         Locale locale = Locale.getDefault();
         String dateFormat = getResources().getString(R.string.date_format);
@@ -109,14 +113,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             String subject = report.getSubject().toString();
             textSubject.setText(label + ": " + subject);
         }
-	    if(report.getAppointment() != null) {
-		    Appointment a = report.getAppointment();
-		    textAppointment.setText(a.getDateString(dateFormat, locale));
-			addAppointmentButton.setVisibility(View.VISIBLE);
-	    }
-	    else {
-		    addAppointmentButton.setVisibility(View.GONE);
-	    }
+	    setAppointmentViews(view);
     }
 
     /**
@@ -126,19 +123,33 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
      * @return the report that was set
      */
     public Report setReport(Report report) {
-        this.report = report;
-        if (viewCreated)
-            setFields();
-        return this.report;
+        return this.report = report;
     }
 
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.report_add_appointment_button :
-				addAppointmentButton.setVisibility(View.GONE);
-				//TODO: add appointment stuff
+				appointmentFlipper.setDisplayedChild(APPOINTMENT_EDIT_LAYOUT);
 		}
 
+	}
+
+	private void setAppointmentViews(View view) {
+		if(report.getAppointment() != null) {
+			appointmentFlipper.setDisplayedChild(APPOINTMENT_VIEW_LAYOUT);
+			Appointment appointment = report.getAppointment();
+			//Set appointment date view
+			TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
+			Locale locale = Locale.getDefault();
+			String dateFormat = getResources().getString(R.string.date_format);
+			dateText.setText(appointment.getDateString(dateFormat, locale));
+			//Set appointment purpose view
+			TextView purposeText = (TextView) view.findViewById(R.id.appointment_purpose_text);
+			purposeText.setText(appointment.getPurpose());
+		}
+		else {
+			appointmentFlipper.setDisplayedChild(NO_APPOINTMENT_LAYOUT);
+		}
 	}
 }

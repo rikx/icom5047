@@ -77,4 +77,6 @@
 	<string name="appointment">appointment</string>
 	<string name="add_appointment">add appointment</string>
 	<string name="no_appointment">no appointment set</string>
+	<string name="view_appointments">View Appointments</string>
+	<string name="appointment_purpose">purpose</string>
 </resources>

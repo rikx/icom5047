@@ -74,20 +74,11 @@
 			android:text="@string/no_data"
 			/>
 
-		<TextView
-			android:id="@+id/report_appointment"
+		<FrameLayout
+			android:id="@+id/report_appointment_container"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/no_appointment"
-			/>
-
-		<Button
-			android:id="@+id/report_add_appointment_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/add_appointment"
-			android:visibility="visible"
-			/>
+			android:layout_height="wrap_content">
+			</FrameLayout>
 
 	</LinearLayout>
 
