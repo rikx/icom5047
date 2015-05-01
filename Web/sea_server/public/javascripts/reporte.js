@@ -79,7 +79,7 @@ $(document).ready(function(){
 
   /* Add appointment */
   $('#btn_add_appointment').on('click', function(){
-    $('#info_panel').hide();
+    $('#info_panel, #btn_put_appointment').hide();
     $('#edit_panel').show();
   });
 
@@ -98,24 +98,28 @@ $(document).ready(function(){
       dataType: "json",
 
       success: function(data) {
-        alert("Se ha agregado una nueva cita.");
-        appointment_data = data.appointment;
-        appointment_data.maker = user_data.username;
+        if(data.exists){
+          alert("Este reporte ya tiene una cita.");
+        } else {
+          alert("Se ha agregado una nueva cita.");
+          appointment_data = data.appointment;
+          appointment_data.maker = user_data.username;
 
-        var citas_content = '';
+          var citas_content = '';
 
-        citas_content += "<p><strong>Creador de cita: </strong><span id='appointment_maker'>"+appointment_data.maker+"</span></p>";
-        citas_content += "<p><strong>Fecha: </strong><span id='appointment_date'>"+appointment_data.date+"</span></p>";
-        citas_content += "<p><strong>Hora: </strong><span id='appointment_time'>"+appointment_data.time+"</span></p>";
-        citas_content += "<p><strong> Propósito: </strong><span id='appointment_purpose'>"+appointment_data.purpose+"</span></p>";
-        citas_content += "<a id='btn_edit_appointment' class='btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+appointment_data.appointment_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
+          citas_content += "<p><strong>Creador de cita: </strong><span id='appointment_maker'>"+appointment_data.maker+"</span></p>";
+          citas_content += "<p><strong>Fecha: </strong><span id='appointment_date'>"+appointment_data.date+"</span></p>";
+          citas_content += "<p><strong>Hora: </strong><span id='appointment_time'>"+appointment_data.time+"</span></p>";
+          citas_content += "<p><strong> Propósito: </strong><span id='appointment_purpose'>"+appointment_data.purpose+"</span></p>";
+          citas_content += "<a id='btn_edit_appointment' class='btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+appointment_data.appointment_id+"'><i class='glyphicon glyphicon-edit'></i></a>";
 
-        // inject html string
-        $('#info_panel').html(citas_content);
+          // inject html string
+          $('#info_panel').html(citas_content);
 
-        // hide post form; display info panel
-        $('#edit_panel').hide();
-        $('#info_panel').show();
+          // hide post form; display info panel
+          $('#edit_panel').hide();
+          $('#info_panel').show();
+        }
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -131,7 +135,7 @@ $(document).ready(function(){
     // prevents link from firing
     e.preventDefault();
 
-    $('#info_panel').hide();
+    $('#info_panel, #btn_submit_appointment').hide();
     $('#edit_panel').show();
 
     // date formatting
