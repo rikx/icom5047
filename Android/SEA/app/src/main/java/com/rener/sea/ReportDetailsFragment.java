@@ -147,6 +147,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 			//Set appointment purpose view
 			TextView purposeText = (TextView) view.findViewById(R.id.appointment_purpose_text);
 			purposeText.setText(appointment.getPurpose());
+			//Set appointment creator view
+			TextView creatorText= (TextView) view.findViewById(R.id.appointment_creator_text);
+			creatorText.setText(appointment.getCreator().getPerson().toString());
 		}
 		else {
 			appointmentFlipper.setDisplayedChild(NO_APPOINTMENT_LAYOUT);

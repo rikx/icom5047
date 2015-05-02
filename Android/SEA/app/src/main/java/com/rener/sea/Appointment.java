@@ -15,6 +15,7 @@ public class Appointment {
 
     private long id = -1;
     private DBHelper dbHelper;
+	private User creator; //TODO: integrate this to DB
 
     public Appointment(long id, DBHelper dbHelper) {
        this.dbHelper = dbHelper;
@@ -75,9 +76,21 @@ public class Appointment {
         return false;
 
     }
+
     public long getId() {
         return id;
     }
+
+	//TODO: integrate this to DB
+	public User getCreator() {
+		return this.creator;
+	}
+
+	//TODO: integrate this to DB
+	public User setCreator(User creator) {
+		return this.creator = creator;
+	}
+
 	public Date getDate() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Date date = new Date(0);

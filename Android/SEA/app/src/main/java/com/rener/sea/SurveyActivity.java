@@ -68,6 +68,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
 	    dbHelper = new DBHelper(getApplicationContext());
         report = new Report();
+	    setServiceData();
     }
 
     @Override
@@ -165,8 +166,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         SharedPreferences sharedPref = this.getSharedPreferences(
 		        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
-        User creator = null;
-        //TODO: set creator
+        User creator = dbHelper.findUserByUsername(sUsername);
+	    Log.i(this.toString(), "has creator "+creator.getUsername());
         report.setCreator(creator);
     }
 

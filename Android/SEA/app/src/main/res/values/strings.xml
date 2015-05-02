@@ -79,4 +79,5 @@
 	<string name="no_appointment">no appointment set</string>
 	<string name="view_appointments">View Appointments</string>
 	<string name="appointment_purpose">purpose</string>
+	<string name="no_purpose_set">no purpose set</string>
 </resources>
