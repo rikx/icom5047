@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class Option {
 
-    private long id;
+    private long id = -1;
     private Item next;
     private String label;
     private DBHelper dbHelper = null;
@@ -41,7 +41,7 @@ public class Option {
 
     public Option(long optionID, DBHelper db) {
         this.dbHelper = db;
-        invoke(id);
+        invoke(optionID);
     }
     public Option(long optionID,long partentID, long nextID,String label, DBHelper db) {
         this.dbHelper = db;

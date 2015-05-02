@@ -47,7 +47,7 @@ public class PathEntry {
 
 
     private void create(long report_id, long option_id, String data){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_REPORT_ID, report_id);
         values.put(DBSchema.PATH_OPTION_ID, option_id);
@@ -62,7 +62,7 @@ public class PathEntry {
         this.option_id = option_id;
     }
     private void create(long report_id, long option_id){
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_REPORT_ID, report_id);
         values.put(DBSchema.PATH_OPTION_ID, option_id);
@@ -74,7 +74,7 @@ public class PathEntry {
     }
 
     private boolean exist(long report_id, long option_id) {
-        if (report_id == -1) {
+        if (report_id == -1 || option_id == -1) {
             return false;
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
