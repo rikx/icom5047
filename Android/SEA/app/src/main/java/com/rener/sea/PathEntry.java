@@ -3,6 +3,7 @@ package com.rener.sea;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * Wrapper class representing a trio of an Item, Option, and String.
@@ -17,8 +18,8 @@ public class PathEntry {
     public PathEntry(long report_id, long option_id, String data, int sequence, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
-        if (exist(report_id,option_id)) { // can also verify if id == -1
-            invoke(report_id,option_id);
+        if (exist(report_id,option_id,sequence)) { // can also verify if id == -1
+            invoke(report_id,option_id,sequence);
         } else {
             create(report_id,option_id,data,sequence);
         }
@@ -26,8 +27,8 @@ public class PathEntry {
     public PathEntry(long report_id, long option_id, int sequence, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
-        if (exist(report_id,option_id)) { // can also verify if id == -1
-            invoke(report_id,option_id);
+        if (exist(report_id,option_id,sequence)) { // can also verify if id == -1
+            invoke(report_id,option_id,sequence);
         } else {
             create(report_id,option_id,sequence);
         }
@@ -73,13 +74,13 @@ public class PathEntry {
         this.option_id = option_id;
     }
 
-    private boolean exist(long report_id, long option_id) {
+    private boolean exist(long report_id, long option_id, int sequence) {
         if (report_id == -1 || option_id == -1) {
             return false;
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_REPORT_ID},
-                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? AND "+DBSchema.PATH_SEQUENCE + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id),String.valueOf(sequence)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             db.close();
@@ -90,10 +91,10 @@ public class PathEntry {
 
     }
 
-    private boolean invoke(long report_id, long option_id) {
+    private boolean invoke(long report_id, long option_id, int sequence) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.PATH_REPORT_ID,DBSchema.PATH_OPTION_ID,DBSchema.PATH_DATA},
-                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
+        Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_REPORT_ID,DBSchema.PATH_OPTION_ID,DBSchema.PATH_DATA},
+                DBSchema.PATH_REPORT_ID + " =? AND "+DBSchema.PATH_OPTION_ID + " =? AND "+DBSchema.PATH_SEQUENCE+ " =? ", new String[]{String.valueOf(report_id),String.valueOf(option_id),String.valueOf(sequence)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0))
@@ -162,7 +163,7 @@ public class PathEntry {
     public String getData() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String data = "";
-        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.PATH_DATA},
+        Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_DATA},
                 DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
