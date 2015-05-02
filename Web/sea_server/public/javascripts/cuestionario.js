@@ -145,6 +145,10 @@ $(document).ready(function(){
     window.location.href = '/users';
 	});
 
+  $('#btn_test').on('click', function(){
+    loadGraphTest();
+  });
+
   /* Function to get the latest_item_id from query results
    * to use in any new items added to the flowchart
    * latest_item_id++ will be used as the starting point for new items 

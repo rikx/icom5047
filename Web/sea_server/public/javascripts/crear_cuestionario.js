@@ -5,7 +5,7 @@ jsPlumb.ready(function() {
 	var connections_array =[];
 
 	//disable add question button initially
-	$('#btn_add_question').prop('disabled', true);
+	//$('#btn_add_question').prop('disabled', true);
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
@@ -91,6 +91,7 @@ jsPlumb.ready(function() {
 
 		$('#preguntas_list').html(table_content);
 	}
+
  	// JS PLUMB create code
 
  	$('#btn_add_question').on('click', function(){
@@ -109,10 +110,6 @@ jsPlumb.ready(function() {
  		AddLastNode();
  	});
 
-
- 	$('#btn_test').on('click', function(){
- 		loadGraphTest();
- 	});
 
  	var j =0; // item id
  	var array = [];
