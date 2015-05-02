@@ -415,8 +415,6 @@ $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     $('#add_categoria_panel').hide();
     $('#categoria_panel').show();
 
-    //carlito
-
 
     // remove active from previous list item 
     remove_active_class($localizaciones_list);
@@ -638,6 +636,11 @@ function populate_info_panel($this_location){
   } else {
     $('#localizacion_agentes').html('<tr><td>Agente no asignado</td></tr>');
   }  
+
+  console.log("Categorias Panel Title");
+  //var currentText = $('#categoria_panel_title').text();
+  $('#categoria_panel_title').text("Categoria de Localizacion" + " - " + $this_location.location_name)
+  //$('#categoria_panel_title').text('');
 };
 
 /* Populate list with first 20 locations, organized alphabetically by location_name */
@@ -649,7 +652,6 @@ function populate_localizaciones(){
     agents_array = data.agentes;
     ganaderos_array = data.ganaderos;
     categorias_array = data.location_categories;
-
     populate_list(data.localizaciones);
   });
 };

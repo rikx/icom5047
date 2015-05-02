@@ -435,6 +435,13 @@ function populate_info_panel($this_usuario){
 
     $('#specialty_panel').show();
     populate_specialties_info($this_usuario);
+
+
+
+    //Categoria de Localizacion
+
+    $('#especializacion_title').text("Tipo de Especializacion" + " - " + $this_usuario.email)
+
   }
 
   /* Populate list with first 20 usuarios, organized alphabetically */
