@@ -116,9 +116,11 @@ public class DBSchema {
     public static final String PATH_REPORT_ID = "report_id";
     public static final String PATH_OPTION_ID = "option_id";
     public static final String PATH_DATA = "data";
+    public static final String PATH_SEQUENCE = "sequence";
     public static final String CREATE_PATH_TABLE = "CREATE TABLE " + TABLE_PATH + "(" +
             PATH_REPORT_ID + " INTEGER," +
             PATH_OPTION_ID + " INTEGER," +
+            PATH_SEQUENCE + " INTEGER," +
             PATH_DATA + " TEXT)";
     public static final String TABLE_PERSON = "person";
     public static final String PERSON_ID = "person_id";

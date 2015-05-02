@@ -223,7 +223,7 @@ public class Report implements Comparable<Report> {
 
     public long setFlowchart(Flowchart flowchart) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Log.i(this.toString(), "Set Flowchart ID :"+flowchart.getId());
+        Log.i(this.toString(), "Set Flowchart ID :" + flowchart.getId());
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_FLOWCHART_ID, flowchart.getId());
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
@@ -375,7 +375,20 @@ public class Report implements Comparable<Report> {
 //        return path;
 //    }
     public Path getPath() {
-        return this.path;
+        Path path = new Path(id,dbHelper);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_OPTION_ID},
+                DBSchema.PATH_REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, DBSchema.PATH_SEQUENCE, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                if(!cursor.isNull(0))
+                    path.addEntry(new Option(cursor.getLong(0),dbHelper));
+            }
+        }
+        return path;
+
+
     }
     // do not modify the db
     public void setPath(Path path) {

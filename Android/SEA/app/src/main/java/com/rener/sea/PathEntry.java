@@ -9,48 +9,47 @@ import android.database.sqlite.SQLiteDatabase;
  * This class is used as a helper to facilitate navigating through a flowchart.
  */
 public class PathEntry {
-    private Item item;// has flowchart id
-    private Option option;// id
-    private String data;
+
     private long report_id = -1;
     private long option_id = -1;
     private DBHelper dbHelper = null;
 
-    public PathEntry(long report_id, long option_id, String data, DBHelper dbHelper) {
-        this.dbHelper = dbHelper;
-        //verify if exit
-        if (exist(report_id,option_id)) { // can also verify if id == -1
-
-        } else {
-            create(report_id,option_id,data);
-        }
-    }
-    public PathEntry(long report_id, long option_id, DBHelper dbHelper) {
+    public PathEntry(long report_id, long option_id, String data, int sequence, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
         if (exist(report_id,option_id)) { // can also verify if id == -1
             invoke(report_id,option_id);
         } else {
-            create(report_id,option_id);
+            create(report_id,option_id,data,sequence);
         }
     }
-    public PathEntry(long report_id, Option option, DBHelper dbHelper) {
+    public PathEntry(long report_id, long option_id, int sequence, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
-        long option_id = option.getId();
         //verify if exit
         if (exist(report_id,option_id)) { // can also verify if id == -1
             invoke(report_id,option_id);
         } else {
-            create(report_id,option_id);
+            create(report_id,option_id,sequence);
         }
     }
+//    public PathEntry(long report_id, Option option, DBHelper dbHelper) {
+//        this.dbHelper = dbHelper;
+//        long option_id = option.getId();
+//        //verify if exit
+//        if (exist(report_id,option_id)) { // can also verify if id == -1
+//            invoke(report_id,option_id);
+//        } else {
+//            create(report_id,option_id);
+//        }
+//    }
 
 
-    private void create(long report_id, long option_id, String data){
+    private void create(long report_id, long option_id, String data, int sequence){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_REPORT_ID, report_id);
         values.put(DBSchema.PATH_OPTION_ID, option_id);
+        values.put(DBSchema.PATH_SEQUENCE, sequence);
         if(data == null)
             values.put(DBSchema.PATH_DATA, "");
         else
@@ -61,11 +60,12 @@ public class PathEntry {
         this.report_id = report_id;
         this.option_id = option_id;
     }
-    private void create(long report_id, long option_id){
+    private void create(long report_id, long option_id, int sequence){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_REPORT_ID, report_id);
         values.put(DBSchema.PATH_OPTION_ID, option_id);
+        values.put(DBSchema.PATH_SEQUENCE, sequence);
         long id = db.insert(DBSchema.TABLE_PATH, null, values);
         db.close();
 

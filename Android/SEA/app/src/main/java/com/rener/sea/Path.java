@@ -34,7 +34,7 @@ public class Path implements Iterable<PathEntry> {
      */
     public void addEntry(Option option) {
 
-        path.push(new PathEntry(reportID, option.getId(), dbHelper));
+        path.push(new PathEntry(reportID, option.getId(), path.size(), dbHelper));
     }
 
     /**
@@ -45,7 +45,7 @@ public class Path implements Iterable<PathEntry> {
      * @param data   the associated data
      */
     public void addEntry(Option option, String data) {
-        path.push(new PathEntry(reportID, option.getId(),data, dbHelper));
+        path.push(new PathEntry(reportID, option.getId(),data, path.size(), dbHelper));
     }
 
     /**
