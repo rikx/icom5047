@@ -136,6 +136,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         List<Location> locations = new ArrayList<>(dbHelper.getAllLocations());
         List<Person> people = new ArrayList<>(dbHelper.getAllPersons());
         List<Flowchart> flowcharts = new ArrayList<>(dbHelper.getAllFlowcharts());
+	    Log.i(this.toString(), "populate flowchart spinner:"+flowcharts.toString());
         Collections.sort(people);
         Collections.sort(flowcharts);
         Collections.sort(locations);
@@ -172,7 +173,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void flowchartSelected(Flowchart flowchart) {
-        path = new Path();
+        path = new Path(report.getId(), dbHelper);
+	    report.setPath(path);
         progressLayout.removeAllViews();
         newQuestion(flowchart.getFirst());
     }

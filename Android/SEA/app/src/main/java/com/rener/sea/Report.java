@@ -374,7 +374,7 @@ public class Report implements Comparable<Report> {
 //        return path;
 //    }
     public Path getPath() {
-        return new Path();
+        return this.path;
     }
     // do not modify the db
     public void setPath(Path path) {

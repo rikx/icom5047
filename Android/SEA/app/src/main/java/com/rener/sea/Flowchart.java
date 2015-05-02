@@ -13,7 +13,7 @@ import java.util.List;
 public class Flowchart implements Comparable<Flowchart> {
 
     private long id = -1;
-    private String name = "";
+    private String dummy;
     private List<Item> items;
     private DBHelper dbHelper = null;
 
@@ -22,10 +22,8 @@ public class Flowchart implements Comparable<Flowchart> {
         invoke(id);
     }
 
-
-
-    public Flowchart(String name) {
-        this.name = name;
+    public Flowchart(String dummy) {
+        this.dummy = dummy;
     }
 
     public Flowchart(long id, long first, long end, long creator, String name, String version, DBHelper dbHelper) {
@@ -257,7 +255,7 @@ public class Flowchart implements Comparable<Flowchart> {
     }
 
     public String toString() {
-        return getName();
+        return id==-1 ? dummy : getName();
     }
 
     @Override
