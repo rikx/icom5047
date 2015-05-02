@@ -157,4 +157,33 @@ public class Option {
     public boolean equals(Option other) {
         return this.id == other.getId();
     }
+
+    public long setParent(Item parent) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.OPTION_PARENT_ID, parent.getId());
+        long id = db.update(DBSchema.TABLE_OPTION, values, DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
+
+    public Item getParent() {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        long nextItem = -1;
+        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_PARENT_ID},
+                DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            if(!cursor.isNull(0))
+                nextItem = cursor.getLong(0);
+            db.close();
+            cursor.close();
+        }
+
+        return new Item(nextItem, dbHelper);
+    }
+
+
 }

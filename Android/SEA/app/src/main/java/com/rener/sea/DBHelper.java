@@ -18,7 +18,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
-    private static int DATABASE_VERSION = 2;
+    private static int DATABASE_VERSION = 3;
     private boolean dummyDB = false;
 
     public DBHelper(Context context) {

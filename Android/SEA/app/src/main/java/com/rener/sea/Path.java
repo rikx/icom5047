@@ -6,11 +6,13 @@ import java.util.Stack;
 /**
  * A class representing an "answered survey" by making a path of options (edges) through a
  * flowchart. It's underlying data structure is that of a stack.
- * TODO: implement DBHelper into this class
+ * TODO: revisar!!!!!!!
  */
 public class Path implements Iterable<PathEntry> {
 
     private Stack<PathEntry> path;
+    private long reportID = -1;
+    private DBHelper dbHelper = null;
 
     /**
      * Constructs a new Path object by initializing it's stack structure.
@@ -18,7 +20,22 @@ public class Path implements Iterable<PathEntry> {
     public Path() {
         this.path = new Stack<>();
     }
+    public Path(long report_id, DBHelper db) {
+        this.path = new Stack<>();
+        this.reportID = report_id;
+        this.dbHelper = db;
+    }
 
+    /**
+     * Add a new entry to this Path object by pushing it to it's stack.
+     * The new entry represents an "answered question" that has no associated data.
+     *
+     * @param option the option object for the entry
+     */
+    public void addEntry(Option option) {
+
+        path.push(new PathEntry(reportID, option.getId(), dbHelper));
+    }
     /**
      * Add a new entry to this Path object by pushing it to it's stack.
      * The new entry represents an "answered question" that has no associated data.
@@ -29,7 +46,16 @@ public class Path implements Iterable<PathEntry> {
     public void addEntry(Item item, Option option) {
         path.push(new PathEntry(item, option));
     }
-
+    /**
+     * Add a new entry to this Path object by pushing it to it's stack.
+     * The new entry represents an "answered question" that has some associated data.
+     *
+     * @param option some Option object
+     * @param data   the associated data
+     */
+    public void addEntry(Option option, String data) {
+        path.push(new PathEntry(reportID, option.getId(),data, dbHelper));
+    }
     /**
      * Add a new entry to this Path object by pushing it to it's stack.
      * The new entry represents an "answered question" that has some associated data.
@@ -41,7 +67,6 @@ public class Path implements Iterable<PathEntry> {
     public void addEntry(Item item, Option option, String data) {
         path.push(new PathEntry(item, option, data));
     }
-
     /**
      * Explicitly set the top of stack entry  for this Path with some Item and Option objects.
      *

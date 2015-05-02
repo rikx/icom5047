@@ -75,7 +75,9 @@ public class Appointment {
         return false;
 
     }
-
+    public long getId() {
+        return id;
+    }
 	public Date getDate() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Date date = new Date(0);
@@ -128,7 +130,9 @@ public class Appointment {
         return purpose;
 	}
 
-	public long setPurpose(String purpose) {
+
+
+    public long setPurpose(String purpose) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.APPOINTMENT_PURPOSE, String.valueOf(purpose));
@@ -141,4 +145,30 @@ public class Appointment {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
 		return sdf.format(getDate());
 	}
+
+    public Report getReport() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        long report = -1;
+        Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_REPORT_ID},
+                DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            if(!cursor.isNull(0)){
+                report = cursor.getLong(0);
+            }
+            db.close();
+            cursor.close();
+        }
+
+        return new Report(report,dbHelper);
+    }
+
+    public long setReport(Report report){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.APPOINTMENT_REPORT_ID, report.getId());
+        long id = db.update(DBSchema.TABLE_APPOINTMENTS, values, DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
 }

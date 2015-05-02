@@ -143,6 +143,7 @@ public class DBSchema {
     public static final String REPORT_FLOWCHART_ID = "flowchart_id";
     public static final String REPORT_NOTE = "note";
     public static final String REPORT_DATE_FILED = "date_filed";
+    public static final String REPORT_NAME = "name";
     public static final String CREATE_REPORT_TABLE = "CREATE TABLE " + TABLE_REPORT + "(" +
             REPORT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             REPORT_CREATOR_ID + " INTEGER," +
@@ -150,6 +151,7 @@ public class DBSchema {
             REPORT_SUBJECT_ID + " INTEGER," +
             REPORT_FLOWCHART_ID + " INTEGER," +
             REPORT_NOTE + " TEXT," +
+            REPORT_NAME + " TEXT," +
             REPORT_DATE_FILED + " TEXT)";
     public static final String TABLE_SPECIALIZATION = "specialization";
     public static final String SPECIALIZATION_ID = "spec_id";
