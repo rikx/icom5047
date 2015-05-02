@@ -180,9 +180,9 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	}
 });
 
- /* GET Admin Crear Cuestionario */
- router.get('/admin/cuestionarios/crear', function(req, res, next) {
- 	var user_id = req.session.user_id;
+/* GET Admin Crear Cuestionario */
+router.get('/admin/cuestionarios/crear', function(req, res, next) {
+	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
 
@@ -194,9 +194,98 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	} else if (user_type != 'admin') {
 		res.redirect('/');
 	} else {
- 		res.render('crear_cuestionario', { title: 'Crear Cuestionario'});
- 	}
- });
+		var current_user = {
+			user_id: user_id,
+			username: username
+		}
+			res.render('crear_cuestionario', { title: 'Crear Cuestionario', user: current_user});
+		}
+});
+
+/* POST Admin crear cuestionario
+ * post new survey
+ */
+router.post('/admin/cuestionarios/crear', function(req, res, next) {
+	var user_id = req.session.user_id;
+
+	var flowchart_id;
+	var flowchart_info = req.body.flowchart;
+	var flowchart_items = req.body.items;
+	var item_options = req.body.options;
+
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+  	// Verify flowchart name does not already exist in db
+  	client.query("SELECT name FROM flowchart WHERE name = $1", [flowchart_info.name], function(err, result) {
+  		if(err) {
+  			return console.error('error running query', err);
+  		} 
+			if(result.rowCount > 0){
+				res.send({exists: true});
+			} else {
+				// checks if flowchart is finished
+				if(flowchart_info.end_id != undefined){
+  				query_config = {
+  					text: "INSERT into flowchart (first_id, name, end_id, creator_id, version) \
+									VALUES ($1, $2, $3, $4, $5) \
+									RETURNING flowchart_id",
+						values: [flowchart_info.first_id, flowchart_info.name, flowchart_info.end_id, flowchart_info.creator_id, flowchart_info.version]
+  				}
+				} else {
+  				query_config = {
+  					text: "INSERT into flowchart (first_id, name, creator_id, version) \
+									VALUES ($1, $2, $3, $4) \
+									RETURNING flowchart_id",
+						values: [flowchart_info.first_id, flowchart_info.flowchart_name, flowchart_info.creator_id, flowchart_info.version]
+  				}
+				}
+  			// Insert new flowchart into db
+  			client.query(query_config, function(err, result) {
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						flowchart_id = result.rows[0].flowchart_id;
+					}
+				});
+
+				// Insert items
+				var this_item;
+  			for(var i=0; i < flowchart_items.length; i++){
+  				this_item = flowchart_items[i];
+					client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, plumb_id \
+												VALUES ($1, $2, $3, $4, $5, $6)', 
+												[flowchart_id, this_item.label, this_item.top, this_item.left, this_item.type, this_item.id], function(err, result) {
+						if(err) {
+							return console.error('error running query', err);
+						} else {
+							// do nothing
+						}
+					});
+  			}
+				
+				// Insert options
+				var this_option;
+  			for(var j=0; j < item_options; j++){
+  				this_option = item_options[j];
+					client.query('INSERT into option (parent_id, next_id, label) \
+												VALUES ($1, $2, $3)', 
+												[this_option.parent_id, this_option.next_id, this_option.label], function(err, result) {
+						//call `done()` to release the client back to the pool
+						done();
+						if(err) {
+							return console.error('error running query', err);
+						} else {
+							res.json(true);
+						}
+					});
+  			}
+  		}
+	  });
+  });
+});
 
 /* TODO: GET Admin Cuestionario 
  *
@@ -322,7 +411,7 @@ router.get('/ganaderos', function(req, res, next) {
 		  	}
 		  });
 	  });
-}
+	}
 });
 
 /* PUT Admin Category_Locations

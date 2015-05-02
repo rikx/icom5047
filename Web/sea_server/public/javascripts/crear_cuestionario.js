@@ -102,9 +102,36 @@ jsPlumb.ready(function() {
  		AddRecommendation();
  	});
 
- 	$('#btn_submit').on('click', function(){
- 		saveGraph();
- 	});
+  /* POSTs new flowchart information */
+  $('#btn_submit').on('click', function(){
+    // get form data and conver to json format
+    var $the_form = $('#form_create_flowchart');
+    var form_data = $the_form.serializeArray();
+    var new_flowchart = ConverToJSON(form_data);
+
+    // ajax call to post new ganadero
+    $.ajax({
+      url: "http://localhost:3000/users/admin/cuestionarios/crear",
+      method: "POST",
+      data: JSON.stringify(new_flowchart),
+      contentType: "application/json",
+      dataType: "json",
+
+      success: function(data) {
+        if(data.exists){
+          alert("Cuestionario con este nombre ya existe.");
+        } else {
+          alert("Cuestionario ha sido añadido al sistema.");
+        }
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
+  });
 
  	$('#btn_end').on('click', function(){
  		AddLastNode();
