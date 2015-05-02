@@ -43,6 +43,27 @@ public class Option {
         this.dbHelper = db;
         invoke(id);
     }
+    public Option(long optionID,long partentID, long nextID,String label, DBHelper db) {
+        this.dbHelper = db;
+        if (exist(optionID)) { // can also verify if id == -1
+
+        } else {
+            this.id = create(optionID, partentID, nextID,label);
+        }
+    }
+
+    private long create(long option_id, long parent_id, long next_id, String label) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.OPTION_ID, option_id);
+        values.put(DBSchema.OPTION_PARENT_ID, parent_id);
+        values.put(DBSchema.OPTION_NEXT_ID, next_id);
+        values.put(DBSchema.OPTION_LABEL, label);
+        long id = db.insert(DBSchema.TABLE_OPTION, null, values);
+        db.close();
+        return id;
+
+    }
 
     private long create(long parent_id, long next_id, String label) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
