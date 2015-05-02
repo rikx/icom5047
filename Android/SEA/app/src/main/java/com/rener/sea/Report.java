@@ -411,6 +411,6 @@ public class Report implements Comparable<Report> {
 
     @Override
     public int compareTo(@NonNull Report r) {
-        return this.date.compareTo(r.getDate());
+        return getDate().compareTo(r.getDate());
     }
 }
