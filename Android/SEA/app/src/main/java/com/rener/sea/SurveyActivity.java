@@ -200,7 +200,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                     group.addView(button);
                 }
                 progressLayout.addView(group);
-                path.addEntry(question, null);
                 break;
             case Item.OPEN: {
                 progressLayout.addView(textQuestion);
@@ -210,7 +209,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 input.setOnEditorActionListener(this);
                 input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
                 progressLayout.addView(input);
-                path.addEntry(question, null);
                 break;
             }
             case Item.CONDITIONAL: {
@@ -222,13 +220,11 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 input.setOnEditorActionListener(this);
                 input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
                 progressLayout.addView(input);
-                path.addEntry(question, null);
                 break;
             }
             case Item.RECOMMENDATION:
                 progressLayout.addView(textQuestion);
                 Option only = question.getOptions().get(0);
-                path.addEntry(question, only);
                 Item next = only.getNext();
                 newQuestion(next);
                 break;
@@ -250,23 +246,24 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     }
 
-    private void questionAnswered(Item question, Option answer) {
-        path.setLastEntry(question, answer);
+    private void questionAnswered(Option answer) {
+        path.addEntry(answer);
         Item next = answer.getNext();
         newQuestion(next);
     }
 
-    private void questionAnswered(Item question, Option answer, String data) {
-        path.setLastEntry(question, answer, data);
+    private void questionAnswered(Option answer, String data) {
+        path.addEntry(answer, data);
         Item next = answer.getNext();
         newQuestion(next);
     }
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        Item item = path.getLastItem();
+        Item item = path.isEmpty() ? report.getFlowchart().getFirst() : path.getLastOption()
+		        .getNext();
         Option checked = item.getOptions().get(i);
-        questionAnswered(item, checked);
+        questionAnswered(checked);
         for (View v : radioGroup.getTouchables()) {
             v.setEnabled(false);
         }
@@ -301,12 +298,12 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         String type = item.getType();
         if (type.equals(Item.OPEN)) {
             Option option = item.getOptions().get(0);
-            questionAnswered(item, option, input);
+            questionAnswered(option, input);
         } else if (type.equals(Item.CONDITIONAL)) {
             //TODO: validate input
             double d = Double.valueOf(input);
             Option option = handleConditional(d, item.getOptions());
-            questionAnswered(item, option, input);
+            questionAnswered(option, input);
         }
     }
 

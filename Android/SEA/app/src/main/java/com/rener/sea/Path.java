@@ -86,6 +86,14 @@ public class Path implements Iterable<PathEntry> {
         return path.peek().getItem();
     }
 
+	public Option getLastOption() {
+		return path.peek().getOption();
+	}
+
+	public boolean isEmpty() {
+		return path.isEmpty();
+	}
+
     @Override
     public Iterator<PathEntry> iterator() {
         return path.iterator();
