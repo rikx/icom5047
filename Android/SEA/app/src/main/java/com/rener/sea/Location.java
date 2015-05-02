@@ -3,7 +3,6 @@ package com.rener.sea;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Address;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +16,7 @@ public class Location implements Comparable<Location> {
 
     public static final String PUERTO_RICO = "Puerto Rico";
     private long id = -1;
-    private Address address = newAddress();
+    private Address address;
     private DBHelper dbHelper = null;
 	String dummy;
 
@@ -40,21 +39,6 @@ public class Location implements Comparable<Location> {
 		this.dummy = dummy;
 	}
 
-    private static Address newAddress() {
-        Address a = new Address(Locale.US);
-        a.setAddressLine(0, "");
-        a.setLocality("");
-        a.setCountryName(PUERTO_RICO);
-        a.setPostalCode("");
-        return a;
-    }
-//    DBSchema.LOCATION_ID
-//    DBSchema.LOCATION_NAME
-//    DBSchema.LOCATION_ADDRESS_ID
-//    DBSchema.LOCATION_OWNER_ID
-//    DBSchema.LOCATION_MANAGER_ID
-//    DBSchema.LOCATION_LICENSE
-//    DBSchema.LOCATION_AGENT_ID
 
     private long create(String name, long addressID, long ownerID, long managerID, String license, long agentID) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -68,8 +52,8 @@ public class Location implements Comparable<Location> {
 
         long id = db.insert(DBSchema.TABLE_LOCATION, null, values);
         db.close();
-        //fix later
-        this.address = newAddress();
+
+        this.address = new Address(addressID,dbHelper);
         return id;
 
     }
@@ -94,11 +78,14 @@ public class Location implements Comparable<Location> {
 
     private boolean invoke(long id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID},
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID,DBSchema.LOCATION_ADDRESS_ID},
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             this.id = cursor.getLong(0);
+            if(!cursor.isNull(1))
+                this.address = new Address(cursor.getLong(1),dbHelper);
             db.close();
             cursor.close();
             return true;
@@ -119,7 +106,9 @@ public class Location implements Comparable<Location> {
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            name = cursor.getString(0);
+            if(!cursor.isNull(0)) {
+                name = cursor.getString(0);
+            }
             db.close();
             cursor.close();
         }
@@ -144,6 +133,7 @@ public class Location implements Comparable<Location> {
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             managerID = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -173,6 +163,7 @@ public class Location implements Comparable<Location> {
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             ownerID = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -203,6 +194,7 @@ public class Location implements Comparable<Location> {
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             agentID = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -224,55 +216,35 @@ public class Location implements Comparable<Location> {
         return getAgent().getId() != -1;
     }
 
-    public Address getAddress() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor cursor = db.query(DBSchema.TABLE_ADDRESS, new String[]{DBSchema.ADDRESS_LINE1,
-                        DBSchema.ADDRESS_LINE2,
-                        DBSchema.ADDRESS_CITY,
-                        DBSchema.ADDRESS_ZIPCODE},
-                DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            address.setAddressLine(0, cursor.getString(0));
-            address.setAddressLine(1, cursor.getString(1));
-            address.setLocality(cursor.getString(2));
-            address.setPostalCode(cursor.getString(3));
-            db.close();
-            cursor.close();
-        }
-
-        return address;
-    }
 
     public String getAddressLine(int n) {
-        return address.getAddressLine(n - 1);
+        return address.getAddressLine(n);
     }
 
     public String setAddressLine(int n, String line) {
         if (line == null || line.equals(""))
-            address.setAddressLine(n - 1, null);
+            address.setAddressLine(n, line);
         else
-            address.setAddressLine(n - 1, line);
-        return address.getAddressLine(n - 1);
+            address.setAddressLine(n, line);
+        return address.getAddressLine(n);
     }
 
     public String getCity() {
-        return address.getLocality();
+        return address.getCity();
     }
 
-    public String setCity(String city) {
-        address.setLocality(city);
-        return address.getLocality();
+    public long setCity(String city) {
+
+        return address.setCity(city);
     }
 
     public String getZipCode() {
-        return address.getPostalCode();
+        return String.valueOf(address.getZipcode());
     }
 
-    public String setZipCode(String code) {
-        address.setPostalCode(code);
-        return address.getPostalCode();
+    public long setZipCode(String code) {
+        return  address.setZipcode(code);
+
     }
 
     public long getAddressId() {
@@ -282,6 +254,7 @@ public class Location implements Comparable<Location> {
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             addressId = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -296,8 +269,7 @@ public class Location implements Comparable<Location> {
         values.put(DBSchema.LOCATION_ADDRESS_ID, String.valueOf(addressId));
         long id = db.update(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
-        // TODO: modify to proprt work
-        getAddress();
+        this.address = new Address(id,dbHelper);
         return id;// if -1 error during update
     }
 
@@ -308,6 +280,7 @@ public class Location implements Comparable<Location> {
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             license = cursor.getString(0);
             db.close();
             cursor.close();

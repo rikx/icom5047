@@ -105,6 +105,7 @@ public class Option {
                 DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             nextItem = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -124,11 +125,12 @@ public class Option {
 
     public String getLabel() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String label = null;
+        String label = "";
         Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_NEXT_ID},
                 DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             label = cursor.getString(0);
             db.close();
             cursor.close();

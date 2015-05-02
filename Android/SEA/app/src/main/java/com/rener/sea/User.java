@@ -69,6 +69,7 @@ public class User {
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             this.user_id = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -83,30 +84,15 @@ public class User {
         return user_id;
     }
 
-//    public long setId(long user_id) {
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        long id = -1;
-//        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID},
-//                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
-//        if ((cursor != null) && (cursor.getCount() > 0)) {
-//            cursor.moveToFirst();
-//            id = cursor.getLong(0);
-//            db.close();
-//            cursor.close();
-//            this.user_id = id;
-//        }
-//
-//        return id;
-////        return this.user_id = user_id;
-//    }
 
     public String getUsername() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String username = null;
+        String username = "";
         Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_USERNAME},
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             username = cursor.getString(0);
             db.close();
             cursor.close();
@@ -126,11 +112,12 @@ public class User {
 
     public String getPassword() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String pass = null;
+        String pass = "";
         Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PASSHASH},
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             pass = cursor.getString(0);
             db.close();
             cursor.close();
@@ -153,12 +140,13 @@ public class User {
 	public boolean authenticate(String password) {
 		boolean auth = false;
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		String hash = null;
+		String hash = "";
 		Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PASSHASH},
 				DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
 		if ((cursor != null) && (cursor.getCount() > 0)) {
 			cursor.moveToFirst();
-			hash = cursor.getString(0);
+            if(!cursor.isNull(0))
+            hash = cursor.getString(0);
 			db.close();
 			cursor.close();
 		}
@@ -169,11 +157,12 @@ public class User {
 
     public Person getPerson() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        long personID = 0;
+        long personID = -1;
         Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PERSON_ID},
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             personID = cursor.getLong(0);
             db.close();
             cursor.close();

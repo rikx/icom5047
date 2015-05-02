@@ -76,6 +76,7 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(person_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             this.id = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -92,6 +93,7 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             specializationID = cursor.getInt(0);
             db.close();
             cursor.close();
@@ -125,7 +127,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            name = cursor.isNull(0) ? "" :cursor.getString(0);
+            if(!cursor.isNull(0))
+            name = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -148,7 +151,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            initial = cursor.isNull(0) ? "" :cursor.getString(0);
+            if(!cursor.isNull(0))
+            initial = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -176,7 +180,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            last1 = cursor.isNull(0) ? "" :cursor.getString(0);
+            if(!cursor.isNull(0))
+            last1 = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -199,7 +204,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            last2 = cursor.isNull(0) ? "" :cursor.getString(0);
+            if(!cursor.isNull(0))
+            last2 = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -248,6 +254,7 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             email = cursor.getString(0);
             db.close();
             cursor.close();
@@ -276,6 +283,7 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
+            if(!cursor.isNull(0))
             phone = cursor.getString(0);
             db.close();
             cursor.close();

@@ -28,8 +28,8 @@ public class DBSchema {
             APPOINTMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             APPOINTMENT_DATE + " TEXT," +
             APPOINTMENT_TIME + " TEXT," +
-            APPOINTMENT_LOCATION_ID + " TEXT," +
-            APPOINTMENT_REPORT_ID + " TEXT," +
+            APPOINTMENT_LOCATION_ID + " INTEGER," +
+            APPOINTMENT_REPORT_ID + " INTEGER," +
             APPOINTMENT_PURPOSE + " TEXT)";
     public static final String TABLE_CATEGORY = "category";
     public static final String CATEGORY_ID = "category_id";

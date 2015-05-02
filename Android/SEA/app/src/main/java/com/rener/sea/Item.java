@@ -19,15 +19,11 @@ public class Item {
     public static final String OPEN = "OPEN";
     public static final String CONDITIONAL = "CONDITIONAL";
     private long id;
-    private String label;
-    private String type;
     private List<Option> options;
     private DBHelper dbHelper = null;
 
     public Item(long id, String label, String type) {
         this.id = id;
-        this.label = label;
-        this.type = type;
         options = new ArrayList<>();
     }
 
@@ -35,13 +31,7 @@ public class Item {
         this.dbHelper = db;
         invoke(id);
     }
-//
-//    DBSchema.ITEM_ID
-//    DBSchema.ITEM_FLOWCHART_ID
-//    DBSchema.ITEM_LABEL
-//    DBSchema.ITEM_POS_TOP
-//    DBSchema.ITEM_POS_LEFT
-//    DBSchema.ITEM_TYPE
+
 
     private long create(long flowchart_id, String lable, String type) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -103,7 +93,9 @@ public class Item {
                 DBSchema.ITEM_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            label = cursor.getString(0);
+            if(!cursor.isNull(0)){
+                label = cursor.getString(0);
+            }
             db.close();
             cursor.close();
         }
@@ -127,7 +119,9 @@ public class Item {
                 DBSchema.ITEM_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            type = cursor.getString(0);
+            if(!cursor.isNull(0)){
+                type = cursor.getString(0);
+            }
             db.close();
             cursor.close();
         }

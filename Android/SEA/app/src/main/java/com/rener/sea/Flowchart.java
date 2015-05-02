@@ -13,10 +13,7 @@ import java.util.List;
 public class Flowchart implements Comparable<Flowchart> {
 
     private long id = -1;
-    private Item first, end;
-    private String name;
-    private User creator;
-    private String version;
+    private String name = "";
     private List<Item> items;
     private DBHelper dbHelper = null;
 
@@ -25,33 +22,22 @@ public class Flowchart implements Comparable<Flowchart> {
         invoke(id);
     }
 
-    public Flowchart() {
 
-    }
-
-    /**
-     * Constructs a new Flowchart object set to the given ID and name
-     *
-     * @param id   a unique ID
-     * @param name a name
-     */
-    public Flowchart(long id, String name) {
-        this.id = id;
-        this.name = name;
-        items = new ArrayList<>();
-    }
 
     public Flowchart(String name) {
         this.name = name;
     }
 
-    //    DBSchema.TABLE_FLOWCHART
-//    DBSchema.FLOWCHART_ID
-//    DBSchema.FLOWCHART_FIRST_ID
-//    DBSchema.FLOWCHART_NAME
-//    DBSchema.FLOWCHART_END_ID
-//    DBSchema.FLOWCHART_CREATOR_ID
-//    DBSchema.FLOWCHART_VERSION
+    public Flowchart(long id, long first, long end, long creator, String name, String version, DBHelper dbHelper) {
+        this.dbHelper = dbHelper;
+        //verify if exit
+        if (exist(id)) { // can also verify if id == -1
+
+        } else {
+            this.id = create(first, end, creator, name, version);
+        }
+    }
+
     private long create(long first, long end, long creator, String name, String version) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
@@ -115,7 +101,10 @@ public class Flowchart implements Comparable<Flowchart> {
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            first_id = cursor.getLong(0);
+            if(!cursor.isNull(0)){
+                first_id = cursor.getLong(0);
+            }
+
             db.close();
             cursor.close();
         }
@@ -141,8 +130,10 @@ public class Flowchart implements Comparable<Flowchart> {
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_END_ID},
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            last_id = cursor.getLong(0);
+            cursor.moveToFirst();if(!cursor.isNull(0)){
+                last_id = cursor.getLong(0);
+            }
+
             db.close();
             cursor.close();
         }
@@ -162,12 +153,14 @@ public class Flowchart implements Comparable<Flowchart> {
     public String getName() {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String name = null;
+        String name = "";
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_NAME},
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            name = cursor.getString(0);
+            if(!cursor.isNull(0)){
+                name = cursor.getString(0);
+            }
             db.close();
             cursor.close();
         }
@@ -211,12 +204,14 @@ public class Flowchart implements Comparable<Flowchart> {
 
     public String getVersion() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String version = null;
+        String version = "";
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_VERSION},
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            version = cursor.getString(0);
+            if(!cursor.isNull(0)){
+                version = cursor.getString(0);
+            }
             db.close();
             cursor.close();
         }
