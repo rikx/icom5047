@@ -1,8 +1,20 @@
 	.item_question {
 		position: absolute;
 		border: 1px solid black;
-		background-color: green;
+		background-color: lime;
 
+	}
+
+	.item_recom {
+		position: absolute;
+		border: 1px solid black;
+		background-color: yellow;
+	}
+
+	.item_end_point{
+		position: absolute;
+		border: 1px solid black;
+		background-color: aqua;
 	}
 	
 	#container_plumbjs {
@@ -25,12 +37,6 @@
 		height: 20px;
 		background-color: white;
 		cursor: pointer;
-	}
-
-	.item_rec {
-		position: absolute;
-		border: 1px solid black;
-		background-color: yellow;
 	}
 
 	.title_rec {

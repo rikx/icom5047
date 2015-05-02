@@ -1,6 +1,8 @@
 $(document).ready(function(){
 	// store question-answer pairs of answered questions
 	var answered_questions = []; 
+	// path sequence number
+	var sequence_number = 0;
 	// answered questions list
   $answered_list = $('#answered_questions');
   
@@ -109,6 +111,8 @@ $(document).ready(function(){
 
 	      success: function(data) {
 	      	alert("Cuestionario ha sido comenzado.");
+	      	// initialize path sequence number value
+	      	sequence_number = 0;
 	      	// save new report id
 	      	$question_panel_answers.attr('data-report-id', data.report_id);
 			    // populate question panel
@@ -168,7 +172,8 @@ $(document).ready(function(){
 			var new_path = {
 				report_id: $question_panel_answers.attr('data-report-id'),
 				option_id: the_answer.attr('data-answer-id'),
-				user_input: answer_value
+				user_input: answer_value,
+				sequence: sequence_number
 			};
 	    $.ajax({
 	      url: "http://localhost:3000/cuestionario/path",
@@ -178,6 +183,8 @@ $(document).ready(function(){
 	      dataType: "json",
 
 	      success: function(data) {
+	      	// increment path sequence number
+	      	sequence_number++;
 					// push new question-answer pair to array
 					answered_questions.push(question_answer_pair);
 					// update answered questions list

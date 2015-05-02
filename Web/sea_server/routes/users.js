@@ -206,10 +206,11 @@ router.get('/admin/cuestionarios/crear', function(req, res, next) {
  * post new survey
  */
 router.post('/admin/cuestionarios/crear', function(req, res, next) {
-	var user_id = req.session.user_id;
+	console.log(req.body);
+	var creator_id = req.session.user_id;
 
 	var flowchart_id;
-	var flowchart_info = req.body.flowchart;
+	var flowchart_info = req.body.info;
 	var flowchart_items = req.body.items;
 	var item_options = req.body.options;
 
@@ -219,69 +220,81 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
   	// Verify flowchart name does not already exist in db
-  	client.query("SELECT name FROM flowchart WHERE name = $1", [flowchart_info.name], function(err, result) {
+  	client.query("SELECT name FROM flowchart WHERE name = $1 AND version = $2", 
+  								[flowchart_info.flowchart_name, flowchart_info.flowchart_version], function(err, result) {
   		if(err) {
   			return console.error('error running query', err);
   		} 
 			if(result.rowCount > 0){
 				res.send({exists: true});
 			} else {
-				// checks if flowchart is finished
-				if(flowchart_info.end_id != undefined){
-  				query_config = {
-  					text: "INSERT into flowchart (first_id, name, end_id, creator_id, version) \
-									VALUES ($1, $2, $3, $4, $5) \
-									RETURNING flowchart_id",
-						values: [flowchart_info.first_id, flowchart_info.name, flowchart_info.end_id, flowchart_info.creator_id, flowchart_info.version]
-  				}
-				} else {
-  				query_config = {
-  					text: "INSERT into flowchart (first_id, name, creator_id, version) \
-									VALUES ($1, $2, $3, $4) \
-									RETURNING flowchart_id",
-						values: [flowchart_info.first_id, flowchart_info.flowchart_name, flowchart_info.creator_id, flowchart_info.version]
-  				}
-				}
   			// Insert new flowchart into db
-  			client.query(query_config, function(err, result) {
+  			client.query("INSERT into flowchart (name, creator_id, version) VALUES ($1, $2, $3) \
+											RETURNING flowchart_id", 
+											[flowchart_info.flowchart_name, creator_id, flowchart_info.flowchart_version], function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {
 						flowchart_id = result.rows[0].flowchart_id;
+						
+						// Insert items
+						var this_item;
+		  			for(var i=0; i < flowchart_items.length; i++){
+		  				this_item = flowchart_items[i];
+							client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, state_id) \
+														VALUES ($1, $2, $3, $4, $5, $6) \
+														RETURNING item_id', 
+														[flowchart_id, this_item.name, this_item.top, this_item.left, this_item.type, this_item.id], function(err, result) {
+								if(err) {
+									return console.error('error running query', err);
+								} else {
+									var new_item = result.rows[0].item_id;
+									// if new item is start item
+									if(flowchart_info.first_id == this_item.id){
+										client.query('UPDATE flowchart SET first_id = $1 \
+																	WHERE flowchart_id = $2', [new_item, flowchart_id] , function(err, result){
+											if(err) {
+												return console.error('error running query', err);
+											} else {
+												console.log('added start item');
+											}
+										});
+									}
+									// if new item is end item
+									if(flowchart_info.end_id == this_item.id){
+										client.query('UPDATE flowchart SET end_id = $1 \
+																	WHERE flowchart_id = $2', [new_item, flowchart_id] , function(err, result){
+											if(err) {
+												return console.error('error running query', err);
+											} else {
+												console.log('added end item');
+											}
+										});
+									}
+									console.log('item added');
+								}
+							});
+		  			}
+				
+						// Insert options
+						var this_option;
+		  			for(var j=0; j < item_options; j++){
+		  				this_option = item_options[j];
+							client.query('INSERT into option (parent_id, next_id, label) \
+														VALUES ($1, $2, $3)', 
+														[this_option.source, this_option.target, this_option.label], function(err, result) {
+								//call `done()` to release the client back to the pool
+								done();
+								if(err) {
+									return console.error('error running query', err);
+								} else {
+									console.log('option added');
+								}
+							});
+		  			}
+		  			res.json(true);
 					}
 				});
-
-				// Insert items
-				var this_item;
-  			for(var i=0; i < flowchart_items.length; i++){
-  				this_item = flowchart_items[i];
-					client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, plumb_id \
-												VALUES ($1, $2, $3, $4, $5, $6)', 
-												[flowchart_id, this_item.label, this_item.top, this_item.left, this_item.type, this_item.id], function(err, result) {
-						if(err) {
-							return console.error('error running query', err);
-						} else {
-							// do nothing
-						}
-					});
-  			}
-				
-				// Insert options
-				var this_option;
-  			for(var j=0; j < item_options; j++){
-  				this_option = item_options[j];
-					client.query('INSERT into option (parent_id, next_id, label) \
-												VALUES ($1, $2, $3)', 
-												[this_option.parent_id, this_option.next_id, this_option.label], function(err, result) {
-						//call `done()` to release the client back to the pool
-						done();
-						if(err) {
-							return console.error('error running query', err);
-						} else {
-							res.json(true);
-						}
-					});
-  			}
   		}
 	  });
   });
@@ -814,7 +827,8 @@ router.get('/reportes/:id', function(req, res, next) {
 			client.query('SELECT item.label as question, option.label as answer, path.data as path_data, type \
 										FROM path INNER JOIN option ON path.option_id = option.option_id \
 										INNER JOIN item ON item.item_id = option.parent_id \
-										WHERE path.report_id = $1', [report_id], function(err, result) {
+										WHERE path.report_id = $1 \
+										ORDER BY sequence', [report_id], function(err, result) {
 				//call `done()` to release the client back to the pool
 		  	done();
 

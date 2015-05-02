@@ -95,42 +95,69 @@ jsPlumb.ready(function() {
  	// JS PLUMB create code
 
  	$('#btn_add_question').on('click', function(){
- 		AddQuestion();
+ 		add_item();
  	});
 
  	$('#btn_add_recommendation').on('click', function(){
  		AddRecommendation();
  	});
 
+ 	/* gets first and end item ids from elements_array, if they exist */
+ 	function check_for_endpoints(){
+ 		var first_item = -1
+ 			, end_item = -1;
+ 		for(var i=0; i<elements_array.length; i++){
+ 			if(elements_array[i].type == 'START'){
+				first_item = elements_array[i].id;
+ 			} else if(elements_array[i].type == 'END'){
+				end_item = elements_array[i].id;
+ 			}
+ 		}
+ 		return {first_id: first_item, end_id: end_item};
+ 	}
+
   /* POSTs new flowchart information */
   $('#btn_submit').on('click', function(){
-    // get form data and conver to json format
-    var $the_form = $('#form_create_flowchart');
-    var form_data = $the_form.serializeArray();
-    var new_flowchart = ConverToJSON(form_data);
+  	var end_points = check_for_endpoints();
 
-    // ajax call to post new ganadero
-    $.ajax({
-      url: "http://localhost:3000/users/admin/cuestionarios/crear",
-      method: "POST",
-      data: JSON.stringify(new_flowchart),
-      contentType: "application/json",
-      dataType: "json",
+  	// checks created flowchart has a first item
+  	if(end_points.first_id != -1){
+	    // get form data and conver to json format
+	    var $the_form = $('#form_create_flowchart');
+	    var form_data = $the_form.serializeArray();
+	    var new_flowchart = ConverToJSON(form_data);
 
-      success: function(data) {
-        if(data.exists){
-          alert("Cuestionario con este nombre ya existe.");
-        } else {
-          alert("Cuestionario ha sido añadido al sistema.");
-        }
-      },
-      error: function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        console.dir( xhr );
-      }
-    });
+	    // add missing flowchart fields
+	    new_flowchart.first_id = end_points.first_id;
+	    new_flowchart.end_id = end_points.end_id;
+	    console.log(new_flowchart);
+	    // ajax call to post new ganadero
+	    $.ajax({
+	      url: "http://localhost:3000/users/admin/cuestionarios/crear",
+	      method: "POST",
+	      data: JSON.stringify({
+	      	info: new_flowchart,
+	      	items: elements_array,
+	      	options: connections_array
+	      }),
+	      contentType: "application/json",
+	      dataType: "json",
+
+	      success: function(data) {
+	        if(data.exists){
+	          alert("Cuestionario con este nombre y versión ya existe.");
+	        } else {
+	          alert("Cuestionario ha sido añadido al sistema.");
+	        }
+	      },
+	      error: function( xhr, status, errorThrown ) {
+	        alert( "Sorry, there was a problem!" );
+	        console.log( "Error: " + errorThrown );
+	        console.log( "Status: " + status );
+	        console.dir( xhr );
+	      }
+	    });
+	  }
   });
 
  	$('#btn_end').on('click', function(){
@@ -147,17 +174,28 @@ jsPlumb.ready(function() {
  	$('#list_question_type').on('click', 'li a', function(e){
 		// prevents link from firing
 		e.preventDefault();
-		$('#btn_question_type_text').text($(this).text()+' ');
-		$('#btn_question_type').attr('data-question-type', $(this).attr('data-question-type'));
+		$('#btn_item_type_text').text($(this).text()+' ');
+		$('#btn_item_type').attr('data-item-type', $(this).attr('data-item-type'));
 		// enable add question button
 		$('#btn_add_question').prop('disabled', false);
 	});
 
- 	function AddQuestion() {
+ 	function add_item() {
  		jsPlumb.ready(function() {
- 			var questionType = $('#btn_question_type').attr('data-question-type');
- 			var newState = $('<div>').attr('id', 'state' + j).addClass('item_question');
- 			newState.addClass(questionType);
+ 			var itemType = $('#btn_item_type').attr('data-item-type');
+ 			var newState = $('<div>').attr('id', 'state' + j);
+
+ 			// add css fitting item type
+ 			if(itemType == 'START'){
+ 				newState.addClass('item_question');
+ 			} else if(itemType == 'END'){
+				newState.addClass('item_question');
+ 			} else if(itemType == 'RECOM'){
+				newState.addClass('item_end_point');
+ 			} else {
+ 				newState.addClass('item_question');
+ 			}
+ 				
  			var title = $('<div>').addClass('title_question');
  			var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
  			var stateName = $('<input>').attr('type', 'text');
@@ -197,7 +235,7 @@ jsPlumb.ready(function() {
 						var this_item = {
 							id: newState.attr('id'),
 							name: $('#'+newState.attr('id')).attr('data-state-name'),
-							type: questionType,
+							type: itemType,
 							left: newState.position().left,
 							top: newState.position().top
 						};
@@ -232,7 +270,7 @@ jsPlumb.ready(function() {
 					var this_item = {
 						id: newState.attr('id'),
 						name: $('#'+newState.attr('id')).attr('data-state-name'),
-						type: questionType,
+						type: itemType,
 						left: newState.position().left,
 						top: newState.position().top
 					};
