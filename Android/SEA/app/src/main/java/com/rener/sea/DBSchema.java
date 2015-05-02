@@ -1,5 +1,8 @@
 package com.rener.sea;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by user on 4/15/15.
  */
@@ -171,6 +174,8 @@ public class DBSchema {
             USER_PASSHASH + " TEXT," +
             USER_PERSON_ID + " INTEGER," +
             USER_SALT + " TEXT)";
+
+    public static final DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
 
 }

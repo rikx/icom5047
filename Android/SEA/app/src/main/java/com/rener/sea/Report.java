@@ -47,11 +47,9 @@ public class Report implements Comparable<Report> {
      * Constructs a new Report with no ID and some default value
      * Used to represent a Report that has been created but hasn't been assigned a unique ID
      */
-    public Report() {
-        this.id = NEW_REPORT_ID;
-        this.date = new Date();
-        this.path = new Path();
-	    this.appointment = null;
+    public Report(DBHelper db, User creator) {
+        this.dbHelper = db;
+        create(creator.getId(),-1,-1,-1,"",new Date());
     }
 
 
@@ -59,14 +57,13 @@ public class Report implements Comparable<Report> {
 
     private long create(long creator_id, long location_id, long subject_id, long flowchart_id, String note, Date date) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_CREATOR_ID, creator_id);
         values.put(DBSchema.REPORT_LOCATION_ID, location_id);
         values.put(DBSchema.REPORT_SUBJECT_ID, subject_id);
         values.put(DBSchema.REPORT_FLOWCHART_ID, flowchart_id);
         values.put(DBSchema.REPORT_NOTE, String.valueOf(note));
-        values.put(DBSchema.REPORT_DATE_FILED, formatDate.format(date));
+        values.put(DBSchema.REPORT_DATE_FILED, DBSchema.formatDate.format(date));
         long id = db.insert(DBSchema.TABLE_REPORT, null, values);
         db.close();
         return id;
@@ -260,14 +257,13 @@ public class Report implements Comparable<Report> {
     public Date getDate() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Date date = new Date(0);
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_DATE_FILED},
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0)){
                 try {
-                    date = format.parse(cursor.getString(0));
+                    date = DBSchema.formatDate.parse(cursor.getString(0));
                 } catch (ParseException e) {
                     Log.e(this.toString(), "Time conversion error: " + e.toString());
                 }
@@ -282,9 +278,8 @@ public class Report implements Comparable<Report> {
 
     public long setDate(Date date) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
         ContentValues values = new ContentValues();
-        values.put(DBSchema.REPORT_DATE_FILED, String.valueOf(formatDate.format(date)));
+        values.put(DBSchema.REPORT_DATE_FILED, String.valueOf(DBSchema.formatDate.format(date)));
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
