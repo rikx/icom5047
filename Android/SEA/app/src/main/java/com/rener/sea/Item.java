@@ -22,22 +22,43 @@ public class Item {
     private List<Option> options;
     private DBHelper dbHelper = null;
 
-    public Item(long id, String label, String type) {
-        this.id = id;
-        options = new ArrayList<>();
+    public Item(long id, long flowchart_id, String label, String type, DBHelper db) {
+        if (exist(id)) { // can also verify if id == -1
+
+        } else {
+            this.id = create(id, flowchart_id, label, type);
+        }
     }
+//    public Item(long id, long flowchart_id, String label, String type, DBHelper db) {
+//        if (exist(id)) { // can also verify if id == -1
+//
+//        } else {
+//            this.id = create(flowchart_id, label, type);
+//        }
+//    }
 
     public Item(long id, DBHelper db) {
         this.dbHelper = db;
         invoke(id);
     }
 
+    private long create(long itemid, long flowchart_id, String label, String type){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.ITEM_ID, itemid);
+        values.put(DBSchema.ITEM_FLOWCHART_ID, flowchart_id);
+        values.put(DBSchema.ITEM_LABEL, label);
+        values.put(DBSchema.ITEM_TYPE, type);
+        long id = db.insert(DBSchema.TABLE_ITEM, null, values);
+        db.close();
+        return id;
+    }
 
-    private long create(long flowchart_id, String lable, String type) {
+    private long create(long flowchart_id, String label, String type) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ITEM_FLOWCHART_ID, flowchart_id);
-        values.put(DBSchema.ITEM_LABEL, lable);
+        values.put(DBSchema.ITEM_LABEL, label);
         values.put(DBSchema.ITEM_TYPE, type);
         long id = db.insert(DBSchema.TABLE_ITEM, null, values);
         db.close();
