@@ -4,6 +4,7 @@ $(document).ready(function(){
 	
 	// store data for initial 20 reports
 	var reportes_array = JSON.parse($reportes_list.attr('data-reports'));
+  var user_info = JSON.parse($reportes_list.attr('data-user'));
 
   // initial info panel population
   populate_info_panel(reportes_array[0]);
@@ -125,7 +126,9 @@ $(document).ready(function(){
     var table_content = '';
 
     // for each item in JSON, add table row and cells
-    $.each(reportes_set, function(i){
+    if(user_info.user_type == 'admin')
+    {
+      $.each(reportes_set, function(i){
       table_content += '<tr>';
       table_content += "<td><a class='list-group-item ";
       // if initial list item, set to active
@@ -144,6 +147,28 @@ $(document).ready(function(){
       table_content += "<td><a class='btn_delete_report btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });  
+    }
+    else
+    {
+       $.each(reportes_set, function(i){
+      table_content += '<tr>';
+      table_content += "<td><a class='list-group-item ";
+      // if initial list item, set to active
+      if(i==0) {
+        table_content +=  'active ';
+      }
+      var report_name;
+      if(this.report_name != null) {
+        report_name = this.report_name;
+      } else {
+        report_name = 'Reporte sin título';
+      }
+      table_content += "show_info_report' href='#', data-id='"+this.report_id+"'>"+report_name+"</a></td>";
+      table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
+      table_content += '</tr>';
+    });  
+    }
+    
 
     // inject content string into html
     $reportes_list.html(table_content);

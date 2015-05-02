@@ -34,7 +34,7 @@ block content
 										center Reporte
 									th 
 										center Localización
-								tbody#reportes_list(data-reports=reports)
+								tbody#reportes_list(data-reports=reports, data-user=user)
 									each report, i in reports
 										tr
 											td
@@ -52,11 +52,12 @@ block content
 															| Reporte sin título
 											td
 												center(data-id=report.location_id)= report.location_name
-											td
-												button(class='btn_edit_report btn btn-sm btn-success btn-block', type='button', data-id=report.report_id) Editar
-											td
-												a(class='btn_delete_report btn btn-sm btn-success', data-toggle='tooltip', data-id=report.report_id)
-													i(class='glyphicon glyphicon-trash')
+											if  user.user_type != 'agent'
+												td
+													button(class='btn_edit_report btn btn-sm btn-success btn-block', type='button', data-id=report.report_id) Editar
+												td
+													a(class='btn_delete_report btn btn-sm btn-success', data-toggle='tooltip', data-id=report.report_id)
+														i(class='glyphicon glyphicon-trash')
 
 			#info_panel.col-md-4
 				.panel.panel-success

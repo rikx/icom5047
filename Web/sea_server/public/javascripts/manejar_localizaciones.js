@@ -11,6 +11,8 @@ $(document).ready(function(){
   var agents_array =  JSON.parse($localizaciones_list.attr('data-agentes'));
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
   var all_categorias_array = JSON.parse($('#categoria_panel').attr('data-all-categorias'));
+  var user_info = JSON.parse($localizaciones_list.attr('data-user'));
+
 
   // initial info panel population
   populate_info_panel(localizaciones_array[0]);
@@ -658,7 +660,9 @@ function populate_list(locations_set){
   var table_content = '';
 
   // for each item in JSON, add table row and cells
-  $.each(locations_set, function(i){
+  if(user_info.user_type == 'admin')
+  {
+     $.each(locations_set, function(i){
     table_content += '<tr>';
     table_content += "<td><a class='list-group-item ";
     // if initial list item, set to active
@@ -671,7 +675,21 @@ function populate_list(locations_set){
     table_content += "<td><a class='btn_delete_localizacion btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.location_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
     table_content += '</tr>';
   });  
-
+  }
+  else
+  {
+       $.each(locations_set, function(i){
+    table_content += '<tr>';
+    table_content += "<td><a class='list-group-item ";
+    // if initial list item, set to active
+    if(i==0) {
+      table_content +=  'active ';
+    }
+    table_content += "show_info_localizacion' href='#', data-id='"+this.location_id+"'>"+this.location_name+"</a></td>";
+    table_content += '</tr>';
+  });   
+  }
+ 
   // inject content string into html
   $localizaciones_list.html(table_content);
 
