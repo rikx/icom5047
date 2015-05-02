@@ -225,7 +225,7 @@ public class Report implements Comparable<Report> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_FLOWCHART_ID, flowchart.getId());
-        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
     }

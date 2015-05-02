@@ -222,7 +222,6 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     public List<Option> getAllOptions(long itemID) {
         SQLiteDatabase db = getReadableDatabase();
-        long id = -1;
         Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_ID},
                 DBSchema.OPTION_PARENT_ID + "=?", new String[]{String.valueOf(itemID)}, null, null, null, null);
         ArrayList<Option> options = new ArrayList<>();
