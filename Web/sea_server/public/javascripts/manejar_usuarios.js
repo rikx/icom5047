@@ -142,6 +142,9 @@ $(document).ready(function(){
 
     $('#edit_panel').hide();
     $('#info_panel').show();
+    $('#add_specialty_panel').hide();
+
+
 
     //button#btn_add_specialty(class='btn btn-default btn-success', type='button') Agregar Especialidades
     //button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
@@ -242,6 +245,9 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
   $('#btn_add_specialty').hide()
   $('#btn_edit_specialty').show()
   $('#btn_add_specialty').show();
+  $('#add_specialty_panel').hide();
+
+
 
   var type = "Test";
     // contains usuario id
