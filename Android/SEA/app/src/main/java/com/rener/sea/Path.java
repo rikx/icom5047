@@ -83,7 +83,7 @@ public class Path implements Iterable<PathEntry> {
      * @return the Item object for this path's to of stack
      */
     public Item getLastItem() {
-        return path.peek().getItem();
+        return path.peek().getOption().getParent();
     }
 
 	public Option getLastOption() {
