@@ -36,16 +36,7 @@ public class Path implements Iterable<PathEntry> {
 
         path.push(new PathEntry(reportID, option.getId(), dbHelper));
     }
-    /**
-     * Add a new entry to this Path object by pushing it to it's stack.
-     * The new entry represents an "answered question" that has no associated data.
-     *
-     * @param item   the item object for the entry
-     * @param option the option object for the entry
-     */
-    public void addEntry(Item item, Option option) {
-        path.push(new PathEntry(item, option));
-    }
+
     /**
      * Add a new entry to this Path object by pushing it to it's stack.
      * The new entry represents an "answered question" that has some associated data.
@@ -56,17 +47,7 @@ public class Path implements Iterable<PathEntry> {
     public void addEntry(Option option, String data) {
         path.push(new PathEntry(reportID, option.getId(),data, dbHelper));
     }
-    /**
-     * Add a new entry to this Path object by pushing it to it's stack.
-     * The new entry represents an "answered question" that has some associated data.
-     *
-     * @param item   some Item object
-     * @param option some Option object
-     * @param data   the associated data
-     */
-    public void addEntry(Item item, Option option, String data) {
-        path.push(new PathEntry(item, option, data));
-    }
+
     /**
      * Explicitly set the top of stack entry  for this Path with some Item and Option objects.
      *

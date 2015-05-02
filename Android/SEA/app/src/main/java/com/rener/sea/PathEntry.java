@@ -34,25 +34,27 @@ public class PathEntry {
             create(report_id,option_id);
         }
     }
-
-    PathEntry(Item item, Option option) {
-        this.item = item;
-        this.option = option;
-        this.data = "";
+    public PathEntry(long report_id, Option option, DBHelper dbHelper) {
+        this.dbHelper = dbHelper;
+        long option_id = option.getId();
+        //verify if exit
+        if (exist(report_id,option_id)) { // can also verify if id == -1
+            invoke(report_id,option_id);
+        } else {
+            create(report_id,option_id);
+        }
     }
 
-    PathEntry(Item item, Option option, String data) {
-        this.item = item;
-        this.option = option;
-        this.data = data;
-    }
 
     private void create(long report_id, long option_id, String data){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_REPORT_ID, report_id);
         values.put(DBSchema.PATH_OPTION_ID, option_id);
-        values.put(DBSchema.PATH_DATA, data);
+        if(data == null)
+            values.put(DBSchema.PATH_DATA, "");
+        else
+            values.put(DBSchema.PATH_DATA, data);
         long id = db.insert(DBSchema.TABLE_PATH, null, values);
         db.close();
 
