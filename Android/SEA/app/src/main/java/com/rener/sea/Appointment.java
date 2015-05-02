@@ -32,12 +32,12 @@ public class Appointment {
         }
 
     }
-    private long create(String date, String time, long location_id, long report_id, String purpose){
+    private long create(String date, String time, long creator_id, long report_id, String purpose){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.APPOINTMENT_DATE, date);
         values.put(DBSchema.APPOINTMENT_TIME, time);
-        values.put(DBSchema.APPOINTMENT_LOCATION_ID, location_id);
+        values.put(DBSchema.APPOINTMENT_MAKER_ID, creator_id);
         values.put(DBSchema.APPOINTMENT_REPORT_ID, report_id);
         values.put(DBSchema.APPOINTMENT_PURPOSE, purpose);
         long id = db.insert(DBSchema.TABLE_APPOINTMENTS, null, values);
@@ -81,14 +81,28 @@ public class Appointment {
         return id;
     }
 
-	//TODO: integrate this to DB
 	public User getCreator() {
-		return this.creator;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        long creator = -1;
+        Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_MAKER_ID},
+                DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            if(!cursor.isNull(0))
+                creator = cursor.getLong(0);
+            db.close();
+            cursor.close();
+        }
+        return new User(creator,dbHelper);
 	}
 
-	//TODO: integrate this to DB
-	public User setCreator(User creator) {
-		return this.creator = creator;
+	public long setCreator(User creator) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.APPOINTMENT_MAKER_ID, creator.getId());
+        long id = db.update(DBSchema.TABLE_APPOINTMENTS, values, DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;
 	}
 
 	public Date getDate() {
@@ -184,4 +198,6 @@ public class Appointment {
         db.close();
         return id;// if -1 error during update
     }
+
+
 }

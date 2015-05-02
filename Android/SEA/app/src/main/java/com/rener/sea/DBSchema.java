@@ -24,14 +24,14 @@ public class DBSchema {
     public static final String APPOINTMENT_ID = "appointment_id";
     public static final String APPOINTMENT_DATE = "date";
     public static final String APPOINTMENT_TIME = "time";
-    public static final String APPOINTMENT_LOCATION_ID = "location_id";
     public static final String APPOINTMENT_REPORT_ID = "report_id";
     public static final String APPOINTMENT_PURPOSE = "purpose";
+    public static final String APPOINTMENT_MAKER_ID = "maker_id";
     public static final String CREATE_APPOINTMENTS_TABLE = "CREATE TABLE " + TABLE_APPOINTMENTS + "(" +
             APPOINTMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             APPOINTMENT_DATE + " TEXT," +
             APPOINTMENT_TIME + " TEXT," +
-            APPOINTMENT_LOCATION_ID + " INTEGER," +
+            APPOINTMENT_MAKER_ID + " INTEGER," +
             APPOINTMENT_REPORT_ID + " INTEGER," +
             APPOINTMENT_PURPOSE + " TEXT)";
     public static final String TABLE_CATEGORY = "category";
