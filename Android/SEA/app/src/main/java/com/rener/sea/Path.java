@@ -17,9 +17,7 @@ public class Path implements Iterable<PathEntry> {
     /**
      * Constructs a new Path object by initializing it's stack structure.
      */
-    public Path() {
-        this.path = new Stack<>();
-    }
+
     public Path(long report_id, DBHelper db) {
         this.path = new Stack<>();
         this.reportID = report_id;

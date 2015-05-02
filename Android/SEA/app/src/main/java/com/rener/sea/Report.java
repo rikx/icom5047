@@ -378,7 +378,7 @@ public class Report implements Comparable<Report> {
         Path path = new Path(id,dbHelper);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_OPTION_ID},
-                DBSchema.PATH_REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, DBSchema.PATH_SEQUENCE, null);
+                DBSchema.PATH_REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, DBSchema.PATH_SEQUENCE + " ASC", null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
