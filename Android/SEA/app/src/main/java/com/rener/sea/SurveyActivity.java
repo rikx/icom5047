@@ -225,6 +225,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             case Item.RECOMMENDATION:
                 progressLayout.addView(textQuestion);
                 Option only = question.getOptions().get(0);
+	            path.addEntry(only);
                 Item next = only.getNext();
                 newQuestion(next);
                 break;
