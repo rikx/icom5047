@@ -21,8 +21,10 @@ public class Item {
     private long id;
     private List<Option> options;
     private DBHelper dbHelper = null;
-
+//    new Item(1, fc.getId(), "Is the cow sick?", Item.BOOLEAN, this);
     public Item(long id, long flowchart_id, String label, String type, DBHelper db) {
+
+        this.dbHelper = db;
         if (exist(id)) { // can also verify if id == -1
 
         } else {
@@ -30,7 +32,8 @@ public class Item {
         }
     }
 //    public Item(long id, long flowchart_id, String label, String type, DBHelper db) {
-//        if (exist(id)) { // can also verify if id == -1
+//      this.dbHelper = db;
+//      if (exist(id)) { // can also verify if id == -1
 //
 //        } else {
 //            this.id = create(flowchart_id, label, type);

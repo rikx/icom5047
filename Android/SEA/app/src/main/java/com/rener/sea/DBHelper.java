@@ -18,7 +18,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
-    private static int DATABASE_VERSION = 3;
+    private static int DATABASE_VERSION = 1;
     private boolean dummyDB = false;
 
     public DBHelper(Context context) {
@@ -66,6 +66,25 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_SPECIALIZATION);
         db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_USERS);
         DATABASE_VERSION = newVersion;
+        onCreate(db);
+    }
+    // TODO:
+    public void deleteDB() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_ADDRESS);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_APPOINTMENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_CATEGORY);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_DEVICES);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_FLOWCHART);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_ITEM);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_LOCATION);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_LOCATION_CATEGORY);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_OPTION);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_PATH);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_PERSON);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_REPORT);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_SPECIALIZATION);
+        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_USERS);
         onCreate(db);
     }
 
@@ -538,17 +557,17 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    Flowchart fc = new Flowchart(1, 1, 10, 3, "Flowchart Test", "0", this);
 
 	    //Dummy items
-	    new Item(1, 1, "Is the cow sick?", Item.BOOLEAN, this);
-	    new Item(2, 1, "How would you categorize this problem?", Item.MULTIPLE_CHOICE, this);
-	    new Item(3, 1, "Record a description of the milk coloring, texture, and smell",
+	    new Item(1, fc.getId(), "Is the cow sick?", Item.BOOLEAN, this);
+	    new Item(2, fc.getId(), "How would you categorize this problem?", Item.MULTIPLE_CHOICE, this);
+	    new Item(3, fc.getId(), "Record a description of the milk coloring, texture, and smell",
 			    Item.OPEN, this);
-	    new Item(4, 1, "Input amount of times cow eats a day", Item.CONDITIONAL, this);
-	    new Item(5, 1, "Recommendation 1", Item.RECOMMENDATION, this);
-	    new Item(6, 1, "Recommendation 2", Item.RECOMMENDATION, this);
-	    new Item(7, 1, "Recommendation 3", Item.RECOMMENDATION, this);
-	    new Item(8, 1, "Recommendation 4", Item.RECOMMENDATION, this);
-	    new Item(9, 1, "Recommendation 5", Item.RECOMMENDATION, this);
-	    new Item(10, 1, "End of flowchart test", Item.END, this);
+	    new Item(4, fc.getId(), "Input amount of times cow eats a day", Item.CONDITIONAL, this);
+	    new Item(5, fc.getId(), "Recommendation 1", Item.RECOMMENDATION, this);
+	    new Item(6, fc.getId(), "Recommendation 2", Item.RECOMMENDATION, this);
+	    new Item(7, fc.getId(), "Recommendation 3", Item.RECOMMENDATION, this);
+	    new Item(8, fc.getId(), "Recommendation 4", Item.RECOMMENDATION, this);
+	    new Item(9, fc.getId(), "Recommendation 5", Item.RECOMMENDATION, this);
+	    new Item(10,fc.getId(), "End of flowchart test", Item.END, this);
 
 	    //Dummy options
 		new Option(1, 1, 2, "Yes", this);

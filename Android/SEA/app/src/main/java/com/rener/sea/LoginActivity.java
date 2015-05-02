@@ -31,6 +31,7 @@ public class LoginActivity extends Activity {
         // when get writable or readable db
         dbHelper = new DBHelper(getApplicationContext());
         // TODO: fill db with dummy data eliminar despues
+        dbHelper.deleteDB();
         if(dbHelper.getDummy())
             dbHelper.fillDB();
     }
