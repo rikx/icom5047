@@ -79,7 +79,7 @@ public class PathEntry {
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_REPORT_ID},
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             db.close();
@@ -93,7 +93,7 @@ public class PathEntry {
     private boolean invoke(long report_id, long option_id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.PATH_REPORT_ID,DBSchema.PATH_OPTION_ID,DBSchema.PATH_DATA},
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0))
@@ -113,7 +113,7 @@ public class PathEntry {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         long option = -1;
         Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_OPTION_ID},
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0))
@@ -129,7 +129,7 @@ public class PathEntry {
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_OPTION_ID, item.getId());
         long id = db.update(DBSchema.TABLE_PATH, values,
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)});
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)});
         db.close();
         return id;// if -1 error during update
     }
@@ -138,7 +138,7 @@ public class PathEntry {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         long item = -1;
         Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_OPTION_ID},
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0))
@@ -154,7 +154,7 @@ public class PathEntry {
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_OPTION_ID, option.getId());
         long id = db.update(DBSchema.TABLE_PATH, values,
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)});
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)});
         db.close();
         return id;// if -1 error during update
     }
@@ -163,7 +163,7 @@ public class PathEntry {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String data = "";
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.PATH_DATA},
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0))
@@ -179,7 +179,7 @@ public class PathEntry {
         ContentValues values = new ContentValues();
         values.put(DBSchema.PATH_DATA, String.valueOf(data));
         long id = db.update(DBSchema.TABLE_PATH, values,
-                DBSchema.PATH_REPORT_ID + "=? "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)});
+                DBSchema.PATH_REPORT_ID + "=? AND "+DBSchema.PATH_OPTION_ID + "=? ", new String[]{String.valueOf(report_id),String.valueOf(option_id)});
         db.close();
         return id;// if -1 error during update
     }

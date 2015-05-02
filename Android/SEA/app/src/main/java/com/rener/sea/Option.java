@@ -147,7 +147,7 @@ public class Option {
     public String getLabel() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String label = "";
-        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_NEXT_ID},
+        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{DBSchema.OPTION_LABEL},
                 DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
