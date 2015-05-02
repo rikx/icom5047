@@ -67,8 +67,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         progressLayout = (LinearLayout) findViewById(R.id.survey_progress_layout);
 
 	    dbHelper = new DBHelper(getApplicationContext());
-        report = new Report();
-	    setServiceData();
+        report = new Report(dbHelper, setCreator());
+	    setData();
     }
 
     @Override
@@ -113,6 +113,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                     report.setSubject(subject);
                     break;
                 case R.id.survey_flowchart_spinner:
+	                spinnerFlowchart.setEnabled(false);
                     Flowchart flowchart = (Flowchart) spinnerFlowchart.getSelectedItem();
                     report.setFlowchart(flowchart);
                     flowchartSelected(flowchart);
@@ -131,7 +132,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         checkSubmittable();
     }
 
-    private void setServiceData() {
+    private void setData() {
         List<Location> locations = new ArrayList<>(dbHelper.getAllLocations());
         List<Person> people = new ArrayList<>(dbHelper.getAllPersons());
         List<Flowchart> flowcharts = new ArrayList<>(dbHelper.getAllFlowcharts());
@@ -159,16 +160,15 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 android.R.layout.simple_list_item_1, flowcharts, 0);
         spinnerFlowchart.setAdapter(flowchartAdapter);
         spinnerFlowchart.setOnItemSelectedListener(this);
-        setCreator();
     }
 
-    private void setCreator() {
+    private User setCreator() {
         SharedPreferences sharedPref = this.getSharedPreferences(
 		        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
         User creator = dbHelper.findUserByUsername(sUsername);
 	    Log.i(this.toString(), "has creator "+creator.getUsername());
-        report.setCreator(creator);
+        return creator;
     }
 
     private void flowchartSelected(Flowchart flowchart) {
