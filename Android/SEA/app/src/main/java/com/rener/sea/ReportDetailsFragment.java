@@ -51,8 +51,8 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
-	    appointmentLayout = (FrameLayout) view.findViewById(R.id.report_appointment_container);
-	    appointmentLayout.addView(appointmentFlipper);
+	    //appointmentLayout = (FrameLayout) view.findViewById(R.id.report_appointment_container);
+	    //appointmentLayout.addView(appointmentFlipper);
         setFields(view);
 
         //Create dynamic views
@@ -61,8 +61,8 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         //Recreate the path taken through the flowchart
         Path path = report.getPath();
         for (PathEntry e : path) {
-            Item item = e.getItem();
-            Option option = e.getOption();
+	        Option option = e.getOption();
+            Item item = option.getParent();
             String data = e.getData();
             String question = item.getLabel();
             TextView textQuestion = new TextView(getActivity());
@@ -113,7 +113,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             String subject = report.getSubject().toString();
             textSubject.setText(label + ": " + subject);
         }
-	    setAppointmentViews(view);
+	    //setAppointmentViews(view);
     }
 
     /**
