@@ -18,7 +18,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
-    private static int DATABASE_VERSION = 3;
+    private static int DATABASE_VERSION = 5;
     private boolean dummyDB = false;
 
     public DBHelper(Context context) {
@@ -534,36 +534,6 @@ public final class DBHelper extends SQLiteOpenHelper {
         new User(4,4,"ricardo.fuentes","iamricardo",this);
         new User(5,5,"ramon.saldana","iamramon",this);
 
-	    //Dummy flowchart
-	    Flowchart fc = new Flowchart(1, 1, 10, 3, "Flowchart Test", "0", this);
-
-	    //Dummy items
-	    new Item(1, 1, "Is the cow sick?", Item.BOOLEAN, this);
-	    new Item(2, 1, "How would you categorize this problem?", Item.MULTIPLE_CHOICE, this);
-	    new Item(3, 1, "Record a description of the milk coloring, texture, and smell",
-			    Item.OPEN, this);
-	    new Item(4, 1, "Input amount of times cow eats a day", Item.CONDITIONAL, this);
-	    new Item(5, 1, "Recommendation 1", Item.RECOMMENDATION, this);
-	    new Item(6, 1, "Recommendation 2", Item.RECOMMENDATION, this);
-	    new Item(7, 1, "Recommendation 3", Item.RECOMMENDATION, this);
-	    new Item(8, 1, "Recommendation 4", Item.RECOMMENDATION, this);
-	    new Item(9, 1, "Recommendation 5", Item.RECOMMENDATION, this);
-	    new Item(10, 1, "End of flowchart test", Item.END, this);
-
-	    //Dummy options
-		new Option(1, 1, 2, "Yes", this);
-	    new Option(2, 1, 5, "No", this);
-	    new Option(3, 2, 3, "Milk is discolored", this);
-	    new Option(4, 2, 6, "Injured leg", this);
-	    new Option(5, 2, 4, "Eating problems", this);
-	    new Option(6, 4, 8, "lt3", this);
-	    new Option(7, 4, 9, "ge3", this);
-	    new Option(8, 3, 7, "[user input that is a description]", this);
-	    new Option(9, 7, 10, "End", this);
-	    new Option(10, 6, 10, "End", this);
-	    new Option(11, 8, 10, "End", this);
-	    new Option(12, 5, 10, "End", this);
-	    new Option(13, 9, 10, "End", this);
 
         SQLiteDatabase db = getReadableDatabase();
         ContentValues values = new ContentValues();
