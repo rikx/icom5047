@@ -30,7 +30,7 @@ public class Flowchart implements Comparable<Flowchart> {
         this.dbHelper = dbHelper;
         //verify if exit
         if (exist(id)) { // can also verify if id == -1
-
+            invoke(id);
         } else {
             this.id = create(first, end, creator, name, version);
         }
