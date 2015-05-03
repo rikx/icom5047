@@ -176,7 +176,7 @@ public class Appointment {
 
 	public String getDateString(String format, Locale locale) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
-		return sdf.format(getDate());
+		return sdf.format(getDate().getTime());
 	}
 
     public Report getReport() {
