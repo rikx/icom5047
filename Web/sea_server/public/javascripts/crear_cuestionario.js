@@ -44,14 +44,19 @@ jsPlumb.ready(function() {
   function populate_info_panel(this_element){
   	$('#pregunta_info_name').html(this_element.name);
   	$('#pregunta_info_type').html(this_element.type);
-
-  	var answers_content = '';
-  	$.each(connections_array, function(i){
-  		if(this_element.id == this.source){
-  			answers_content += "<li class='list-group-item'>"+this.label+"</li>"; 
-  		}
-  	});
-  	$('#pregunta_info_responses').html(answers_content);
+  	
+  	if(this_element.type != 'START' && this_element.type != 'END'){
+	  	var answers_content = '';
+	  	$.each(connections_array, function(i){
+	  		if(this_element.id == this.source){
+	  			answers_content += "<li class='list-group-item'>"+this.label+"</li>"; 
+	  		}
+	  	});
+	  	$('#pregunta_info_responses').html(answers_content);
+	  	$('#possible_answers').show();
+	  } else {
+	  	$('#possible_answers').hide();
+	  }
   }
 
   /* Check all items are a source in at least one connection 
@@ -196,36 +201,57 @@ jsPlumb.ready(function() {
  		jsPlumb.ready(function() {
  			var itemType = $('#btn_item_type').attr('data-item-type');
  			var newState = $('<div>').attr('id', 'state' + j);
+ 			var title = $('<div>').addClass('title_question');
+ 			var title_id = $('<p>');
+ 			var has_input = false;
 
  			// add css fitting item type
  			if(itemType == 'START'){
 				newState.addClass('item_end_point');
+				newState.attr('data-state-name', 'INICIO');
 				$('#start_item').addClass('disabled');
+				title_id.text('INICIO');
  			} else if(itemType == 'END'){
  				newState.addClass('item_end_point');
+ 				newState.attr('data-state-name', 'FIN');
  				$('#end_item').addClass('disabled');
- 			} else if(itemType == 'RECOM'){
-				newState.addClass('item_recom');
+ 				title_id.text('FIN');
  			} else {
- 				newState.addClass('item_question');
+ 				if(itemType == 'RECOM'){
+					newState.addClass('item_recom');
+ 				} else {
+ 					newState.addClass('item_question');
+ 					
+ 				}
+ 				// Set item identifier text
+				title_id.text('Elemento ' + j);
+				// add input for item text content
+				has_input = true;
+ 				var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
+ 				var stateName = $('<input>').attr('type', 'text');
+
+ 				// store element id as data attribute
+				stateName.attr('data-id', 'state' + j);
  			}
- 				
- 			var title = $('<div>').addClass('title_question');
- 			var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
- 			var stateName = $('<input>').attr('type', 'text');
-			// store element id as data attribute
-			stateName.attr('data-id', 'state' + j);
-			var title_id = $('<p>').text('Elemento ' + j);
-			// append element id text to title
+ 			
+ 			// append title_id to state item
 			title.append(title_id);
-			// put stateName input field into stateNameContainer div, 
+
+			// if has_input
+		 	// put stateName input field into stateNameContainer div, 
 			// and then append this div to title
-			title.append(stateNameContainer.append(stateName));
-			var connect = $('<div>').addClass('connect_question');
+ 			if(has_input){
+				title.append(stateNameContainer.append(stateName));
+ 			}
+
+ 			// append title to state item
 			newState.append(title);
+
+			// append connect node to state item
+			var connect = $('<div>').addClass('connect_question');
 			newState.append(connect);
 
-			//add new item to container
+			//add new state item to container
 			$('#container_plumbjs').append(newState);
 			
 			jsPlumb.makeTarget(newState, {
@@ -266,6 +292,7 @@ jsPlumb.ready(function() {
 				}
 			});
 
+
 			newState.dblclick(function(e) {
 				jsPlumb.detachAllConnections($(this));
 				$(this).remove();
@@ -288,36 +315,39 @@ jsPlumb.ready(function() {
 				}
 			}); 
 
-			stateName.keyup(function(e) {
-				if (e.keyCode === 13) {
-		      //var state = $(this).closest('.item');
-		      //state.children('.title').text(this.value);
-		      $(this).parent().text(this.value);
-		      var state_id = $(this).attr('data-id');
-		      $('#'+state_id).attr('data-state-name', this.value);
+			if(itemType != 'START' && itemType != 'END'){
+				stateName.keyup(function(e) {
+					if (e.keyCode === 13) {
+			      //var state = $(this).closest('.item');
+			      //state.children('.title').text(this.value);
+			      $(this).parent().text(this.value);
+			      var state_id = $(this).attr('data-id');
+			      $('#'+state_id).attr('data-state-name', this.value);
 
-					// create item object
-					var this_item = {
-						id: newState.attr('id'),
-						name: $('#'+newState.attr('id')).attr('data-state-name'),
-						type: itemType,
-						left: newState.position().left,
-						top: newState.position().top
-					};
+						// create item object
+						var this_item = {
+							id: newState.attr('id'),
+							name: $('#'+newState.attr('id')).attr('data-state-name'),
+							type: itemType,
+							left: newState.position().left,
+							top: newState.position().top
+						};
 
-					// check if item is already in array and updates it
-				  if(containsObject(this_item, elements_array)) {
-				   	replace(this_item, elements_array);
-				  } else {
-				   	elements_array.push(this_item);
-					}
-		      // populate elements list with new element
-		      populate_elements_list();
-			  }
-			});
+						// check if item is already in array and updates it
+					  if(containsObject(this_item, elements_array)) {
+					   	replace(this_item, elements_array);
+					  } else {
+					   	elements_array.push(this_item);
+						}
+			      // populate elements list with new element
+			      populate_elements_list();
+				  }
+				});
+				// focuses on input field of the created element
+				stateName.focus();
+			}
 
-			// focuses on input field of the created element
-			stateName.focus();
+
 			// increase state id variable
 			j++; 
 		});

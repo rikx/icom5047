@@ -81,8 +81,9 @@ block content
 							tr
 								td Tipo de Pregunta:
 								td#pregunta_info_type
-						.panel.panel-info
-							.panel-heading Posibles Respuestas
+						#possible_answers(class='panel panel-info')
+							.panel-heading 
+								| Posibles Respuestas
 							.panel-body
 								ul#pregunta_info_responses(class='list-group')
 						//button#btn_close_info_panel(class='btn btn-default') Cerrar
