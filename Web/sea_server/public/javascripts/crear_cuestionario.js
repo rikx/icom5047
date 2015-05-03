@@ -4,9 +4,6 @@ jsPlumb.ready(function() {
 	var elements_array = [];
 	var connections_array =[];
 
-	//disable add question button initially
-	//$('#btn_add_question').prop('disabled', true);
-
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
 		window.location.href = '/users';
@@ -205,7 +202,7 @@ jsPlumb.ready(function() {
  			var title_id = $('<p>');
  			var has_input = false;
 
- 			// add css fitting item type
+ 			// add css and title fitting item type
  			if(itemType == 'START'){
 				newState.addClass('item_end_point');
 				newState.attr('data-state-name', 'INICIO');
@@ -220,8 +217,7 @@ jsPlumb.ready(function() {
  				if(itemType == 'RECOM'){
 					newState.addClass('item_recom');
  				} else {
- 					newState.addClass('item_question');
- 					
+ 					newState.addClass('item_question');	
  				}
  				// Set item identifier text
 				title_id.text('Elemento ' + j);
@@ -347,7 +343,6 @@ jsPlumb.ready(function() {
 				stateName.focus();
 			}
 
-
 			// increase state id variable
 			j++; 
 		});
@@ -355,7 +350,6 @@ jsPlumb.ready(function() {
 
 
 	$('#connect_item').dblclick(function(e) {
-
 		e.stopPropagation();
 	}); 
 
