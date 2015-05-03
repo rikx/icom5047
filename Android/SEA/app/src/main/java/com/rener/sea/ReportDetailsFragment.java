@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ViewFlipper;
@@ -34,6 +35,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     private Report report;
     private TextView textName, textLocation, textDate, textSubject, textType, textCreator,
             textFlowchart, textNotes;
+	private LinearLayout interviewLayout;
 	private ViewFlipper appointmentFlipper;
 	private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
 
@@ -65,23 +67,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
 
         //Create dynamic views
-        LinearLayout layoutInterview = (LinearLayout) view.findViewById(R.id.report_interview_layout);
+        interviewLayout = (LinearLayout) view.findViewById(R.id.report_interview_layout);
 
         //Recreate the path taken through the flowchart
-        Path path = report.getPath();
-        for (PathEntry e : path) {
-	        Option option = e.getOption();
-            Item item = option.getParent();
-            String data = e.getData();
-            String question = item.getLabel();
-            TextView textQuestion = new TextView(getActivity());
-            textQuestion.setText("\t" + question);
-            TextView textAnswer = new TextView(getActivity());
-            String answer = data.equals("") ? option.getLabel() : data;
-            textAnswer.setText("\t\t" + answer);
-            layoutInterview.addView(textQuestion);
-            layoutInterview.addView(textAnswer);
-        }
+        setInterviewLayout();
 
 	    FrameLayout appointmentLayout = (FrameLayout) view.findViewById(R.id.report_appointment_container);
 		View aView = inflater.inflate(R.layout.appointment_details, appointmentLayout, false);
@@ -121,28 +110,82 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 		super.onConfigurationChanged(newConfig);
 	}
 
+	private void setInterviewLayout() {
+		Path path = report.getPath();
+		int sequence = 1;
+		for (PathEntry e : path) {
+			//Get the interview element information
+			Option option = e.getOption();
+			Item item = option.getParent();
+			String data = e.getData();
+			String question = item.getLabel();
+			String answer = data.equals("") ? option.getLabel() : data;
+			sequence++;
+
+			//Set the interview element views
+			TextView seqView = new TextView(getActivity());
+			seqView.setText(sequence + ".");
+			//TODO: add the sequence view
+			TextView questionView = new TextView(getActivity());
+			questionView.setText(question);
+			questionView.setPadding(4, 0, 0, 0);
+			TextView answerView = new TextView(getActivity());
+			answerView.setText(answer);
+			answerView.setPadding(16, 0, 0, 0);
+
+			//Set the element layout
+			interviewLayout.addView(questionView);
+			interviewLayout.addView(answerView);
+		}
+	}
+
 	/**
      * Set the static views for this fragment
      */
     private void setFields() {
+
+	    //Set the name
         textName.setText(report.getName());
+
+	    //Set the date
         Locale locale = Locale.getDefault();
         String dateFormat = getResources().getString(R.string.date_format);
-        textDate.setText(report.getDateString(dateFormat, locale));
-        textType.setText(report.getType());
-        textLocation.setText(report.getLocation().toString());
-        textFlowchart.setText(report.getFlowchart().getName());
+	    String dateLabel = getResources().getString(R.string.date_label);
+	    String date = dateLabel+": "+report.getDateString(dateFormat, locale);
+        textDate.setText(date);
+
+	    //Set the type
+	    //TODO: review this
+	    textType.setText(report.getType());
+
+	    //Set the location
+	    String locLabel = getResources().getString(R.string.location_label);
+	    String location = locLabel+": "+report.getLocation().toString();
+        textLocation.setText(location);
+
+	    //Set the flowchart
+	    String fcLabel = getResources().getString(R.string.flowchart_label);
+	    String fc = fcLabel+": "+report.getFlowchart().getName();
+        textFlowchart.setText(fc);
+
+	    //Set the notes
         textNotes.setText(report.getNotes());
+
+	    //Set the creator
         if (report.getCreator() != null) {
             String label = getResources().getString(R.string.creator_label);
             String creator = report.getCreator().getPerson().toString();
             textCreator.setText(label + ": " + creator);
         }
+
+	    //Set the subject
         if (report.getSubject() != null) {
             String label = getResources().getString(R.string.subject_label);
             String subject = report.getSubject().toString();
             textSubject.setText(label + ": " + subject);
         }
+
+	    //Set the appointment if it exists
 	    setAppointmentViews();
     }
 
