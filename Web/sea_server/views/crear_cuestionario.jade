@@ -32,25 +32,26 @@ block content
 				.form-group
 					label(for='btn_user_type') Tipo de Elemento:
 					.dropdown
-						.btn-group
-							button#btn_item_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
-								span#btn_item_type_text Tipo de Elemento 
-								span(class='caret')
-							ul#list_question_type(class='dropdown-menu', role='menu')
-								li
-									a(role='menuitem', tabindex='-1', href='#', data-item-type='START') Elemento Inicial
-								li
-									a(role='menuitem', tabindex='-1', href='#', data-item-type='BOOLEAN') Booleana
-								li
-									a(role='menuitem', tabindex='-1', href='#', data-item-type='MULTI') Multiple
-								li
-									a(role='menuitem', tabindex='-1', href='#', data-item-type='OPEN') Abierta
-								li
-									a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
-								li
-									a(role='menuitem', tabindex='-1', href='#', data-item-type='RECOM') Recomendación
-								li
-									a(role='menuitem', tabindex='-1', href='#', data-item-type='END') Elemento Final
+						button#btn_item_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
+							span#btn_item_type_text Tipo de Elemento 
+							span(class='caret')
+						ul#list_question_type(class='dropdown-menu', role='menu')
+							li#start_item(role='presentation')
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='START') Elemento Inicial
+							li#end_item(role='presentation')
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='END') Elemento Final
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='RECOM') Recomendación
+							li.divider
+							li.dropdown-header Tipos de Pregunta
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='BOOLEAN') Booleana
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='MULTI') Selección Multiple
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='OPEN') Abierta
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
 				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
 				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 				//button#btn_test(class='btn btn-lg btn-success btn-block', type='button') Test

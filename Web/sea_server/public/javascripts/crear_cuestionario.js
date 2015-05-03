@@ -95,7 +95,14 @@ jsPlumb.ready(function() {
  	// JS PLUMB create code
 
  	$('#btn_add_question').on('click', function(){
- 		add_item();
+ 		var item_type = $('#btn_item_type').attr('data-item-type');
+		// does not execute when selecting a start or an end element if it already exists
+		if((item_type == 'START' && $('#start_item').hasClass('disabled')) 
+				|| (item_type == 'END' && $('#end_item').hasClass('disabled'))){
+			// do nothing
+		} else {
+ 			add_item();
+ 		}
  	});
 
 
@@ -171,10 +178,18 @@ jsPlumb.ready(function() {
  	$('#list_question_type').on('click', 'li a', function(e){
 		// prevents link from firing
 		e.preventDefault();
-		$('#btn_item_type_text').text($(this).text()+' ');
-		$('#btn_item_type').attr('data-item-type', $(this).attr('data-item-type'));
-		// enable add question button
-		$('#btn_add_question').prop('disabled', false);
+
+		var item_type = $(this).attr('data-item-type');
+		// does not execute when selecting a start or an end element if it already exists
+		if((item_type == 'START' && $('#start_item').hasClass('disabled')) 
+			|| (item_type == 'END' && $('#end_item').hasClass('disabled'))){
+			// do nothing
+		} else {
+			$('#btn_item_type_text').text($(this).text()+' ');
+			$('#btn_item_type').attr('data-item-type', item_type);
+			// enable add question button
+			$('#btn_add_question').prop('disabled', false);
+		}
 	});
 
  	function add_item() {
@@ -183,8 +198,12 @@ jsPlumb.ready(function() {
  			var newState = $('<div>').attr('id', 'state' + j);
 
  			// add css fitting item type
- 			if(itemType == 'START' || itemType == 'END'){
+ 			if(itemType == 'START'){
+				newState.addClass('item_end_point');
+				$('#start_item').addClass('disabled');
+ 			} else if(itemType == 'END'){
  				newState.addClass('item_end_point');
+ 				$('#end_item').addClass('disabled');
  			} else if(itemType == 'RECOM'){
 				newState.addClass('item_recom');
  			} else {
@@ -253,10 +272,17 @@ jsPlumb.ready(function() {
 				e.stopPropagation();
 
 				// find element in array and delete it
+				var this_item;
 				var this_id = $(this).attr('id');
 				for(var d=0; d<elements_array.length;d++){
-					if(elements_array[d].id == this_id){
+					this_item = elements_array[d];
+					if(this_item.id == this_id){
 						elements_array.splice(d,1);
+						if(this_item.type=='START'){
+							$('#start_item').removeClass('disabled');
+						} else if(this_item.type=='END'){
+							$('#end_item').removeClass('disabled');
+						}
 						return;
 					}
 				}
