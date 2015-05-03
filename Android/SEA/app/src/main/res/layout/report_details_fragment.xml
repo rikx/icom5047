@@ -50,6 +50,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/no_data"
+			android:visibility="gone"
 			/>
 
 		<TextView
@@ -64,21 +65,28 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:padding="16dp">
+			android:padding="2dp">
 
 			</LinearLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/notes_label"/>
 
 		<TextView
 			android:id="@+id/report_text_notes"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/no_data"
+			android:padding="16dp"
 			/>
 
 		<FrameLayout
 			android:id="@+id/report_appointment_container"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
+			android:layout_height="wrap_content"
+			android:padding="16dp">
 			</FrameLayout>
 
 	</LinearLayout>
