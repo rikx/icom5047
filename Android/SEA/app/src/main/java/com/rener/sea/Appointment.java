@@ -122,7 +122,7 @@ public class Appointment {
                 try {
 
 
-                    cal.setTime(DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(0)));
+                    cal.setTime(DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(1)));
 //                    date = DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(0));
                 } catch (ParseException e) {
                     Log.e(this.toString(), "Time conversion error: " + e.toString());
@@ -176,7 +176,7 @@ public class Appointment {
 
 	public String getDateString(String format, Locale locale) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
-		return sdf.format(getDate());
+		return sdf.format(getDate().getTime());
 	}
 
     public Report getReport() {

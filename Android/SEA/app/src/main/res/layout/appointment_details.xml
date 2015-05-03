@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:id="@+id/appointment_details_layout"
-			  android:layout_width="match_parent"
-			  android:layout_height="match_parent">
-	
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
 	<ViewFlipper
 		android:id="@+id/appointment_flipper"
 		android:layout_width="match_parent"
@@ -19,7 +19,7 @@
 				android:id="@+id/report_add_appointment_button"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:drawableLeft="@drawable/ic_action_new"
+				android:drawableStart="@drawable/ic_action_new"
 				android:text="@string/add_appointment"
 				/>
 
@@ -31,62 +31,86 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical">
 
-			<DatePicker
-				android:id="@+id/appointment_date_picker"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content">
-			</DatePicker>
+			<LinearLayout
+				android:id="@+id/datetime_pickers_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
 
-			<TimePicker
-				android:id="@+id/appointment_time_picker"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content">
-			</TimePicker>
+				<DatePicker
+					android:id="@+id/appointment_date_picker"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:calendarViewShown="false">
+				</DatePicker>
+
+				<TimePicker
+					android:id="@+id/appointment_time_picker"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content">
+				</TimePicker>
+
+			</LinearLayout>
 
 			<EditText
 				android:id="@+id/appointment_purpose_edit"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="@string/appointment_purpose"
+				android:hint="@string/appointment_purpose"
 				/>
-
-			<Button
-				android:id="@+id/report_save_appointment_button"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:drawableLeft="@drawable/ic_action_save"
-				android:text="@string/save_appointment"
-				/>
-
-			</LinearLayout>
 
 			<LinearLayout
-				android:id="@+id/view_appointment_layout"
-				android:orientation="vertical"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent">
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
 
-				<TextView
-					android:id="@+id/appointment_date_text"
+				<Button
+					android:id="@+id/report_cancel_appointment_button"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="@string/no_data"
+					android:drawableStart="@drawable/ic_action_discard"
+					android:text="@string/cancel_appointment"
 					/>
 
-				<TextView
-					android:id="@+id/appointment_purpose_text"
+				<Button
+					android:id="@+id/report_save_appointment_button"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="@string/no_data"/>
-
-				<TextView
-					android:id="@+id/appointment_creator_text"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/no_data"/>
+					android:drawableStart="@drawable/ic_action_save"
+					android:text="@string/save_appointment"
+					/>
 
 			</LinearLayout>
 
-		</ViewFlipper>
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/view_appointment_layout"
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<TextView
+				android:id="@+id/appointment_date_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"
+				/>
+
+			<TextView
+				android:id="@+id/appointment_purpose_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"/>
+
+			<TextView
+				android:id="@+id/appointment_creator_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/no_data"/>
+
+		</LinearLayout>
+
+	</ViewFlipper>
 
 </RelativeLayout>
