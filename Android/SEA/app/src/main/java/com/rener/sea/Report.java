@@ -6,13 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Stack;
 
 /**
  * Represents a Report in the system
@@ -34,7 +32,7 @@ public class Report implements Comparable<Report> {
         invoke(id);
     }
 
-    public Report(long report_id, long creator_id, long location_id, long subject_id, long flowchart_id, String note, Date date, DBHelper dbHelper) {
+    public Report(long report_id, long creator_id, long location_id, long subject_id, long flowchart_id, String note, Calendar date, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
         if (exist(report_id)) { // can also verify if id == -1
@@ -49,13 +47,13 @@ public class Report implements Comparable<Report> {
      */
     public Report(DBHelper db, User creator) {
         this.dbHelper = db;
-        this.id = create(creator.getId(),-1,-1,-1,"",new Date());
+        this.id = create(creator.getId(),-1,-1,-1,"",Calendar.getInstance());
     }
 
 
 
 
-    private long create(long creator_id, long location_id, long subject_id, long flowchart_id, String note, Date date) {
+    private long create(long creator_id, long location_id, long subject_id, long flowchart_id, String note, Calendar date) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_CREATOR_ID, creator_id);
@@ -63,7 +61,7 @@ public class Report implements Comparable<Report> {
         values.put(DBSchema.REPORT_SUBJECT_ID, subject_id);
         values.put(DBSchema.REPORT_FLOWCHART_ID, flowchart_id);
         values.put(DBSchema.REPORT_NOTE, String.valueOf(note));
-        values.put(DBSchema.REPORT_DATE_FILED, DBSchema.formatDate.format(date));
+        values.put(DBSchema.REPORT_DATE_FILED, DBSchema.FORMATDATE.format(date.getTime()));
         long id = db.insert(DBSchema.TABLE_REPORT, null, values);
         db.close();
         return id;
@@ -255,16 +253,17 @@ public class Report implements Comparable<Report> {
         return id;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Date date = new Date(0);
+//        Date date = new Date(0);
+        Calendar cal  = Calendar.getInstance();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_DATE_FILED},
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0)){
                 try {
-                    date = DBSchema.formatDate.parse(cursor.getString(0));
+                    cal.setTime(DBSchema.FORMATDATE.parse(cursor.getString(0)));
                 } catch (ParseException e) {
                     Log.e(this.toString(), "Time conversion error: " + e.toString());
                 }
@@ -274,21 +273,21 @@ public class Report implements Comparable<Report> {
             cursor.close();
         }
 
-        return date;
+        return cal;
     }
 
-    public long setDate(Date date) {
+    public long setDate(Calendar date) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBSchema.REPORT_DATE_FILED, String.valueOf(DBSchema.formatDate.format(date)));
+        values.put(DBSchema.REPORT_DATE_FILED, String.valueOf(DBSchema.FORMATDATE.format(date.getTime())));
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
     }
-
+    //TODO: revisar do to calendar change not tested
     public String getDateString(String format, Locale locale) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
-        return sdf.format(getDate());
+        return sdf.format(Calendar.getInstance().getTime());
     }
     //TODO: type dos not exist in the web db
     public String getType() {

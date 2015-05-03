@@ -5,9 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -105,17 +105,21 @@ public class Appointment {
         return id;
 	}
 
-	public Date getDate() {
+	public Calendar getDate() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Date date = new Date(0);
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date date = new Date(0);
+        Calendar cal  = Calendar.getInstance();
+//        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_DATE,DBSchema.APPOINTMENT_TIME},
                 DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0)&&!cursor.isNull(1)){
                 try {
-                    date = format.parse(cursor.getString(0)+" "+cursor.getString(0));
+
+
+                    cal.setTime(DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(0)));
+//                    date = DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(0));
                 } catch (ParseException e) {
                     Log.e(this.toString(), "Time conversion error: " + e.toString());
                 }
@@ -125,16 +129,14 @@ public class Appointment {
             cursor.close();
         }
 
-        return date;
+        return cal;
 	}
 
-	public long setDate(Date date) {
+	public long setDate(Calendar date) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
         ContentValues values = new ContentValues();
-        values.put(DBSchema.APPOINTMENT_DATE, String.valueOf(formatDate.format(date)));
-        values.put(DBSchema.APPOINTMENT_TIME, String.valueOf(formatTime.format(date)));
+        values.put(DBSchema.APPOINTMENT_DATE, String.valueOf(DBSchema.FORMATDATE.format(date.getTime())));
+        values.put(DBSchema.APPOINTMENT_TIME, String.valueOf(DBSchema.FORMATTIME.format(date.getTime())));
         long id = db.update(DBSchema.TABLE_APPOINTMENTS, values, DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update

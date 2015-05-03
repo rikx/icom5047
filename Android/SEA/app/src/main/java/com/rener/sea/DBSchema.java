@@ -177,7 +177,9 @@ public class DBSchema {
             USER_PERSON_ID + " INTEGER," +
             USER_SALT + " TEXT)";
 
-    public static final DateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+    public static final DateFormat FORMATDATE = new SimpleDateFormat("yyyy-MM-dd");
+    public static final DateFormat FORMATTIME = new SimpleDateFormat("HH:mm:ss");
+    public static final DateFormat FORMATALL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
 }
