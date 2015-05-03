@@ -122,7 +122,7 @@ public class Appointment {
                 try {
 
 
-                    cal.setTime(DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(0)));
+                    cal.setTime(DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(1)));
 //                    date = DBSchema.FORMATALL.parse(cursor.getString(0)+" "+cursor.getString(0));
                 } catch (ParseException e) {
                     Log.e(this.toString(), "Time conversion error: " + e.toString());
