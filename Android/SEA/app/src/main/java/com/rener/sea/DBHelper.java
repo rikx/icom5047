@@ -540,17 +540,18 @@ public final class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean fillDB(){
-        new Person(1,"Temporal",null,"User",null,"temporal.user@rener.com",null,this);
+        Person person = new Person(1,"Temporal",null,"User",null,"temporal.user@rener.com",null,
+		        this);
         new Person(2,"Nelson",null,"Reyes",null,"nelson.reyes@upr.edu",null,this);
         new Person(3,"Enrique",null,"Rodriguez",null,"enrique.rodriguez2@upr.edu",null,this);
         new Person(4,"Ricardo",null,"Fuentes",null,"ricardo.fuentes@upr.edu",null,this);
         new Person(5,"Ramón",null,"Saldaña",null,"ramon.saldana@upr.edu",null,this);
 
-        new User(1,1,"","",this);
-        new User(2,2,"nelson.reyes","iamnelson",this);
-        new User(3,3,"enrique.rodriguez2","iamenrique",this);
-        new User(4,4,"ricardo.fuentes","iamricardo",this);
-        new User(5,5,"ramon.saldana","iamramon",this);
+        User blank = new User(1,1,"","",this);
+        User nelson = new User(2,2,"nelson.reyes","iamnelson",this);
+        User enrique = new User(3,3,"enrique.rodriguez2","iamenrique",this);
+        User rick = new User(4,4,"ricardo.fuentes","iamricardo",this);
+        User ramon = new User(5,5,"ramon.saldana","iamramon",this);
 
 	    //Dummy flowchart
 	    Flowchart fc = new Flowchart(1, 1, 10, 3, "Flowchart Test", "0", this);
@@ -569,20 +570,21 @@ public final class DBHelper extends SQLiteOpenHelper {
 	    new Item(10,fc.getId(), "End of flowchart test", Item.END, this);
 
 	    //Dummy options
-		new Option(1, 1, 2, "Yes", this);
-	    new Option(2, 1, 5, "No", this);
-	    new Option(3, 2, 3, "Milk is discolored", this);
-	    new Option(4, 2, 6, "Injured leg", this);
-	    new Option(5, 2, 4, "Eating problems", this);
-	    new Option(6, 4, 8, "lt3", this);
-	    new Option(7, 4, 9, "ge3", this);
-	    new Option(8, 3, 7, "[user input that is a description]", this);
-	    new Option(9, 7, 10, "End", this);
-	    new Option(10, 6, 10, "End", this);
-	    new Option(11, 8, 10, "End", this);
-	    new Option(12, 5, 10, "End", this);
-	    new Option(13, 9, 10, "End", this);
+		Option o1 = new Option(1, 1, 2, "Yes", this);
+	    Option o2 = new Option(2, 1, 5, "No", this);
+	    Option o3 = new Option(3, 2, 3, "Milk is discolored", this);
+	    Option o4 = new Option(4, 2, 6, "Injured leg", this);
+	    Option o5 = new Option(5, 2, 4, "Eating problems", this);
+	    Option o6 = new Option(6, 4, 8, "lt3", this);
+	    Option o7 = new Option(7, 4, 9, "ge3", this);
+	    Option o8 = new Option(8, 3, 7, "[user input that is a description]", this);
+	    Option o9 = new Option(9, 7, 10, "End", this);
+	    Option o10 = new Option(10, 6, 10, "End", this);
+	    Option o11 = new Option(11, 8, 10, "End", this);
+	    Option o12 = new Option(12, 5, 10, "End", this);
+	    Option o13 = new Option(13, 9, 10, "End", this);
 
+	    //Dummy location
         SQLiteDatabase db = getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_ID, 0);
@@ -592,6 +594,19 @@ public final class DBHelper extends SQLiteOpenHelper {
         values.put(DBSchema.ADDRESS_ZIPCODE, 682);
         long id = db.insert(DBSchema.TABLE_ADDRESS, null, values);
         Location loc =new Location(1,"El platanal", id, 1, 3,"jhagfljfdsg",2,this);
+
+	    //Dummy report
+	    Report report = new Report(this, nelson);
+	    report.setName("Dummy Report");
+	    report.setSubject(person);
+	    report.setLocation(loc);
+	    report.setFlowchart(fc);
+	    report.setNotes("these are some report notes");
+	    Path path = new Path(report.getId(), this);
+	    path.addEntry(o1);
+	    path.addEntry(o3);
+	    path.addEntry(o8, "description of something");
+	    path.addEntry(o9);
 
         return true;
     }

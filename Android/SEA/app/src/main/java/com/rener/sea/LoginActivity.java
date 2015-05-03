@@ -34,6 +34,7 @@ public class LoginActivity extends Activity {
         dbHelper.deleteDB();
         if(dbHelper.getDummy())
             dbHelper.fillDB();
+	    loadLogin();
     }
 
     /**
