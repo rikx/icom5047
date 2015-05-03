@@ -2,7 +2,9 @@
 Capstone Project
 
 Project Team:
--Ricardo Fuentes [project manager]
--Nelson Reyes
--Enrique Rodríguez
--Ramón Saldaña
+<ul>
+  <li>Ricardo Fuentes [project manager]</li>
+  <li>Nelson Reyes</li>
+  <li>Enrique Rodríguez</li>
+  <li>Ramón Saldaña</li>
+</ul>
