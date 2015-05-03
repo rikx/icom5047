@@ -283,23 +283,19 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 							if(err) {
 								return console.error('error running query', err);
 							} else {
-								console.log(flowchart_id);
 								items_array = result.rows;
-								console.log(items_array);
+								
 								// Insert options
 								var this_option;
 				  			for(var j=0; j < item_options.length; j++){
 				  				this_option = item_options[j];
+				  				
 				  				// find matching source and target
 				  				var this_source, this_target;
-
-
 				  				items_array.forEach(function(item){
 				  					if(item.state_id == this_option.source){
-				  						console.log('Source: '+item.item_id);
 				  						this_source = item.item_id;
 				  					} else if(item.state_id == this_option.target){
-				  						console.log('Target: '+item.item_id);
 				  						this_target = item.item_id;
 				  					}
 				  				});
@@ -310,7 +306,6 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 										if(err) {
 											return console.error('error running query', err);
 										} else {
-											console.log('option added');
 										}
 									});
 				  			}

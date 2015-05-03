@@ -98,9 +98,6 @@ jsPlumb.ready(function() {
  		add_item();
  	});
 
- 	$('#btn_add_recommendation').on('click', function(){
- 		AddRecommendation();
- 	});
 
  	/* gets first and end item ids from elements_array, if they exist */
  	function check_for_endpoints(){
@@ -164,10 +161,6 @@ jsPlumb.ready(function() {
 	  }
   });
 
- 	$('#btn_end').on('click', function(){
- 		AddLastNode();
- 	});
-
 
  	var j =0; // item id
  	var array = [];
@@ -203,7 +196,7 @@ jsPlumb.ready(function() {
  			var stateName = $('<input>').attr('type', 'text');
 			// store element id as data attribute
 			stateName.attr('data-id', 'state' + j);
-			var title_id = $('<p>').text('Pregunta ' + j);
+			var title_id = $('<p>').text('Elemento ' + j);
 			// append element id text to title
 			title.append(title_id);
 			// put stateName input field into stateNameContainer div, 
