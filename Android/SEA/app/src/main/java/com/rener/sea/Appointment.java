@@ -22,21 +22,25 @@ public class Appointment {
        invoke(id);
 
     }
-    public Appointment( long id, String date, String time, long location_id, long report_id, String purpose, DBHelper dbHelper) {
+    public Appointment( long id, long report_id, long creator_id, Calendar date, String purpose, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
         if (exist(id)) { // can also verify if id == -1
-
+            invoke(id);
         } else {
-            this.id = create(date, time, location_id, report_id, purpose);
+            this.id = create(report_id, creator_id, date, purpose);
         }
 
     }
-    private long create(String date, String time, long creator_id, long report_id, String purpose){
+
+
+
+
+    private long create(long report_id, long creator_id, Calendar date, String purpose){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBSchema.APPOINTMENT_DATE, date);
-        values.put(DBSchema.APPOINTMENT_TIME, time);
+        values.put(DBSchema.APPOINTMENT_DATE, DBSchema.FORMATDATE.format(date.getTime()));
+        values.put(DBSchema.APPOINTMENT_TIME, DBSchema.FORMATTIME.format(date.getTime()));
         values.put(DBSchema.APPOINTMENT_MAKER_ID, creator_id);
         values.put(DBSchema.APPOINTMENT_REPORT_ID, report_id);
         values.put(DBSchema.APPOINTMENT_PURPOSE, purpose);
