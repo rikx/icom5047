@@ -210,6 +210,7 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 	var creator_id = req.session.user_id;
 
 	var flowchart_id;
+	var items_array;
 	var flowchart_info = req.body.info;
 	var flowchart_items = req.body.items;
 	var item_options = req.body.options;
@@ -258,9 +259,6 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 											if(err) {
 												return console.error('error running query', err);
 											} else {
-												console.log('added start item');
-												console.log(new_item);
-												console.log(state_id);
 											}
 										});
 									}
@@ -271,31 +269,53 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 											if(err) {
 												return console.error('error running query', err);
 											} else {
-												console.log('added end item');
-												console.log(new_item);
-												console.log(state_id);
 											}
 										});
 									}
-									console.log('item added');
 								}
 							});
 		  			}
-				
-						// Insert options
-						var this_option;
-		  			for(var j=0; j < item_options.length; j++){
-		  				this_option = item_options[j];
-							client.query('INSERT into option (parent_id, next_id, label) \
-														VALUES ($1, $2, $3)', 
-														[this_option.source, this_option.target, this_option.label], function(err, result) {
-								if(err) {
-									return console.error('error running query', err);
-								} else {
-									console.log('option added');
-								}
-							});
-		  			}
+						
+						// Get all items associated with this flowchart
+						client.query('SELECT item_id, state_id \
+													FROM item \
+													WHERE flowchart_id = $1', [flowchart_id], function(err, result){
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+								console.log(flowchart_id);
+								items_array = result.rows;
+								console.log(items_array);
+								// Insert options
+								var this_option;
+				  			for(var j=0; j < item_options.length; j++){
+				  				this_option = item_options[j];
+				  				// find matching source and target
+				  				var this_source, this_target;
+
+
+				  				items_array.forEach(function(item){
+				  					if(item.state_id == this_option.source){
+				  						console.log('Source: '+item.item_id);
+				  						this_source = item.item_id;
+				  					} else if(item.state_id == this_option.target){
+				  						console.log('Target: '+item.item_id);
+				  						this_target = item.item_id;
+				  					}
+				  				});
+
+		  						client.query('INSERT into option (parent_id, next_id, label) \
+																VALUES ($1, $2, $3)', 
+																[this_source, this_target, this_option.label], function(err, result) {
+										if(err) {
+											return console.error('error running query', err);
+										} else {
+											console.log('option added');
+										}
+									});
+				  			}
+							}
+						});
   					//call `done()` to release the client back to the pool
 						done();
 		  			res.json(true);
