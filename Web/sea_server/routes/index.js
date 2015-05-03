@@ -106,7 +106,7 @@ router.post('/report', function(req, res, next) {
  */
 router.post('/cuestionario/path', function(req, res, next) {
  	if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('option_id') 
- 		||!req.body.hasOwnProperty('user_input') || !req.body.hasOwnProperty('sequence') {
+ 		||!req.body.hasOwnProperty('user_input') || !req.body.hasOwnProperty('sequence')) {
  		return res.send('Error: Missing fields for post path.');
  	} else {
 		var db = req.db;
@@ -115,7 +115,7 @@ router.post('/cuestionario/path', function(req, res, next) {
 		  	return console.error('error fetching client from pool', err);
 			}
 			// insert new report
-		  client.query('INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3)', 
+		  client.query('INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)', 
 										[req.body.report_id, req.body.option_id, req.body.user_input, req.body.sequence], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		    done();
