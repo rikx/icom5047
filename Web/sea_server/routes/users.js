@@ -243,31 +243,37 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  				this_item = flowchart_items[i];
 							client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, state_id) \
 														VALUES ($1, $2, $3, $4, $5, $6) \
-														RETURNING item_id', 
+														RETURNING item_id, state_id', 
 														[flowchart_id, this_item.name, this_item.top, this_item.left, this_item.type, this_item.id], function(err, result) {
 								if(err) {
 									return console.error('error running query', err);
 								} else {
 									var new_item = result.rows[0].item_id;
+									var state_id = result.rows[0].state_id;
+
 									// if new item is start item
-									if(flowchart_info.first_id == this_item.id){
+									if(flowchart_info.first_id == state_id){
 										client.query('UPDATE flowchart SET first_id = $1 \
 																	WHERE flowchart_id = $2', [new_item, flowchart_id] , function(err, result){
 											if(err) {
 												return console.error('error running query', err);
 											} else {
 												console.log('added start item');
+												console.log(new_item);
+												console.log(state_id);
 											}
 										});
 									}
 									// if new item is end item
-									if(flowchart_info.end_id == this_item.id){
+									if(flowchart_info.end_id == state_id){
 										client.query('UPDATE flowchart SET end_id = $1 \
 																	WHERE flowchart_id = $2', [new_item, flowchart_id] , function(err, result){
 											if(err) {
 												return console.error('error running query', err);
 											} else {
 												console.log('added end item');
+												console.log(new_item);
+												console.log(state_id);
 											}
 										});
 									}
@@ -278,13 +284,11 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 				
 						// Insert options
 						var this_option;
-		  			for(var j=0; j < item_options; j++){
+		  			for(var j=0; j < item_options.length; j++){
 		  				this_option = item_options[j];
 							client.query('INSERT into option (parent_id, next_id, label) \
 														VALUES ($1, $2, $3)', 
 														[this_option.source, this_option.target, this_option.label], function(err, result) {
-								//call `done()` to release the client back to the pool
-								done();
 								if(err) {
 									return console.error('error running query', err);
 								} else {
@@ -292,6 +296,8 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 								}
 							});
 		  			}
+  					//call `done()` to release the client back to the pool
+						done();
 		  			res.json(true);
 					}
 				});

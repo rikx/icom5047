@@ -108,9 +108,13 @@ jsPlumb.ready(function() {
  			, end_item = -1;
  		for(var i=0; i<elements_array.length; i++){
  			if(elements_array[i].type == 'START'){
-				first_item = elements_array[i].id;
+ 				for(var x=0; x<connections_array.length; x++){
+ 					if(elements_array[i].id == connections_array[x].source){
+ 						first_item = connections_array[x].target;
+ 					}	
+ 				}
  			} else if(elements_array[i].type == 'END'){
-				end_item = elements_array[i].id;
+ 				end_item = elements_array[i].id;
  			}
  		}
  		return {first_id: first_item, end_id: end_item};
@@ -186,12 +190,10 @@ jsPlumb.ready(function() {
  			var newState = $('<div>').attr('id', 'state' + j);
 
  			// add css fitting item type
- 			if(itemType == 'START'){
- 				newState.addClass('item_question');
- 			} else if(itemType == 'END'){
-				newState.addClass('item_question');
+ 			if(itemType == 'START' || itemType == 'END'){
+ 				newState.addClass('item_end_point');
  			} else if(itemType == 'RECOM'){
-				newState.addClass('item_end_point');
+				newState.addClass('item_recom');
  			} else {
  				newState.addClass('item_question');
  			}
@@ -256,6 +258,15 @@ jsPlumb.ready(function() {
 				jsPlumb.detachAllConnections($(this));
 				$(this).remove();
 				e.stopPropagation();
+
+				// find element in array and delete it
+				var this_id = $(this).attr('id');
+				for(var d=0; d<elements_array.length;d++){
+					if(elements_array[d].id == this_id){
+						elements_array.splice(d,1);
+						return;
+					}
+				}
 			}); 
 
 			stateName.keyup(function(e) {
@@ -294,202 +305,34 @@ jsPlumb.ready(function() {
 	}
 
 
-function AddLastNode() {
- 		jsPlumb.ready(function() {
- 			var questionType = 'END';
- 			var newState = $('<div>').attr('id', 'state' + j).addClass('item_del');
- 			newState.addClass(questionType);
- 			var title = $('<div>').addClass('title_del');
- 			var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
- 			var stateName = $('<input>').attr('type', 'text');
-			// store element id as data attribute
-			stateName.attr('data-id', 'state' + j);
-			var title_id = $('<p>').text('FINAL');
-			// append element id text to title
-			title.append(title_id);
-			// put stateName input field into stateNameContainer div, 
-			// and then append this div to title
-			//title.append(stateNameContainer.append(stateName));
-			var connect = $('<div>').addClass('connect_del');
-			newState.append(title);
-			newState.append(connect);
-			$('#container_plumbjs').append(newState);
-			jsPlumb.makeTarget(newState, {
-				anchor: 'Continuous',
-				endpoint:'Blank'
-			});
-			jsPlumb.makeSource(connect, {
-				parent: newState,
-				anchor: 'Continuous',
-				connector: 'Flowchart',
-				endpoint:'Blank'
-			});   
+	$('#connect_item').dblclick(function(e) {
 
-			jsPlumb.draggable(newState, {
-				stop: function(event) {
-					if ($(event.target).find('select').length == 0) {
-					//saveState(event.target);
-					array.push(newState);
-					   // create element object
-					   var this_element = {
-					   	id: newState.attr('id'),
-					   	name: $('#'+newState.attr('id')).attr('data-state-name'),
-					   	type: questionType,
-					   	left: newState.position().left,
-					   	top: newState.position().top
-					   };
-					   console.log(this_element.id);
-					   console.log(this_element.name);
-					   console.log(this_element.left);
-					   console.log(this_element.type);
+		e.stopPropagation();
+	}); 
 
-					   if(containsObject(this_element, elements_array))
-					   {
-					   	replace(this_element, elements_array);
 
-					   }
-					   else
-					   {
+	jsPlumb.bind("connection", function(info, originalEvent) {
+		jsPlumb.ready(function() {
+			var this_connection;
+			if(trigger == "yes"){
+				this_connection = {
+					source: info.sourceId,
+					target: info.targetId,
+					label: 'label'
+				};
 
-					   	elements_array.push(this_element);
-				// populate elements list with new element
+				var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
+				this_connection.label = mylabel;
+				
+				connections_array.push(this_connection);
 			}
-
-
-			populate_elements_list();
-		}
-	}
-});
-
-			newState.dblclick(function(e) {
-				jsPlumb.detachAllConnections($(this));
-				$(this).remove();
-				e.stopPropagation();
-
-			}); 
-
-			stateName.keyup(function(e) {
-				if (e.keyCode === 13) {
-		      //var state = $(this).closest('.item');
-		      //state.children('.title').text(this.value);
-		      $(this).parent().text(this.value);
-		      var state_id = $(this).attr('data-id')
-		      $('#'+state_id).attr('data-state-name', this.value);
-		      // // create element object
-		      // var this_element = {
-		      // 	id: $(this).attr('data-id'),
-		      // 	name: this.value,
-		      // 	type: 'Pregunta'
-		      // };
-		      // // push to elements_array
-		      // elements_array.push(this_element);
-		      // // populate elements list with new element
-		      // populate_elements_list();
-		  }
 		});
-
-			// focuses on input field of the created element
-			stateName.focus();
-
-			j++; 
-		});
-}
-
-function AddRecommendation() {
-	jsPlumb.ready(function() {
-		var newState = $('<div>').attr('id', 'state' + j).addClass('item_rec');
-		var title = $('<div>').addClass('title_rec');
-		var stateNameContainer = $('<div>');
-		var stateName = $('<input>').attr('type', 'text');
-		// store element id as data attribute
-		stateName.attr('data-id', j);
-		var title_id = $('<p>').text('Recomendación ' + j);
-		// append element id text to title
-		title.append(title_id);
-		// put stateName input field into stateNameContainer div, 
-		// and then append this div to title
-		title.append(stateNameContainer.append(stateName));
-		var connect = $('<div>').addClass('connect_rec');
-		newState.append(title);
-		newState.append(connect);
-
-		$('#container_plumbjs').append(newState);
-		
-		jsPlumb.makeTarget(newState, {
-			anchor: 'Continuous'
-		});
-		jsPlumb.makeSource(connect, {
-			parent: newState,
-			anchor: 'Continuous',
-			connector: 'StateMachine',
-			paintStyle:{ strokeStyle:"blue"}
-		});   
-		jsPlumb.draggable(newState, {
-			containment: 'parent'
-		});
-		newState.dblclick(function(e) {
-			jsPlumb.detachAllConnections($(this));
-			$(this).remove();
-			e.stopPropagation();
-		});   
-		stateName.keyup(function(e) {
-			if (e.keyCode === 13) {
-	      //var state = $(this).closest('.item');
-	      //state.children('.title').text(this.value);
-	      $(this).parent().text(this.value);
-	    	// create element object
-	    	var this_element = {
-	    		id: $(this).attr('data-id'),
-	    		name: this.value,
-	    		type: 'Recomendación'
-	    	};
-	      // push to elements_array
-	      elements_array.push(this_element);
-	      // populate elements list with new element
-	      populate_elements_list();
-	  }
 	});
-		// focuses on input field of the created element
-		stateName.focus();
-		j++; 
-	})
-}
-
-
-$('#connect_item').dblclick(function(e) {
-
-	e.stopPropagation();
-}); 
-
-
-jsPlumb.bind("connection", function(info, originalEvent) {
-	jsPlumb.ready(function() {
-		var this_connection;
-		if(trigger == "yes"){
-			alert("triggered");
-
-			this_connection = {
-				source: info.sourceId,
-				target: info.targetId,
-				label: 'label'
-			};
-			console.log(info);
-			console.log(this_connection);
-			//arrayConnection.push(info.sourceId);
-			//arrayConnection.push(info.targetId);
-			var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
-			this_connection.label = mylabel;
-			
-			connections_array.push(this_connection);
-		}
-		//console.log(connections_array);
-	});
-});
 
 	$('#container_plumbjs').scroll(function(){
 		jsPlumb.ready(function() {
-		jsPlumb.repaintEverything();
-	});
+			jsPlumb.repaintEverything();
+		});
 	});
 
 	function containsObject(obj, list) {
