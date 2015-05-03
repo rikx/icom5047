@@ -2,19 +2,23 @@ package com.rener.sea;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.ViewFlipper;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -23,8 +27,8 @@ import java.util.Locale;
 public class ReportDetailsFragment extends Fragment implements View.OnClickListener {
 
 	public static final int NO_APPOINTMENT_LAYOUT = 0;
-	public static final int APPOINTMENT_EDIT_LAYOUT = 1;
-	public static final int APPOINTMENT_VIEW_LAYOUT = 2;
+	public static final int EDIT_APPOINTMENT_LAYOUT = 1;
+	public static final int VIEW_APPOINTMENT_LAYOUT = 2;
     private Report report;
     private TextView textName, textLocation, textDate, textSubject, textType, textCreator,
             textFlowchart, textNotes;
@@ -51,9 +55,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
-	    //appointmentLayout = (FrameLayout) view.findViewById(R.id.report_appointment_container);
-	    //appointmentLayout.addView(appointmentFlipper);
-        setFields(view);
 
         //Create dynamic views
         LinearLayout layoutInterview = (LinearLayout) view.findViewById(R.id.report_interview_layout);
@@ -73,6 +74,13 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             layoutInterview.addView(textQuestion);
             layoutInterview.addView(textAnswer);
         }
+
+	    appointmentLayout = (FrameLayout) view.findViewById(R.id.report_appointment_container);
+		View aView = inflater.inflate(R.layout.appointment_details, appointmentLayout, false);
+	    appointmentLayout.addView(aView);
+	    appointmentFlipper = (ViewFlipper) aView.findViewById(R.id.appointment_flipper);
+	    setFields();
+
         return view;
     }
 
@@ -94,7 +102,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     /**
      * Set the static views for this fragment
      */
-    private void setFields(View view) {
+    private void setFields() {
         textName.setText(report.getName());
         Locale locale = Locale.getDefault();
         String dateFormat = getResources().getString(R.string.date_format);
@@ -113,7 +121,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             String subject = report.getSubject().toString();
             textSubject.setText(label + ": " + subject);
         }
-	    //setAppointmentViews(view);
+	    setAppointmentViews();
     }
 
     /**
@@ -130,15 +138,21 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.report_add_appointment_button :
-				appointmentFlipper.setDisplayedChild(APPOINTMENT_EDIT_LAYOUT);
+				displayNewAppointmentLayout();
+				break;
+			case R.id.report_save_appointment_button :
+				saveAppointment();
+				break;
 		}
 
 	}
 
-	private void setAppointmentViews(View view) {
-		if(report.getAppointment() != null) {
-			appointmentFlipper.setDisplayedChild(APPOINTMENT_VIEW_LAYOUT);
-			Appointment appointment = report.getAppointment();
+	private void setAppointmentViews() {
+		Appointment appointment = report.getAppointment();
+		if(appointment != null) {
+			//TODO: review this
+			appointmentFlipper.setDisplayedChild(VIEW_APPOINTMENT_LAYOUT);
+			View view = appointmentFlipper;
 			//Set appointment date view
 			TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
 			Locale locale = Locale.getDefault();
@@ -152,7 +166,33 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 			creatorText.setText(appointment.getCreator().getPerson().toString());
 		}
 		else {
+			Button add = (Button) appointmentFlipper.findViewById(R.id
+					.report_add_appointment_button);
+			add.setOnClickListener(this);
 			appointmentFlipper.setDisplayedChild(NO_APPOINTMENT_LAYOUT);
 		}
+	}
+
+	private void displayNewAppointmentLayout() {
+		Button save = (Button) appointmentFlipper.findViewById(R.id.report_save_appointment_button);
+		save.setOnClickListener(this);
+		appointmentFlipper.setDisplayedChild(EDIT_APPOINTMENT_LAYOUT);
+	}
+
+	private void saveAppointment() {
+		View view = appointmentFlipper;
+		DatePicker datePicker = (DatePicker) view.findViewById(R.id.appointment_date_picker);
+		TimePicker timePicker = (TimePicker) view.findViewById(R.id.appointment_time_picker);
+		EditText purposeEdit = (EditText) view.findViewById(R.id.appointment_purpose_edit);
+		String purpose = purposeEdit.getText().toString();
+		int year = datePicker.getYear();
+		int month = datePicker.getMonth();
+		int dom = datePicker.getDayOfMonth();
+		int hour = timePicker.getCurrentHour();
+		int minute = timePicker.getCurrentMinute();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(year, month, dom, hour, minute);
+		Log.i(this.toString(), "appointment date set to "+calendar.toString());
+		//TODO: create the new appointment with the data
 	}
 }

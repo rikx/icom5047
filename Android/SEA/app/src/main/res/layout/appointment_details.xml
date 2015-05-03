@@ -20,12 +20,10 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:drawableLeft="@drawable/ic_action_new"
-				android:background="@android:color/transparent"
 				android:text="@string/add_appointment"
-				android:visibility="visible"
 				/>
 
-			</LinearLayout>
+		</LinearLayout>
 
 		<LinearLayout
 			android:id="@+id/edit_appointment_layout"
@@ -36,24 +34,31 @@
 			<DatePicker
 				android:id="@+id/appointment_date_picker"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:visibility="gone">
+				android:layout_height="wrap_content">
 			</DatePicker>
 
 			<TimePicker
 				android:id="@+id/appointment_time_picker"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:visibility="gone">
+				android:layout_height="wrap_content">
 			</TimePicker>
 
 			<EditText
 				android:id="@+id/appointment_purpose_edit"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/appointment_purpose"
+				/>
+
+			<Button
+				android:id="@+id/report_save_appointment_button"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="string/appointment_purpose"
-				android:visibility="gone"
+				android:drawableLeft="@drawable/ic_action_save"
+				android:text="@string/save_appointment"
 				/>
+
+			</LinearLayout>
 
 			<LinearLayout
 				android:id="@+id/view_appointment_layout"
@@ -80,10 +85,7 @@
 					android:layout_height="wrap_content"
 					android:text="@string/no_data"/>
 
-				</LinearLayout>
-
 			</LinearLayout>
-
 
 		</ViewFlipper>
 
