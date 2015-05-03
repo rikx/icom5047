@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.4.1
 -- Dumped by pg_dump version 9.4.1
--- Started on 2015-05-02 23:00:10
+-- Started on 2015-05-02 23:06:50
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -396,7 +396,8 @@ ALTER SEQUENCE option_option_id_seq OWNED BY option.option_id;
 CREATE TABLE path (
     report_id bigint NOT NULL,
     option_id bigint NOT NULL,
-    data text
+    data text,
+    sequence integer
 );
 
 
@@ -1094,7 +1095,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2015-05-02 23:00:11
+-- Completed on 2015-05-02 23:06:50
 
 --
 -- PostgreSQL database dump complete
