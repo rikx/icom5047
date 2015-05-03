@@ -13,7 +13,8 @@
 			android:id="@+id/no_appointment_layout"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:orientation="horizontal">
+			android:orientation="horizontal"
+			android:gravity="center_horizontal">
 
 			<Button
 				android:id="@+id/report_add_appointment_button"
@@ -62,7 +63,8 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal">
+				android:orientation="horizontal"
+				android:gravity="center_horizontal">
 
 				<Button
 					android:id="@+id/report_cancel_appointment_button"
@@ -76,6 +78,7 @@
 					android:id="@+id/report_save_appointment_button"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:layout_marginLeft="16dp"
 					android:drawableStart="@drawable/ic_action_save"
 					android:text="@string/save_appointment"
 					/>
