@@ -99,4 +99,8 @@ public class Path implements Iterable<PathEntry> {
         return path.iterator();
     }
 
+    public int size() {
+        return path.size();
+    }
+
 }

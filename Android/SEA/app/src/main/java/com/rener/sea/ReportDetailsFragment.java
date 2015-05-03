@@ -119,7 +119,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 			Option option = e.getOption();
 			Item item = option.getParent();
 			String data = e.getData();
-			String question = item.getLabel();
+			String question = sequence+". "+item.getLabel();
 			String answer = data.equals("") ? option.getLabel() : data;
 			sequence++;
 
