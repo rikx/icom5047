@@ -87,4 +87,6 @@
 	<string name="save_appointment">guardar cita</string>
 	<string name="time_format"></string>
 	<string name="flowchart_label">Flujograma</string>
+	<string name="appointment_label">Cita</string>
+	<string name="appointment_set_by_label">Hecho por:</string>
 </resources>

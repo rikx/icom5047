@@ -36,6 +36,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             textFlowchart, textNotes;
 	private LinearLayout interviewLayout;
 	private ViewFlipper appointmentFlipper;
+	private View appointmentView;
 	private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
 
     @Override
@@ -50,7 +51,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 	    if(savedInstanceState != null) {
 		    appointmentLayout = savedInstanceState.getInt("appointmentLayout",
 				    NO_APPOINTMENT_LAYOUT);
-		    Log.i(this.toString(), "restoring appointment layout: "+appointmentLayout);
+		    Log.i(this.toString(), "restoring appointment layout: " + appointmentLayout);
 	    }
 
         View view = inflater.inflate(R.layout.report_details_fragment, container, false);
@@ -75,6 +76,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 		View aView = inflater.inflate(R.layout.appointment_details, appointmentLayout, false);
 	    appointmentLayout.addView(aView);
 	    appointmentFlipper = (ViewFlipper) aView.findViewById(R.id.appointment_flipper);
+	    appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
 	    setFields();
 
         return view;
@@ -223,7 +225,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 			Button add = (Button) appointmentFlipper.findViewById(R.id
 					.report_add_appointment_button);
 			add.setOnClickListener(this);
+			appointmentView.setVisibility(View.GONE);
 			appointmentFlipper.setDisplayedChild(NO_APPOINTMENT_LAYOUT);
+			appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
+			appointmentView.setVisibility(View.VISIBLE);
 		}
 		else {
 			displayNewAppointmentLayout();
@@ -232,21 +237,36 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
 	private void displayAppointmentLayout(Appointment appointment) {
 		View view = appointmentFlipper;
+
 		//Set appointment date view
-		TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
 		Locale locale = Locale.getDefault();
 		String dateFormat = getResources().getString(R.string.date_format_long);
 		String timeFormat = getResources().getString(R.string.time_format);
 		String format = dateFormat+" "+timeFormat;
-		dateText.setText(appointment.getDateString(format, locale));
+		String appLabel = getResources().getString(R.string.appointment_label);
+		String date = appointment.getDateString(format, locale);
+		String app = appLabel+": "+appLabel;
+				TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
+		dateText.setText(app);
+
 		//Set appointment purpose view
+		String purposeLabel = getResources().getString(R.string.purpose_label);
+		String purpose = appointment.getPurpose();
 		TextView purposeText = (TextView) view.findViewById(R.id.appointment_purpose_text);
-		purposeText.setText(appointment.getPurpose());
+		purposeText.setText(purposeLabel+": "+purpose);
+
 		//Set appointment creator view
+		String creatorLabel = getResources().getString(R.string.appointment_set_by_label);
+		String creator = appointment.getCreator().getPerson().toString();
 		TextView creatorText= (TextView) view.findViewById(R.id.appointment_creator_text);
-		creatorText.setText(appointment.getCreator().getPerson().toString());
+		creatorText.setText(creatorLabel+": "+creator);
+
+		//Display the layout
 		appointmentLayout = VIEW_APPOINTMENT_LAYOUT;
+		appointmentView.setVisibility(View.GONE);
 		appointmentFlipper.setDisplayedChild(VIEW_APPOINTMENT_LAYOUT);
+		appointmentView = appointmentFlipper.findViewById(R.id.view_appointment_layout);
+		appointmentView.setVisibility(View.VISIBLE);
 	}
 
 
@@ -272,7 +292,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
 		//Display the layout view
 		appointmentLayout = EDIT_APPOINTMENT_LAYOUT;
+		appointmentView.setVisibility(View.GONE);
 		appointmentFlipper.setDisplayedChild(EDIT_APPOINTMENT_LAYOUT);
+		appointmentView = appointmentFlipper.findViewById(R.id.edit_appointment_layout);
+		appointmentView.setVisibility(View.VISIBLE);
 	}
 
 	private void saveAppointment() {

@@ -82,8 +82,11 @@
 	<string name="no_appointment">no appointment set</string>
 	<string name="view_appointments">View Appointments</string>
 	<string name="appointment_purpose">purpose</string>
-	<string name="no_purpose_set">no purpose set</string>
+	<string name="no_purpose_set">No purpose set</string>
 	<string name="cancel_appointment">cancel</string>
 	<string name="notes_label">Notes:</string>
 	<string name="flowchart_label">Flowchart</string>
+	<string name="appointment_label">Appointment</string>
+	<string name="appointment_set_by_label">Set by</string>
+	<string name="purpose_label">Purpose</string>
 </resources>
