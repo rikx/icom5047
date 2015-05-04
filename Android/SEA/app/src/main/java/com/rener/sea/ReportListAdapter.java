@@ -51,7 +51,8 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
             //Set the date format according to the locale
             String dateFormat = getContext().getResources().getString(R.string.date_format);
             Locale locale = Locale.getDefault();
-            holder.dateText.setText(report.getDateString(dateFormat, locale));
+            String date = report.getDateString(dateFormat, locale);
+            holder.dateText.setText(date);
         } else {
             //View can be recycled
             row = convertView;

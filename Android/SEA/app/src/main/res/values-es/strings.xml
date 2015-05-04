@@ -73,7 +73,7 @@
 	<string name="select_subject">seleccione persona entrevistada</string>
 	<string name="select_survey">seleccione una entrevista</string>
 	<string name="date">fecha</string>
-	<string name="date_format">dd/LLL/yy</string>
+	<string name="date_format">d/LLL/yy</string>
 	<string name="discard_report">descarta reporte</string>
 	<string name="add_appointment">añadir cita</string>
 	<string name="appointment">cita</string>
@@ -81,12 +81,12 @@
 	<string name="view_appointments">Ver Citas</string>
 	<string name="appointment_purpose">propósito</string>
 	<string name="cancel_appointment">cancelar</string>
-	<string name="date_format_long">EEEE dd \'de\' LLLL \'de\' yyyy a</string>
+	<string name="date_format_long">EEEE d \'de\' LLLL \'de\' yyyy</string>
 	<string name="no_purpose_set">propósito no asignado</string>
 	<string name="notes_label">Notas:</string>
 	<string name="save_appointment">guardar cita</string>
-	<string name="time_format"></string>
 	<string name="flowchart_label">Flujograma</string>
 	<string name="appointment_label">Cita</string>
 	<string name="appointment_set_by_label">Hecho por:</string>
+	<string name="purpose_label">Propósito</string>
 </resources>

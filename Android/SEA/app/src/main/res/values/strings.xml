@@ -70,8 +70,8 @@
 	<string name="owner">owner</string>
 	<string name="agent">agent</string>
 	<string name="date_format">LLL/dd/yy</string>
-	<string name="date_format_long">EEEE, LLLL dd, yyyy a</string>
-	<string name="time_format" translatable="false">hh:mm</string>
+	<string name="date_format_long">EEEE, LLLL d, yyyy</string>
+	<string name="time_format" translatable="false">hh:mm a</string>
 	<string name="select_location">select a location</string>
 	<string name="select_subject">select a subject</string>
 	<string name="select_survey">select a survey</string>

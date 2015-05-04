@@ -107,8 +107,8 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		setAppointmentViews();
 		super.onConfigurationChanged(newConfig);
+		setAppointmentViews();
 	}
 
 	private void setInterviewLayout() {
@@ -245,9 +245,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 		String format = dateFormat+" "+timeFormat;
 		String appLabel = getResources().getString(R.string.appointment_label);
 		String date = appointment.getDateString(format, locale);
-		String app = appLabel+": "+appLabel;
+		String fullDate = appLabel+": "+date;
 				TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
-		dateText.setText(app);
+		dateText.setText(fullDate);
 
 		//Set appointment purpose view
 		String purposeLabel = getResources().getString(R.string.purpose_label);
