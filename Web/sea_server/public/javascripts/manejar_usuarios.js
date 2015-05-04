@@ -174,7 +174,7 @@ $(document).ready(function(){
     e.preventDefault();
     $('#btn_user_type_text').text($(this).text()+' ');
     $('#btn_user_type').val($(this).attr('data-usario-type'));
-    $('#usuario_type').val( $('#btn_user_type_text').text().toLowerCase());
+    $('#usuario_type').val($(this).attr('data-usario-type'));
     $('#specialty_panel').show();
   });
 
@@ -252,6 +252,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
     $('#usuario_email').val(this_usuario.username);
     $('#usuario_telefono').val(this_usuario.phone_number);
 
+
     if(this_usuario.type == 'agent')
     {
       type = 'Agente';
@@ -266,6 +267,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
     }
 
     $('#btn_user_type_text').text(type);
+    $('#usuario_type').val(this_usuario.type);
 
     if(type == 'Especialista')
     {
@@ -284,6 +286,9 @@ $('#btn_edit').on('click', function(){
   var $the_form = $('#form_manage_usuario');
   var form_data = $the_form.serializeArray();
   var new_usuario = ConverToJSON(form_data);
+
+  console.log("editing the user");
+  console.log(new_usuario);
 
 
   // ajax call to update ganadero
