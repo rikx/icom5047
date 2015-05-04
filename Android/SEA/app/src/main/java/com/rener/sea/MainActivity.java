@@ -19,10 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Represents an activity in which the primary navigation for the application is performed
@@ -39,7 +35,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
-        dbHelper = new DBHelper(getApplicationContext());
+		dbHelper = new DBHelper(getApplicationContext());
 
         //Manage network connectivity
         networkHelper = new NetworkHelper(getApplicationContext());
@@ -47,14 +43,14 @@ public class MainActivity extends FragmentActivity {
         BroadcastReceiver networkReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                sync();
+                networkHelper.isInternetAvailable();
             }
         };
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
 
         //Show the default view
-        showReportsList();
+	    showReportsList();
     }
 
     @Override
@@ -193,7 +189,6 @@ public class MainActivity extends FragmentActivity {
      * A listener method that listens for a some changes in the data being displayed
      */
     public void onDataSetChanged() {
-        sync();
         MenuListFragment fragment = (MenuListFragment) leftFragment;
         fragment.notifyDataChanged();
         hideKeyboard();
@@ -250,7 +245,7 @@ public class MainActivity extends FragmentActivity {
      * @return null if the service isn't bound to anything
      */
     public DBHelper getDBHelper() {
-        return dbHelper;
+	    return dbHelper;
     }
 
     private void logout() {
@@ -282,28 +277,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void sync() {
-        String message = getResources().getString(R.string.no_connection);
-        if(networkHelper.isInternetAvailable()) {
-            message = getResources().getString(R.string.synchronizing);
-            //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-            if (!dbHelper.syncDB()) {
-                //scheduleSync(5000);
-                message = getResources().getString(R.string.sync_fail);
-            }
-            else {
-                message = getResources().getString(R.string.sync_success);
-            }
+        boolean connected = networkHelper.isInternetAvailable();
+        if(connected){
+            dbHelper.syncDB();
         }
-        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void scheduleSync(int delay) {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                sync();
-            }
-        }, delay);
+        Log.i(this.toString(), "connected: "+connected);
     }
 
 }
