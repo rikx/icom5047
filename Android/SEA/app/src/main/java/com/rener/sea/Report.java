@@ -221,7 +221,6 @@ public class Report implements Comparable<Report> {
 
     public long setFlowchart(Flowchart flowchart) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Log.i(this.toString(), "Set Flowchart ID :" + flowchart.getId());
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_FLOWCHART_ID, flowchart.getId());
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});

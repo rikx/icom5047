@@ -1,5 +1,6 @@
 package com.rener.sea;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 /**
@@ -165,9 +167,10 @@ public class MainActivity extends FragmentActivity {
     /**
      * A listener method that listens for a some changes in the data being displayed
      */
-    public void OnDataSetChanged() {
+    public void onDataSetChanged() {
         MenuListFragment fragment = (MenuListFragment) leftFragment;
         fragment.notifyDataChanged();
+        hideKeyboard();
     }
 
     /**
@@ -245,4 +248,11 @@ public class MainActivity extends FragmentActivity {
     private void newReport() {
         startActivity(new Intent(this, SurveyActivity.class));
     }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity
+                .INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
 }

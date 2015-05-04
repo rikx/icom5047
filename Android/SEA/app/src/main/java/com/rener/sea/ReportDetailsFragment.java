@@ -325,5 +325,8 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 		//Create the appointment and set the views for it
 		new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper);
 		setAppointmentViews();
+
+		//Notify activity that data has changed
+		((MainActivity) getActivity()).onDataSetChanged();
 	}
 }
