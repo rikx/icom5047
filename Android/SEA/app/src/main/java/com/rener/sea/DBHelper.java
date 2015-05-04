@@ -2,6 +2,7 @@ package com.rener.sea;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -37,6 +38,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     private boolean dummyDB = false;
     private Context context;
     public static int SYNC_STATUS = 0;
+    private static JSONObject dataSync = new JSONObject();
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -795,7 +797,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         return i;
     }
 
-    private String getItem(){
+    private JSONArray getItem(){
 
         JSONArray data;
         data = new JSONArray();
@@ -841,10 +843,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getPath(){
+    private JSONArray getPath(){
 
         JSONArray data;
         data = new JSONArray();
@@ -889,10 +891,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getUsers_specialization(){
+    private JSONArray getUsers_specialization(){
 
         JSONArray data;
         data = new JSONArray();
@@ -924,10 +926,10 @@ public final class DBHelper extends SQLiteOpenHelper {
 //        }
 //        db.close();
 //        cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getOption(){
+    private JSONArray getOption(){
 
         JSONArray data;
         data = new JSONArray();
@@ -973,10 +975,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getSpecialization(){
+    private JSONArray getSpecialization(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1008,10 +1010,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getPerson(){
+    private JSONArray getPerson(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1085,10 +1087,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getAppointments(){
+    private JSONArray getAppointments(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1148,10 +1150,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getDevices(){
+    private JSONArray getDevices(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1204,10 +1206,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getAddress(){
+    private JSONArray getAddress(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1260,10 +1262,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getCategory(){
+    private JSONArray getCategory(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1295,10 +1297,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getLocation_category(){
+    private JSONArray getLocation_category(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1330,10 +1332,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getLocation(){
+    private JSONArray getLocation(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1400,10 +1402,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getReport(){
+    private JSONArray getReport(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1477,10 +1479,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getUsers(){
+    private JSONArray getUsers(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1533,10 +1535,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
-    private String getFlowchart(){
+    private JSONArray getFlowchart(){
 
         JSONArray data;
         data = new JSONArray();
@@ -1597,7 +1599,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
-        return data.toString();
+        return data;
 
     }
 
@@ -1647,7 +1649,8 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     }
     // TODO: set sync status
-    public void setSyncDone(HashMap<String, String> data){
+    public void setSyncDone(){
+
 //
 //        try {
 //            JSONArray items;
@@ -1684,13 +1687,14 @@ public final class DBHelper extends SQLiteOpenHelper {
 //    $type_Of_Sync = $_POST["sync"];
     // TODO: set tuple as sync and set the path
     // puede devolver true todo el tiempo
-    public boolean syncDB(){
+
+    public void syncDB(){
         String prefKey = context.getResources().getString(R.string.preference_file_key);
         String usernameKey = context.getResources().getString(R.string.key_saved_username);
         SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(usernameKey, null);
         long userID = findUserByUsername(sUsername).getId();
-
+        SYNC_STATUS = 0;
         Log.i(this.toString(), "HTTP Sync called ");
         //Create AsycHttpClient object
         AsyncHttpClient client = new AsyncHttpClient();
@@ -1742,7 +1746,11 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                     e.printStackTrace();
                 }
-                    SYNC_STATUS = statusCode;
+                    Intent intent = new Intent();
+                    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                    intent.setAction("SYNC");
+                    intent.putExtra("SYNC_RESULT", 200);
+                    context.sendBroadcast(intent);
 
                 }
 
@@ -1761,7 +1769,6 @@ public final class DBHelper extends SQLiteOpenHelper {
 //                    } catch (JSONException e) {
 //                        e.printStackTrace();
 //                    }
-                    SYNC_STATUS = statusCode;
                 }
 
                 @Override
@@ -1769,25 +1776,37 @@ public final class DBHelper extends SQLiteOpenHelper {
                     Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                     switch (statusCode) {
                         case 404:
+                            Intent intent404 = new Intent();
+                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent404.setAction("SYNC");
+                            intent404.putExtra("SYNC_RESULT", 404);
+                            context.sendBroadcast(intent404);
                             Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
                             break;
                         case 500:
+                            Intent intent500 = new Intent();
+                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent500.setAction("SYNC");
+                            intent500.putExtra("SYNC_RESULT", 500);
+                            context.sendBroadcast(intent500);
                             Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
                             break;
                         default:
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("SYNC");
+                            intent.putExtra("SYNC_RESULT", -1);
+                            context.sendBroadcast(intent);
                             Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
                             break;
 
 
                     }
-                    SYNC_STATUS = statusCode;
                 }
 
 
             });
-//            while (!SYNC_STATUS){
-//
-//            }
+
 //            result.isFinished();
 //            setSyncDone(data);
 
@@ -1798,9 +1817,9 @@ public final class DBHelper extends SQLiteOpenHelper {
 //            params.put("data", getData());
             params.put("sync", "full");
             Gson gson = new GsonBuilder().create();
-            JSONObject data = getData();
+            dataSync = getData();
 //            params.put("data", gson.toJson(data));
-            params.put("data",data);
+            params.put("data",dataSync);
             // send user id
             //http://136.145.116.231:3000/synchronization/
 //            client.set
@@ -1832,25 +1851,17 @@ public final class DBHelper extends SQLiteOpenHelper {
                         setLocation(localJSONObject.getJSONArray("location"));
                         setReport(localJSONObject.getJSONArray("report"));
                         setUsers(localJSONObject.getJSONArray("users"));
-//                        setItem(response.getJSONArray("item"));
-//                        setPath(response.getJSONArray("path"));
-//                        setUsers_specialization(response.getJSONArray("users_specialization"));
-//                        setFlowchart(response.getJSONArray("flowchart"));
-//                        setOption(response.getJSONArray("option"));
-//                        setSpecialization(response.getJSONArray("specialization"));
-//                        setPerson(response.getJSONArray("person"));
-//                        setAppointments(response.getJSONArray("appointments"));
-//                        setDevices(response.getJSONArray("devices"));
-//                        setAddress(response.getJSONArray("address"));
-//                        setCategory(response.getJSONArray("category"));
-//                        setLocation_category(response.getJSONArray("location_category"));
-//                        setLocation(response.getJSONArray("location"));
-//                        setReport(response.getJSONArray("report"));
-//                        setUsers(response.getJSONArray("users"));
+
                     } catch (JSONException e) {
 
                         e.printStackTrace();
                     }
+
+                    Intent intent = new Intent();
+                    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                    intent.setAction("SYNC");
+                    intent.putExtra("SYNC_RESULT", 200);
+                    context.sendBroadcast(intent);
                     try{
                         JSONObject localJSONObject = response.getJSONObject("local");
                         Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
@@ -1878,29 +1889,43 @@ public final class DBHelper extends SQLiteOpenHelper {
 //                    }
                 }
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String response, Throwable error){
-                    Log.i(this.toString(), "HTTP Sync failure : statusCode = "+statusCode+", Header = "+headers.toString()+", response = "+response);
+                public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                     switch (statusCode) {
                         case 404:
+                            Intent intent404 = new Intent();
+                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent404.setAction("SYNC");
+                            intent404.putExtra("SYNC_RESULT", 404);
+                            context.sendBroadcast(intent404);
                             Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
                             break;
                         case 500:
+                            Intent intent500 = new Intent();
+                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent500.setAction("SYNC");
+                            intent500.putExtra("SYNC_RESULT", 500);
+                            context.sendBroadcast(intent500);
                             Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
                             break;
                         default:
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("SYNC");
+                            intent.putExtra("SYNC_RESULT", -1);
+                            context.sendBroadcast(intent);
                             Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
                             break;
 
 
                     }
-
                 }
 
 
-            });
+
+                });
 
         }
-        return SYNC_STATUS == 1;
     }
 
 
