@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,8 +21,8 @@ import java.util.List;
 /**
  * An Android fragment that manages the display of details for a single Location object
  */
-public class LocationDetailsFragment extends Fragment
-        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class LocationDetailsFragment extends Fragment implements AdapterView
+        .OnItemSelectedListener {
 
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
@@ -35,6 +36,7 @@ public class LocationDetailsFragment extends Fragment
     private boolean viewCreated;
     private Spinner ownerSpinner, managerSpinner, agentSpinner;
     private List peopleList;
+    private Menu options;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,13 +125,9 @@ public class LocationDetailsFragment extends Fragment
                 android.R.layout.simple_list_item_1, agentList, 0);
         agentSpinner.setAdapter(adapter);
 
-        //Set the button views
-        view.findViewById(R.id.button_edit_location).setOnClickListener(this);
-        view.findViewById(R.id.button_save_location).setOnClickListener(this);
-
         viewCreated = true;
         setFields();
-        flipToShowLayout();
+        flipper.setDisplayedChild(SHOW_LAYOUT);
         return view;
     }
 
@@ -139,12 +137,12 @@ public class LocationDetailsFragment extends Fragment
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_edit_location:
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit_location_action:
                 flipToEditLayout();
                 break;
-            case R.id.button_save_location:
+            case R.id.save_location_action:
                 getFields();
                 setFields();
                 flipToShowLayout();
@@ -152,6 +150,7 @@ public class LocationDetailsFragment extends Fragment
                 ((MainActivity) getActivity()).onDataSetChanged();
                 break;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -174,6 +173,7 @@ public class LocationDetailsFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
+        this.options = menu;
         inflater.inflate(R.menu.location_actions, menu);
     }
 
@@ -241,11 +241,15 @@ public class LocationDetailsFragment extends Fragment
     }
 
     private void flipToEditLayout() {
+        options.findItem(R.id.edit_location_action).setVisible(false);
         flipper.setDisplayedChild(EDIT_LAYOUT);
+        options.findItem(R.id.save_location_action).setVisible(true);
     }
 
     private void flipToShowLayout() {
+        options.findItem(R.id.save_location_action).setVisible(false);
         flipper.setDisplayedChild(SHOW_LAYOUT);
+        options.findItem(R.id.edit_location_action).setVisible(true);
     }
 
     /**

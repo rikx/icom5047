@@ -296,7 +296,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void handleUserInput(String input) {
-        Item item = path.getLastOption().getNext();
+        Item item = path.isEmpty() ? report.getFlowchart().getFirst() : path.getLastOption()
+                .getNext();
         String type = item.getType();
         if (type.equals(Item.OPEN)) {
             Option option = item.getOptions().get(0);

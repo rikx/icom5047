@@ -33,6 +33,7 @@ public class MainActivity extends FragmentActivity {
     private NetworkHelper networkHelper;
     private Fragment leftFragment;
     private Fragment rightFragment;
+    private BroadcastReceiver networkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class MainActivity extends FragmentActivity {
         //Manage network connectivity
         networkHelper = new NetworkHelper(getApplicationContext());
         networkHelper.isInternetAvailable();
-        BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+        networkReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 sync();
@@ -75,6 +76,17 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkReceiver, filter);
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(networkReceiver);
     }
 
     @Override
@@ -282,19 +294,19 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void sync() {
-        String message = getResources().getString(R.string.no_connection);
         if(networkHelper.isInternetAvailable()) {
-            message = getResources().getString(R.string.synchronizing);
-            //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-            if (!dbHelper.syncDB()) {
-                //scheduleSync(5000);
-                message = getResources().getString(R.string.sync_fail);
-            }
-            else {
-                message = getResources().getString(R.string.sync_success);
-            }
+            //Create a new synchronization receiver
+            final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    unregisterReceiver(this);
+                    handleSyncResult(intent);
+                }
+            };
+            IntentFilter filter = new IntentFilter("SYNC");
+            registerReceiver(syncReceiver, filter);
+            dbHelper.syncDB();
         }
-        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void scheduleSync(int delay) {
@@ -304,6 +316,28 @@ public class MainActivity extends FragmentActivity {
                 sync();
             }
         }, delay);
+    }
+
+    private void handleSyncResult(Intent intent) {
+        int result = intent.getIntExtra("SYNC_RESULT", -1);
+        switch (result) {
+            case 200 :
+                syncSuccess();
+                break;
+            default :
+                syncFailure();
+                break;
+        }
+    }
+
+    private void syncSuccess() {
+        //TODO: sync success
+        //dbHelper.setSyncDone();
+    }
+
+    private void syncFailure() {
+        //TODO: sync failure
+        scheduleSync(5000);
     }
 
 }
