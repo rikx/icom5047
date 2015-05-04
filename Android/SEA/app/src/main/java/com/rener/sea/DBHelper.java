@@ -1704,7 +1704,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             //http://136.145.116.231:3000/synchronization/
 
 //            RequestHandle result  = client.post("http://136.145.116.231:3000/synchronization", params, new JsonHttpResponseHandler() {
-                client.post("http://136.145.116.231:3000/mobile/test1.php",params ,new JsonHttpResponseHandler(){
+                client.post("http://136.145.116.231/mobile/test1.php",params ,new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // If the response is JSONObject instead of expected JSONArray
@@ -1805,7 +1805,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             //http://136.145.116.231:3000/synchronization/
 //            client.set
 //            client.post("http://136.145.116.231:3000/synchronization",params ,new JsonHttpResponseHandler(){
-                client.post("http://136.145.116.231:3000/mobile/test1.php",params ,new JsonHttpResponseHandler(){
+                client.post("http://136.145.116.231/mobile/test1.php",params ,new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // If the response is JSONObject instead of expected JSONArray
