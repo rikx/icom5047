@@ -283,7 +283,8 @@ $(document).ready(function(){
 		var end_path = {
 			report_id: $question_panel_answers.attr('data-report-id'),
 			option_id: $question_panel_answers.attr('data-answer-id'),
-			user_input: 'RECOM'
+			user_input: 'RECOM',
+			sequence: sequence_number
 		};
     $.ajax({
       url: "http://localhost:3000/cuestionario/path",
