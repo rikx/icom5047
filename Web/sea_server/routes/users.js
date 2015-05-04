@@ -314,7 +314,8 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 						});
   					//call `done()` to release the client back to the pool
 						done();
-		  			res.json(true);
+						res.send({redirect: '/users'});
+		  			//res.json(true);
 					}
 				});
   		}

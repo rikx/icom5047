@@ -158,6 +158,10 @@ jsPlumb.ready(function() {
 	          alert("Cuestionario con este nombre y versión ya existe.");
 	        } else {
 	          alert("Cuestionario ha sido añadido al sistema.");
+	          if(typeof data.redirect == 'string') {
+						    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+						  }
+		        }
 	        }
 	      },
 	      error: function( xhr, status, errorThrown ) {
