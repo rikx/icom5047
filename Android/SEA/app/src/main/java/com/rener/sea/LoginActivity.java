@@ -55,7 +55,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
         int action = keyEvent.getAction();
-        if(action == 0) {
+        int vid = textView.getId();
+        if(vid == R.id.field_password && action == 6) {
             login();
             return true;
         }
@@ -103,6 +104,16 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         }
     }
 
+    private void deleteLogin() {
+        //Delete the saved login credentials
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(getString(R.string.key_saved_username));
+        editor.remove(getString(R.string.key_saved_password));
+        editor.apply();
+    }
+
     private boolean attemptLogin() {
         //Check login credentials
         Context context = getApplicationContext();
@@ -115,6 +126,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
             return true;
         } else {
             //Failed login
+            deleteLogin();
             String s = getResources().getString(R.string.login_nak);
             Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
             Log.i(this.toString(), "login failed");
