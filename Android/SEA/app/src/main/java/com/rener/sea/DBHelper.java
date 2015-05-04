@@ -460,7 +460,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 values.put(DBSchema.OPTION_ID, item.getLong(DBSchema.OPTION_ID));
                 values.put(DBSchema.OPTION_PARENT_ID, item.getLong(DBSchema.OPTION_PARENT_ID));
                 values.put(DBSchema.OPTION_NEXT_ID, item.getLong(DBSchema.OPTION_NEXT_ID));
-//                values.put(DBSchema.OPTION_LABEL, item.getString(DBSchema.OPTION_LABEL));
+                values.put(DBSchema.OPTION_LABEL, item.getString(DBSchema.OPTION_LABEL));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_OPTION, null, values, 5);
@@ -575,7 +575,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 values.put(DBSchema.ADDRESS_ID, item.getLong(DBSchema.ADDRESS_ID));
                 values.put(DBSchema.ADDRESS_LINE1, item.getString(DBSchema.ADDRESS_LINE1));
                 values.put(DBSchema.ADDRESS_CITY, item.getString(DBSchema.ADDRESS_CITY));
-//                values.put(DBSchema.ADDRESS_ZIPCODE, item.getString(DBSchema.ADDRESS_ZIPCODE));
+                values.put(DBSchema.ADDRESS_ZIPCODE, item.getString(DBSchema.ADDRESS_ZIPCODE));
                 values.put(DBSchema.ADDRESS_LINE2, item.getString(DBSchema.ADDRESS_LINE2));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -791,7 +791,9 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         Gson gson = new GsonBuilder().create();
-        return gson.toJson(data);
+        String temp = gson.toJson(data);
+        Log.i(this.toString(), "getPath  = " + temp);
+        return temp;
 
     }
     private String getUsers_specialization(){
@@ -1267,28 +1269,39 @@ public final class DBHelper extends SQLiteOpenHelper {
         return gson.toJson(data);
 
     }
-    private HashMap<String, String> getData(){
+    private String getData(){
 
-        HashMap<String, String> data;
-        data = new HashMap<String, String>();
-        data.put("flowchart", getFlowchart());
-        data.put("item", getItem());
-        data.put("path", getPath());
-        data.put("users_specialization", getUsers_specialization());
-        data.put("option", getOption());
-        data.put("specialization", getSpecialization());
-        data.put("person", getPerson());
-        data.put("appointments", getAppointments());
-        data.put("devices", getDevices());
-        data.put("address", getAddress());
-        data.put("category", getCategory());
-        data.put("location_category", getLocation_category());
-        data.put("location", getLocation());
-        data.put("report", getReport());
-        data.put("users", getUsers());
+//        HashMap<String, String> json;
+//        json = new HashMap<String, String >();
+        JSONObject json = new JSONObject();
 
-        return data;
+        try {
 
+            json.put("flowchart", getFlowchart());
+            json.put("item", getItem());
+            json.put("path", getPath());
+            json.put("users_specialization", getUsers_specialization());
+            json.put("option", getOption());
+            json.put("specialization", getSpecialization());
+            json.put("person", getPerson());
+            json.put("appointments", getAppointments());
+            json.put("devices", getDevices());
+            json.put("address", getAddress());
+            json.put("category", getCategory());
+            json.put("location_category", getLocation_category());
+            json.put("location", getLocation());
+            json.put("report", getReport());
+            json.put("users", getUsers());
+            Gson gson = new GsonBuilder().create();
+            String temp = gson.toJson(json);
+            Log.i(this.toString(), "DUMP  = " + temp);
+            return temp;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public boolean isEmpty(){
@@ -1353,21 +1366,17 @@ public final class DBHelper extends SQLiteOpenHelper {
         if(!isEmpty()){
 //            params.put("user_id", userID);
 //            params.put("type", "admin");
-//            Gson gson = new GsonBuilder().create();
-//            HashMap<String, String> data = getData();
-//            params.put("data", gson.toJson(data));
 //            params.put("sync", "update");
 
             // send user id
             //http://136.145.116.231:3000/synchronization/
 
-            RequestHandle result  = client.post("http://136.145.116.231/mobile/test.php", params, new JsonHttpResponseHandler() {
+            RequestHandle result  = client.post("http://136.145.116.231/mobile/test1.php", params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // If the response is JSONObject instead of expected JSONArray
                     Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                     SQLiteDatabase db = getWritableDatabase();
-
                     try {
 
 
@@ -1445,10 +1454,12 @@ public final class DBHelper extends SQLiteOpenHelper {
 //            params.put("type", "admin");
 //            params.put("data", getData());
             params.put("sync", "full");
-
+            Gson gson = new GsonBuilder().create();
+            String data = getData();
+            params.put("data", gson.toJson(data));
             // send user id
             //http://136.145.116.231:3000/synchronization/
-            client.post("http://136.145.116.231/mobile/test.php",params ,new JsonHttpResponseHandler(){
+            client.post("http://136.145.116.231/mobile/test1.php",params ,new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // If the response is JSONObject instead of expected JSONArray
