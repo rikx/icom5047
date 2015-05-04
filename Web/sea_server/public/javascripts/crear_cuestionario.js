@@ -325,10 +325,6 @@ jsPlumb.ready(function() {
 						//return;
 					}
 				}
-
-				console.log(elements_array);
-				console.log(connections_array);
-
 			}); 
 
 			if(itemType != 'START' && itemType != 'END'){
