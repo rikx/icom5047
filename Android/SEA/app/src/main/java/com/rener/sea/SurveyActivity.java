@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
@@ -186,7 +184,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         //Display question and it's options
         TextView textQuestion = new TextView(this);
         int sequence = path.size()+1;
-        textQuestion.setText(sequence + ". " + question.getLabel());
+        textQuestion.setText(sequence+". "+question.getLabel());
         String type = question.getType();
         switch (type) {
             case Item.BOOLEAN:
@@ -365,12 +363,5 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         //Finish the activity
         startActivity(new Intent(this, MainActivity.class));
         finish();
-    }
-
-    public boolean isNetworkConnected() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
     }
 }

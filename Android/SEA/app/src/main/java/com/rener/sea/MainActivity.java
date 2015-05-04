@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -170,8 +168,8 @@ public class MainActivity extends FragmentActivity {
      * A listener method that listens for a some changes in the data being displayed
      */
     public void onDataSetChanged() {
-        MenuListFragment left = (MenuListFragment) leftFragment;
-        left.notifyDataChanged();
+        MenuListFragment fragment = (MenuListFragment) leftFragment;
+        fragment.notifyDataChanged();
         hideKeyboard();
     }
 
@@ -255,13 +253,6 @@ public class MainActivity extends FragmentActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity
                 .INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-    }
-
-    public boolean isNetworkConnected() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
     }
 
 }
