@@ -219,7 +219,15 @@ $(document).ready(function(){
     $('#dispositivo_info_name').text($this_dispositivo.device_name);
     $('#dispositivo_info_id_num').text($this_dispositivo.id_number);
     $('#dispositivo_info_usuario').text($this_dispositivo.username);
-    $('#dispositivo_info_last_sync').text($this_dispositivo.last_sync);
+    if($this_dispositivo.last_sync == null)
+    {
+      $('#dispositivo_info_last_sync').text("Nunca se ha sincronizado");
+    }
+    else
+    {
+      $('#dispositivo_info_last_sync').text($this_dispositivo.last_sync);
+    }
+
   }
 
   /* Populate list with first 20 ganaderos, ordered by assigned user */
@@ -247,7 +255,15 @@ $(document).ready(function(){
         table_content +=  'active ';
       }
       table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+this.device_name+"</a></td>";
-      table_content += '<td><center>'+this.last_sync+'</center></td>';
+      if(this.last_sync == null)
+      {
+        table_content += '<td><center>'+"Nunca se ha sincronizado"+'</center></td>';
+      }
+      else
+      {
+        table_content += '<td><center>'+this.last_sync+'</center></td>';
+      }
+      //table_content += '<td><center>'+this.last_sync+'</center></td>';
       table_content += "<td><button class='btn_edit_dispositivo btn btn-sm btn-success btn-block' type='button' data-id='"+this.device_id+"'>Editar</button></td>";
       //table_content += "<td><a class='btn_delete_dispositivo btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.device_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
