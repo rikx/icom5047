@@ -227,7 +227,8 @@ router.get('/specialization', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
 		// select rows from specialization
-		client.query('SELECT * FROM specialization', function(err, result) {
+		client.query('SELECT * FROM specialization natural join users_specialization WHERE user_id = $1',
+									[user_id], function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
@@ -243,7 +244,7 @@ router.get('/specialization', function(req, res, next) {
 /* 
  * GET All users_specialization Rows matching :id
  */
-router.get('/specialization/:id', function(req, res, next) {
+router.get('/users_specialization/:id', function(req, res, next) {
 	var user_id = req.params.id;
 
  	var db = req.db;
@@ -252,7 +253,7 @@ router.get('/specialization/:id', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
 		// select rows from users_specialization
-		client.query('SELECT * FROM users_specialization WHERE user_id = $1', 
+		client.query('SELECT spec_id, name FROM users_specialization WHERE user_id = $1', 
 									[user_id], function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
@@ -277,7 +278,7 @@ router.get('/path/:id', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
 		// select row matching user_id
-		client.query('SELECT * FROM report WHERE user_id = $1', 
+		client.query('SELECT report_id, option_id, data, sequence FROM path natural join report WHERE creator_id = $1', 
 									[user_id], function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
