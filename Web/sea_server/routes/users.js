@@ -1014,7 +1014,8 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
  		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
  		|| !req.body.hasOwnProperty('usuario_password')
  		|| !req.body.hasOwnProperty('usuario_telefono') 
- 		|| !req.body.hasOwnProperty('usuario_type')) {
+ 		|| !req.body.hasOwnProperty('usuario_type')
+ 		|| !req.body.hasOwnProperty('usuario_middle_initial')) {
  		res.statusCode = 400;
 	 	return res.send('Error: Missing fields for put user.');
 	} else {
