@@ -9,7 +9,7 @@ $(document).ready(function(){
   populate_list(dispositivos_array)
   // initial info panel population
 
-  if(dispositivos_array.lenght > 0)
+  if(dispositivos_array.length > 0)
   populate_info_panel(dispositivos_array[0]);
 
   // hide input that contains user chosen from dropdown

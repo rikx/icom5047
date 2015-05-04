@@ -15,7 +15,7 @@ $(document).ready(function(){
 
 
   // initial info panel population
-  if(localizaciones_array.lenght > 0)
+  if(localizaciones_array.length > 0)
   populate_info_panel(localizaciones_array[0]);
 
 

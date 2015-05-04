@@ -17,7 +17,7 @@ $(document).ready(function(){
   // }
 
   // initial info panel population
-  if(ganaderos_array.lenght > 0)
+  if(ganaderos_array.length > 0)
   populate_info_panel(ganaderos_array[0]);
 
 

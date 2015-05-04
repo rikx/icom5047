@@ -12,8 +12,9 @@ $(document).ready(function(){
   var all_specialties_array = JSON.parse($('#specialty_panel').attr('data-all-specialties'));
 
   // initial info panel population
-  if(usuarios_array.lenght > 0)
-  populate_info_panel(usuarios_array[0]);
+  if(usuarios_array.length > 0){
+      populate_info_panel(usuarios_array[0]);
+  }
 
    /* Search Code start */
   // constructs the suggestion engine
@@ -440,7 +441,6 @@ function populate_info_panel($this_usuario){
       usuarios_array = data.usuarios;
       locations_array = data.locations;
       specialties_array = data.user_specialties;
-
       populate_list(data.usuarios);
     });
   };
