@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -16,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
-import android.widget.Toast;
 
 /**
  * Represents an activity in which the primary navigation for the application is performed
@@ -34,8 +36,20 @@ public class MainActivity extends FragmentActivity {
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
 		dbHelper = new DBHelper(getApplicationContext());
+
+        //Manage network connectivity
         networkHelper = new NetworkHelper(getApplicationContext());
         networkHelper.isInternetAvailable();
+        BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                networkHelper.isInternetAvailable();
+            }
+        };
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkReceiver, filter);
+
+        //Show the default view
 	    showReportsList();
     }
 
