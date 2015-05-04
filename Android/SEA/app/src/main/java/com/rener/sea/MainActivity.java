@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Represents an activity in which the primary navigation for the application is performed
@@ -88,6 +89,9 @@ public class MainActivity extends FragmentActivity {
                 break;
             case R.id.action_settings:
                 showSettings();
+                break;
+            case R.id.sync :
+                sync();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -253,6 +257,11 @@ public class MainActivity extends FragmentActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity
                 .INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    private void sync() {
+        boolean connected = NetworkHelper.isServerAvailable(this);
+        //TODO: test the connection
     }
 
 }
