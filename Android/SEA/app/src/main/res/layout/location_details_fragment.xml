@@ -83,6 +83,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center_horizontal"
 				android:text="@string/edit"
+				android:visibility="gone"
 				/>
 	
 		</LinearLayout>
@@ -166,6 +167,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center_horizontal"
 				android:text="@string/save"
+				android:visibility="gone"
 				/>
 		</LinearLayout>
 
