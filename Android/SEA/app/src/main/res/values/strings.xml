@@ -89,4 +89,8 @@
 	<string name="appointment_label">Appointment</string>
 	<string name="appointment_set_by_label">Set by</string>
 	<string name="purpose_label">Purpose</string>
+	<string name="no_connection">No connection</string>
+	<string name="synchronizing">Synchronizing...</string>
+	<string name="sync_success">Sync succesful!</string>
+	<string name="sync_fail">Sync failed!</string>
 </resources>

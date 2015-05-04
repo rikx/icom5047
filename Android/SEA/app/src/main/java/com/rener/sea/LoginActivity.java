@@ -33,7 +33,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         // TODO: fill db with dummy data eliminar despues
         dbHelper.deleteDB();
         if(dbHelper.getDummy())
-            dbHelper.fillDB();
+            dbHelper.syncDB();
 
         //Perform the login procedure
 	    loadLogin();

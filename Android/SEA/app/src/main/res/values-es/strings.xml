@@ -89,4 +89,8 @@
 	<string name="appointment_label">Cita</string>
 	<string name="appointment_set_by_label">Hecho por:</string>
 	<string name="purpose_label">Propósito</string>
+	<string name="no_connection">No hay conección</string>
+	<string name="synchronizing">Sincronizando...</string>
+	<string name="sync_success">Sincronización exitosa!</string>
+	<string name="sync_fail">Sincronización fracasada!</string>
 </resources>
