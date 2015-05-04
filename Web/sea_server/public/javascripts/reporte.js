@@ -58,7 +58,7 @@ $(document).ready(function(){
 
     // ajax call to update location
     $.ajax({
-    	url: "http://localhost:3000/users/admin/note_edit",
+    	url: "http://localhost:3000/users/reports/note",
     	method: "PUT",
     	data: JSON.stringify(notes),
     	contentType: "application/json",
@@ -91,7 +91,7 @@ $(document).ready(function(){
 
     // ajax call to post new appointment
     $.ajax({
-      url: "http://localhost:3000/users/appointment/" + report_data.report_id + "/" + user_data.user_id,
+      url: "http://localhost:3000/users/reports/appointment/" + report_data.report_id + "/" + user_data.user_id,
       method: "POST",
       data: JSON.stringify(new_appointment),
       contentType: "application/json",
@@ -205,7 +205,7 @@ $(document).ready(function(){
 
     // ajax call to update location
     $.ajax({
-      url: "http://localhost:3000/users/admin/new_title/" + report_data.report_id,
+      url: "http://localhost:3000/users/reports/new_title/" + report_data.report_id,
       method: "PUT",
       data: JSON.stringify(new_title),
       contentType: "application/json",

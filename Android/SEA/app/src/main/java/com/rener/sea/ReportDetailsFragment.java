@@ -34,7 +34,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     private Report report;
     private TextView textName, textLocation, textDate, textSubject, textType, textCreator,
             textFlowchart, textNotes;
+	private LinearLayout interviewLayout;
 	private ViewFlipper appointmentFlipper;
+	private View appointmentView;
 	private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
 
     @Override
@@ -49,7 +51,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 	    if(savedInstanceState != null) {
 		    appointmentLayout = savedInstanceState.getInt("appointmentLayout",
 				    NO_APPOINTMENT_LAYOUT);
-		    Log.i(this.toString(), "restoring appointment layout: "+appointmentLayout);
+		    Log.i(this.toString(), "restoring appointment layout: " + appointmentLayout);
 	    }
 
         View view = inflater.inflate(R.layout.report_details_fragment, container, false);
@@ -65,28 +67,16 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
 
         //Create dynamic views
-        LinearLayout layoutInterview = (LinearLayout) view.findViewById(R.id.report_interview_layout);
+        interviewLayout = (LinearLayout) view.findViewById(R.id.report_interview_layout);
 
         //Recreate the path taken through the flowchart
-        Path path = report.getPath();
-        for (PathEntry e : path) {
-	        Option option = e.getOption();
-            Item item = option.getParent();
-            String data = e.getData();
-            String question = item.getLabel();
-            TextView textQuestion = new TextView(getActivity());
-            textQuestion.setText("\t" + question);
-            TextView textAnswer = new TextView(getActivity());
-            String answer = data.equals("") ? option.getLabel() : data;
-            textAnswer.setText("\t\t" + answer);
-            layoutInterview.addView(textQuestion);
-            layoutInterview.addView(textAnswer);
-        }
+        setInterviewLayout();
 
 	    FrameLayout appointmentLayout = (FrameLayout) view.findViewById(R.id.report_appointment_container);
 		View aView = inflater.inflate(R.layout.appointment_details, appointmentLayout, false);
 	    appointmentLayout.addView(aView);
 	    appointmentFlipper = (ViewFlipper) aView.findViewById(R.id.appointment_flipper);
+	    appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
 	    setFields();
 
         return view;
@@ -121,28 +111,82 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 		super.onConfigurationChanged(newConfig);
 	}
 
+	private void setInterviewLayout() {
+		Path path = report.getPath();
+		int sequence = 1;
+		for (PathEntry e : path) {
+			//Get the interview element information
+			Option option = e.getOption();
+			Item item = option.getParent();
+			String data = e.getData();
+			String question = sequence+". "+item.getLabel();
+			String answer = data.equals("") ? option.getLabel() : data;
+			sequence++;
+
+			//Set the interview element views
+			TextView seqView = new TextView(getActivity());
+			seqView.setText(sequence + ".");
+			//TODO: add the sequence view
+			TextView questionView = new TextView(getActivity());
+			questionView.setText(question);
+			questionView.setPadding(4, 0, 0, 0);
+			TextView answerView = new TextView(getActivity());
+			answerView.setText(answer);
+			answerView.setPadding(16, 0, 0, 0);
+
+			//Set the element layout
+			interviewLayout.addView(questionView);
+			interviewLayout.addView(answerView);
+		}
+	}
+
 	/**
      * Set the static views for this fragment
      */
     private void setFields() {
+
+	    //Set the name
         textName.setText(report.getName());
+
+	    //Set the date
         Locale locale = Locale.getDefault();
         String dateFormat = getResources().getString(R.string.date_format);
-        textDate.setText(report.getDateString(dateFormat, locale));
-        textType.setText(report.getType());
-        textLocation.setText(report.getLocation().toString());
-        textFlowchart.setText(report.getFlowchart().getName());
+	    String dateLabel = getResources().getString(R.string.date_label);
+	    String date = dateLabel+": "+report.getDateString(dateFormat, locale);
+        textDate.setText(date);
+
+	    //Set the type
+	    //TODO: review this
+	    textType.setText(report.getType());
+
+	    //Set the location
+	    String locLabel = getResources().getString(R.string.location_label);
+	    String location = locLabel+": "+report.getLocation().toString();
+        textLocation.setText(location);
+
+	    //Set the flowchart
+	    String fcLabel = getResources().getString(R.string.flowchart_label);
+	    String fc = fcLabel+": "+report.getFlowchart().getName();
+        textFlowchart.setText(fc);
+
+	    //Set the notes
         textNotes.setText(report.getNotes());
+
+	    //Set the creator
         if (report.getCreator() != null) {
             String label = getResources().getString(R.string.creator_label);
             String creator = report.getCreator().getPerson().toString();
             textCreator.setText(label + ": " + creator);
         }
+
+	    //Set the subject
         if (report.getSubject() != null) {
             String label = getResources().getString(R.string.subject_label);
             String subject = report.getSubject().toString();
             textSubject.setText(label + ": " + subject);
         }
+
+	    //Set the appointment if it exists
 	    setAppointmentViews();
     }
 
@@ -181,7 +225,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 			Button add = (Button) appointmentFlipper.findViewById(R.id
 					.report_add_appointment_button);
 			add.setOnClickListener(this);
+			appointmentView.setVisibility(View.GONE);
 			appointmentFlipper.setDisplayedChild(NO_APPOINTMENT_LAYOUT);
+			appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
+			appointmentView.setVisibility(View.VISIBLE);
 		}
 		else {
 			displayNewAppointmentLayout();
@@ -190,21 +237,36 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
 	private void displayAppointmentLayout(Appointment appointment) {
 		View view = appointmentFlipper;
+
 		//Set appointment date view
-		TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
 		Locale locale = Locale.getDefault();
 		String dateFormat = getResources().getString(R.string.date_format_long);
 		String timeFormat = getResources().getString(R.string.time_format);
 		String format = dateFormat+" "+timeFormat;
-		dateText.setText(appointment.getDateString(format, locale));
+		String appLabel = getResources().getString(R.string.appointment_label);
+		String date = appointment.getDateString(format, locale);
+		String app = appLabel+": "+appLabel;
+				TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
+		dateText.setText(app);
+
 		//Set appointment purpose view
+		String purposeLabel = getResources().getString(R.string.purpose_label);
+		String purpose = appointment.getPurpose();
 		TextView purposeText = (TextView) view.findViewById(R.id.appointment_purpose_text);
-		purposeText.setText(appointment.getPurpose());
+		purposeText.setText(purposeLabel+": "+purpose);
+
 		//Set appointment creator view
+		String creatorLabel = getResources().getString(R.string.appointment_set_by_label);
+		String creator = appointment.getCreator().getPerson().toString();
 		TextView creatorText= (TextView) view.findViewById(R.id.appointment_creator_text);
-		creatorText.setText(appointment.getCreator().getPerson().toString());
+		creatorText.setText(creatorLabel+": "+creator);
+
+		//Display the layout
 		appointmentLayout = VIEW_APPOINTMENT_LAYOUT;
+		appointmentView.setVisibility(View.GONE);
 		appointmentFlipper.setDisplayedChild(VIEW_APPOINTMENT_LAYOUT);
+		appointmentView = appointmentFlipper.findViewById(R.id.view_appointment_layout);
+		appointmentView.setVisibility(View.VISIBLE);
 	}
 
 
@@ -230,7 +292,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
 		//Display the layout view
 		appointmentLayout = EDIT_APPOINTMENT_LAYOUT;
+		appointmentView.setVisibility(View.GONE);
 		appointmentFlipper.setDisplayedChild(EDIT_APPOINTMENT_LAYOUT);
+		appointmentView = appointmentFlipper.findViewById(R.id.edit_appointment_layout);
+		appointmentView.setVisibility(View.VISIBLE);
 	}
 
 	private void saveAppointment() {
@@ -260,5 +325,8 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 		//Create the appointment and set the views for it
 		new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper);
 		setAppointmentViews();
+
+		//Notify activity that data has changed
+		((MainActivity) getActivity()).onDataSetChanged();
 	}
 }

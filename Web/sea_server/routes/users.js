@@ -23,7 +23,7 @@ var router = express.Router();
  * Responds with first 20 cuestionarios, 
  * alphabetically ordered by name
  */
- router.get('/cuestionarios', function(req, res, next) {
+router.get('/cuestionarios', function(req, res, next) {
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
@@ -47,12 +47,12 @@ var router = express.Router();
 	  	}
 	  });
  	});
- });
+});
 
 /* GET Tomar Cuestionario Metodo Flujo
  * Responds with take survey page for matching survey :id
  */
- router.get('/cuestionarios/flow/:id', function(req, res, next) {
+router.get('/cuestionarios/flow/:id', function(req, res, next) {
  	var cuestionario_id = req.params.id;
  	var locations_list;
  	var db = req.db;
@@ -242,8 +242,8 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 						var this_item;
 		  			for(var i=0; i < flowchart_items.length; i++){
 		  				this_item = flowchart_items[i];
-							client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, state_id) \
-														VALUES ($1, $2, $3, $4, $5, $6) \
+		  				// insert this_item
+							client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, state_id) VALUES ($1, $2, $3, $4, $5, $6) \
 														RETURNING item_id, state_id', 
 														[flowchart_id, this_item.name, this_item.top, this_item.left, this_item.type, this_item.id], function(err, result) {
 								if(err) {
@@ -254,8 +254,9 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 
 									// if new item is start item
 									if(flowchart_info.first_id == state_id){
-										client.query('UPDATE flowchart SET first_id = $1 \
-																	WHERE flowchart_id = $2', [new_item, flowchart_id] , function(err, result){
+										// edit first_id of flowchart
+										client.query('UPDATE flowchart SET first_id = $1 WHERE flowchart_id = $2', 
+																	[new_item, flowchart_id] , function(err, result){
 											if(err) {
 												return console.error('error running query', err);
 											} else {
@@ -264,8 +265,9 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 									}
 									// if new item is end item
 									if(flowchart_info.end_id == state_id){
-										client.query('UPDATE flowchart SET end_id = $1 \
-																	WHERE flowchart_id = $2', [new_item, flowchart_id] , function(err, result){
+										// edit end_id of flowchart
+										client.query('UPDATE flowchart SET end_id = $1 WHERE flowchart_id = $2', 
+																	[new_item, flowchart_id] , function(err, result){
 											if(err) {
 												return console.error('error running query', err);
 											} else {
@@ -277,9 +279,8 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  			}
 						
 						// Get all items associated with this flowchart
-						client.query('SELECT item_id, state_id \
-													FROM item \
-													WHERE flowchart_id = $1', [flowchart_id], function(err, result){
+						client.query('SELECT item_id, state_id FROM item WHERE flowchart_id = $1', 
+													[flowchart_id], function(err, result){
 							if(err) {
 								return console.error('error running query', err);
 							} else {
@@ -300,8 +301,8 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 				  					}
 				  				});
 
-		  						client.query('INSERT into option (parent_id, next_id, label) \
-																VALUES ($1, $2, $3)', 
+				  				// insert this_option
+		  						client.query('INSERT into option (parent_id, next_id, label) VALUES ($1, $2, $3)', 
 																[this_source, this_target, this_option.label], function(err, result) {
 										if(err) {
 											return console.error('error running query', err);
@@ -321,7 +322,7 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
   });
 });
 
-/* TODO: GET Admin Cuestionario 
+/* TODO: GET Admin View Cuestionario 
  *
  */
 router.get('/admin/cuestionarios/:id', function(req, res, next) {
@@ -393,7 +394,7 @@ router.get('/ganaderos', function(req, res, next) {
 		  			username: username,
 		  			user_type: user_type
 		  		}
-		  		console.log(current_user);
+
 					res.render('manejar_ganaderos', { 
 						title: 'Manejar Ganaderos', 
 						ganaderos: ganaderos_list, 
@@ -409,30 +410,30 @@ router.get('/ganaderos', function(req, res, next) {
 /* POST Admin Manejar Ganaderos
  * Add new ganadero to database
  */
- router.post('/admin/ganaderos', function(req, res, next) {
+router.post('/admin/ganaderos', function(req, res, next) {
  	if(!req.body.hasOwnProperty('ganadero_name') || !req.body.hasOwnProperty('ganadero_apellido1')
  		|| !req.body.hasOwnProperty('ganadero_apellido2') || !req.body.hasOwnProperty('ganadero_email')
  		|| !req.body.hasOwnProperty('ganadero_telefono') || !req.body.hasOwnProperty('ganadero_m_initial')) {
  		res.statusCode = 400;
- 	return res.send('Error: Missing fields for post ganadero.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
+ 		return res.send('Error: Missing fields for post ganadero.');
+ 	} else {
+ 		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+ 			if(err) {
+ 				return console.error('error fetching client from pool', err);
+ 			}
 	  	// Verify ganadero does not already exist in db
-	  	client.query("SELECT email FROM person WHERE email = $1 OR phone_number = $2", [req.body.ganadero_email, req.body.ganadero_telefono], function(err, result) {
+	  	client.query("SELECT email FROM person WHERE email = $1 OR phone_number = $2", 
+	  								[req.body.ganadero_email, req.body.ganadero_telefono], function(err, result) {
 	  		if(err) {
 	  			return console.error('error running query', err);
 	  		} else {
 	  			if(result.rowCount > 0){
 	  				res.send({exists: true});
 	  			} else {
-		  			// Insert new ganadero into db
-		  			client.query("INSERT into person (first_name, middle_initial, last_name1, last_name2, email, phone_number) \
-		  				VALUES ($1, $2, $3, $4, $5, $6)", 
-		  				[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono] , function(err, result) {
+		  			// Insert new ganadero row
+		  			client.query("INSERT into person (first_name, middle_initial, last_name1, last_name2, email, phone_number) VALUES ($1, $2, $3, $4, $5, $6)", 
+		  										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono] , function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
@@ -448,159 +449,48 @@ router.get('/ganaderos', function(req, res, next) {
 	}
 });
 
-/* PUT Admin Category_Locations
- *
- */
-router.put('/admin/category_location', function(req, res, next) {
-	var location_category_array, included;
-
-	if(!req.body.hasOwnProperty('categories') || !req.body.hasOwnProperty('location') ) {
-	  res.statusCode = 400;
-	  return res.send('Error: Missing fields for post ganadero.');
-	} else {
-	  var db = req.db;
-	  db.connect(req.conString, function(err, client, done) {
-	  	if(err) {
-	  		return console.error('error fetching client from pool', err);
-	  	}
-	    // Get categories (if any) associated to location
-	    client.query("SELECT * FROM location_category WHERE location_id = $1", [req.body.location], function(err, result) {
-	    	if(err) {
-	      	return console.error('error running query', err);
-	      } else {
-		     	// if location has categories assocciated to it
-		      if(result.rowCount > 0){
-		        location_category_array = result.rows;
-
-		        /*
-		         * Code for addding to location_category
-		         */
-		        // loop through checkmarked categories
-		        for(i = 0 ; i < req.body.categories.length; i++) {
-		        	// loop through categories associated to location
-		        	for(j = 0; j < location_category_array.length; j++) {
-		        		// if match is found then category is already associated with location
-		        		if(req.body.categories[i] == location_category_array[j].category_id) {
-									included = true;
-		       			}
-		       		}
-							// if included then category is already associated with location; else, add association
-							if(!included) {
-								// add association
-								client.query("INSERT into location_category (location_id, category_id) \
-														VALUES ($1, $2)", 
-														[req.body.location,req.body.categories[i]] , function(err, result) {
-									//call `done()` to release the client back to the pool
-									done();
-									if(err) {
-										return console.error('error running query', err);
-									} else {
-
-									}
-								});
-							}
-							// reset included value
-							included = false;
-		      	} //end for loop 1
-
-		      	/* 
-		      	 * Code for removing from location_category 
-		      	 */
-		    	  // loop through categories associated to location
-		      	for(j = 0; j < location_category_array.length; j++) {
-		      		// loop through checkmarked categories
-		       		for(i = 0 ; i < req.body.categories.length; i++) {
-		       			// if match is found then category is already associated with location
-		        		if(req.body.categories[i] == location_category_array[j].category_id) {
-		       				included = true;
-		       			}
-		       		}
-		       		// if included then category remained checkmarked; else, remove association
-		       		if(!included) {
-		       			// remove association
-								client.query("DELETE FROM location_category \
-															WHERE location_id =$1 AND category_id = $2", 
-														[req.body.location,location_category_array[j].category_id] , function(err, result) {
-									//call `done()` to release the client back to the pool
-									done();
-									if(err) {
-										return console.error('error running query', err);
-									} else {
-										// do nothing
-									}
-								});
-		       		}
-		       		// reset included value
-							included = false;
-		      	}
-		      } else {
-		      	// location has no categories so add the ones the user checkmarked
-		      	for(i = 0 ; i < req.body.categories.length; i++){
-							client.query("INSERT into location_category (location_id, category_id) \
-														VALUES ($1, $2)", 
-														[req.body.location,req.body.categories[i]] , function(err, result) {
-								//call `done()` to release the client back to the pool
-								done();
-								if(err) {
-									return console.error('error running query', err);
-								} else {
-									// do nothing
-								}
-		      		});
-						}
-		      }
-		    	// location_category associations were succesfully updated
-					res.json(true);
-		   	}
-		  });
-	  });
-	}
-});
-
 /* PUT Admin User Specialties
  *
  */
 router.put('/admin/user_specialties', function(req, res, next) {
-	//var location_category_array, included;
-	console.log("user specialties call");
-    var user_specialties_array, included;
-
-	if(!req.body.hasOwnProperty('specialties') || !req.body.hasOwnProperty('user') ) {
+  if(!req.body.hasOwnProperty('specialties') || !req.body.hasOwnProperty('user') ) {
 	  res.statusCode = 400;
-	  return res.send('Error: Missing fields for post ganadero.');
+	  return res.send('Error: Missing fields for put user specialties.');
 	} else {
+		var user_specialties_array, included;
+
 	  var db = req.db;
 	  db.connect(req.conString, function(err, client, done) {
 	  	if(err) {
 	  		return console.error('error fetching client from pool', err);
 	  	}
-	    // Get categories (if any) associated to location
-	    client.query("SELECT * FROM users_specialization WHERE user_id = $1", [req.body.user], function(err, result) {
+	    // Get specialties (if any) associated to user
+	    client.query("SELECT * FROM users_specialization WHERE user_id = $1", 
+	    							[req.body.user], function(err, result) {
 	    	if(err) {
 	      	return console.error('error running query', err);
 	      } else {
-		     	// if location has categories assocciated to it
+		     	// if user has specialties assocciated to it
 		      if(result.rowCount > 0){
 		        user_specialties_array = result.rows;
 
 		        /*
-		         * Code for addding to location_category
+		         * Code for addding to user_specialties
 		         */
-		        // loop through checkmarked categories
+		        // loop through checkmarked specialties
 		        for(i = 0 ; i < req.body.specialties.length; i++) {
-		        	// loop through categories associated to location
+		        	// loop through specialties associated to user
 		        	for(j = 0; j < user_specialties_array.length; j++) {
-		        		// if match is found then category is already associated with location
+		        		// if match is found then specialty is already associated with user
 		        		if(req.body.specialties[i] == user_specialties_array[j].spec_id) {
 									included = true;
 		       			}
 		       		}
-							// if included then category is already associated with location; else, add association
+							// if included then specialty is already associated with user; else, add association
 							if(!included) {
 								// add association
-								client.query("INSERT into users_specialization (user_id, spec_id) \
-														VALUES ($1, $2)", 
-														[req.body.user,req.body.specialties[i]] , function(err, result) {
+								client.query("INSERT into users_specialization (user_id, spec_id) VALUES ($1, $2)", 
+															[req.body.user,req.body.specialties[i]] , function(err, result) {
 									//call `done()` to release the client back to the pool
 									done();
 									if(err) {
@@ -615,23 +505,22 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		      	} //end for loop 1
 
 		      	/* 
-		      	 * Code for removing from location_category 
+		      	 * Code for removing from user_specialties 
 		      	 */
-		    	  // loop through categories associated to location
+		    	  // loop through specialties associated to user
 		      	for(j = 0; j < user_specialties_array.length; j++) {
-		      		// loop through checkmarked categories
+		      		// loop through checkmarked specialties
 		       		for(i = 0 ; i < req.body.specialties.length; i++) {
-		       			// if match is found then category is already associated with location
+		       			// if match is found then specialty is already associated with user
 		        		if(req.body.specialties[i] == user_specialties_array[j].spec_id) {
 		       				included = true;
 		       			}
 		       		}
-		       		// if included then category remained checkmarked; else, remove association
+		       		// if included then specialty remained checkmarked; else, remove association
 		       		if(!included) {
 		       			// remove association
-								client.query("DELETE FROM users_specialization \
-															WHERE user_id =$1 AND spec_id = $2", 
-														[req.body.user,user_specialties_array[j].spec_id] , function(err, result) {
+								client.query("DELETE FROM users_specialization WHERE user_id =$1 AND spec_id = $2", 
+															[req.body.user,user_specialties_array[j].spec_id] , function(err, result) {
 									//call `done()` to release the client back to the pool
 									done();
 									if(err) {
@@ -645,10 +534,9 @@ router.put('/admin/user_specialties', function(req, res, next) {
 							included = false;
 		      	}
 		      } else {
-		      	// location has no categories so add the ones the user checkmarked
+		      	// user has no specialties so add the ones that are checkmarked
 		      	for(i = 0 ; i < req.body.specialties.length; i++){
-							client.query("INSERT into users_specialization (user_id, spec_id) \
-														VALUES ($1, $2)", 
+							client.query("INSERT into users_specialization (user_id, spec_id) VALUES ($1, $2)", 
 														[req.body.user,req.body.specialties[i]] , function(err, result) {
 								//call `done()` to release the client back to the pool
 								done();
@@ -660,7 +548,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		      		});
 						}
 		      }
-		    	// location_category associations were succesfully updated
+		    	// user_specialties associations were succesfully updated
 					res.json(true);
 		   	}
 		  });
@@ -677,17 +565,16 @@ router.put('/admin/user_specialties', function(req, res, next) {
  		|| !req.body.hasOwnProperty('ganadero_apellido2') || !req.body.hasOwnProperty('ganadero_email')
  		|| !req.body.hasOwnProperty('ganadero_telefono') || !req.body.hasOwnProperty('ganadero_m_initial')) {
  		res.statusCode = 400;
- 	return res.send('Error: Missing fields for put ganadero.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-			// Insert new ganadero into db
-			client.query("UPDATE person SET first_name = $1, middle_initial = $2, last_name1 = $3, last_name2 = $4, email = $5, phone_number = $6 \
-				WHERE person_id = $7", 
-				[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono, ganadero_id] , function(err, result) {
+ 		return res.send('Error: Missing fields for put ganadero.');
+ 	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// Edit ganadero
+			client.query("UPDATE person SET first_name = $1, middle_initial = $2, last_name1 = $3, last_name2 = $4, email = $5, phone_number = $6 WHERE person_id = $7", 
+										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono, ganadero_id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
@@ -697,105 +584,75 @@ router.put('/admin/user_specialties', function(req, res, next) {
 				}
 			});
 		});
- }
-});
-
-/* PUT Edit Notes 
- * 
- */
- router.put('/admin/note_edit', function(req, res, next) {
- 	console.log("notes edit");
- 	if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('note_text')) {
- 		res.statusCode = 400;
- 	return res.send('Error: Missing fields for put ganadero.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-			// Insert new ganadero into db
-			client.query("UPDATE report SET note = $1 \
-				WHERE report_id = $2", 
-				[req.body.note_text, req.body.report_id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					res.json(true);
-				}
-			});
-		});
- }
+	}
 });
 
 /* GET User Manejar Reportes
  * Renders page and includes response with first 20 reportes, 
  * alphabetically ordered by location name
  */
-	router.get('/reportes', function(req, res, next) {
-		var user_id = req.session.user_id;
-		var username = req.session.username;
-		var user_type = req.session.user_type;
+router.get('/reportes', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 
-	  if (!username) {
-	  	user_id = req.session.user_id = '';
-	    username = req.session.username = '';
-	    user_type = req.session.user_type = '';
-	    res.redirect('/');
-	  } else {
-			var db = req.db;
-		 	db.connect(req.conString, function(err, client, done) {
-		 		if(err) {
-		 			return console.error('error fetching client from pool', err);
-		 		}
-				var query_config = {};
-		 		if(user_type == 'admin' || user_type == 'specialist') {
-		 			// get first 20 reports regardles of creator
-		 			query_config = {
-						text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
-										FROM report INNER JOIN location ON report.location_id = location.location_id \
-										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
-										INNER JOIN users ON report.creator_id = user_id \
-							 			ORDER BY report_name ASC \
-										LIMIT 20"
-					}
-		 		} else {
-		 			// get first 20 reports created by this user
-					query_config = {
-						text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
-										FROM report INNER JOIN location ON report.location_id = location.location_id \
-										INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
-										INNER JOIN users ON report.creator_id = user_id \
-										WHERE report.creator_id = $1 \
-							 			ORDER BY report_name ASC \
-										LIMIT 20",
-						values: [user_id]
-					};
-			 	}
-		 		// get reports 
-		 		client.query(query_config, function(err, result) {
-					//call `done()` to release the client back to the pool
-					done();
-					if(err) {
-						return console.error('error running query', err);
-					} else {
-						var current_user = {
-			  			user_id: user_id,
-			  			username: username,
-			  			user_type: user_type
-			  		}
-						res.render('manejar_reportes', { 
-							title: 'Manejar Reportes', 
-							reports: result.rows,
-							user: current_user
-						});
-					}
-				});
-		 	});
-	  }
-	});
+  if (!username) {
+  	user_id = req.session.user_id = '';
+    username = req.session.username = '';
+    user_type = req.session.user_type = '';
+    res.redirect('/');
+  } else {
+		var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			var query_config = {};
+	 		if(user_type == 'admin' || user_type == 'specialist') {
+	 			// get first 20 reports regardles of creator
+	 			query_config = {
+					text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+									FROM report INNER JOIN location ON report.location_id = location.location_id \
+									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+									INNER JOIN users ON report.creator_id = user_id \
+						 			ORDER BY report_name ASC \
+									LIMIT 20"
+				}
+	 		} else {
+	 			// get first 20 reports created by this user
+				query_config = {
+					text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+									FROM report INNER JOIN location ON report.location_id = location.location_id \
+									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
+									INNER JOIN users ON report.creator_id = user_id \
+									WHERE report.creator_id = $1 \
+						 			ORDER BY report_name ASC \
+									LIMIT 20",
+					values: [user_id]
+				};
+		 	}
+	 		// get reports 
+	 		client.query(query_config, function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					var current_user = {
+		  			user_id: user_id,
+		  			username: username,
+		  			user_type: user_type
+		  		}
+					res.render('manejar_reportes', { 
+						title: 'Manejar Reportes', 
+						reports: result.rows,
+						user: current_user
+					});
+				}
+			});
+	 	});
+  }
+});
 
 /* GET User Ver Reporte 
  * TODO make queries depend on current signed in user
@@ -870,6 +727,113 @@ router.get('/reportes/:id', function(req, res, next) {
 		  		});
 		  	}
 			})
+		});
+	}
+});
+
+/* PUT Report Title
+ * 
+ */
+router.put('/reports/new_title/:id', function(req, res, next) {
+ 	var report_id = req.params.id;
+ 	if(!req.body.hasOwnProperty('report_title')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for put report title.');
+	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// Edit note in report
+			client.query("UPDATE report SET name = $1 WHERE report_id = $2", 
+										[req.body.report_title, report_id], function(err, result) {
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+				 res.json(true);
+				}
+			});
+		});
+	}
+});
+
+/* PUT Report Note
+ * 
+ */
+router.put('/reports/note', function(req, res, next) {
+ 	console.log("notes edit");
+ 	if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('note_text')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for put report note.');
+	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// Edit report note
+			client.query("UPDATE report SET note = $1 WHERE report_id = $2", 
+										[req.body.note_text, req.body.report_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					res.json(true);
+				}
+			});
+		});
+	 }
+});
+
+/* POST Report Appointment 
+ * 
+ */
+router.post('/reports/appointment/:id/:uid', function(req, res, next) {
+  var report_id = req.params.id;
+  var maker = req.params.uid;
+
+	if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time') || !req.body.hasOwnProperty('cita_purpose') ) {
+		res.statusCode = 400;
+		return res.send('Error: Missing fields for post report appointment.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+				return console.error('error fetching client from pool', err);
+			}
+			// Verify appointment does not already exist in db
+			client.query("SELECT appointment_id FROM appointments WHERE report_id = $1", [report_id], function(err, result) {
+		 		if(err) {
+		  		return console.error('error running query', err);
+		 		} else {
+			 		if(result.rowCount > 0){
+			   		res.send({exists: true});
+		  		} else {
+			   		// Insert new appointment into db
+				   	client.query("INSERT into appointments (date, time, purpose, report_id, maker_id) \
+				    							VALUES ($1, $2, $3, $4, $5) \
+				    							RETURNING appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(time, 'HH12:MI AM') AS time, purpose", 
+				    							[req.body.cita_date, req.body.cita_time, req.body.cita_purpose, report_id, maker] , function(err, result) {
+					   	//call `done()` to release the client back to the pool
+					  	done();
+					  	if(err) {
+					   		return console.error('error running query', err);
+					   	} else {
+					   		var the_result = result.rows[0];
+					   		var new_appointment = {
+					   			appointment_id: the_result.appointment_id,
+					   			date: the_result.date,
+					   			time: the_result.time,
+					   			purpose: the_result.purpose
+					   		};
+								res.json({appointment: new_appointment});
+				   		}
+		  			});
+					}
+	 			}
+			});
 		});
 	}
 });
@@ -965,8 +929,9 @@ router.get('/admin/usuarios', function(req, res, next) {
 /* POST Admin Manejar Usuario
  * Add new user to database
  */
- router.post('/admin/usuarios', function(req, res, next) {
- 	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
+router.post('/admin/usuarios', function(req, res, next) {
+ 	if(!req.body.hasOwnProperty('usuario_email') 
+ 		|| !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
  		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
  		|| !req.body.hasOwnProperty('usuario_password') 
@@ -974,62 +939,62 @@ router.get('/admin/usuarios', function(req, res, next) {
  		|| !req.body.hasOwnProperty('usuario_telefono') 
  		|| !req.body.hasOwnProperty('usuario_type')) {
  		res.statusCode = 400;
- 	return res.send('Error: Missing fields for post user.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-	  	// Verify user does not already exist in db
-	  	client.query("SELECT * FROM person WHERE person_id = $1", [req.body.person_id], function(err, result) {
+ 		return res.send('Error: Missing fields for post user.');
+	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	  	// Verify user does not already exist
+	  	client.query("SELECT username FROM users WHERE username = $1", 
+	  								[req.body.usuario_name], function(err, result) {
 	  		if(err) {
 	  			return console.error('error running query', err);
 	  		} else {
 	  			if(result.rowCount > 0){
 	  				res.send({exists: true});
 	  			} else {
-
-		  			// Insert new person into db
-		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number) \
-		  				VALUES ($1, $2, $3, $4, $5) RETURNING person_id", 
-		  				[req.body.usuario_name, req.body.usuario_lastname_paternal, req.body.usuario_lastname_maternal, req.body.usuario_email, req.body.usuario_telefono] , function(err, result) {
+		  			// Insert new person row
+		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number) VALUES ($1, $2, $3, $4, $5) \
+		  										RETURNING person_id", 
+		  										[req.body.usuario_name, req.body.usuario_lastname_paternal, req.body.usuario_lastname_maternal, req.body.usuario_email, req.body.usuario_telefono] , function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
 								return console.error('error running query', err);
 							} else {
-		  			// Insert new user into db
-		  			var person_id = result.rows[0].person_id;
+				  			// Insert new user into db
+				  			var person_id = result.rows[0].person_id;
 
-		  			client.query("INSERT into users (person_id, type, username) \
-		  				VALUES ($1, $2, $3)", 
-		  				[person_id, req.body.usuario_type, req.body.usuario_email] , function(err, result) {
-							//call `done()` to release the client back to the pool
-							done();
-							if(err) {
-								return console.error('error running query', err);
-							} else {
-								console.log("done");
-								res.json(true);
-							}
-						});
-		  		}
-		  	});
-}
-}
-});
-});
-}
+				  			// Insert new user row
+				  			client.query("INSERT into users (person_id, type, username) VALUES ($1, $2, $3)", 
+				  										[person_id, req.body.usuario_type, req.body.usuario_email] , function(err, result) {
+									//call `done()` to release the client back to the pool
+									done();
+									if(err) {
+										return console.error('error running query', err);
+									} else {
+										res.json(true);
+									}
+								});
+		  				}
+		  			});
+					}
+				}
+			});
+		});
+	}
 });
 
 
 /* PUT Admin Manejar Usuarios 
  * Edit information of user matching :id
  */
- router.put('/admin/usuarios/:id', function(req, res, next) {
+router.put('/admin/usuarios/:id', function(req, res, next) {
  	var user_id = req.params.id;
- 	if(!req.body.hasOwnProperty('usuario_email') || !req.body.hasOwnProperty('usuario_name') 
+ 	if(!req.body.hasOwnProperty('usuario_email') 
+ 		|| !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
  		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
  		|| !req.body.hasOwnProperty('usuario_password') 
@@ -1037,66 +1002,80 @@ router.get('/admin/usuarios', function(req, res, next) {
  		|| !req.body.hasOwnProperty('usuario_telefono') 
  		|| !req.body.hasOwnProperty('usuario_type')) {
  		res.statusCode = 400;
- 	return res.send('Error: Missing fields for put user.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-			// Edit usuario in db
+	 	return res.send('Error: Missing fields for put user.');
+	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// edit user table
 			client.query("UPDATE users SET type = $1, username = $2 \
-				WHERE user_id = $3", 
-				[req.body.usuario_type, req.body.usuario_email, user_id], function(err, result) {
+										WHERE user_id = $3", 
+										[req.body.usuario_type, req.body.usuario_email, user_id], function(err, result) {
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					// edit person table
+					client.query("UPDATE person \
+												SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6 \
+												FROM users \
+												WHERE user_id = $3 and users.person_id = person.person_id",
+												[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono], function(err, result) {
+					//call `done()` to release the client back to the pool
+					done();
 					if(err) {
 						return console.error('error running query', err);
 					} else {
-						client.query("UPDATE person \
-							SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6 \
-							FROM users \
-							WHERE user_id = $3 and users.person_id = person.person_id",
-							[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono], function(err, result) {
-						//call `done()` to release the client back to the pool
-						done();
-						if(err) {
-							return console.error('error running query', err);
-						} else {
-							res.json(true);
-						}
-					});   
+						res.json(true);
 					}
-				});
+				});   
+				}
+			});
 		});
-}
+	}
 });
 
-/* PUT Admin Report Title
- * 
+/* POST Admin User Specialties
+ * Add new user specialty to database
  */
- router.put('/admin/new_title/:id', function(req, res, next) {
- 	var report_id = req.params.id;
- 	if(!req.body.hasOwnProperty('report_title')) {
- 		res.statusCode = 400;
- 	return res.send('Error: Missing fields for put user.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
-			// Edit usuario in db
-			client.query("UPDATE report SET name = $1 \
-				WHERE report_id = $2", 
-				[req.body.report_title,  report_id], function(err, result) {
-					if(err) {
-						return console.error('error running query', err);
-					} else {
-					 res.json(true);
-					}
-				});
-		});
-}
+router.post('/admin/new_specialty', function(req, res, next) {
+  if(!req.body.hasOwnProperty('new_specialty')) {
+   	res.statusCode = 400;
+  	return res.send('Error: Missing fields for post user specialty.');
+ 	} else {
+	  var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	   	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	   	}
+	    // Verify specialty does not already exist in db
+	    client.query("SELECT * FROM specialization WHERE name = $1", 
+	    							[req.body.new_specialty], function(err, result) {
+	     	if(err) {
+	      	return console.error('error running query', err);
+	     	} else {
+	      	if(result.rowCount > 0){
+	       		res.send({exists: true});
+	      	} else {
+	       		// Insert new ganadero into db
+	       		client.query("INSERT into specialization (name) VALUES ($1)", 
+	        								[req.body.new_specialty] , function(err, result) {
+	       			//call `done()` to release the client back to the pool
+	       			done();
+	       			if(err) {
+	       				return console.error('error running query', err);
+	       			} else {
+	        			res.json(true);
+	       			}
+	      		});
+	      	}
+	     	}
+	    });
+	  });
+	}
 });
+
 
 /* GET Admin Manejar Localizaciones 
  *
@@ -1210,36 +1189,36 @@ router.get('/localizaciones', function(req, res, next) {
 /* POST ADMIN Manejar Localizaciones
  *
  */
- router.post('/admin/localizaciones', function(req, res, next) {
+router.post('/admin/localizaciones', function(req, res, next) {
  	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
  		|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
  		|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
  		res.statusCode = 400;
- 	return res.send('Error: Missing fields for post location.');
- } else {
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
+ 		return res.send('Error: Missing fields for post location.');
+ 	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
 	  	// Verify location does not already exist in db
 	  	client.query("SELECT license FROM location WHERE license = $1", 
-	  		[req.body.localizacion_license], function(err, result) {
-	  			if(err) {
-	  				return console.error('error running query', err);
-	  			} else {
-	  				if(result.rowCount > 0){
-	  					res.send({exists: true}); 
-	  				} else {
-		  			// Insert new location into db
+	  								[req.body.localizacion_license], function(err, result) {
+  			if(err) {
+  				return console.error('error running query', err);
+  			} else {
+  				if(result.rowCount > 0){
+  					res.send({exists: true}); 
+  				} else {
+		  			// Insert new location 
 		  			client.query("INSERT into address (address_line1, address_line2, city, zipcode) VALUES ($1, $2, $3, $4) RETURNING address_id", 
-		  				[req.body.localizacion_name, req.body.localizacion_license, req.body.localizacion_address_city, req.body.localizacion_address_zipcode] , function(err, result) {
-		  					if(err) {
-		  						return console.error('error running query', err);
-		  					} else {
-		  						var address_id = result.rows[0].address_id;
-		  						client.query("INSERT into location (name, license, address_id) VALUES ($1, $2, $3)", 
-		  							[req.body.localizacion_name, req.body.localizacion_license, address_id], function(err, result) {
+		  										[req.body.localizacion_name, req.body.localizacion_license, req.body.localizacion_address_city, req.body.localizacion_address_zipcode] , function(err, result) {
+	  					if(err) {
+	  						return console.error('error running query', err);
+	  					} else {
+	  						var address_id = result.rows[0].address_id;
+	  						client.query("INSERT into location (name, license, address_id) VALUES ($1, $2, $3)", 
+	  													[req.body.localizacion_name, req.body.localizacion_license, address_id], function(err, result) {
 						  		//call `done()` to release the client back to the pool
 						  		done();
 						  		if(err) {
@@ -1248,146 +1227,11 @@ router.get('/localizaciones', function(req, res, next) {
 						  			res.json(true);
 						  		}
 						  	});
-		  					}
-		  				});
+	  					}
+		  			});
 		  		}
 		  	}
 		  });
-});
-}
-});
-
-/* POST Admin Manejar Localizaciones
- * Add new ganadero to database
- */
- router.post('/admin/new_category', function(req, res, next) {
-  console.log("category success");
-  if(!req.body.hasOwnProperty('new_category')) {
-   res.statusCode = 400;
-  return res.send('Error: Missing fields for post ganadero.');
- } else {
-  var db = req.db;
-  db.connect(req.conString, function(err, client, done) {
-   if(err) {
-    return console.error('error fetching client from pool', err);
-   }
-    // Verify ganadero does not already exist in db
-    client.query("SELECT * FROM category WHERE name = $1", [req.body.new_category], function(err, result) {
-     if(err) {
-      return console.error('error running query', err);
-     } else {
-      if(result.rowCount > 0){
-       res.send({exists: true});
-      } else {
-       // Insert new ganadero into db
-       client.query("INSERT into category (name) \
-        VALUES ($1)", 
-        [req.body.new_category] , function(err, result) {
-       //call `done()` to release the client back to the pool
-       done();
-       if(err) {
-        return console.error('error running query', err);
-       } else {
-        res.json(true);
-       }
-      });
-      }
-     }
-    });
-   });
-}
-});
-
-
-/* POST Admin Manejar Localizaciones
- * Add new ganadero to database
- */
- router.post('/admin/new_specialty', function(req, res, next) {
-  console.log("category success");
-  if(!req.body.hasOwnProperty('new_specialty')) {
-   res.statusCode = 400;
-  return res.send('Error: Missing fields for post ganadero.');
- } else {
-  var db = req.db;
-  db.connect(req.conString, function(err, client, done) {
-   if(err) {
-    return console.error('error fetching client from pool', err);
-   }
-    // Verify ganadero does not already exist in db
-    client.query("SELECT * FROM specialization WHERE name = $1", [req.body.new_specialty], function(err, result) {
-     if(err) {
-      return console.error('error running query', err);
-     } else {
-      if(result.rowCount > 0){
-       res.send({exists: true});
-      } else {
-       // Insert new ganadero into db
-       client.query("INSERT into specialization (name) \
-        VALUES ($1)", 
-        [req.body.new_specialty] , function(err, result) {
-       //call `done()` to release the client back to the pool
-       done();
-       if(err) {
-        return console.error('error running query', err);
-       } else {
-        res.json(true);
-       }
-      });
-      }
-     }
-    });
-   });
-}
-});
-
-
-/* POST Admin New Appointment
- * 
- */
-router.post('/appointment/:id/:uid', function(req, res, next) {
-  var report_id = req.params.id;
-  var maker = req.params.uid;
-
-	if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time') || !req.body.hasOwnProperty('cita_purpose') ) {
-		res.statusCode = 400;
-		return res.send('Error: Missing fields for post ganadero.');
-	} else {
-		var db = req.db;
-		db.connect(req.conString, function(err, client, done) {
-			if(err) {
-				return console.error('error fetching client from pool', err);
-			}
-			// Verify appointment does not already exist in db
-			client.query("SELECT * FROM appointments WHERE report_id = $1", [req.params.id], function(err, result) {
-		 		if(err) {
-		  		return console.error('error running query', err);
-		 		} else {
-			 		if(result.rowCount > 0){
-			   		res.send({exists: true});
-		  		} else {
-			   		// Insert new appointment into db
-				   	client.query("INSERT into appointments (date, time, purpose, report_id, maker_id) \
-				    							VALUES ($1, $2, $3, $4, $5) \
-				    							RETURNING appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(time, 'HH12:MI AM') AS time, purpose", 
-				    							[req.body.cita_date, req.body.cita_time, req.body.cita_purpose, report_id, maker] , function(err, result) {
-					   	//call `done()` to release the client back to the pool
-					  	done();
-					  	if(err) {
-					   		return console.error('error running query', err);
-					   	} else {
-					   		var the_result = result.rows[0];
-					   		var new_appointment = {
-					   			appointment_id: the_result.appointment_id,
-					   			date: the_result.date,
-					   			time: the_result.time,
-					   			purpose: the_result.purpose
-					   		};
-								res.json({appointment: new_appointment});
-				   		}
-		  			});
-					}
-	 			}
-			});
 		});
 	}
 });
@@ -1395,7 +1239,7 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 /* PUT Admin Manejar Localizaciones 
  * Edit information of location matching :id
  */
- router.put('/admin/localizaciones/:id', function(req, res, next) {
+router.put('/admin/localizaciones/:id', function(req, res, next) {
  	var location_id = req.params.id;
  	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
  			|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
@@ -1432,144 +1276,292 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 					}
 				});
 		});
-}
+	}
 });
 
-	/* PUT Admin Manejar Localizaciones associated ganadero
-	 * Edit associated ganadero of location matching :id
-	 */
-	router.put('/admin/associated/ganadero', function(req, res, next) {
-		if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('ganadero_id')
- 				|| !req.body.hasOwnProperty('relation_type')) {
- 			res.statusCode = 400;
- 			return res.send('Error: Missing fields for put location associated ganadero.');
-		} else {
-			var db = req.db;
-			db.connect(req.conString, function(err, client, done) {
-		 		if(err) {
-		 			return console.error('error fetching client from pool', err);
-		 		}
-		 		var query_config = {};
-		 		if(req.body.relation_type == 'owner'){
-		 			query_config = {
-		 				text: 'UPDATE location SET owner_id = $1 \
-										WHERE location_id = $2'
-		 			}
-		 		} else if(req.body.relation_type == 'manager'){
-		 			query_config = {
-		 				text: 'UPDATE location SET manager_id = $1 \
-										WHERE location_id = $2' 
-		 			}
-		 		}
-		 		client.query(query_config, [req.body.ganadero_id, req.body.location_id], function(err, result) {
-					//call `done()` to release the client back to the pool
-					done();
-	 				if(err) {
-			  		return console.error('error running query', err);
-			  	} else {
-			  		res.json(true);
-			  	}
-		 		});
-		 	});
-		}
-	});
+/* PUT Admin Manejar Localizaciones associated ganadero
+ * Edit associated ganadero of location matching :id
+ */
+router.put('/admin/associated/ganadero', function(req, res, next) {
+	if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('ganadero_id')
+				|| !req.body.hasOwnProperty('relation_type')) {
+			res.statusCode = 400;
+			return res.send('Error: Missing fields for put location associated ganadero.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		var query_config = {};
+	 		if(req.body.relation_type == 'owner'){
+	 			query_config = {
+	 				text: 'UPDATE location SET owner_id = $1 \
+									WHERE location_id = $2'
+	 			}
+	 		} else if(req.body.relation_type == 'manager'){
+	 			query_config = {
+	 				text: 'UPDATE location SET manager_id = $1 \
+									WHERE location_id = $2' 
+	 			}
+	 		}
+	 		client.query(query_config, [req.body.ganadero_id, req.body.location_id], function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+ 				if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.json(true);
+		  	}
+	 		});
+	 	});
+	}
+});
 
-	/* PUT Admin Manejar Localizaciones associated agent
-	 * Edit associated agent of location matching :id
-	 */
-	router.put('/admin/associated/agent', function(req, res, next) {
-		if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('agent_id')) {
- 			res.statusCode = 400;
- 			return res.send('Error: Missing fields for put location associated agent.');
-		} else {
-			var db = req.db;
-			db.connect(req.conString, function(err, client, done) {
-		 		if(err) {
-		 			return console.error('error fetching client from pool', err);
-		 		}
-		 		client.query('UPDATE location SET agent_id = $1 \
-											WHERE location_id = $2', [req.body.agent_id, req.body.location_id], function(err, result) {
-					//call `done()` to release the client back to the pool
-					done();
-	 				if(err) {
-			  		return console.error('error running query', err);
-			  	} else {
-			  		res.json(true);
-			  	}
-		 		});
-		 	});
-		}
-	});
+/* PUT Admin Manejar Localizaciones associated agent
+ * Edit associated agent of location matching :id
+ */
+router.put('/admin/associated/agent', function(req, res, next) {
+	if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('agent_id')) {
+			res.statusCode = 400;
+			return res.send('Error: Missing fields for put location associated agent.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		client.query('UPDATE location SET agent_id = $1 \
+										WHERE location_id = $2', [req.body.agent_id, req.body.location_id], function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+ 				if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.json(true);
+		  	}
+	 		});
+	 	});
+	}
+});
 
-	/* GET Admin Manejar Citas
-	 * renders citas page with first 20 citas associated with a user
-	 */
-	router.get('/citas', function(req, res, next) {
-		var user_id = req.session.user_id;
-		var username = req.session.username;
-		var user_type = req.session.user_type;
+/* POST Admin Manejar Localizaciones
+ * Add new ganadero to database
+ */
+router.post('/admin/new_category', function(req, res, next) {
+  if(!req.body.hasOwnProperty('new_category')) {
+   	res.statusCode = 400;
+  	return res.send('Error: Missing fields for post location category.');
+ 	} else {
+  	var db = req.db;
+  	db.connect(req.conString, function(err, client, done) {
+   		if(err) {
+    		return console.error('error fetching client from pool', err);
+   		}
+    	// Verify category does not already exist in db
+    	client.query("SELECT * FROM category WHERE name = $1", 
+    								[req.body.new_category], function(err, result) {
+     		if(err) {
+      		return console.error('error running query', err);
+     		} else {
+      		if(result.rowCount > 0){
+      			res.send({exists: true});
+      		} else {
+	       		// Insert new category into db
+	       		client.query("INSERT into category (name) VALUES ($1)", 
+	        								[req.body.new_category] , function(err, result) {
+	       			//call `done()` to release the client back to the pool
+	       			done();
+	       			if(err) {
+	        			return console.error('error running query', err);
+	       			} else {
+	        			res.json(true);
+	       			}
+	      		});
+	      	}
+	     	}
+	    });
+  	});
+	}
+});
 
-	  if (!username) {
-	  	user_id = req.session.user_id = '';
-	    username = req.session.username = '';
-	    user_type = req.session.user_type = '';
-	    res.redirect('/');
-	  } else {
-		 	var db = req.db;
-		 	db.connect(req.conString, function(err, client, done) {
-		 		if(err) {
-		 			return console.error('error fetching client from pool', err);
-		 		}
-				var query_config = {};
-		 		if(user_type == 'admin' || user_type == 'specialist') {
-		 			// get first 20 citas regardless of creator
-		 			query_config = {
-		 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
-										FROM appointments natural join report \
-										LEFT JOIN users ON user_id = maker_id \
-										INNER JOIN location ON report.location_id = location.location_id \
-										ORDER BY date ASC, time ASC \
-										LIMIT 20"
-		 			}
-		 		} else {
-		 			//get first 20 citas created by this user
-		 			query_config = {
-		 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
-										FROM appointments natural join report \
-										LEFT JOIN users ON user_id = maker_id \
-										INNER JOIN location ON report.location_id = location.location_id \
-										WHERE appointments.maker_id = $1 \
-										ORDER BY date ASC, time ASC \
-										LIMIT 20",
-						values: [user_id]
-		 			}
-		 		}
-		 		client.query(query_config, function(err, result) {
-			  	//call `done()` to release the client back to the pool
-			  	done();
-			  	if(err) {
-			  		return console.error('error running query', err);
-			  	} else {
-			  		var current_user = {
-			  			user_id: user_id,
-			  			username: username,
-			  			user_type: user_type
-			  		}
-			  		res.render('manejar_citas', { 
-			  			title: 'Manejar Citas', 
-			  			citas: result.rows,
-			  			user: current_user
-			  		});
-			  	}
-			  });
-		 	});
-		}
-	});
+
+/* PUT Admin Category_Locations
+ *
+ */
+router.put('/admin/category_location', function(req, res, next) {
+	if(!req.body.hasOwnProperty('categories') || !req.body.hasOwnProperty('location') ) {
+	  res.statusCode = 400;
+	  return res.send('Error: Missing fields for post ganadero.');
+	} else {
+		var location_category_array, included;
+
+	  var db = req.db;
+	  db.connect(req.conString, function(err, client, done) {
+	  	if(err) {
+	  		return console.error('error fetching client from pool', err);
+	  	}
+	    // Get categories (if any) associated to location
+	    client.query("SELECT * FROM location_category WHERE location_id = $1", 
+	    							[req.body.location], function(err, result) {
+	    	if(err) {
+	      	return console.error('error running query', err);
+	      } else {
+		     	// if location has categories assocciated to it
+		      if(result.rowCount > 0){
+		        location_category_array = result.rows;
+
+		        /*
+		         * Code for addding to location_category
+		         */
+		        // loop through checkmarked categories
+		        for(i = 0 ; i < req.body.categories.length; i++) {
+		        	// loop through categories associated to location
+		        	for(j = 0; j < location_category_array.length; j++) {
+		        		// if match is found then category is already associated with location
+		        		if(req.body.categories[i] == location_category_array[j].category_id) {
+									included = true;
+		       			}
+		       		}
+							// if included then category is already associated with location; else, add association
+							if(!included) {
+								// add association
+								client.query("INSERT into location_category (location_id, category_id) VALUES ($1, $2)", 
+															[req.body.location,req.body.categories[i]] , function(err, result) {
+									//call `done()` to release the client back to the pool
+									done();
+									if(err) {
+										return console.error('error running query', err);
+									} else {
+
+									}
+								});
+							}
+							// reset included value
+							included = false;
+		      	} //end for loop 1
+
+		      	/* 
+		      	 * Code for removing from location_category 
+		      	 */
+		    	  // loop through categories associated to location
+		      	for(j = 0; j < location_category_array.length; j++) {
+		      		// loop through checkmarked categories
+		       		for(i = 0 ; i < req.body.categories.length; i++) {
+		       			// if match is found then category is already associated with location
+		        		if(req.body.categories[i] == location_category_array[j].category_id) {
+		       				included = true;
+		       			}
+		       		}
+		       		// if included then category remained checkmarked; else, remove association
+		       		if(!included) {
+		       			// remove association
+								client.query("DELETE FROM location_category WHERE location_id =$1 AND category_id = $2", 
+															[req.body.location,location_category_array[j].category_id] , function(err, result) {
+									//call `done()` to release the client back to the pool
+									done();
+									if(err) {
+										return console.error('error running query', err);
+									} else {
+										// do nothing
+									}
+								});
+		       		}
+		       		// reset included value
+							included = false;
+		      	}
+		      } else {
+		      	// location has no categories so add the ones the user checkmarked
+		      	for(i = 0 ; i < req.body.categories.length; i++){
+							client.query("INSERT into location_category (location_id, category_id) VALUES ($1, $2)", 
+														[req.body.location,req.body.categories[i]] , function(err, result) {
+								//call `done()` to release the client back to the pool
+								done();
+								if(err) {
+									return console.error('error running query', err);
+								} else {
+									// do nothing
+								}
+		      		});
+						}
+		      }
+		    	// location_category associations were succesfully updated
+					res.json(true);
+		   	}
+		  });
+	  });
+	}
+});
+
+/* GET Admin Manejar Citas
+ * renders citas page with first 20 citas associated with a user
+ */
+router.get('/citas', function(req, res, next) {
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (!username) {
+  	user_id = req.session.user_id = '';
+    username = req.session.username = '';
+    user_type = req.session.user_type = '';
+    res.redirect('/');
+  } else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			var query_config = {};
+	 		if(user_type == 'admin' || user_type == 'specialist') {
+	 			// get first 20 citas regardless of creator
+	 			query_config = {
+	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
+									FROM appointments natural join report \
+									LEFT JOIN users ON user_id = maker_id \
+									INNER JOIN location ON report.location_id = location.location_id \
+									ORDER BY date ASC, time ASC \
+									LIMIT 20"
+	 			}
+	 		} else {
+	 			//get first 20 citas created by this user
+	 			query_config = {
+	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
+									FROM appointments natural join report \
+									LEFT JOIN users ON user_id = maker_id \
+									INNER JOIN location ON report.location_id = location.location_id \
+									WHERE appointments.maker_id = $1 \
+									ORDER BY date ASC, time ASC \
+									LIMIT 20",
+					values: [user_id]
+	 			}
+	 		}
+	 		client.query(query_config, function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		  	done();
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		var current_user = {
+		  			user_id: user_id,
+		  			username: username,
+		  			user_type: user_type
+		  		}
+		  		res.render('manejar_citas', { 
+		  			title: 'Manejar Citas', 
+		  			citas: result.rows,
+		  			user: current_user
+		  		});
+		  	}
+		  });
+	 	});
+	}
+});
 
 /* PUT Admin Manejar Citas 
  * Edit cita matching :id in database
  */
- router.put('/admin/citas/:id', function(req, res, next) {
+router.put('/admin/citas/:id', function(req, res, next) {
  	var cita_id = req.params.id;
  	if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time')) {
  		res.statusCode = 400;
@@ -1581,8 +1573,7 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
  				return console.error('error fetching client from pool', err);
  			}
 			// Edit cita in db
-			client.query("UPDATE appointments SET date = $1, time = $2, purpose = $3 \
-										WHERE appointment_id = $4", 
+			client.query("UPDATE appointments SET date = $1, time = $2, purpose = $3 WHERE appointment_id = $4", 
 										[req.body.cita_date, req.body.cita_time, req.body.cita_proposito, cita_id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
@@ -1594,12 +1585,12 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 			});
 		});
  	}
- });
+});
 
 /* GET Admin Manejar Dispositivos
  * renders manejar dispositivos page with first 20 dispositivos, ordered by assigned user
  */
- router.get('/admin/dispositivos', function(req, res, next) {
+router.get('/admin/dispositivos', function(req, res, next) {
 	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
@@ -1623,20 +1614,18 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 										FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
 										ORDER BY username ASC \
 										LIMIT 20", function(err, result) {
-					if(err) {
-						return console.error('error running query', err);
-					} else {
-						dispositivos_list = result.rows;
-					}
-				});
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					dispositivos_list = result.rows;
+				}
+			});
 
 		  // to populate dispositivo dropdown list
-		  client.query('SELECT user_id, username \
-								  	FROM users \
+		  client.query('SELECT user_id, username FROM users \
 								  	ORDER BY username ASC', function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		  	done();
-
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
@@ -1655,7 +1644,7 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 /* POST Admin Manejar Dispositivo
  * Add new dispositivo to database
  */
- router.post('/admin/dispositivos', function(req, res, next) {
+router.post('/admin/dispositivos', function(req, res, next) {
  	if(!req.body.hasOwnProperty('dispositivo_name') || !req.body.hasOwnProperty('dispositivo_id_num')) {
  		res.statusCode = 400;
  		return res.send('Error: Missing fields for post device.');
@@ -1666,7 +1655,8 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
  				return console.error('error fetching client from pool', err);
  			}
 	  	// Verify dispositivo does not already exist in db
-	  	client.query("SELECT * FROM devices WHERE id_number = $1", [req.body.dispositivo_id_num], function(err, result) {
+	  	client.query("SELECT * FROM devices WHERE id_number = $1", 
+	  								[req.body.dispositivo_id_num], function(err, result) {
 	  		if(err) {
 	  			return console.error('error running query', err);
 	  		} else {
@@ -1674,9 +1664,8 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 	  				res.send({exists: true});
 	  			} else {
 		  			// Insert new dispositivo into db
-		  			client.query("INSERT into devices (name, id_number, user_id) \
-		  				VALUES ($1, $2, $3)", 
-		  				[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
+		  			client.query("INSERT into devices (name, id_number, user_id) VALUES ($1, $2, $3)", 
+		  										[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
@@ -1690,12 +1679,12 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 		  });
 	  });
  	}
- });
+});
 
 /* PUT Admin Manejar Dispositivos 
  * Edit dispositivo matching :id in database
  */
- router.put('/admin/dispositivos/:id', function(req, res, next) {
+router.put('/admin/dispositivos/:id', function(req, res, next) {
  	var dispositivo_id = req.params.id;
  	if(!req.body.hasOwnProperty('dispositivo_name') 
  		|| !req.body.hasOwnProperty('dispositivo_id_num')
@@ -1709,9 +1698,8 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
  				return console.error('error fetching client from pool', err);
  			}
 			// Edit dispositivo in db
-			client.query("UPDATE devices SET name = $1, id_number = $2, user_id = $3 \
-										WHERE device_id = $4", 
-				[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario, dispositivo_id] , function(err, result) {
+			client.query("UPDATE devices SET name = $1, id_number = $2, user_id = $3 WHERE device_id = $4", 
+										[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario, dispositivo_id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
@@ -1722,6 +1710,6 @@ router.post('/appointment/:id/:uid', function(req, res, next) {
 			});
 		});
  	}
- });
+});
 
 module.exports = router;

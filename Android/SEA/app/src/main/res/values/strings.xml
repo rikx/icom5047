@@ -70,8 +70,8 @@
 	<string name="owner">owner</string>
 	<string name="agent">agent</string>
 	<string name="date_format">LLL/dd/yy</string>
-	<string name="date_format_long">EEEE, LLL dd, yyyy</string>
-	<string name="time_format">hh:mm</string>
+	<string name="date_format_long">EEEE, LLLL dd, yyyy a</string>
+	<string name="time_format" translatable="false">hh:mm</string>
 	<string name="select_location">select a location</string>
 	<string name="select_subject">select a subject</string>
 	<string name="select_survey">select a survey</string>
@@ -82,6 +82,11 @@
 	<string name="no_appointment">no appointment set</string>
 	<string name="view_appointments">View Appointments</string>
 	<string name="appointment_purpose">purpose</string>
-	<string name="no_purpose_set">no purpose set</string>
+	<string name="no_purpose_set">No purpose set</string>
 	<string name="cancel_appointment">cancel</string>
+	<string name="notes_label">Notes:</string>
+	<string name="flowchart_label">Flowchart</string>
+	<string name="appointment_label">Appointment</string>
+	<string name="appointment_set_by_label">Set by</string>
+	<string name="purpose_label">Purpose</string>
 </resources>

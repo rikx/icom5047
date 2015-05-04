@@ -33,11 +33,9 @@ public class LoginActivity extends Activity {
         // TODO: fill db with dummy data eliminar despues
         dbHelper.deleteDB();
         if(dbHelper.getDummy())
-            dbHelper.syncSQLiteMySQLDB();
+            dbHelper.fillDB();
 	    loadLogin();
-
     }
-
 
     /**
      * Start the login process by authenticating the user credentials

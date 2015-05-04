@@ -1,5 +1,19 @@
 <resources>
 
+	<style name="AppStyle"
+		   parent="android:Theme.Holo.Light">
+		<item name="android:buttonStyle">@style/SEA_Button</item>
+		<item name="android:editTextStyle">@style/SEA_EditText</item>
+	</style>
 
+	<style name="SEA_Button"
+		   parent="android:style/Widget.Button">
+		<item name="android:background">@android:color/holo_green_light</item>
+		<item name="android:padding">4dp</item>
+	</style>
+
+	<style name="SEA_EditText"
+		   parent="android:style/Widget.EditText">
+	</style>
 
 </resources>

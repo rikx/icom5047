@@ -83,9 +83,6 @@ $(document).ready(function(){
   var form_data = $the_form.serializeArray();
   var new_specialty = ConverToJSON(form_data);
 
-  console.log("Posting New Specialty.New Specialty is ");
-  console.log(new_specialty);
-
 
   // ajax call to post new category
   $.ajax({
@@ -179,9 +176,6 @@ $(document).ready(function(){
     $('#btn_user_type').val($(this).attr('data-usario-type'));
     $('#usuario_type').val( $('#btn_user_type_text').text().toLowerCase());
     $('#specialty_panel').show();
-    console.log(specialties_array);
-    
-
   });
 
   /* Open add panel */
@@ -199,13 +193,9 @@ $(document).ready(function(){
   $('#btn_submit').on('click', function(){
     // get form data and conver to json format
     var $the_form = $('#form_manage_usuario');
-    console.log($the_form);
     var form_data = $the_form.serializeArray();
     var new_usuario = ConverToJSON(form_data);
     var user_type = $('#btn_user_type_text').text();
-    console.log("The new user is : ");
-    console.log(new_usuario);
-    console.log(user_type);
 
     // ajax call to post new ganadero
     $.ajax({
@@ -254,8 +244,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
-    console.log("The ususario is " );
-    console.log(this_usuario);
+
     $('#btn_edit').attr('data-id', usuario_id);
     $('#usuario_name').val(this_usuario.first_name);
     $('#usuario_lastname_paternal').val(this_usuario.last_name1);
@@ -290,12 +279,11 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
 $('#btn_edit').on('click', function(){
 
   var usuario_id = $(this).attr('data-id');
-  alert(usuario_id);
+
   // get form data and conver to json format
   var $the_form = $('#form_manage_usuario');
   var form_data = $the_form.serializeArray();
   var new_usuario = ConverToJSON(form_data);
-  console.log(new_usuario);
 
 
   // ajax call to update ganadero
@@ -320,13 +308,9 @@ $('#btn_edit').on('click', function(){
   });
 });
 
-//updates categories associated to current location
+//updates specialties associated to current user
 $('#btn_edit_specialty').on('click', function(){
-
-alert("edit specialty");
-
-
-  //get location id and category ids associated to said location id
+  //get user id and specialty ids associated to said user id
   var usuario_id =  $('#btn_edit').attr('data-id');
   var checkedSpecialties = [];
   $(':checkbox:checked').each(function(i){
@@ -334,15 +318,11 @@ alert("edit specialty");
   });
 
 
- //json object for category_location
+ //json object for user_specialties
  var specialties = {
   user: usuario_id,
   specialties: checkedSpecialties
 };
-
-console.log("user_specialty is ");
-console.log(specialties);
-
 
 $.ajax({
   url: "http://localhost:3000/users/admin/user_specialties",
@@ -353,7 +333,7 @@ $.ajax({
 
   success: function(data) {
 
-    alert("server fucntion executed succesful");
+    alert("Especialidades han sido modificadas.");
 
     },
     error: function( xhr, status, errorThrown ) {
@@ -363,12 +343,10 @@ $.ajax({
       console.dir( xhr );
     }
   });
-
-
 });
 
 
-$('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
+$usuarios_list.on('click', 'tr td a.btn_delete_user', function(e){
     // prevents link from firing
     e.preventDefault();
 
@@ -376,7 +354,7 @@ $('#ganaderos_list').on('click', 'tr td a.btn_delete_ganadero', function(e){
     $(this).attr('data-id');
 
     $.ajax({
-      url: "http://localhost:3000/users/admin/ganadero_delete",
+      url: "http://localhost:3000/users/admin/user",
       method: "DELETE",
 
       success: function( data ) {
@@ -495,8 +473,6 @@ function populate_specialties_edit(){
    }
  }); 
 
-  console.log("all specialties");
-  console.log(all_specialties_array);
   var content = '';
   var found = false;
   var i = 0;
@@ -536,7 +512,6 @@ function populate_specialties_info(usuario){
   var user_id =  usuario.user_id;
   var matches = [];
   //find matches
-  console.log(user_id);
   $.each(specialties_array, function(i){
     if(user_id == specialties_array[i].user_id){      
      matches.push(specialties_array[i]);
@@ -547,8 +522,6 @@ function populate_specialties_info(usuario){
   var found = false;
   var i = 0;
 
-  console.log("matches is ");
-  console.log(matches);
   //solid algorithm
   $.each(all_specialties_array, function(i){
     //for each specialty, check if it is present in the matches array
@@ -576,9 +549,6 @@ function populate_specialties_info(usuario){
     }
     found = false;
   });
-
-  console.log("content is ");
-  console.log(content);
 
   $('#specialist_categories_list').html(content);
 

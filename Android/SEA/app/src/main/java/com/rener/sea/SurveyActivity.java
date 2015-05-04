@@ -168,7 +168,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 		        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
         User creator = dbHelper.findUserByUsername(sUsername);
-	    Log.i(this.toString(), "has creator "+creator.getUsername());
+	    Log.i(this.toString(), "has creator " + creator.getUsername());
         return creator;
     }
 
@@ -183,7 +183,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         List<Option> options = question.getOptions();
         //Display question and it's options
         TextView textQuestion = new TextView(this);
-        textQuestion.setText(question.getLabel());
+        int sequence = path.size()+1;
+        textQuestion.setText(sequence+". "+question.getLabel());
         String type = question.getType();
         switch (type) {
             case Item.BOOLEAN:

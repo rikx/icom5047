@@ -1,4 +1,10 @@
 # icom5047
 Capstone Project
 
-Link to project journal: https://github.com/rikx/icom5047/wiki/Project-Journal
+Project Team:
+<ul>
+  <li>Ricardo Fuentes [project manager]</li>
+  <li>Nelson Reyes</li>
+  <li>Enrique Rodríguez</li>
+  <li>Ramón Saldaña</li>
+</ul>

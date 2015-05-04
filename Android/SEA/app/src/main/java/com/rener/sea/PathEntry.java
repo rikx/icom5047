@@ -3,7 +3,6 @@ package com.rener.sea;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 /**
  * Wrapper class representing a trio of an Item, Option, and String.

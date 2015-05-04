@@ -91,7 +91,7 @@ public class PersonDetailsFragment extends Fragment {
                 setFields();
                 flipToShowLayout();
                 //Notify the activity that data has changed
-                ((MainActivity) getActivity()).OnDataSetChanged();
+                ((MainActivity) getActivity()).onDataSetChanged();
                 break;
         }
 

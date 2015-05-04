@@ -11,6 +11,7 @@ var pg = require('pg')
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var synchronization = require('./routes/synchronization');
 
 var app = express();
 
@@ -28,8 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Make our db accessible to our router
 app.use(function(req,res,next){
 
-  // change default pool size later
-  // change to actual host ip
+  // TODO: change default pool size later
   //var conString = "postgres://postgres:RENeR2015DB@136.145.116.231:5432/SEA";
   var conString = {
     user: 'postgres',
@@ -65,6 +65,7 @@ app.use(session({
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/synchronization', synchronization);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
