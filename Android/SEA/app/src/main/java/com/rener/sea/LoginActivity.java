@@ -6,14 +6,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * Represents the activity that performs all functions related to authenticating the user
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements TextView.OnEditorActionListener, View.OnClickListener {
 
     private String username = null;
     private String password = null;
@@ -32,12 +36,18 @@ public class LoginActivity extends Activity {
         if(dbHelper.getDummy())
             dbHelper.fillDB();
 	    loadLogin();
+        Button login = (Button) findViewById(R.id.login_button);
+        login.setOnClickListener(this);
+        EditText passView = (EditText) findViewById(R.id.field_password);
+        passView.setOnEditorActionListener(this);
     }
+
+
 
     /**
      * Start the login process by authenticating the user credentials
      */
-    public void login(View view) {
+    public void login() {
         //Get username from text field
         EditText editUsername = (EditText) findViewById(R.id.field_username);
         EditText editPassword = (EditText) findViewById(R.id.field_password);
@@ -91,6 +101,25 @@ public class LoginActivity extends Activity {
             Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
             Log.i(this.toString(), "login failed");
             return false;
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        int action = keyEvent.getAction();
+        if (action == 0) {
+            login();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.login_button :
+                login();
+                break;
         }
     }
 }
