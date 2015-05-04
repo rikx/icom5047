@@ -937,7 +937,8 @@ router.post('/admin/usuarios', function(req, res, next) {
  		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
  		|| !req.body.hasOwnProperty('usuario_password')
  		|| !req.body.hasOwnProperty('usuario_telefono') 
- 		|| !req.body.hasOwnProperty('usuario_type')) {
+ 		|| !req.body.hasOwnProperty('usuario_type')
+ 		|| !req.body.hasOwnProperty('usuario_middle_initial')) {
  		res.statusCode = 400;
  		return res.send('Error: Missing fields for post user.');
 	} else {
@@ -956,9 +957,9 @@ router.post('/admin/usuarios', function(req, res, next) {
 	  				res.send({exists: true});
 	  			} else {
 		  			// Insert new person row
-		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number) VALUES ($1, $2, $3, $4, $5) \
+		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number, middle_initial) VALUES ($1, $2, $3, $4, $5, $6) \
 		  										RETURNING person_id", 
-		  										[req.body.usuario_name, req.body.usuario_lastname_paternal, req.body.usuario_lastname_maternal, req.body.usuario_email, req.body.usuario_telefono] , function(err, result) {
+		  										[req.body.usuario_name, req.body.usuario_lastname_paternal, req.body.usuario_lastname_maternal, req.body.usuario_email, req.body.usuario_telefono, req.body.usuario_middle_initial] , function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
@@ -990,6 +991,8 @@ router.post('/admin/usuarios', function(req, res, next) {
 										});
 									}
 								});
+
+
 		  				}
 		  			});
 					}
@@ -1040,10 +1043,10 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 					});
 					// edit person table
 					client.query("UPDATE person \
-												SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6 \
+												SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6, middle_initial = $7 \
 												FROM users \
 												WHERE user_id = $3 and users.person_id = person.person_id",
-												[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono], function(err, result) {
+												[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono, req.body.usuario_middle_initial], function(err, result) {
 					//call `done()` to release the client back to the pool
 					done();
 					if(err) {

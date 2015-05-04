@@ -198,6 +198,8 @@ $(document).ready(function(){
     var form_data = $the_form.serializeArray();
     var new_usuario = ConverToJSON(form_data);
     var user_type = $('#btn_user_type_text').text();
+    console.log("User is ");
+    console.log(new_usuario);
 
     // ajax call to post new ganadero
     $.ajax({
@@ -209,9 +211,9 @@ $(document).ready(function(){
 
       success: function(data) {
         if(data.exists){
-          alert("Ganadero con este correo electrónico o teléfono ya existe");
+          alert("Usuario con este correo electrónico o teléfono ya existe");
         } else {
-          alert("Ganadero ha sido añadido al sistema.");
+          alert("Usuario ha sido añadido al sistema.");
           // clear add form
           $the_form[0].reset();
         }
@@ -241,7 +243,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
 
 
 
-  var type = "Test";
+    var type = "Test";
     // contains usuario id
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
@@ -253,6 +255,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
     $('#usuario_email').val(this_usuario.username);
     $('#usuario_telefono').val(this_usuario.phone_number);
+    $('#usuario_middle_initial').val(this_usuario.middle_initial);
 
 
     if(this_usuario.type == 'agent')
