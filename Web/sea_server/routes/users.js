@@ -23,7 +23,7 @@ var router = express.Router();
  * Responds with first 20 cuestionarios, 
  * alphabetically ordered by name
  */
- router.get('/cuestionarios', function(req, res, next) {
+router.get('/cuestionarios', function(req, res, next) {
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
@@ -47,7 +47,7 @@ var router = express.Router();
 	  	}
 	  });
  	});
- });
+});
 
 /* GET Tomar Cuestionario Metodo Flujo
  * Responds with take survey page for matching survey :id
@@ -322,7 +322,7 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
   });
 });
 
-/* TODO: GET Admin Cuestionario 
+/* TODO: GET Admin View Cuestionario 
  *
  */
 router.get('/admin/cuestionarios/:id', function(req, res, next) {
@@ -394,7 +394,7 @@ router.get('/ganaderos', function(req, res, next) {
 		  			username: username,
 		  			user_type: user_type
 		  		}
-		  		console.log(current_user);
+
 					res.render('manejar_ganaderos', { 
 						title: 'Manejar Ganaderos', 
 						ganaderos: ganaderos_list, 
