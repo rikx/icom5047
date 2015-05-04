@@ -331,12 +331,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void syncSuccess() {
-        //TODO: sync success
-        //dbHelper.setSyncDone();
+        dbHelper.setSyncDone();
+        onDataSetChanged();
     }
 
     private void syncFailure() {
-        //TODO: sync failure
         scheduleSync(5000);
     }
 
