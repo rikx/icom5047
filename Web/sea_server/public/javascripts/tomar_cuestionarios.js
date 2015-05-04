@@ -5,7 +5,7 @@ $(document).ready(function(){
   var cuestionarios_array = JSON.parse($cuestionarios_list.attr('data-cuestionarios'));
 
   //initial population of info panel
-  if(cuestionarios_array.lenght > 0)
+  if(cuestionarios_array.length > 0)
   populate_info_panel(cuestionarios_array[0]);
 
   /* Search Code start */
