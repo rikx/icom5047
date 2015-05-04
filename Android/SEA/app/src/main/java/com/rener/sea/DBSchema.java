@@ -100,7 +100,7 @@ public class DBSchema {
     public static final String LOCATION_CATEGORY_LOCATION_ID = "location_id";
     public static final String LOCATION_CATEGORY_CATEGORY_ID = "category_id";
     public static final String CREATE_LOCATION_CATEGORY_TABLE = "CREATE TABLE " + TABLE_LOCATION_CATEGORY + "(" +
-            LOCATION_CATEGORY_LOCATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            LOCATION_CATEGORY_LOCATION_ID + " INTEGER," +
             LOCATION_CATEGORY_CATEGORY_ID + " INTEGER)";
     public static final String TABLE_OPTION = "option";
     public static final String OPTION_ID = "option_id";

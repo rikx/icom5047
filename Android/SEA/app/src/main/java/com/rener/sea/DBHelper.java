@@ -8,7 +8,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -172,7 +184,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
-		        null, null, null, null, null, null);
+                null, null, null, null, null, null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -236,33 +248,33 @@ public final class DBHelper extends SQLiteOpenHelper {
         return options;
     }
 
-	public User findUserByUsername(String username){
-		SQLiteDatabase db = getReadableDatabase();
-		Cursor cursor= db.query(DBSchema.TABLE_USERS,new String[] { DBSchema.USER_ID,
-						DBSchema.USER_USERNAME,
-						DBSchema.USER_PASSHASH,
-						DBSchema.USER_PERSON_ID,
-						DBSchema.USER_SALT
-				},
-				DBSchema.USER_USERNAME + "=?", new String[] {String.valueOf(username)},null,null,null,null);
-		if((cursor != null) && (cursor.getCount() > 0)) {
-			cursor.moveToFirst();
-			User user = new User(cursor.getLong(0), this);
-			db.close();
-			cursor.close();
+    public User findUserByUsername(String username){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(DBSchema.TABLE_USERS,new String[] { DBSchema.USER_ID,
+                        DBSchema.USER_USERNAME,
+                        DBSchema.USER_PASSHASH,
+                        DBSchema.USER_PERSON_ID,
+                        DBSchema.USER_SALT
+                },
+                DBSchema.USER_USERNAME + "=?", new String[] {String.valueOf(username)},null,null,null,null);
+        if((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            User user = new User(cursor.getLong(0), this);
+            db.close();
+            cursor.close();
 
-			return user;
-		}
-		return new User(-1,this);
+            return user;
+        }
+        return new User(-1,this);
 
-	}
+    }
 
-	public boolean authLogin(String username, String password) {
-		User user = findUserByUsername(username);
+    public boolean authLogin(String username, String password) {
+        User user = findUserByUsername(username);
 //		return user.authenticate(password);
         return true;
-	}
-//
+    }
+    //
 //        public long createAddress(Location loc){
 //            SQLiteDatabase db = getWritableDatabase();
 //            ContentValues values = new ContentValues();
@@ -541,7 +553,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     public boolean fillDB(){
         Person person = new Person(1,"Temporal",null,"User",null,"temporal.user@rener.com",null,
-		        this);
+                this);
         new Person(2,"Nelson",null,"Reyes",null,"nelson.reyes@upr.edu",null,this);
         new Person(3,"Enrique",null,"Rodriguez",null,"enrique.rodriguez2@upr.edu",null,this);
         new Person(4,"Ricardo",null,"Fuentes",null,"ricardo.fuentes@upr.edu",null,this);
@@ -553,38 +565,38 @@ public final class DBHelper extends SQLiteOpenHelper {
         User rick = new User(4,4,"ricardo.fuentes","iamricardo",this);
         User ramon = new User(5,5,"ramon.saldana","iamramon",this);
 
-	    //Dummy flowchart
-	    Flowchart fc = new Flowchart(1, 1, 10, 3, "Flowchart Test", "0", this);
+        //Dummy flowchart
+        Flowchart fc = new Flowchart(1, 1, 10, 3, "Flowchart Test", "0", this);
 
-	    //Dummy items
-	    new Item(1, fc.getId(), "Is the cow sick?", Item.BOOLEAN, this);
-	    new Item(2, fc.getId(), "How would you categorize this problem?", Item.MULTIPLE_CHOICE, this);
-	    new Item(3, fc.getId(), "Record a description of the milk coloring, texture, and smell",
-			    Item.OPEN, this);
-	    new Item(4, fc.getId(), "Input amount of times cow eats a day", Item.CONDITIONAL, this);
-	    new Item(5, fc.getId(), "Recommendation 1", Item.RECOMMENDATION, this);
-	    new Item(6, fc.getId(), "Recommendation 2", Item.RECOMMENDATION, this);
-	    new Item(7, fc.getId(), "Recommendation 3", Item.RECOMMENDATION, this);
-	    new Item(8, fc.getId(), "Recommendation 4", Item.RECOMMENDATION, this);
-	    new Item(9, fc.getId(), "Recommendation 5", Item.RECOMMENDATION, this);
-	    new Item(10,fc.getId(), "End of flowchart test", Item.END, this);
+        //Dummy items
+        new Item(1, fc.getId(), "Is the cow sick?", Item.BOOLEAN, this);
+        new Item(2, fc.getId(), "How would you categorize this problem?", Item.MULTIPLE_CHOICE, this);
+        new Item(3, fc.getId(), "Record a description of the milk coloring, texture, and smell",
+                Item.OPEN, this);
+        new Item(4, fc.getId(), "Input amount of times cow eats a day", Item.CONDITIONAL, this);
+        new Item(5, fc.getId(), "Recommendation 1", Item.RECOMMENDATION, this);
+        new Item(6, fc.getId(), "Recommendation 2", Item.RECOMMENDATION, this);
+        new Item(7, fc.getId(), "Recommendation 3", Item.RECOMMENDATION, this);
+        new Item(8, fc.getId(), "Recommendation 4", Item.RECOMMENDATION, this);
+        new Item(9, fc.getId(), "Recommendation 5", Item.RECOMMENDATION, this);
+        new Item(10,fc.getId(), "End of flowchart test", Item.END, this);
 
-	    //Dummy options
-		Option o1 = new Option(1, 1, 2, "Yes", this);
-	    Option o2 = new Option(2, 1, 5, "No", this);
-	    Option o3 = new Option(3, 2, 3, "Milk is discolored", this);
-	    Option o4 = new Option(4, 2, 6, "Injured leg", this);
-	    Option o5 = new Option(5, 2, 4, "Eating problems", this);
-	    Option o6 = new Option(6, 4, 8, "lt3", this);
-	    Option o7 = new Option(7, 4, 9, "ge3", this);
-	    Option o8 = new Option(8, 3, 7, "[user input that is a description]", this);
-	    Option o9 = new Option(9, 7, 10, "End", this);
-	    Option o10 = new Option(10, 6, 10, "End", this);
-	    Option o11 = new Option(11, 8, 10, "End", this);
-	    Option o12 = new Option(12, 5, 10, "End", this);
-	    Option o13 = new Option(13, 9, 10, "End", this);
+        //Dummy options
+        Option o1 = new Option(1, 1, 2, "Yes", this);
+        Option o2 = new Option(2, 1, 5, "No", this);
+        Option o3 = new Option(3, 2, 3, "Milk is discolored", this);
+        Option o4 = new Option(4, 2, 6, "Injured leg", this);
+        Option o5 = new Option(5, 2, 4, "Eating problems", this);
+        Option o6 = new Option(6, 4, 8, "lt3", this);
+        Option o7 = new Option(7, 4, 9, "ge3", this);
+        Option o8 = new Option(8, 3, 7, "[user input that is a description]", this);
+        Option o9 = new Option(9, 7, 10, "End", this);
+        Option o10 = new Option(10, 6, 10, "End", this);
+        Option o11 = new Option(11, 8, 10, "End", this);
+        Option o12 = new Option(12, 5, 10, "End", this);
+        Option o13 = new Option(13, 9, 10, "End", this);
 
-	    //Dummy location
+        //Dummy location
         SQLiteDatabase db = getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_ID, 0);
@@ -595,18 +607,18 @@ public final class DBHelper extends SQLiteOpenHelper {
         long id = db.insert(DBSchema.TABLE_ADDRESS, null, values);
         Location loc =new Location(1,"El platanal", id, 1, 3,"jhagfljfdsg",2,this);
 
-	    //Dummy report
-	    Report report = new Report(this, nelson);
-	    report.setName("Dummy Report");
-	    report.setSubject(person);
-	    report.setLocation(loc);
-	    report.setFlowchart(fc);
-	    report.setNotes("these are some report notes");
-	    Path path = new Path(report.getId(), this);
-	    path.addEntry(o1);
-	    path.addEntry(o3);
-	    path.addEntry(o8, "description of something");
-	    path.addEntry(o9);
+        //Dummy report
+        Report report = new Report(this, nelson);
+        report.setName("Dummy Report");
+        report.setSubject(person);
+        report.setLocation(loc);
+        report.setFlowchart(fc);
+        report.setNotes("these are some report notes");
+        Path path = new Path(report.getId(), this);
+        path.addEntry(o1);
+        path.addEntry(o3);
+        path.addEntry(o8, "description of something");
+        path.addEntry(o9);
 
         return true;
     }
@@ -765,6 +777,468 @@ public final class DBHelper extends SQLiteOpenHelper {
 //        db.execSQL("select * from users where user_id = -1");
         db.close();
         return dummyDB;
+    }
+    //TODO: test it
+    public ArrayList<HashMap<String, String>> getUsers() {
+        ArrayList<HashMap<String, String>> users;
+        users = new ArrayList<HashMap<String, String>>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(DBSchema.TABLE_USERS,new String[] { DBSchema.USER_ID,
+                        DBSchema.USER_USERNAME,
+                        DBSchema.USER_PASSHASH,
+                        DBSchema.USER_PERSON_ID,
+                        DBSchema.USER_SALT
+                },
+                null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put(DBSchema.USER_ID, cursor.getString(0));
+                map.put(DBSchema.USER_USERNAME, cursor.getString(1));
+                map.put(DBSchema.USER_PASSHASH, cursor.getString(2));
+                map.put(DBSchema.USER_PERSON_ID, cursor.getString(3));
+                map.put(DBSchema.USER_SALT, cursor.getString(4));
+                users.add(map);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        cursor.close();
+        return users;
+    }
+    // TODO: add selection statement to only het un-sync elements
+    public String unSyncUsersJson(){
+        ArrayList<HashMap<String, String>> users;
+        users = new ArrayList<HashMap<String, String>>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.query(DBSchema.TABLE_USERS,new String[] { DBSchema.USER_ID,
+                        DBSchema.USER_USERNAME,
+                        DBSchema.USER_PASSHASH,
+                        DBSchema.USER_PERSON_ID,
+                        DBSchema.USER_SALT
+                },
+                null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put(DBSchema.USER_ID, cursor.getString(0));
+                map.put(DBSchema.USER_USERNAME, cursor.getString(1));
+                map.put(DBSchema.USER_PASSHASH, cursor.getString(2));
+                map.put(DBSchema.USER_PERSON_ID, cursor.getString(3));
+                map.put(DBSchema.USER_SALT, cursor.getString(4));
+                users.add(map);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        cursor.close();
+        Gson gson = new GsonBuilder().create();
+        return gson.toJson(users);
+    }
+
+    private long setItem(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.ITEM_ID, item.getLong(DBSchema.ITEM_ID));
+                values.put(DBSchema.ITEM_LABEL, item.getString(DBSchema.ITEM_LABEL));
+                values.put(DBSchema.ITEM_TYPE, item.getString(DBSchema.ITEM_TYPE));
+
+                db.insertWithOnConflict(DBSchema.TABLE_ITEM, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setPath(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.PATH_REPORT_ID, item.getLong(DBSchema.PATH_REPORT_ID));
+                values.put(DBSchema.PATH_OPTION_ID, item.getLong(DBSchema.PATH_OPTION_ID));
+                values.put(DBSchema.PATH_DATA, item.getString(DBSchema.PATH_DATA));
+//                values.put(DBSchema.PATH_SEQUENCE, item.getLong(DBSchema.PATH_SEQUENCE));
+                db.insertWithOnConflict(DBSchema.TABLE_PATH, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    //copy paste full
+    private long setUsers_specialization(JSONArray data){
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        int i = -1;
+//        try {
+//            for ( i = 0; i < data.length(); i++){
+//                JSONObject item = data.getJSONObject(i);
+//                ContentValues values = new ContentValues();
+//                values.put(DBSchema.SPECIALIZATION_ID, item.getLong(DBSchema.SPECIALIZATION_ID));
+//                values.put(DBSchema.SPECIALIZATION_NAME, item.getString(DBSchema.SPECIALIZATION_NAME));
+//                db.insertWithOnConflict(DBSchema.TABLE_SPECIALIZATION, null, values, 5);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        return -1;
+    }
+    private long setOption(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.OPTION_ID, item.getLong(DBSchema.OPTION_ID));
+                values.put(DBSchema.OPTION_PARENT_ID, item.getLong(DBSchema.OPTION_PARENT_ID));
+                values.put(DBSchema.OPTION_NEXT_ID, item.getLong(DBSchema.OPTION_NEXT_ID));
+//                values.put(DBSchema.OPTION_LABEL, item.getString(DBSchema.OPTION_LABEL));
+
+                db.insertWithOnConflict(DBSchema.TABLE_OPTION, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setSpecialization(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.SPECIALIZATION_ID, item.getLong(DBSchema.SPECIALIZATION_ID));
+                values.put(DBSchema.SPECIALIZATION_NAME, item.getString(DBSchema.SPECIALIZATION_NAME));
+                db.insertWithOnConflict(DBSchema.TABLE_SPECIALIZATION, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+
+    }
+    private long setPerson(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.PERSON_ID, item.getLong(DBSchema.PERSON_ID));
+                values.put(DBSchema.PERSON_LAST_NAME1, item.getString(DBSchema.PERSON_LAST_NAME1));
+                values.put(DBSchema.PERSON_FIRST_NAME, item.getString(DBSchema.PERSON_FIRST_NAME));
+                values.put(DBSchema.PERSON_EMAIL, item.getString(DBSchema.PERSON_EMAIL));
+//                values.put(DBSchema.PERSON_SPEC_ID, item.getLong(DBSchema.PERSON_SPEC_ID));
+                values.put(DBSchema.PERSON_LAST_NAME2, item.getString(DBSchema.PERSON_LAST_NAME2));
+                values.put(DBSchema.PERSON_MIDDLE_INITIAL, item.getString(DBSchema.PERSON_MIDDLE_INITIAL));
+                values.put(DBSchema.PERSON_PHONE_NUMBER, item.getString(DBSchema.PERSON_PHONE_NUMBER));
+
+                db.insertWithOnConflict(DBSchema.TABLE_PERSON, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setAppointments(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.APPOINTMENT_ID, item.getLong(DBSchema.APPOINTMENT_ID));
+                values.put(DBSchema.APPOINTMENT_DATE, item.getString(DBSchema.APPOINTMENT_DATE));
+                values.put(DBSchema.APPOINTMENT_TIME, item.getString(DBSchema.APPOINTMENT_TIME));
+                values.put(DBSchema.APPOINTMENT_REPORT_ID, item.getLong(DBSchema.APPOINTMENT_REPORT_ID));
+                values.put(DBSchema.APPOINTMENT_PURPOSE, item.getString(DBSchema.APPOINTMENT_PURPOSE));
+                values.put(DBSchema.APPOINTMENT_MAKER_ID, item.getLong(DBSchema.APPOINTMENT_MAKER_ID));
+
+                db.insertWithOnConflict(DBSchema.TABLE_APPOINTMENTS, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setDevices(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.DEVICE_ID, item.getLong(DBSchema.DEVICE_ID));
+                values.put(DBSchema.DEVICE_NAME, item.getString(DBSchema.DEVICE_NAME));
+                values.put(DBSchema.DEVICE_ID_NUMBER, item.getLong(DBSchema.DEVICE_ID_NUMBER));
+                values.put(DBSchema.DEVICE_USER_ID, item.getLong(DBSchema.DEVICE_USER_ID));
+//                values.put(DBSchema.DEVICE_LATEST_SYNC, item.getLong(DBSchema.DEVICE_LATEST_SYNC));
+                db.insertWithOnConflict(DBSchema.TABLE_DEVICES, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setAddress(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.ADDRESS_ID, item.getLong(DBSchema.ADDRESS_ID));
+                values.put(DBSchema.ADDRESS_LINE1, item.getString(DBSchema.ADDRESS_LINE1));
+                values.put(DBSchema.ADDRESS_CITY, item.getString(DBSchema.ADDRESS_CITY));
+//                values.put(DBSchema.ADDRESS_ZIPCODE, item.getLong(DBSchema.ADDRESS_ZIPCODE));
+                values.put(DBSchema.ADDRESS_LINE2, item.getString(DBSchema.ADDRESS_LINE2));
+
+                db.insertWithOnConflict(DBSchema.TABLE_ADDRESS, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setCategory(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.CATEGORY_ID, item.getLong(DBSchema.CATEGORY_ID));
+                values.put(DBSchema.CATEGORY_NAME, item.getString(DBSchema.CATEGORY_NAME));
+
+                db.insertWithOnConflict(DBSchema.TABLE_CATEGORY, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setLocation_category(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.LOCATION_CATEGORY_LOCATION_ID, item.getLong(DBSchema.LOCATION_CATEGORY_LOCATION_ID));
+                values.put(DBSchema.LOCATION_CATEGORY_CATEGORY_ID, item.getLong(DBSchema.LOCATION_CATEGORY_CATEGORY_ID));
+
+                db.insertWithOnConflict(DBSchema.TABLE_LOCATION_CATEGORY, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setLocation(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.LOCATION_ID, item.getLong(DBSchema.LOCATION_ID));
+                values.put(DBSchema.LOCATION_NAME, item.getString(DBSchema.LOCATION_NAME));
+                values.put(DBSchema.LOCATION_ADDRESS_ID, item.getLong(DBSchema.LOCATION_ADDRESS_ID));
+//                values.put(DBSchema.LOCATION_OWNER_ID, item.getLong(DBSchema.LOCATION_OWNER_ID));
+//                values.put(DBSchema.LOCATION_MANAGER_ID, item.getLong(DBSchema.LOCATION_MANAGER_ID));
+                values.put(DBSchema.LOCATION_LICENSE, item.getString(DBSchema.LOCATION_LICENSE));
+//                values.put(DBSchema.LOCATION_AGENT_ID, item.getLong(DBSchema.LOCATION_AGENT_ID));
+
+                db.insertWithOnConflict(DBSchema.TABLE_LOCATION, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setReport(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.REPORT_ID, item.getLong(DBSchema.REPORT_ID));
+                values.put(DBSchema.REPORT_CREATOR_ID, item.getLong(DBSchema.REPORT_CREATOR_ID));
+                values.put(DBSchema.REPORT_LOCATION_ID, item.getLong(DBSchema.REPORT_LOCATION_ID));
+//                values.put(DBSchema.REPORT_SUBJECT_ID, item.getLong(DBSchema.REPORT_SUBJECT_ID));
+                values.put(DBSchema.REPORT_FLOWCHART_ID, item.getLong(DBSchema.REPORT_FLOWCHART_ID));
+                values.put(DBSchema.REPORT_NOTE, item.getString(DBSchema.REPORT_NOTE));
+                values.put(DBSchema.REPORT_DATE_FILED, item.getString(DBSchema.REPORT_DATE_FILED));
+                values.put(DBSchema.REPORT_NAME, item.getString(DBSchema.REPORT_NAME));
+
+                db.insertWithOnConflict(DBSchema.TABLE_REPORT, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    private long setUsers(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for ( i = 0; i < data.length(); i++){
+                JSONObject item = data.getJSONObject(i);
+
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.USER_ID, item.getLong(DBSchema.USER_ID));
+                values.put(DBSchema.USER_USERNAME, item.getString(DBSchema.USER_USERNAME));
+                values.put(DBSchema.USER_PASSHASH, item.getString(DBSchema.USER_PASSHASH));
+                values.put(DBSchema.USER_PERSON_ID, item.getLong(DBSchema.USER_PERSON_ID));
+                values.put(DBSchema.USER_SALT, item.getString(DBSchema.USER_SALT));
+
+                db.insertWithOnConflict(DBSchema.TABLE_USERS, null, values, 5);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+
+    private String getItem(JSONObject data){
+        return "";
+    }
+    private String getPath(JSONObject data){
+        return "";
+    }
+    private String getUsers_specialization(JSONObject data){
+        return "";
+    }
+    private String getOption(JSONObject data){
+        return "";
+    }
+    private String getSpecialization(JSONObject data){
+        return "";
+    }
+    private String getPerson(JSONObject data){
+        return "";
+    }
+    private String getAppointments(JSONObject data){
+        return "";
+    }
+    private String getDevices(JSONObject data){
+        return "";
+    }
+    private String getAddress(JSONObject data){
+        return "";
+    }
+    private String getCategory(JSONObject data){
+        return "";
+    }
+    private String getLocation_category(JSONObject data){
+        return "";
+    }
+    private String getLocation(JSONObject data){
+        return "";
+    }
+    private String getReport(JSONObject data){
+        return "";
+    }
+    private String getUsers(JSONObject data){
+        return "";
+    }
+    public void syncSQLiteMySQLDB(){
+        Log.i(this.toString(), "HTTP Sync called ");
+        //Create AsycHttpClient object
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        ArrayList<HashMap<String, String>> userList =  getUsers();
+        if(dummyDB || userList.size()!=0){
+//            if(// verify if local changes){
+            Gson gson = new GsonBuilder().create();
+            params.put("usersJSON", gson.toJson(userList));
+            params.put("type", "admin");
+            client.post("http://136.145.116.231/mobile/test.php",params ,new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    // If the response is JSONObject instead of expected JSONArray
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                    SQLiteDatabase db = getWritableDatabase();
+
+                    try {
+
+
+                        setItem(response.getJSONArray("item"));
+                        setPath(response.getJSONArray("path"));
+                        setUsers_specialization(response.getJSONArray("users_specialization"));
+                        setOption(response.getJSONArray("option"));
+                        setSpecialization(response.getJSONArray("specialization"));
+                        setPerson(response.getJSONArray("person"));
+                        setAppointments(response.getJSONArray("appointments"));
+                        setDevices(response.getJSONArray("devices"));
+                        setAddress(response.getJSONArray("address"));
+                        setCategory(response.getJSONArray("category"));
+                        setLocation_category(response.getJSONArray("location_category"));
+                        setLocation(response.getJSONArray("location"));
+                        setReport(response.getJSONArray("report"));
+                        setUsers(response.getJSONArray("users"));
+                    } catch (JSONException e) {
+
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//                    JSONObject firstEvent = null;
+//                    try {
+//                        for(int i = 0 ; i < response.length(); i++) {
+//                            firstEvent = response.getJSONObject(i);
+//                            String userName = firstEvent.getString(DBSchema.USER_USERNAME);
+////                                System.out.println(userName);
+//                            Log.i(this.toString(), "Username : "+userName);
+//                            // update the db
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+                }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String response, Throwable error){
+                    Log.i(this.toString(), "HTTP Sync failure : statusCode = "+statusCode+", Header = "+headers.toString()+", response = "+response);
+                    switch (statusCode) {
+                        case 404:// resource Not Found
+                            break;
+                        case 500:// Internal Server Error
+                            break;
+                        default:// no se que paso
+                            break;
+
+
+                    }
+
+                }
+
+
+            });
+//            }else{
+//               The databases are in sync
+//            }
+        }else{
+//            The Database is empty
+        }
     }
 
 }
