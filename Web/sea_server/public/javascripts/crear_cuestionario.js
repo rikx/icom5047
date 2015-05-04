@@ -306,7 +306,7 @@ jsPlumb.ready(function() {
 						} else if(this_item.type=='END'){
 							$('#end_item').removeClass('disabled');
 						}
-						return;
+						//return;
 					}
 				}
 
@@ -319,6 +319,9 @@ jsPlumb.ready(function() {
 						connections_array.splice(c,1);
 					}
 				}
+				console.log(elements_array);
+				console.log(connections_array);
+
 			}); 
 
 			if(itemType != 'START' && itemType != 'END'){
@@ -367,7 +370,7 @@ jsPlumb.ready(function() {
 	jsPlumb.bind("connection", function(info, originalEvent) {
 		jsPlumb.ready(function() {
 			var this_connection;
-			info.connection.addOverlay( [ "Arrow", { width:50, length:30, location:1, id:"arrow" } ]);
+			info.connection.addOverlay( [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]);
 			info.connection.setPaintStyle( {lineWidth:10,strokeStyle:'rgb(204,255,204)'});
 			if(trigger == "yes"){
 				this_connection = {

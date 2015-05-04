@@ -8,8 +8,6 @@ $(document).ready(function(){
   var user_info = JSON.parse($ganaderos_list.attr('data-user'));
 
 
-  console.log("the user info is");
-  console.log(user_info);
 
   // if(user_info.user_type)
   // {
@@ -19,6 +17,7 @@ $(document).ready(function(){
   // }
 
   // initial info panel population
+  if(ganaderos_array.lenght > 0)
   populate_info_panel(ganaderos_array[0]);
 
 

@@ -7,6 +7,7 @@ $(document).ready(function(){
   var user_info = JSON.parse($reportes_list.attr('data-user'));
 
   // initial info panel population
+  if(reportes_array.lenght > 0)
   populate_info_panel(reportes_array[0]);
 
   /* Search Code start */

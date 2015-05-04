@@ -7,6 +7,7 @@ $(document).ready(function(){
   var user_info = JSON.parse($citas_list.attr('data-user'));
 
   // initial info panel population
+  if(citas_array.lenght > 0)
   populate_info_panel(citas_array[0]);
 
    /* Search Code start */

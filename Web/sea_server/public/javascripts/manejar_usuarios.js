@@ -12,6 +12,7 @@ $(document).ready(function(){
   var all_specialties_array = JSON.parse($('#specialty_panel').attr('data-all-specialties'));
 
   // initial info panel population
+  if(usuarios_array.lenght > 0)
   populate_info_panel(usuarios_array[0]);
 
    /* Search Code start */
