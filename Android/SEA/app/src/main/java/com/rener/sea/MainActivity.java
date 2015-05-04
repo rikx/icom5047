@@ -24,6 +24,7 @@ import android.widget.Toast;
 public class MainActivity extends FragmentActivity {
 
     private DBHelper dbHelper;
+    private NetworkHelper networkHelper;
     private Fragment leftFragment;
     private Fragment rightFragment;
 
@@ -33,6 +34,8 @@ public class MainActivity extends FragmentActivity {
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
 		dbHelper = new DBHelper(getApplicationContext());
+        networkHelper = new NetworkHelper(getApplicationContext());
+        networkHelper.isInternetAvailable();
 	    showReportsList();
     }
 
@@ -260,8 +263,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void sync() {
-        boolean connected = NetworkHelper.isServerAvailable(this);
-        //TODO: test the connection
+        boolean connected = networkHelper.isInternetAvailable();
+        Log.i(this.toString(), "connected: "+connected);
     }
 
 }
