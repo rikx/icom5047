@@ -934,8 +934,7 @@ router.post('/admin/usuarios', function(req, res, next) {
  		|| !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
  		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
- 		|| !req.body.hasOwnProperty('usuario_password') 
- 		|| !req.body.hasOwnProperty('usuario_password_confirm') 
+ 		|| !req.body.hasOwnProperty('usuario_password')
  		|| !req.body.hasOwnProperty('usuario_telefono') 
  		|| !req.body.hasOwnProperty('usuario_type')) {
  		res.statusCode = 400;
@@ -968,20 +967,28 @@ router.post('/admin/usuarios', function(req, res, next) {
 				  			var person_id = result.rows[0].person_id;
 
 				  			// Insert new user row
-				  			client.query("INSERT into users (person_id, type, username) VALUES ($1, $2, $3)", 
+				  			client.query("INSERT into users (person_id, type, username) VALUES ($1, $2, $3) \
+				  										RETURNING user_id", 
 				  										[person_id, req.body.usuario_type, req.body.usuario_email] , function(err, result) {
-									//call `done()` to release the client back to the pool
-									done();
 									if(err) {
 										return console.error('error running query', err);
 									} else {
-										res.json(true);
+										var user_id = result.rows[0].user_id;
+										// Update user with password
+						  			client.query("UPDATE users \
+																	SET passhash = crypt($1, gen_salt('bf'::text)) \
+																	WHERE user_id = $2", 
+						  										[req.body.usuario_password, user_id] , function(err, result) {
+											//call `done()` to release the client back to the pool
+											done();
+											if(err) {
+												return console.error('error running query', err);
+											} else {
+												res.json(true);
+											}
+										});
 									}
 								});
-								// Update user with password
-									//UPDATE users 
-									//SET passhash = crypt($1, gen_salt('bf'::text))
-									//WHERE user_id = $2
 		  				}
 		  			});
 					}
@@ -1001,8 +1008,7 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
  		|| !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
  		|| !req.body.hasOwnProperty('usuario_lastname_paternal') 
- 		|| !req.body.hasOwnProperty('usuario_password') 
- 		|| !req.body.hasOwnProperty('usuario_password_confirm') 
+ 		|| !req.body.hasOwnProperty('usuario_password')
  		|| !req.body.hasOwnProperty('usuario_telefono') 
  		|| !req.body.hasOwnProperty('usuario_type')) {
  		res.statusCode = 400;
@@ -1020,6 +1026,17 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
+					// edit password 
+	  			client.query("UPDATE users \
+												SET passhash = crypt($1, gen_salt('bf'::text)) \
+												WHERE user_id = $2", 
+	  										[req.body.usuario_password, user_id] , function(err, result) {
+						if(err) {
+							return console.error('error running query', err);
+						} else {
+							// do nothing
+						}
+					});
 					// edit person table
 					client.query("UPDATE person \
 												SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6 \
