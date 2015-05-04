@@ -293,7 +293,7 @@ $(document).ready(function(){
       table_content += "<td><a class='list-group-item ";
       table_content += "show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.person_name+"</a></td>";
       table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
-      table_content += "<td><a class='btn_delete_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+      //table_content += "<td><a class='btn_delete_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     }); 
     }

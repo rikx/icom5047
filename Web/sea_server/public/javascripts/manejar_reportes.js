@@ -145,7 +145,7 @@ $(document).ready(function(){
       table_content += "show_info_report' href='#', data-id='"+this.report_id+"'>"+report_name+"</a></td>";
       table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
       table_content += "<td><button class='btn_edit_report btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
-      table_content += "<td><a class='btn_delete_report btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+      //table_content += "<td><a class='btn_delete_report btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });  
     }
