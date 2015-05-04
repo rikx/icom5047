@@ -1,22 +1,22 @@
 package com.rener.sea;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * Represents the activity that performs all functions related to authenticating the user
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private String username = null;
     private String password = null;
@@ -34,13 +34,38 @@ public class LoginActivity extends Activity {
         dbHelper.deleteDB();
         if(dbHelper.getDummy())
             dbHelper.fillDB();
+
+        //Perform the login procedure
 	    loadLogin();
+        Button login = (Button) findViewById(R.id.login_button);
+        login.setOnClickListener(this);
+        EditText passView = (EditText) findViewById(R.id.field_password);
+        passView.setOnEditorActionListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.login_button :
+                login();
+                break;
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        int action = keyEvent.getAction();
+        if(action == 0) {
+            login();
+            return true;
+        }
+        return false;
     }
 
     /**
      * Start the login process by authenticating the user credentials
      */
-    public void login(View view) {
+    public void login() {
         //Get username from text field
         EditText editUsername = (EditText) findViewById(R.id.field_username);
         EditText editPassword = (EditText) findViewById(R.id.field_password);
