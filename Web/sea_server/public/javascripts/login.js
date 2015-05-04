@@ -15,13 +15,16 @@ $(document).ready(function() {
 	    dataType: "json",
 
 	    success: function(data) {
-	    	if(typeof data.user_found == 'boolean'){
+	    	if(typeof data.user_found == 'boolean' && data.user_found == false){
 	    		alert('Usuario "'+new_user.input_username+'" no existe en el sistema. Verifique que el nombre de usuario sea correcto.');
 	    	}
-			 	if(typeof data.redirect == 'string') {
-			    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
-			  }
-
+	    	if(typeof data.pass_found == 'boolean' && data.pass_found == false){
+	    		alert('Contraseña incorrecta.');
+	    	} else {
+		    	if(typeof data.redirect == 'string') {
+				    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+				  }
+	    	}
 	    },
 	    error: function( xhr, status, errorThrown ) {
 	      alert( "Sorry, there was a problem!" );

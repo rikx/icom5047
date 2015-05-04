@@ -33,9 +33,8 @@ router.post('/login', function(req, res, next) {
 	    	return console.error('error fetching client from pool', err);
 	  	}
 	  	// TODO: modify query to also give you account type
-		  client.query('SELECT user_id, username, type FROM users WHERE username=$1', [req.body.input_username], function(err, result) {
-		  	//call `done()` to release the client back to the pool
-		    done();
+		  client.query('SELECT user_id, username, passhash, type FROM users WHERE username=$1', 
+		  							[req.body.input_username], function(err, result) {
 		    if(err) {
 		      return console.error('error running query', err);
 		    }
@@ -43,10 +42,24 @@ router.post('/login', function(req, res, next) {
 					res.send({user_found: false});
   			} else {
   				var user = result.rows[0];
-  				var user_id = req.session.user_id = user.user_id;
-  				var username = req.session.username = user.username;
-				  var user_type = req.session.user_type = user.type;
-				  res.send({redirect: '/users/'+user_type});
+  				// compare passsword with hash to check match
+  				client.query('SELECT (passhash = crypt($1, passhash)) AS pswmatch FROM users WHERE user_id = $2', 
+  											[req.body.input_password, user.user_id], function(err, result){
+				  	//call `done()` to release the client back to the pool
+				    done();
+				    if(err) {
+				      return console.error('error running query', err);
+				    }
+				    // pswmatch is true if input_password matches; else false
+				    if(result.rows[0].pswmatch){
+				    	var user_id = req.session.user_id = user.user_id;
+		  				var username = req.session.username = user.username;
+						  var user_type = req.session.user_type = user.type;
+						  res.send({redirect: '/users/'+user_type});
+				    } else {
+				    	res.send({pass_found: false});
+				    }
+  				});
   			}
 		  });
 	  });

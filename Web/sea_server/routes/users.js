@@ -978,6 +978,10 @@ router.post('/admin/usuarios', function(req, res, next) {
 										res.json(true);
 									}
 								});
+								// Update user with password
+									//UPDATE users 
+									//SET passhash = crypt($1, gen_salt('bf'::text))
+									//WHERE user_id = $2
 		  				}
 		  			});
 					}
