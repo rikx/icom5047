@@ -18,7 +18,7 @@ public class Address {
         this.dbHelper = dbHelper;
     }
 
-    public Address( long id, String address1, String address2, String city, int zipcode,DBHelper dbHelper) {
+    public Address( long id, String address1, String address2, String city, String zipcode,DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         this.dbHelper = dbHelper;
         //verify if exit
@@ -30,7 +30,7 @@ public class Address {
 
     }
 
-    public long create(String address1, String address2, String city, int zipcode){
+    public long create(String address1, String address2, String city, String zipcode){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_LINE1, address1);
@@ -182,15 +182,15 @@ public class Address {
         return id;// if -1 error during update
     }
 
-    public int getZipcode() {
+    public String getZipcode() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int zipcode = -1;
+        String zipcode = "";
         Cursor cursor = db.query(DBSchema.TABLE_ADDRESS, new String[]{DBSchema.ADDRESS_ZIPCODE},
                 DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if(!cursor.isNull(0)){
-                zipcode = cursor.getInt(0);
+                zipcode = cursor.getString(0);
             }
             db.close();
             cursor.close();
@@ -201,7 +201,7 @@ public class Address {
     public long setZipcode(String zipcode) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBSchema.ADDRESS_ZIPCODE, Integer.valueOf(zipcode));
+        values.put(DBSchema.ADDRESS_ZIPCODE, String.valueOf(zipcode));
         long id = db.update(DBSchema.TABLE_ADDRESS, values, DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update

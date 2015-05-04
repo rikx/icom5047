@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
  */
 public class DBSchema {
     //
+    public static final String MODIFIED = "modified";
+    public static final String MODIFIED_YES = "yes";
+    public static final String MODIFIED_NO = "no";
     public static final String TABLE_ADDRESS = "address";
     public static final String ADDRESS_ID = "address_id";
     public static final String ADDRESS_LINE1 = "address_line1";
@@ -18,8 +21,9 @@ public class DBSchema {
             ADDRESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             ADDRESS_LINE1 + " TEXT," +
             ADDRESS_CITY + " TEXT," +
-            ADDRESS_ZIPCODE + " INTEGER," +
-            ADDRESS_LINE2 + " TEXT)";
+            ADDRESS_ZIPCODE + " TEXT," +
+            ADDRESS_LINE2 + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_APPOINTMENTS = "appointments";
     public static final String APPOINTMENT_ID = "appointment_id";
     public static final String APPOINTMENT_DATE = "date";
@@ -33,13 +37,15 @@ public class DBSchema {
             APPOINTMENT_TIME + " TEXT," +
             APPOINTMENT_MAKER_ID + " INTEGER," +
             APPOINTMENT_REPORT_ID + " INTEGER," +
-            APPOINTMENT_PURPOSE + " TEXT)";
+            APPOINTMENT_PURPOSE + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_CATEGORY = "category";
     public static final String CATEGORY_ID = "category_id";
     public static final String CATEGORY_NAME = "name";
     public static final String CREATE_CATEGORY_TABLE = "CREATE TABLE " + TABLE_CATEGORY + "(" +
             CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            CATEGORY_NAME + " TEXT)";
+            CATEGORY_NAME + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_DEVICES = "devices";
     public static final String DEVICE_ID = "device_id";
     public static final String DEVICE_NAME = "name";
@@ -51,7 +57,8 @@ public class DBSchema {
             DEVICE_NAME + " TEXT," +
             DEVICE_ID_NUMBER + " TEXT," +
             DEVICE_USER_ID + " INTEGER," +
-            DEVICE_LATEST_SYNC + " TEXT)";
+            DEVICE_LATEST_SYNC + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_FLOWCHART = "flowchart";
     public static final String FLOWCHART_ID = "flowchart_id";
     public static final String FLOWCHART_FIRST_ID = "first_id";
@@ -65,7 +72,8 @@ public class DBSchema {
             FLOWCHART_NAME + " TEXT," +
             FLOWCHART_END_ID + " INTEGER," +
             FLOWCHART_CREATOR_ID + " INTEGER," +
-            FLOWCHART_VERSION + " TEXT)";
+            FLOWCHART_VERSION + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_ITEM = "item";
     public static final String ITEM_ID = "item_id";
     public static final String ITEM_FLOWCHART_ID = "flowchart_id";
@@ -79,7 +87,8 @@ public class DBSchema {
             ITEM_LABEL + " TEXT," +
             ITEM_POS_TOP + " REAL," +
             ITEM_POS_LEFT + " REAL," +
-            ITEM_TYPE + " TEXT)";
+            ITEM_TYPE + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_LOCATION = "location";
     public static final String LOCATION_ID = "location_id";
     public static final String LOCATION_NAME = "name";
@@ -95,13 +104,15 @@ public class DBSchema {
             LOCATION_OWNER_ID + " INTEGER," +
             LOCATION_MANAGER_ID + " INTEGER," +
             LOCATION_LICENSE + " TEXT," +
-            LOCATION_AGENT_ID + " INTEGER)";
+            LOCATION_AGENT_ID + " INTEGER,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_LOCATION_CATEGORY = "location_category";
     public static final String LOCATION_CATEGORY_LOCATION_ID = "location_id";
     public static final String LOCATION_CATEGORY_CATEGORY_ID = "category_id";
     public static final String CREATE_LOCATION_CATEGORY_TABLE = "CREATE TABLE " + TABLE_LOCATION_CATEGORY + "(" +
             LOCATION_CATEGORY_LOCATION_ID + " INTEGER," +
-            LOCATION_CATEGORY_CATEGORY_ID + " INTEGER)";
+            LOCATION_CATEGORY_CATEGORY_ID + " INTEGER," +
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_OPTION = "option";
     public static final String OPTION_ID = "option_id";
     public static final String OPTION_PARENT_ID = "parent_id";
@@ -111,7 +122,8 @@ public class DBSchema {
             OPTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             OPTION_PARENT_ID + " INTEGER," +
             OPTION_NEXT_ID + " INTEGER," +
-            OPTION_LABEL + " TEXT)";
+            OPTION_LABEL + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_PATH = "path";
     public static final String PATH_REPORT_ID = "report_id";
     public static final String PATH_OPTION_ID = "option_id";
@@ -121,7 +133,8 @@ public class DBSchema {
             PATH_REPORT_ID + " INTEGER," +
             PATH_OPTION_ID + " INTEGER," +
             PATH_SEQUENCE + " INTEGER," +
-            PATH_DATA + " TEXT)";
+            PATH_DATA + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_PERSON = "person";
     public static final String PERSON_ID = "person_id";
     public static final String PERSON_LAST_NAME1 = "last_name1";
@@ -139,7 +152,8 @@ public class DBSchema {
             PERSON_SPEC_ID + " INTEGER," +
             PERSON_LAST_NAME2 + " TEXT," +
             PERSON_MIDDLE_INITIAL + " TEXT," +
-            PERSON_PHONE_NUMBER + " TEXT)";
+            PERSON_PHONE_NUMBER + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_REPORT = "report";
     public static final String REPORT_ID = "report_id";
     public static final String REPORT_CREATOR_ID = "creator_id";
@@ -157,13 +171,15 @@ public class DBSchema {
             REPORT_FLOWCHART_ID + " INTEGER," +
             REPORT_NOTE + " TEXT," +
             REPORT_NAME + " TEXT," +
-            REPORT_DATE_FILED + " TEXT)";
+            REPORT_DATE_FILED + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_SPECIALIZATION = "specialization";
     public static final String SPECIALIZATION_ID = "spec_id";
     public static final String SPECIALIZATION_NAME = "name";
     public static final String CREATE_SPECIALIZATION_TABLE = "CREATE TABLE " + TABLE_SPECIALIZATION + "(" +
             SPECIALIZATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            SPECIALIZATION_NAME + " TEXT)";
+            SPECIALIZATION_NAME + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
     public static final String TABLE_USERS = "users";
     public static final String USER_ID = "user_id";
     public static final String USER_USERNAME = "username";
@@ -175,7 +191,8 @@ public class DBSchema {
             USER_USERNAME + " TEXT," +
             USER_PASSHASH + " TEXT," +
             USER_PERSON_ID + " INTEGER," +
-            USER_SALT + " TEXT)";
+            USER_SALT + " TEXT,"+
+            MODIFIED + " TEXT NOT NULL DEFAULT 'yes')";
 
     public static final DateFormat FORMATDATE = new SimpleDateFormat("yyyy-MM-dd");
     public static final DateFormat FORMATTIME = new SimpleDateFormat("HH:mm:ss");

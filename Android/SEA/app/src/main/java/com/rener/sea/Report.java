@@ -286,7 +286,7 @@ public class Report implements Comparable<Report> {
     //TODO: revisar do to calendar change not tested
     public String getDateString(String format, Locale locale) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
-        return sdf.format(Calendar.getInstance().getTime());
+        return sdf.format(getDate().getTime());
     }
     //TODO: type dos not exist in the web db
     public String getType() {
