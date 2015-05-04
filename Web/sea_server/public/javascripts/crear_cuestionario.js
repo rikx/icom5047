@@ -357,6 +357,8 @@ jsPlumb.ready(function() {
 	jsPlumb.bind("connection", function(info, originalEvent) {
 		jsPlumb.ready(function() {
 			var this_connection;
+			info.connection.addOverlay( [ "Arrow", { width:50, length:30, location:1, id:"arrow" } ]);
+			info.connection.setPaintStyle( {lineWidth:10,strokeStyle:'rgb(204,255,204)'});
 			if(trigger == "yes"){
 				this_connection = {
 					source: info.sourceId,
@@ -365,8 +367,8 @@ jsPlumb.ready(function() {
 				};
 
 				var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
+				info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: "connLabel"} ]);
 				this_connection.label = mylabel;
-				
 				connections_array.push(this_connection);
 			}
 		});
