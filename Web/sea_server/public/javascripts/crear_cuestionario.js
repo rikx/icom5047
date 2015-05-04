@@ -314,9 +314,9 @@ jsPlumb.ready(function() {
 				for(var c=0; c<connections_array.length;c++){
 					this_connection = connections_array[c];
 					if(this_connection.source == this_id){
-						connections_array.splice(d,1);
+						connections_array.splice(c,1);
 					} else if(this_connection.target == this_id){
-						connections_array.splice(d,1);
+						connections_array.splice(c,1);
 					}
 				}
 			}); 
