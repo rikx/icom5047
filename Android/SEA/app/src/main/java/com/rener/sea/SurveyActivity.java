@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -33,7 +34,7 @@ import java.util.List;
  */
 public class SurveyActivity extends FragmentActivity implements AdapterView
         .OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
-        TextView.OnEditorActionListener, TextWatcher {
+        TextView.OnEditorActionListener, TextWatcher, View.OnClickListener {
 
     private static final String GREATER_THAN_REGEX = "gt\\d+(\\.\\d+)?";
     private static final String LESS_THAN_REGEX = "lt\\d+(\\.\\d+)?";
@@ -48,6 +49,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private LinearLayout progressLayout;
     private boolean surveyEnded = false;
     private MenuItem submitItem;
+    private Button nextButton;
+    private RadioGroup currentGroup;
+    private int groupChecked = -1;
+    private EditText currentText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +65,12 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         editName.addTextChangedListener(this);
         editNotes = (EditText) findViewById(R.id.survey_edit_notes);
         spinnerLocation = (Spinner) findViewById(R.id.survey_location_spinner);
-        spinnerSubject = (Spinner) findViewById(R.id.survey_subject_spinner);
+        //spinnerSubject = (Spinner) findViewById(R.id.survey_subject_spinner);
         spinnerFlowchart = (Spinner) findViewById(R.id.survey_flowchart_spinner);
 
         progressLayout = (LinearLayout) findViewById(R.id.survey_progress_layout);
+        nextButton = (Button) findViewById(R.id.survey_next_question_button);
+        nextButton.setOnClickListener(this);
 
         dbHelper = new DBHelper(getApplicationContext());
         report = new Report(dbHelper, setCreator());
@@ -107,10 +114,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (i != 0) {
             switch (adapterView.getId()) {
-                case R.id.survey_subject_spinner:
-                    Person subject = (Person) spinnerSubject.getSelectedItem();
-                    report.setSubject(subject);
-                    break;
+//                case R.id.survey_subject_spinner:
+//                    Person subject = (Person) spinnerSubject.getSelectedItem();
+//                    report.setSubject(subject);
+//                    break;
                 case R.id.survey_flowchart_spinner:
                     spinnerFlowchart.setEnabled(false);
                     Flowchart flowchart = (Flowchart) spinnerFlowchart.getSelectedItem();
@@ -142,7 +149,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         //Add a dummy item
         locations.add(0, new Location(getString(R.string.location)));
-        people.add(0, new Person(getString(R.string.subject)));
+        //people.add(0, new Person(getString(R.string.subject)));
         flowcharts.add(0, new Flowchart(getString(R.string.flowchart)));
 
         //Set the adapter
@@ -151,10 +158,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         spinnerLocation.setAdapter(locationAdapter);
         spinnerLocation.setOnItemSelectedListener(this);
 
-        DummyAdapter personAdapter = new DummyAdapter(this,
-                android.R.layout.simple_list_item_1, people, 0);
-        spinnerSubject.setAdapter(personAdapter);
-        spinnerSubject.setOnItemSelectedListener(this);
+//        DummyAdapter personAdapter = new DummyAdapter(this,
+//                android.R.layout.simple_list_item_1, people, 0);
+//        spinnerSubject.setAdapter(personAdapter);
+//        spinnerSubject.setOnItemSelectedListener(this);
 
         DummyAdapter flowchartAdapter = new DummyAdapter(this,
                 android.R.layout.simple_list_item_1, flowcharts, 0);
@@ -175,6 +182,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         path = new Path(report.getId(), dbHelper);
         report.setPath(path);
         progressLayout.removeAllViews();
+        nextButton.setVisibility(View.VISIBLE);
         newQuestion(flowchart.getFirst());
     }
 
@@ -189,37 +197,36 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             case Item.BOOLEAN:
             case Item.MULTIPLE_CHOICE:
                 progressLayout.addView(textQuestion);
-                RadioGroup group = new RadioGroup(this);
-                group.setOrientation(RadioGroup.VERTICAL);
-                group.setOnCheckedChangeListener(this);
+                currentGroup = new RadioGroup(this);
+                currentGroup.setOrientation(RadioGroup.VERTICAL);
+                currentGroup.setOnCheckedChangeListener(this);
+                groupChecked = -1;
                 for (int i = 0; i < options.size(); i++) {
                     Option o = options.get(i);
                     RadioButton button = new RadioButton(this);
                     button.setId(i);
                     button.setText(o.getLabel());
-                    group.addView(button);
+                    currentGroup.addView(button);
                 }
-                progressLayout.addView(group);
+                progressLayout.addView(currentGroup);
                 break;
             case Item.OPEN: {
                 progressLayout.addView(textQuestion);
-                EditText input = new EditText(this);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setHint(getString(R.string.open_hint));
-                input.setOnEditorActionListener(this);
-                input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
-                progressLayout.addView(input);
+                currentText = new EditText(this);
+                currentText.setInputType(InputType.TYPE_CLASS_TEXT);
+                currentText.setHint(getString(R.string.open_hint));
+                progressLayout.addView(currentText);
                 break;
             }
             case Item.CONDITIONAL: {
-                EditText input = new EditText(this);
+                currentText = new EditText(this);
                 //Set this field to allow signed decimals
-                input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL
+                currentText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL
                         | InputType.TYPE_NUMBER_FLAG_SIGNED);
-                input.setHint(getString(R.string.open_hint));
-                input.setOnEditorActionListener(this);
-                input.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
-                progressLayout.addView(input);
+                currentText.setHint(getString(R.string.open_hint));
+                currentText.setOnEditorActionListener(this);
+                currentText.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
+                progressLayout.addView(currentText);
                 break;
             }
             case Item.RECOMMENDATION:
@@ -230,6 +237,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 newQuestion(next);
                 break;
             default:
+                nextButton.setEnabled(false);
+                nextButton.setVisibility(View.INVISIBLE);
                 surveyEnded = true;
                 checkSubmittable();
                 break;
@@ -240,7 +249,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         boolean submittable =
                 (!editName.getText().toString().equals("") &&
                         spinnerLocation.getSelectedItemPosition() != 0 &&
-                        spinnerSubject.getSelectedItemPosition() != 0 &&
+//                        spinnerSubject.getSelectedItemPosition() != 0 &&
                         spinnerFlowchart.getSelectedItemPosition() != 0 &&
                         surveyEnded);
         submitItem.setVisible(submittable);
@@ -261,21 +270,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        Item item = path.isEmpty() ? report.getFlowchart().getFirst() : path.getLastOption()
-                .getNext();
-        Option checked = item.getOptions().get(i);
-        questionAnswered(checked);
-        for (View v : radioGroup.getTouchables()) {
-            v.setEnabled(false);
-        }
+        groupChecked = i;
     }
 
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-        EditText editInput = (EditText) textView;
-        String input = editInput.getText().toString();
-        editInput.setEnabled(false);
-        handleUserInput(input);
+        String input = currentText.getText().toString();
+        if(!input.equals("")) nextPressed();
         return true;
     }
 
@@ -294,9 +295,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     }
 
-    private void handleUserInput(String input) {
-        Item item = path.isEmpty() ? report.getFlowchart().getFirst() : path.getLastOption()
-                .getNext();
+    private void handleUserInput(Item item, String input) {
         String type = item.getType();
         if (type.equals(Item.OPEN)) {
             Option option = item.getOptions().get(0);
@@ -360,5 +359,29 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         //Finish the activity
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.survey_next_question_button :
+                nextPressed();
+        }
+    }
+
+    private void nextPressed() {
+        Item item = path.isEmpty() ? report.getFlowchart().getFirst() : path.getLastOption()
+                .getNext();
+        String type = item.getType();
+        if(type.equals(Item.CONDITIONAL) || type.equals(Item.OPEN)) {
+            String input = currentText.getText().toString();
+            handleUserInput(item, input);
+        }
+        else if(type.equals(Item.BOOLEAN) || type.equals(Item.MULTIPLE_CHOICE)) {
+            if(groupChecked != -1) {
+                Option checked = item.getOptions().get(groupChecked);
+                questionAnswered(checked);
+            }
+        }
     }
 }

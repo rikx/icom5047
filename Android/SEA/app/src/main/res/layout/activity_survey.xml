@@ -30,6 +30,7 @@
 			android:layout_height="wrap_content"
 			android:layout_gravity="center_horizontal"
 			android:gravity="center_horizontal"
+			android:visibility="gone"
 			/>
 
 		<Spinner
@@ -47,6 +48,16 @@
 			android:padding="16dp"
 			android:gravity="center_horizontal"
 			android:orientation="vertical"
+			/>
+
+		<Button
+			android:id="@+id/survey_next_question_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:drawableStart="@drawable/ic_action_accept"
+			android:text="@string/next_question"
+			android:visibility="gone"
 			/>
 
 		<EditText
