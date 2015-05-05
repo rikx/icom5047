@@ -74,7 +74,7 @@ $(document).ready(function(){
 
   
   $('#btn_add_specialty').on('click', function(){
-    $('#add_specialty_panel').show();
+    $('#add_specialty_panel').toggle();
     $('#specialty_panel').hide();
   });
 
