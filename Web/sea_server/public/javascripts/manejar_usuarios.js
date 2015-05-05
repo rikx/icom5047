@@ -200,10 +200,14 @@ $(document).ready(function(){
     var user_type = $('#btn_user_type_text').text();
     console.log("User is ");
     console.log($the_form);
-    console.log(new_usuario);
+    console.log(form_data);
     if(empty_field_check(form_data))
     {
       alert("Uno o mas campos estan vacios");
+    }
+    else if(new_usuario.usuario_password != new_usuario.usuario_password_confirm)
+    {
+      alert("Las contraseñas no son iguales.");
     }
     else
     {
@@ -299,6 +303,10 @@ $('#btn_edit').on('click', function(){
   if(empty_field_check(form_data))
   {
     alert("Uno o mas campos estan vacios");
+  }
+  else if(new_usuario.usuario_password != new_usuario.usuario_password_confirm)
+  {
+      alert("Las contraseñas no son iguales.");
   }
   else
   {
