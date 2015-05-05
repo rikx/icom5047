@@ -1,10 +1,7 @@
 package com.rener.sea;
 
 import android.app.Fragment;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
@@ -147,11 +145,7 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
                 flipToEditLayout();
                 break;
             case R.id.save_location_action:
-                getFields();
-                setFields();
-                flipToShowLayout();
-                //Notify the activity that data has changed
-                ((MainActivity) getActivity()).onDataSetChanged();
+                saveLocation();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -181,16 +175,16 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
         inflater.inflate(R.menu.location_actions, menu);
 
         //Highlight the save and edit buttons
-        int color = getResources().getColor(android.R.color.holo_green_light);
-        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.DARKEN);
-        MenuItem save = menu.findItem(R.id.save_person_action);
-        MenuItem edit = menu.findItem(R.id.edit_person_action);
-        Drawable d = save.getIcon();
-        d.setColorFilter(filter);
-        save.setIcon(d);
-        d = edit.getIcon();
-        d.setColorFilter(filter);
-        edit.setIcon(d);
+//        int color = getResources().getColor(android.R.color.holo_green_light);
+//        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.DARKEN);
+//        MenuItem save = menu.findItem(R.id.save_person_action);
+//        MenuItem edit = menu.findItem(R.id.edit_person_action);
+//        Drawable dSave = save.getIcon();
+//        dSave.setColorFilter(filter);
+//        save.setIcon(dSave);
+//        Drawable dEdit = edit.getIcon();
+//        dEdit.setColorFilter(filter);
+//        edit.setIcon(dEdit);
     }
 
     /**
@@ -268,10 +262,26 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
         options.findItem(R.id.edit_location_action).setVisible(true);
     }
 
+    private void saveLocation() {
+        if(getFields()) {
+            setFields();
+            flipToShowLayout();
+        }
+        else {
+            String message = "Duplicate data detected";
+            Context context = getActivity().getApplicationContext();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
+        //Notify the activity that data has changed
+        ((MainActivity) getActivity()).onDataSetChanged();
+    }
+
     /**
      * Gets the data from the views when it is edited
+     * @return true if all data was set correctly
      */
-    private void getFields() {
+    private boolean getFields() {
+        boolean allow = true;
 
         //Get the text from the fields
         String name = editName.getText().toString();
@@ -285,11 +295,13 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
 
         //Set the instance fields
         location.setName(name);
-        location.setLicense(license);
+        long licDupe = location.setLicense(license);
         location.setAddressLine(1, line1);
         location.setAddressLine(2, line2);
         location.setCity(city);
         location.setZipCode(zip);
+
+        return allow;
     }
 
     /**

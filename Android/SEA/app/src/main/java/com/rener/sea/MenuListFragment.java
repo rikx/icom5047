@@ -138,14 +138,25 @@ public class MenuListFragment extends ListFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * Notifies the list adapter that data has changed and it should update it's views
+     */
     public void notifyDataChanged() {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Gets the MenuListFragment type
+     * @return the MenuListFragment's type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Gets the current position in the this list fragment
+     * @return the current position
+     */
     public int getPosition() {
         return curPos;
     }

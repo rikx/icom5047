@@ -30,7 +30,6 @@ import java.util.List;
 
 /**
  * Represents an activity in which a survey can be completed and submitted as a report.
- * TODO: implement DBHelper into this class
  */
 public class SurveyActivity extends FragmentActivity implements AdapterView
         .OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
@@ -303,7 +302,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             Option option = item.getOptions().get(0);
             questionAnswered(option, input);
         } else if (type.equals(Item.CONDITIONAL)) {
-            //TODO: validate input
             double d = Double.valueOf(input);
             Option option = handleConditional(d, item.getOptions());
             questionAnswered(option, input);
@@ -359,7 +357,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         report.setName(name);
         String notes = editNotes.getText().toString();
         report.setNotes(notes);
-        //TODO: actually submit the report
 
         //Finish the activity
         startActivity(new Intent(this, MainActivity.class));

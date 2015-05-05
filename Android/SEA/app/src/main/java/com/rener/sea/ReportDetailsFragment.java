@@ -125,7 +125,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             //Set the interview element views
             TextView seqView = new TextView(getActivity());
             seqView.setText(sequence + ".");
-            //TODO: add the sequence view
             TextView questionView = new TextView(getActivity());
             questionView.setText(question);
             questionView.setPadding(4, 0, 0, 0);

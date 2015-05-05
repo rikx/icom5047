@@ -296,6 +296,9 @@ public class MainActivity extends FragmentActivity {
         startActivity(new Intent(this, SurveyActivity.class));
     }
 
+    /**
+     * Method that simply hides the software keyboard on the application context
+     */
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity
                 .INPUT_METHOD_SERVICE);

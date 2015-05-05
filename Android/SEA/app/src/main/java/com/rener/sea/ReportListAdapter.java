@@ -13,18 +13,15 @@ import java.util.Locale;
 public class ReportListAdapter extends ArrayAdapter<Report> {
 
     private Context context;
-    private List<Report> reports;
 
     public ReportListAdapter(Context context, List<Report> reports) {
         super(context, R.layout.report_list_item, reports);
         this.context = context;
-        this.reports = reports;
     }
 
-    //TODO: review this method
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = null;
+        View row;
         ReportHolder holder;
         Report report = getItem(position);
 

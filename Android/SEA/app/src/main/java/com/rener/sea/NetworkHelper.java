@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Performs network operations related to connectivity
+ */
 public class NetworkHelper {
 
     public static final String SEA_HOST_ADDRESS = "136.145.116.231";
@@ -17,11 +20,19 @@ public class NetworkHelper {
     boolean internetAvailable;
     private Context context;
 
+    /**
+     * COnstructor that receives a context to perform operations on
+     * @param context the application context
+     */
     public NetworkHelper(Context context) {
         this.context = context;
         internetAvailable = false;
     }
 
+    /**
+     * Checks whether there is an active network connection
+     * @return true if there is an active network connection
+     */
     public boolean isNetworkConnected() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -29,12 +40,20 @@ public class NetworkHelper {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
+    /**
+     * Checks whether an Internet connection is available by connection to Google
+     * @return true if a connection Google could be established
+     */
     public boolean isInternetAvailable() {
         boolean networkAvailable = isNetworkConnected();
         new CheckInternetTask().execute(TEST_URL);
         return networkAvailable ? internetAvailable : false;
     }
 
+    /**
+     * Checks whether the SEA server is available by establishing a connection to it
+     * @return true if a connection to the SEA server could be established
+     */
     public boolean isServerAvailable() {
         //TODO: establish connection to SEA
         return false;
