@@ -567,7 +567,7 @@ router.get('/appointments/:uid/:utype', function(req, res, next) {
  		} else if (user_type == 'agent'){
  			// select rows from report matching user_id
  			query_config = {
-	 			text: 'SELECT * FROM appointments WHERE creator_id = $1',
+	 			text: 'SELECT * FROM appointments WHERE maker_id = $1',
 	 			values: [user_id]
 	 		};
  		}

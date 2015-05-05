@@ -1,8 +1,8 @@
 jsPlumb.ready(function() {
 	$preguntas_list = $('#preguntas_list');
 	// stores current elements in the jsPlumb container
-	var elements_array = [];
-	var connections_array =[];
+	var elements_array = new Array();
+	var connections_array = new Array();
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
@@ -158,6 +158,9 @@ jsPlumb.ready(function() {
 	          alert("Cuestionario con este nombre y versión ya existe.");
 	        } else {
 	          alert("Cuestionario ha sido añadido al sistema.");
+	         	if(typeof data.redirect == 'string') {
+					    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+					  }
 	        }
 	      },
 	      error: function( xhr, status, errorThrown ) {
@@ -290,13 +293,26 @@ jsPlumb.ready(function() {
 
 
 			newState.dblclick(function(e) {
+				var this_id = $(this).attr('id');
+
 				jsPlumb.detachAllConnections($(this));
 				$(this).remove();
-				e.stopPropagation();
-
+				e.stopPropagation();	
+				
+				// find connections where this element is a source or target and 
+				// delete them
+				connections_array=connections_array.filter(isConnectionEndpoint);
+				function isConnectionEndpoint(connection){
+					if(connection.source == this_id){
+						return false; 
+					} else if(connection.target == this_id){
+						return false; 
+					} else {
+						return true;
+					}
+				}
 				// find element in array and delete it
 				var this_item;
-				var this_id = $(this).attr('id');
 				for(var d=0; d<elements_array.length;d++){
 					this_item = elements_array[d];
 					if(this_item.id == this_id){
@@ -310,15 +326,6 @@ jsPlumb.ready(function() {
 					}
 				}
 
-				// find connections where this element is a source or target and delete them
-				for(var c=0; c<connections_array.length;c++){
-					this_connection = connections_array[c];
-					if(this_connection.source == this_id){
-						connections_array.splice(c,1);
-					} else if(this_connection.target == this_id){
-						connections_array.splice(c,1);
-					}
-				}
 				console.log(elements_array);
 				console.log(connections_array);
 

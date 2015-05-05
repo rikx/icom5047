@@ -55,7 +55,7 @@ router.post('/login', function(req, res, next) {
 				    	var user_id = req.session.user_id = user.user_id;
 		  				var username = req.session.username = user.username;
 						  var user_type = req.session.user_type = user.type;
-						  res.send({redirect: '/users/'+user_type});
+						  res.send({redirect: '/users'});
 				    } else {
 				    	res.send({pass_found: false});
 				    }
