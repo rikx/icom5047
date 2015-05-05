@@ -9,7 +9,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentTop="true"
-		android:hint="@string/report_name"
+		android:text="@string/report_name"
 		/>
 
 	<TextView
@@ -18,14 +18,14 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
 		android:layout_below="@id/report_list_item_name"
-		android:hint="string/report_location"
+		android:text="string/report_location"
 		/>
 
 	<TextView
 		android:id="@+id/report_list_item_date"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:hint="@string/date"
+		android:text="@string/date"
 		android:layout_centerVertical="true"
 		android:layout_alignParentRight="true"
 		/>
