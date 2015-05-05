@@ -2193,6 +2193,9 @@ public final class DBHelper extends SQLiteOpenHelper {
                     try {
                         JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
                         long status = syncInf.getLong(DBSchema.SYNC_STATUS);
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
+                        String  local_data = syncInf.getString("local_data");
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
                         if(status == DBSchema.STATUS_SUCCESS){
                             setSyncDone();
                         }
