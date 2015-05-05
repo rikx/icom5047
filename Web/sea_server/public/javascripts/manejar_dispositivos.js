@@ -125,6 +125,12 @@ $(document).ready(function(){
     var form_data = $the_form.serializeArray();
     var new_dispositivo = ConverToJSON(form_data);
 
+    if(empty_field_check(form_data))
+    {
+      alert("Uno o mas campos estan vacios");
+    }
+    else
+    {
     // ajax call to post new device
     $.ajax({
       url: "http://localhost:3000/users/admin/dispositivos",
@@ -132,7 +138,6 @@ $(document).ready(function(){
       data: JSON.stringify(new_dispositivo),
       contentType: "application/json",
       dataType: "json",
-
       success: function(data) {
         if(data.exists){
           alert("Dispositivo con este numero de identificacion ya existe");
@@ -152,6 +157,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+  }
   });
 
   /* Open edit panel */
@@ -179,7 +185,12 @@ $(document).ready(function(){
     var $the_form = $('#form_manage_dispositivo');
     var form_data = $the_form.serializeArray();
     var new_dispositivo = ConverToJSON(form_data);
-
+    if(empty_field_check(form_data))
+    {
+      alert("Uno o mas campos estan vacios");
+    }
+    else
+    {
     // ajax call to update device
     $.ajax({
       url: "http://localhost:3000/users/admin/dispositivos/" + dispositivo_id,
@@ -201,6 +212,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+  }
   });
 
   /* Change asigned agente dropdown selected value */

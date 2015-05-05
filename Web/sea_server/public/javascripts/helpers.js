@@ -117,3 +117,15 @@
 		}
 		return time;
 	};
+
+	function empty_field_check(form_data)
+	{
+		for(i = 0; i < form_data.length; i++)
+		{
+			if(form_data[i].value == '')
+			{
+				return true;
+			}
+		}
+		return false;
+	}

@@ -199,8 +199,14 @@ $(document).ready(function(){
     var new_usuario = ConverToJSON(form_data);
     var user_type = $('#btn_user_type_text').text();
     console.log("User is ");
+    console.log($the_form);
     console.log(new_usuario);
-
+    if(empty_field_check(form_data))
+    {
+      alert("Uno o mas campos estan vacios");
+    }
+    else
+    {
     // ajax call to post new ganadero
     $.ajax({
       url: "http://localhost:3000/users/admin/usuarios",
@@ -208,7 +214,6 @@ $(document).ready(function(){
       data: JSON.stringify(new_usuario),
       contentType: "application/json",
       dataType: "json",
-
       success: function(data) {
         if(data.exists){
           alert("Usuario con este correo electrónico o teléfono ya existe");
@@ -227,6 +232,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+  }
   });
 
 /* Open edit panel */
@@ -284,19 +290,19 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
 
 /* PUTs edited ganadero information */
 $('#btn_edit').on('click', function(){
-
   var usuario_id = $(this).attr('data-id');
-
   // get form data and conver to json format
   var $the_form = $('#form_manage_usuario');
   var form_data = $the_form.serializeArray();
   var new_usuario = ConverToJSON(form_data);
 
-  console.log("editing the user");
-  console.log(new_usuario);
-
-
-  // ajax call to update ganadero
+  if(empty_field_check(form_data))
+  {
+    alert("Uno o mas campos estan vacios");
+  }
+  else
+  {
+     // ajax call to update ganadero
   $.ajax({
     url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
     method: "PUT",
@@ -316,6 +322,7 @@ $('#btn_edit').on('click', function(){
       console.dir( xhr );
     }
   });
+  }
 });
 
 //updates specialties associated to current user

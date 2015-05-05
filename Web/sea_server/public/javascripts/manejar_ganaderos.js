@@ -133,7 +133,12 @@ $(document).ready(function(){
     var $the_form = $('#form_manage_ganadero');
     var form_data = $the_form.serializeArray();
     var new_ganadero = ConverToJSON(form_data);
-
+    if(empty_field_check(form_data))
+    {
+      alert("Uno o mas campos estan vacios");
+    }
+    else
+    {
     // ajax call to post new ganadero
     $.ajax({
       url: "http://localhost:3000/users/admin/ganaderos",
@@ -160,6 +165,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+  }
   });
 
   /* Open edit panel */
@@ -190,7 +196,12 @@ $(document).ready(function(){
   var $the_form = $('#form_manage_ganadero');
   var form_data = $the_form.serializeArray();
   var new_ganadero = ConverToJSON(form_data);
-
+  if(empty_field_check(form_data))
+  {
+    alert("Uno o mas campos estan vacios");
+  }
+  else
+  {
   // ajax call to update ganadero
   $.ajax({
     url: "http://localhost:3000/users/admin/ganaderos/" + ganadero_id,
@@ -212,6 +223,7 @@ $(document).ready(function(){
       console.dir( xhr );
     }
   });
+}
 });
 
   /* DELETEs ganadero information */

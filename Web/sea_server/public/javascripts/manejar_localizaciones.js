@@ -453,6 +453,13 @@ $('#btn_submit').on('click', function(){
   var form_data = $the_form.serializeArray();
   var new_location = ConverToJSON(form_data);
 
+   if(empty_field_check(form_data))
+  {
+    alert("Uno o mas campos estan vacios");
+  }
+  else
+  {
+
   // ajax call to post new location
   $.ajax({
     url: "http://localhost:3000/users/admin/localizaciones",
@@ -479,6 +486,7 @@ $('#btn_submit').on('click', function(){
       console.dir( xhr );
     }
   });
+}
 });
 
 /* POSTs new category information */
@@ -563,6 +571,13 @@ $('#btn_edit').on('click', function(){
   var form_data = $the_form.serializeArray();
   var new_location = ConverToJSON(form_data);
 
+   if(empty_field_check(form_data))
+  {
+    alert("Uno o mas campos estan vacios");
+  }
+  else
+  {
+
   // ajax call to update location
   $.ajax({
     url: "http://localhost:3000/users/admin/localizaciones/" + location_id,
@@ -583,6 +598,7 @@ $('#btn_edit').on('click', function(){
       console.dir( xhr );
     }
   });
+}
 });
 
 /* Populates info panel with $this_location's information */
