@@ -9,7 +9,7 @@ var router = express.Router();
  */
 router.post('/', function(req, res, next){
 	var id_number = req.body.id_number;
-	
+	console.log(id_number);
 /*	var sync_type = req.body.sync_type;
 	if(sync_type == 'INITIAL'){
 		// hay pending device-agent assignment
@@ -56,8 +56,7 @@ router.post('/', function(req, res, next){
 		// Find agent through device id_number
 		client.query('SELECT user_id, users.type \
 									FROM devices natural join users \
-									WHERE id_number = $1 \
-									RETURNING user_id, type', [id_number], function(err, result){
+									WHERE id_number = $1', [id_number], function(err, result){
 	  	if(err) {
 	  		return console.error('error running query', err);
 	  	} else {
