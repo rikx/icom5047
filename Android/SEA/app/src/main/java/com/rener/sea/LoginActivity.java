@@ -21,6 +21,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     private String username = null;
     private String password = null;
     private DBHelper dbHelper;
+    private NetworkHelper networkHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         // the db is created when accessed for first time
         // when get writable or readable db
         dbHelper = new DBHelper(getApplicationContext());
+        networkHelper = new NetworkHelper(this);
+        networkHelper.isInternetAvailable();
         // TODO: fill db with dummy data eliminar despues
 //        dbHelper.deleteDB();
         if (dbHelper.getDummy())
@@ -117,6 +120,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     private boolean attemptLogin() {
         //Check login credentials
         Context context = getApplicationContext();
+        dbHelper.syncDB();
         if (dbHelper.authLogin(username, password)) {
             //Successful login
             saveLogin();

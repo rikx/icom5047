@@ -21,7 +21,7 @@ public class NetworkHelper {
     private Context context;
 
     /**
-     * COnstructor that receives a context to perform operations on
+     * Constructor that receives a context to perform operations on
      * @param context the application context
      */
     public NetworkHelper(Context context) {
