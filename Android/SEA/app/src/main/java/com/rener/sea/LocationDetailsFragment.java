@@ -268,7 +268,7 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
             flipToShowLayout();
         }
         else {
-            String message = "Duplicate data detected";
+            String message = getResources().getString(R.string.duplicate_license_message);
             Context context = getActivity().getApplicationContext();
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
@@ -295,7 +295,7 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
 
         //Set the instance fields
         location.setName(name);
-        long licDupe = location.setLicense(license);
+        allow = location.setLicense(license) != 0;
         location.setAddressLine(1, line1);
         location.setAddressLine(2, line2);
         location.setCity(city);
