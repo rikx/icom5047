@@ -372,19 +372,41 @@ jsPlumb.ready(function() {
 
 	jsPlumb.bind("connection", function(info, originalEvent) {
 		jsPlumb.ready(function() {
-			var this_connection;
 			info.connection.addOverlay( [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]);
 			info.connection.setPaintStyle( {lineWidth:10,strokeStyle:'rgb(204,255,204)'});
+			
 			if(trigger == "yes"){
+				var this_connection, source_type, target_type, mylabel;
+				var source_id = info.sourceId;
+				var target_id = info.targetId;
+
+				for(var y = 0; y<elements_array.length; y++){
+					this_item = elements_array[y];
+					if(this_item.id == source_id){
+						source_type = this_item.type;
+						console.log('source type:' +source_type);
+					} else if(this_item.id == target_id){
+						target_type = this_item.type;
+						console.log('target type:' +target_type);
+					}
+				}
+				if(source_type == 'START'){
+					mylabel = 'con-start';
+				} else if(source_type == 'OPEN'){
+					mylabel = 'con-open';
+				} else if(target_type == 'END'){
+					mylabel = 'con-end';
+				} else {
+					mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
+					info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: "connLabel"} ]);
+				}
+				
 				this_connection = {
 					source: info.sourceId,
 					target: info.targetId,
-					label: 'label'
+					label: mylabel
 				};
 
-				var mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
-				info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: "connLabel"} ]);
-				this_connection.label = mylabel;
 				connections_array.push(this_connection);
 			}
 		});
