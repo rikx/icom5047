@@ -193,10 +193,30 @@ public class DBSchema {
             USER_PERSON_ID + " INTEGER," +
             USER_SALT + " TEXT," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
+    public static final String TABLE_USERS_SPECIALIZATION = "users_specialization";
 
     public static final DateFormat FORMATDATE = new SimpleDateFormat("yyyy-MM-dd");
     public static final DateFormat FORMATTIME = new SimpleDateFormat("HH:mm:ss");
     public static final DateFormat FORMATALL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final String POST_DEVICE_ID = "id_number";
+    public static final String POST_SYNC_TYPE = "sync_type"; // FULL, INC
+    public static final String SYNC_FULL = "FULL";
+    public static final String SYNC_INC = "INC";
+    public static final String SYNC_STATUS = "sync_status";  // 1 = success, 0 = fail, -1 = error
+    public static final int STATUS_ERROR = -1;
+    public static final int STATUS_FAIL = 0;
+    public static final int STATUS_SUCCESS = 1;
+    public static final String POST_USER_ID = "user_id";
+    public static final String POST_USER_TYPE = "type";
+    public static final String USER_ADMIN = "admin";
+    public static final String USER_SPECIALIST = "specialist";
+    public static final String USER_AGENT = "agent";
+    public static final String POST_LOCAL_DATA = "data";
+    // from server
+    public static final String POST_SERVER_DATA = "new_data";// // return in JSON response object  {sync_status: 1, new_data: {db_data}}
+    public static final String POST_SYNC_INF = "sync_info";
 
+//    public static final String SYNC_URL = "http://136.145.116.231:3000/synchronization";
+    public static final String SYNC_URL = "http://136.145.116.231/mobile/test1.php";
 
 }
