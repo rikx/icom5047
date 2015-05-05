@@ -1,6 +1,10 @@
 package com.rener.sea;
 
 import android.app.Fragment;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -175,6 +179,18 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
         //super.onCreateOptionsMenu(menu, inflater);
         this.options = menu;
         inflater.inflate(R.menu.location_actions, menu);
+
+        //Highlight the save and edit buttons
+        int color = getResources().getColor(android.R.color.holo_green_light);
+        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.DARKEN);
+        MenuItem save = menu.findItem(R.id.save_person_action);
+        MenuItem edit = menu.findItem(R.id.edit_person_action);
+        Drawable d = save.getIcon();
+        d.setColorFilter(filter);
+        save.setIcon(d);
+        d = edit.getIcon();
+        d.setColorFilter(filter);
+        edit.setIcon(d);
     }
 
     /**
