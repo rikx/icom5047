@@ -187,6 +187,18 @@ public class User {
     }
 
     public String getType() {
-        return "";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String type = "";
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_TYPE},
+                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            if (!cursor.isNull(0))
+                type = cursor.getString(0);
+            db.close();
+            cursor.close();
+        }
+
+        return type;
     }
 }
