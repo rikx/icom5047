@@ -57,9 +57,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-        int action = keyEvent.getAction();
         int vid = textView.getId();
-        if (vid == R.id.field_password && action == 6) {
+        if (vid == R.id.field_password) {
             login();
             return true;
         }
@@ -76,7 +75,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         username = editUsername.getText().toString();
         password = editPassword.getText().toString();
         if (!attemptLogin()) {
-            editUsername.setText("");
+            //editUsername.setText("");
             editPassword.setText("");
         }
     }
