@@ -244,7 +244,7 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
             }
             String label = getResources().getString(R.string.agent_label);
             String assigned = location.getAgent().toString();
-            textAgent.setText(label + " " + assigned);
+            textAgent.setText(label + ": " + assigned);
         } else {
             textAgent.setText(R.string.no_agent);
         }

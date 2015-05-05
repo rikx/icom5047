@@ -348,7 +348,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void syncFailure() {
-        scheduleSync(5000);
+        //scheduleSync(5000);
     }
 
 }
