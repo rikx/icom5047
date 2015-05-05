@@ -309,44 +309,43 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private Option handleConditional(double input, List<Option> options) {
-        for (Option o : options) {
-            String label = o.getLabel();
-            if (label.matches(LESS_THAN_REGEX)) {
-                String str = label.substring(2, label.length());
-                double op = Double.valueOf(str);
-                if (input < op) return o;
-            } else if (label.matches(LESS_EQUAL_REGEX)) {
-                String str = label.substring(2, label.length());
-                double op = Double.valueOf(str);
-                if (input <= op) return o;
-            } else if (label.matches(GREATER_THAN_REGEX)) {
-                String str = label.substring(2, label.length());
-                double op = Double.valueOf(str);
-                if (input > op) return o;
-            } else if (label.matches(GREATER_EQUAL_REGEX)) {
-                String str = label.substring(2, label.length());
-                double op = Double.valueOf(str);
-                if (input >= op) return o;
-            } else if (label.matches(RANGE_REGEX)) {
-                char left = label.charAt(2);
-                char right = label.charAt(label.length() - 1);
-                int comma = label.indexOf(',');
-                String strA = label.substring(3, comma);
-                String strB = label.substring(comma + 1, label.length() - 1);
-                double opA = Double.valueOf(strA);
-                double opB = Double.valueOf(strB);
-                if (left == '(' && right == ')') {
-                    if (input > opA && input < opB) return o;
-                } else if (left == '[' && right == ')') {
-                    if (input >= opA && input < opB) return o;
-                } else if (left == '[' && right == ']') {
-                    if (input >= opA && input <= opB) return o;
-                } else if (left == '(' && right == ']') {
-                    if (input > opA && input >= opB) return o;
-                }
+        Option o = options.get(0);
+        String label = o.getLabel();
+        if (label.matches(LESS_THAN_REGEX)) {
+            String str = label.substring(2, label.length());
+            double op = Double.valueOf(str);
+            if (input < op) return o;
+        } else if (label.matches(LESS_EQUAL_REGEX)) {
+            String str = label.substring(2, label.length());
+            double op = Double.valueOf(str);
+            if (input <= op) return o;
+        } else if (label.matches(GREATER_THAN_REGEX)) {
+            String str = label.substring(2, label.length());
+            double op = Double.valueOf(str);
+            if (input > op) return o;
+        } else if (label.matches(GREATER_EQUAL_REGEX)) {
+            String str = label.substring(2, label.length());
+            double op = Double.valueOf(str);
+            if (input >= op) return o;
+        } else if (label.matches(RANGE_REGEX)) {
+            char left = label.charAt(2);
+            char right = label.charAt(label.length() - 1);
+            int comma = label.indexOf(',');
+            String strA = label.substring(3, comma);
+            String strB = label.substring(comma + 1, label.length() - 1);
+            double opA = Double.valueOf(strA);
+            double opB = Double.valueOf(strB);
+            if (left == '(' && right == ')') {
+                if (input > opA && input < opB) return o;
+            } else if (left == '[' && right == ')') {
+                if (input >= opA && input < opB) return o;
+            } else if (left == '[' && right == ']') {
+                if (input >= opA && input <= opB) return o;
+            } else if (left == '(' && right == ']') {
+                if (input > opA && input >= opB) return o;
             }
         }
-        return null;
+        return options.get(1);
     }
 
     private void submit() {
