@@ -3,6 +3,7 @@ package com.rener.sea;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * A class representing a location
@@ -295,9 +296,11 @@ public class Location implements Comparable<Location> {
         ContentValues values = new ContentValues();
         values.put(DBSchema.LOCATION_LICENSE, String.valueOf(license));
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
-        long id = db.update(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)});
+        long id = -1;
+            id = db.updateWithOnConflict(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)},SQLiteDatabase.CONFLICT_IGNORE);
+
         db.close();
-        return id;// if -1 error during update
+        return id;// if conflict during Update return 0 if error during update return -1
     }
 
     public String toString() {
