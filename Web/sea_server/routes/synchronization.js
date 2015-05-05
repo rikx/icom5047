@@ -3,8 +3,32 @@ var router = express.Router();
 
 /* Get all data for synchronization
  * http://136.145.116.231:/synchronization
+ * TODO modify queries to do comparison last_modified (from each table) > last_sync (from device table) 
+ * TODO: add asset_id column to device
+ * TODO change last_sync to epoch and add last_modified columns (also epoch)
  */
 router.post('/', function(req, res, next){
+/*	var id_number = req.body.id_number;
+	var sync_type = req.body.sync_type;
+
+	if(sync_type == 'INITIAL'){
+		// hay pending device-agent assignment
+		// return JSON response object  {sync_status: 1}
+		// 1 = success, 0 = fail, -1 = error
+
+		// get current time from new Date() to use as sync_time
+	} else if (sync_type == 'FULL'){
+		// return user data
+		// include JSON response {sync_status: 1, data: {db_data}}
+	}
+	if(sync_type == 'INC'){
+		var user_id = req.body.user_id;
+		var user_type = req.body.type;
+		var device_data = req.body.data;
+
+		// return in JSON response object  {sync_status: 1, new_data: {db_data where last_modified (from each table) > last_sync (from device table) }}
+	}*/
+
 	var user_id = req.body.user_id;
 	var user_type = req.body.type;
 

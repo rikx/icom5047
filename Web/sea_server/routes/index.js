@@ -87,7 +87,8 @@ router.post('/report', function(req, res, next) {
  	if(!req.body.hasOwnProperty('take_survey_user_id')
  		|| !req.body.hasOwnProperty('take_survey_location_id')
  		|| !req.body.hasOwnProperty('take_survey_id')
- 		|| !req.body.hasOwnProperty('take_survey_date')) {
+ 		|| !req.body.hasOwnProperty('take_survey_date')
+ 		|| !req.body.hasOwnProperty('report_name')) {
  		res.statusCode = 400;
  		return res.send('Error: Missing fields for post report.');
 	} else {
@@ -97,10 +98,10 @@ router.post('/report', function(req, res, next) {
 		  	return console.error('error fetching client from pool', err);
 			}
 			// insert new report
-		  client.query('INSERT into report (creator_id, location_id, flowchart_id, date_filed) \
-										VALUES ($1, $2, $3, $4) \
+		  client.query('INSERT into report (creator_id, location_id, flowchart_id, date_filed, name) \
+										VALUES ($1, $2, $3, $4, $5) \
 										RETURNING report_id', 
-										[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date], function(err, result) {
+										[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date, req.body.report_name], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		    done();
 	    	if(err) {

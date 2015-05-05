@@ -93,6 +93,10 @@ $(document).ready(function(){
 		var location_input = $('#take_survey_location_name').val();
 		// validate location input 
 		if(valid_input(location_input, locations_array)){
+			if($('#take_survey_report_name').val() == ''){
+				alert('Por favor ingrese un nombre para el reporte que se va a crear.');
+				return;
+			}
 			// disable location input 
 			$('#take_survey_location_name').attr('disabled', true);
 
@@ -101,6 +105,7 @@ $(document).ready(function(){
 	    var form_data = $the_form.serializeArray();
 	    var new_cuestionario = ConverToJSON(form_data);
 
+	    new_cuestionario.report_name = $('#take_survey_report_name').val();
 	    // ajax call to post new report
 	    $.ajax({
 	      url: "http://localhost:3000/report",
