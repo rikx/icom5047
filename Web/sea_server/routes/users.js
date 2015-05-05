@@ -60,9 +60,23 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
+ 		var query_config;
+ 		var user_id = req.session.user_id;
+ 		var user_type = req.session.user_type;
+
+ 		if(user_type == 'admin' || user_type == 'specialist'){
+ 			query_config = {
+ 				text: 'SELECT location_id, name AS location_name FROM location'
+ 			}
+ 		} else if(user_type	== 'agent'){
+ 			 query_config = {
+ 				text: "SELECT location_id, name AS location_name FROM location WHERE agent_id = $1",
+ 				values: [user_id]
+ 			}
+ 		}
+
 		// query for all locations data
-		client.query("SELECT location_id, name AS location_name \
-			FROM location", function(err, result){
+		client.query(query_config, function(err, result){
 				if(err) {
 					return console.error('error running query', err);
 				} else {
