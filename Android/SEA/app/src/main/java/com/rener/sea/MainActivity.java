@@ -10,6 +10,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,9 +21,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +38,7 @@ public class MainActivity extends FragmentActivity {
     private Fragment leftFragment;
     private Fragment rightFragment;
     private BroadcastReceiver networkReceiver;
+    private Menu options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +103,7 @@ public class MainActivity extends FragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
+        this.options = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -106,28 +112,37 @@ public class MainActivity extends FragmentActivity {
         //Determine which Action Bar option was selected
         switch (item.getItemId()) {
             case R.id.reports:
-                showReportsList();
+                toggleTab(item);
+                showReportsList() ;
                 break;
             case R.id.new_report_action:
-                newReport();
+                newReport() ;
                 break;
             case R.id.people:
-                showPeopleList();
+                toggleTab(item);
+                showPeopleList() ;
                 break;
             case R.id.locations:
-                showLocationsList();
+                toggleTab(item);
+                showLocationsList() ;
                 break;
-            case R.id.action_logout:
+            case R.id.action_logout :
                 logout();
                 break;
-            case R.id.action_settings:
+            case R.id.action_settings :
                 showSettings();
                 break;
             case R.id.sync :
                 sync();
                 break;
+            default :
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        return true;
+    }
+
+    private void toggleTab(MenuItem item) {
+        //TODO: highlight navigation buttons
     }
 
     private void showReportsList() {
