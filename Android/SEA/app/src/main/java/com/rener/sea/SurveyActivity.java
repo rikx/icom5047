@@ -66,9 +66,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         progressLayout = (LinearLayout) findViewById(R.id.survey_progress_layout);
 
-	    dbHelper = new DBHelper(getApplicationContext());
+        dbHelper = new DBHelper(getApplicationContext());
         report = new Report(dbHelper, setCreator());
-	    setData();
+        setData();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                     report.setSubject(subject);
                     break;
                 case R.id.survey_flowchart_spinner:
-	                spinnerFlowchart.setEnabled(false);
+                    spinnerFlowchart.setEnabled(false);
                     Flowchart flowchart = (Flowchart) spinnerFlowchart.getSelectedItem();
                     report.setFlowchart(flowchart);
                     flowchartSelected(flowchart);
@@ -136,7 +136,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         List<Location> locations = new ArrayList<>(dbHelper.getAllLocations());
         List<Person> people = new ArrayList<>(dbHelper.getAllPersons());
         List<Flowchart> flowcharts = new ArrayList<>(dbHelper.getAllFlowcharts());
-	    Log.i(this.toString(), "populate flowchart spinner:"+flowcharts.toString());
+        Log.i(this.toString(), "populate flowchart spinner:" + flowcharts.toString());
         Collections.sort(people);
         Collections.sort(flowcharts);
         Collections.sort(locations);
@@ -165,16 +165,16 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     private User setCreator() {
         SharedPreferences sharedPref = this.getSharedPreferences(
-		        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
         User creator = dbHelper.findUserByUsername(sUsername);
-	    Log.i(this.toString(), "has creator " + creator.getUsername());
+        Log.i(this.toString(), "has creator " + creator.getUsername());
         return creator;
     }
 
     private void flowchartSelected(Flowchart flowchart) {
         path = new Path(report.getId(), dbHelper);
-	    report.setPath(path);
+        report.setPath(path);
         progressLayout.removeAllViews();
         newQuestion(flowchart.getFirst());
     }
@@ -183,8 +183,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         List<Option> options = question.getOptions();
         //Display question and it's options
         TextView textQuestion = new TextView(this);
-        int sequence = path.size()+1;
-        textQuestion.setText(sequence+". "+question.getLabel());
+        int sequence = path.size() + 1;
+        textQuestion.setText(sequence + ". " + question.getLabel());
         String type = question.getType();
         switch (type) {
             case Item.BOOLEAN:
@@ -226,7 +226,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             case Item.RECOMMENDATION:
                 progressLayout.addView(textQuestion);
                 Option only = question.getOptions().get(0);
-	            path.addEntry(only);
+                path.addEntry(only);
                 Item next = only.getNext();
                 newQuestion(next);
                 break;
@@ -263,7 +263,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         Item item = path.isEmpty() ? report.getFlowchart().getFirst() : path.getLastOption()
-		        .getNext();
+                .getNext();
         Option checked = item.getOptions().get(i);
         questionAnswered(checked);
         for (View v : radioGroup.getTouchables()) {

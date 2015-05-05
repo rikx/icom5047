@@ -24,7 +24,7 @@ public class Report implements Comparable<Report> {
     private Date date;
     private String type = "";
     private Path path;
-	private Appointment appointment = null;
+    private Appointment appointment = null;
     private DBHelper dbHelper = null;
 
     public Report(long id, DBHelper db) {
@@ -41,16 +41,15 @@ public class Report implements Comparable<Report> {
             this.id = create(creator_id, location_id, subject_id, flowchart_id, note, date);
         }
     }
+
     /**
      * Constructs a new Report with no ID and some default value
      * Used to represent a Report that has been created but hasn't been assigned a unique ID
      */
     public Report(DBHelper db, User creator) {
         this.dbHelper = db;
-        this.id = create(creator.getId(),-1,-1,-1,"",Calendar.getInstance());
+        this.id = create(creator.getId(), -1, -1, -1, "", Calendar.getInstance());
     }
-
-
 
 
     private long create(long creator_id, long location_id, long subject_id, long flowchart_id, String note, Calendar date) {
@@ -91,7 +90,7 @@ public class Report implements Comparable<Report> {
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 this.id = cursor.getLong(0);
             db.close();
             cursor.close();
@@ -100,8 +99,6 @@ public class Report implements Comparable<Report> {
         return false;
 
     }
-
-
 
 
     public long getId() {
@@ -115,7 +112,7 @@ public class Report implements Comparable<Report> {
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 name = cursor.getString(0);
             db.close();
             cursor.close();
@@ -127,6 +124,7 @@ public class Report implements Comparable<Report> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_NAME, name);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -139,18 +137,19 @@ public class Report implements Comparable<Report> {
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 creator = cursor.getLong(0);
             db.close();
             cursor.close();
         }
-        return new User(creator,dbHelper);
+        return new User(creator, dbHelper);
     }
 
     public long setCreator(User creator) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_CREATOR_ID, creator.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -163,18 +162,19 @@ public class Report implements Comparable<Report> {
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 location = cursor.getLong(0);
             db.close();
             cursor.close();
         }
-        return new Location(location,dbHelper);
+        return new Location(location, dbHelper);
     }
 
     public long setLocation(Location location) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_LOCATION_ID, location.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -187,18 +187,19 @@ public class Report implements Comparable<Report> {
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 subject = cursor.getLong(0);
             db.close();
             cursor.close();
         }
-        return new Person(subject,dbHelper);
+        return new Person(subject, dbHelper);
     }
 
     public long setSubject(Person subject) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_SUBJECT_ID, subject.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -211,18 +212,19 @@ public class Report implements Comparable<Report> {
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 flowchart = cursor.getLong(0);
             db.close();
             cursor.close();
         }
-        return new Flowchart(flowchart,dbHelper);
+        return new Flowchart(flowchart, dbHelper);
     }
 
     public long setFlowchart(Flowchart flowchart) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_FLOWCHART_ID, flowchart.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -235,7 +237,7 @@ public class Report implements Comparable<Report> {
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 notes = cursor.getString(0);
             db.close();
             cursor.close();
@@ -247,6 +249,7 @@ public class Report implements Comparable<Report> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_NOTE, notes);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -255,12 +258,12 @@ public class Report implements Comparable<Report> {
     public Calendar getDate() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 //        Date date = new Date(0);
-        Calendar cal  = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_DATE_FILED},
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 try {
                     cal.setTime(DBSchema.FORMATDATE.parse(cursor.getString(0)));
                 } catch (ParseException e) {
@@ -279,15 +282,18 @@ public class Report implements Comparable<Report> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_DATE_FILED, String.valueOf(DBSchema.FORMATDATE.format(date.getTime())));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
     }
+
     //TODO: revisar do to calendar change not tested
     public String getDateString(String format, Locale locale) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
         return sdf.format(getDate().getTime());
     }
+
     //TODO: type dos not exist in the web db
     public String getType() {
 
@@ -318,33 +324,36 @@ public class Report implements Comparable<Report> {
         this.type = type;
         return -1;
     }
+
     // this method is maybe out of area
-	public Appointment getAppointment() {
+    public Appointment getAppointment() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         long appointment = -1;
         Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_ID},
                 DBSchema.APPOINTMENT_REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 appointment = cursor.getLong(0);
 
             db.close();
             cursor.close();
         }
-        return appointment != -1 ? new Appointment(appointment,dbHelper) : null;
-	}
+        return appointment != -1 ? new Appointment(appointment, dbHelper) : null;
+    }
+
     // this method is maybe out of area
-	public long setAppointment(Appointment appointment) {
+    public long setAppointment(Appointment appointment) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.APPOINTMENT_REPORT_ID, String.valueOf(id));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_APPOINTMENTS, values, DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(appointment.getId())});
         db.close();
         return id;// if -1 error during update
-	}
+    }
 
-	public void addToPath(Option option, String data) {
+    public void addToPath(Option option, String data) {
         Item item = findOptionParent(option);
         path.addEntry(option, data);
     }
@@ -353,7 +362,8 @@ public class Report implements Comparable<Report> {
         Item item = findOptionParent(option);
         path.addEntry(option);
     }
-//    public Stack<PathEntry> findPath(){
+
+    //    public Stack<PathEntry> findPath(){
 //        SQLiteDatabase db = dbHelper.getWritableDatabase();
 //        Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_OPTION_ID},
 //                DBSchema.PATH_REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, DBSchema.PATH_OPTION_ID + " DESC", null);
@@ -373,21 +383,22 @@ public class Report implements Comparable<Report> {
 //        return path;
 //    }
     public Path getPath() {
-        Path path = new Path(id,dbHelper);
+        Path path = new Path(id, dbHelper);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{DBSchema.PATH_OPTION_ID},
                 DBSchema.PATH_REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, DBSchema.PATH_SEQUENCE + " ASC", null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                if(!cursor.isNull(0))
-                    path.addEntry(new Option(cursor.getLong(0),dbHelper));
+                if (!cursor.isNull(0))
+                    path.addEntry(new Option(cursor.getLong(0), dbHelper));
             }
         }
         return path;
 
 
     }
+
     // do not modify the db
     public void setPath(Path path) {
         this.path = path;

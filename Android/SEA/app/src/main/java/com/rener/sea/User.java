@@ -69,8 +69,8 @@ public class User {
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            this.user_id = cursor.getLong(0);
+            if (!cursor.isNull(0))
+                this.user_id = cursor.getLong(0);
             db.close();
             cursor.close();
             return true;
@@ -92,8 +92,8 @@ public class User {
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            username = cursor.getString(0);
+            if (!cursor.isNull(0))
+                username = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -105,6 +105,7 @@ public class User {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.USER_USERNAME, String.valueOf(username));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_USERS, values, DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)});
         db.close();
         return id;// if -1 error during update
@@ -117,8 +118,8 @@ public class User {
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            pass = cursor.getString(0);
+            if (!cursor.isNull(0))
+                pass = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -131,29 +132,30 @@ public class User {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.USER_PASSHASH, String.valueOf(password));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_USERS, values, DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)});
         db.close();
         return id;// if -1 error during update
 
     }
 
-	public boolean authenticate(String password) {
-		boolean auth = false;
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		String hash = "";
-		Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PASSHASH},
-				DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
-		if ((cursor != null) && (cursor.getCount() > 0)) {
-			cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            hash = cursor.getString(0);
-			db.close();
-			cursor.close();
-		}
-		//TODO: hashing algorithm
-		if(hash != null) auth = password.equals(hash) ? true : false;
-		return auth;
-	}
+    public boolean authenticate(String password) {
+        boolean auth = false;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String hash = "";
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_PASSHASH},
+                DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            if (!cursor.isNull(0))
+                hash = cursor.getString(0);
+            db.close();
+            cursor.close();
+        }
+        //TODO: hashing algorithm
+        if (hash != null) auth = password.equals(hash) ? true : false;
+        return auth;
+    }
 
     public Person getPerson() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -162,8 +164,8 @@ public class User {
                 DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            personID = cursor.getLong(0);
+            if (!cursor.isNull(0))
+                personID = cursor.getLong(0);
             db.close();
             cursor.close();
         }
@@ -178,6 +180,7 @@ public class User {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.USER_PERSON_ID, person.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_USERS, values, DBSchema.USER_ID + "=?", new String[]{String.valueOf(user_id)});
         db.close();
         return id;// if -1 error during update

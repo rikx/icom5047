@@ -20,6 +20,7 @@ public class Path implements Iterable<PathEntry> {
     public Path() {
         this.path = new Stack<>();
     }
+
     public Path(long report_id, DBHelper db) {
         this.path = new Stack<>();
         this.reportID = report_id;
@@ -45,7 +46,7 @@ public class Path implements Iterable<PathEntry> {
      * @param data   the associated data
      */
     public void addEntry(Option option, String data) {
-        path.push(new PathEntry(reportID, option.getId(),data, path.size(), dbHelper));
+        path.push(new PathEntry(reportID, option.getId(), data, path.size(), dbHelper));
     }
 
     /**
@@ -86,13 +87,13 @@ public class Path implements Iterable<PathEntry> {
         return path.peek().getOption().getParent();
     }
 
-	public Option getLastOption() {
-		return path.peek().getOption();
-	}
+    public Option getLastOption() {
+        return path.peek().getOption();
+    }
 
-	public boolean isEmpty() {
-		return path.isEmpty();
-	}
+    public boolean isEmpty() {
+        return path.isEmpty();
+    }
 
     @Override
     public Iterator<PathEntry> iterator() {

@@ -10,21 +10,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,14 +33,15 @@ public final class DBHelper extends SQLiteOpenHelper {
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
     private static int DATABASE_VERSION = 1;
+    //    public static int SYNC_STATUS = 0;
+    private static JSONObject dataSync = new JSONObject();
     private boolean dummyDB = false;
     private Context context;
-    public static int SYNC_STATUS = 0;
-    private static JSONObject dataSync = new JSONObject();
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        Log.i(this.toString(), "instanced "+ context.toString());
+        Log.i(this.toString(), "instanced " + context.toString());
     }
 
     @Override
@@ -87,6 +86,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         DATABASE_VERSION = newVersion;
         onCreate(db);
     }
+
     // TODO:
     public void deleteDB() {
         SQLiteDatabase db = getWritableDatabase();
@@ -127,19 +127,20 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 
     }
+
     public List<Person> getAllPersons() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
                 null, null, null, null, null, null);
         ArrayList<Person> persons;
         persons = new ArrayList<>();
-        Log.i(this.toString(), "Cursor "+ cursor);
-        Log.i(this.toString(), "Cursor count "+ cursor.getCount());
+        Log.i(this.toString(), "Cursor " + cursor);
+        Log.i(this.toString(), "Cursor count " + cursor.getCount());
         if ((cursor != null) && (cursor.getCount() > 0)) {
             Log.i(this.toString(), "Inside if");
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 persons.add(new Person(cursor.getLong(0), this));
-                Log.i(this.toString(), "People created "+ cursor.getLong(0));
+                Log.i(this.toString(), "People created " + cursor.getLong(0));
             }
 
             db.close();
@@ -150,6 +151,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         return persons;
 
     }
+
     public List<Flowchart> getAllFlowcharts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_ID},
@@ -169,6 +171,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         return flowcharts;
 
     }
+
     public List<Location> getAllLocations() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID},
@@ -188,6 +191,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         return location;
 
     }
+
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
@@ -255,16 +259,16 @@ public final class DBHelper extends SQLiteOpenHelper {
         return options;
     }
 
-    public User findUserByUsername(String username){
+    public User findUserByUsername(String username) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor= db.query(DBSchema.TABLE_USERS,new String[] { DBSchema.USER_ID,
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID,
                         DBSchema.USER_USERNAME,
                         DBSchema.USER_PASSHASH,
                         DBSchema.USER_PERSON_ID,
                         DBSchema.USER_SALT
                 },
-                DBSchema.USER_USERNAME + "=?", new String[] {String.valueOf(username)},null,null,null,null);
-        if((cursor != null) && (cursor.getCount() > 0)) {
+                DBSchema.USER_USERNAME + "=?", new String[]{String.valueOf(username)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             User user = new User(cursor.getLong(0), this);
             db.close();
@@ -272,9 +276,10 @@ public final class DBHelper extends SQLiteOpenHelper {
 
             return user;
         }
-        return new User(-1,this);
+        return new User(-1, this);
 
     }
+
     //TODO: implement salting
     public boolean authLogin(String username, String password) {
         User user = findUserByUsername(username);
@@ -282,12 +287,12 @@ public final class DBHelper extends SQLiteOpenHelper {
         return user.getId() == -1 ? false : true;
     }
 
-    public Person findPersonById(long id){
+    public Person findPersonById(long id) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor= db.query(DBSchema.TABLE_PERSON,new String[] {DBSchema.PERSON_ID,
+        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID,
                 },
-                DBSchema.PERSON_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
-        if((cursor != null) && (cursor.getCount() > 0)) {
+                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             Person person = new Person(cursor.getLong(0), this);
             db.close();
@@ -295,37 +300,37 @@ public final class DBHelper extends SQLiteOpenHelper {
 
             return person;
         }
-        return new Person(-1,this);
+        return new Person(-1, this);
     }
 
-    public Location findLocationById(long id){
+    public Location findLocationById(long id) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor= db.query(DBSchema.TABLE_LOCATION,new String[] {DBSchema.LOCATION_ID
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID
                 },
-                DBSchema.LOCATION_ID + "=?", new String[] {String.valueOf(id)},null,null,null,null);
-        if((cursor != null) && (cursor.getCount() > 0)) {
+                DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             Location location = new Location(cursor.getLong(0), this);
             db.close();
             cursor.close();
             return location;
         }
-        return new Location(-1,this);
+        return new Location(-1, this);
     }
 
-    public boolean fillDB(){
-        Person person = new Person(1,"Temporal",null,"User",null,"temporal.user@rener.com",null,
+    public boolean fillDB() {
+        Person person = new Person(1, "Temporal", null, "User", null, "temporal.user@rener.com", null,
                 this);
-        new Person(2,"Nelson",null,"Reyes",null,"nelson.reyes@upr.edu",null,this);
-        new Person(3,"Enrique",null,"Rodriguez",null,"enrique.rodriguez2@upr.edu",null,this);
-        new Person(4,"Ricardo",null,"Fuentes",null,"ricardo.fuentes@upr.edu",null,this);
-        new Person(5,"Ramón",null,"Saldaña",null,"ramon.saldana@upr.edu",null,this);
+        new Person(2, "Nelson", null, "Reyes", null, "nelson.reyes@upr.edu", null, this);
+        new Person(3, "Enrique", null, "Rodriguez", null, "enrique.rodriguez2@upr.edu", null, this);
+        new Person(4, "Ricardo", null, "Fuentes", null, "ricardo.fuentes@upr.edu", null, this);
+        new Person(5, "Ramón", null, "Saldaña", null, "ramon.saldana@upr.edu", null, this);
 
-        User blank = new User(1,1,"","",this);
-        User nelson = new User(2,2,"nelson.reyes","iamnelson",this);
-        User enrique = new User(3,3,"enrique.rodriguez2","iamenrique",this);
-        User rick = new User(4,4,"ricardo.fuentes","iamricardo",this);
-        User ramon = new User(5,5,"ramon.saldana","iamramon",this);
+        User blank = new User(1, 1, "", "", this);
+        User nelson = new User(2, 2, "nelson.reyes", "iamnelson", this);
+        User enrique = new User(3, 3, "enrique.rodriguez2", "iamenrique", this);
+        User rick = new User(4, 4, "ricardo.fuentes", "iamricardo", this);
+        User ramon = new User(5, 5, "ramon.saldana", "iamramon", this);
 
         //Dummy flowchart
         Flowchart fc = new Flowchart(1, 1, 10, 3, "Flowchart Test", "0", this);
@@ -341,7 +346,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         new Item(7, fc.getId(), "Recommendation 3", Item.RECOMMENDATION, this);
         new Item(8, fc.getId(), "Recommendation 4", Item.RECOMMENDATION, this);
         new Item(9, fc.getId(), "Recommendation 5", Item.RECOMMENDATION, this);
-        new Item(10,fc.getId(), "End of flowchart test", Item.END, this);
+        new Item(10, fc.getId(), "End of flowchart test", Item.END, this);
 
         //Dummy options
         Option o1 = new Option(1, 1, 2, "Yes", this);
@@ -367,7 +372,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         values.put(DBSchema.ADDRESS_CITY, "Mayagüez");
         values.put(DBSchema.ADDRESS_ZIPCODE, 682);
         long id = db.insert(DBSchema.TABLE_ADDRESS, null, values);
-        Location loc =new Location(1,"El platanal", id, 1, 3,"jhagfljfdsg",2,this);
+        Location loc = new Location(1, "El platanal", id, 1, 3, "jhagfljfdsg", 2, this);
 
         //Dummy report
         Report report = new Report(this, nelson);
@@ -385,7 +390,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean getDummy(){
+    public boolean getDummy() {
         // marron power
         SQLiteDatabase db = getReadableDatabase();
 //        db.execSQL("select * from users where user_id = -1");
@@ -393,18 +398,18 @@ public final class DBHelper extends SQLiteOpenHelper {
         return dummyDB;
     }
 
-    private long setItem(JSONArray data){
+    private long setItem(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.ITEM_ID))
+                if (!item.isNull(DBSchema.ITEM_ID))
                     values.put(DBSchema.ITEM_ID, item.getLong(DBSchema.ITEM_ID));
-                if(!item.isNull(DBSchema.ITEM_LABEL))
+                if (!item.isNull(DBSchema.ITEM_LABEL))
                     values.put(DBSchema.ITEM_LABEL, item.getString(DBSchema.ITEM_LABEL));
-                if(!item.isNull(DBSchema.ITEM_TYPE))
+                if (!item.isNull(DBSchema.ITEM_TYPE))
                     values.put(DBSchema.ITEM_TYPE, item.getString(DBSchema.ITEM_TYPE));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -416,18 +421,19 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setPath(JSONArray data){
+
+    private long setPath(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.PATH_REPORT_ID))
+                if (!item.isNull(DBSchema.PATH_REPORT_ID))
                     values.put(DBSchema.PATH_REPORT_ID, item.getLong(DBSchema.PATH_REPORT_ID));
-                if(!item.isNull(DBSchema.PATH_OPTION_ID))
+                if (!item.isNull(DBSchema.PATH_OPTION_ID))
                     values.put(DBSchema.PATH_OPTION_ID, item.getLong(DBSchema.PATH_OPTION_ID));
-                if(!item.isNull(DBSchema.PATH_DATA))
+                if (!item.isNull(DBSchema.PATH_DATA))
                     values.put(DBSchema.PATH_DATA, item.getString(DBSchema.PATH_DATA));
 //           if(!item.isNull(DBSchema.PATH_SEQUENCE))
 //                values.put(DBSchema.PATH_SEQUENCE, item.getLong(DBSchema.PATH_SEQUENCE));
@@ -440,8 +446,9 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
+
     //copy paste full
-    private long setUsers_specialization(JSONArray data){
+    private long setUsers_specialization(JSONArray data) {
 //        SQLiteDatabase db = this.getWritableDatabase();
 //        int i = -1;
 //        try {
@@ -461,20 +468,21 @@ public final class DBHelper extends SQLiteOpenHelper {
 //        db.close();
         return -1;
     }
-    private long setOption(JSONArray data){
+
+    private long setOption(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.OPTION_ID))
+                if (!item.isNull(DBSchema.OPTION_ID))
                     values.put(DBSchema.OPTION_ID, item.getLong(DBSchema.OPTION_ID));
-                if(!item.isNull(DBSchema.OPTION_PARENT_ID))
+                if (!item.isNull(DBSchema.OPTION_PARENT_ID))
                     values.put(DBSchema.OPTION_PARENT_ID, item.getLong(DBSchema.OPTION_PARENT_ID));
-                if(!item.isNull(DBSchema.OPTION_NEXT_ID))
+                if (!item.isNull(DBSchema.OPTION_NEXT_ID))
                     values.put(DBSchema.OPTION_NEXT_ID, item.getLong(DBSchema.OPTION_NEXT_ID));
-                if(!item.isNull(DBSchema.OPTION_LABEL))
+                if (!item.isNull(DBSchema.OPTION_LABEL))
                     values.put(DBSchema.OPTION_LABEL, item.getString(DBSchema.OPTION_LABEL));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -486,16 +494,17 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setSpecialization(JSONArray data){
+
+    private long setSpecialization(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.SPECIALIZATION_ID))
+                if (!item.isNull(DBSchema.SPECIALIZATION_ID))
                     values.put(DBSchema.SPECIALIZATION_ID, item.getLong(DBSchema.SPECIALIZATION_ID));
-                if(!item.isNull(DBSchema.SPECIALIZATION_NAME))
+                if (!item.isNull(DBSchema.SPECIALIZATION_NAME))
                     values.put(DBSchema.SPECIALIZATION_NAME, item.getString(DBSchema.SPECIALIZATION_NAME));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
                 db.insertWithOnConflict(DBSchema.TABLE_SPECIALIZATION, null, values, 5);
@@ -507,29 +516,30 @@ public final class DBHelper extends SQLiteOpenHelper {
         return i;
 
     }
-    private long setPerson(JSONArray data){
+
+    private long setPerson(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.PERSON_ID))
+                if (!item.isNull(DBSchema.PERSON_ID))
                     values.put(DBSchema.PERSON_ID, item.getLong(DBSchema.PERSON_ID));
-                if(!item.isNull(DBSchema.PERSON_LAST_NAME1))
+                if (!item.isNull(DBSchema.PERSON_LAST_NAME1))
                     values.put(DBSchema.PERSON_LAST_NAME1, item.getString(DBSchema.PERSON_LAST_NAME1));
-                if(!item.isNull(DBSchema.PERSON_FIRST_NAME))
+                if (!item.isNull(DBSchema.PERSON_FIRST_NAME))
                     values.put(DBSchema.PERSON_FIRST_NAME, item.getString(DBSchema.PERSON_FIRST_NAME));
-                if(!item.isNull(DBSchema.PERSON_EMAIL))
+                if (!item.isNull(DBSchema.PERSON_EMAIL))
                     values.put(DBSchema.PERSON_EMAIL, item.getString(DBSchema.PERSON_EMAIL));
                 // if(!item.isNull(DBSchema.PERSON_SPEC_ID))
 //                values.put(DBSchema.PERSON_SPEC_ID, item.getLong(DBSchema.PERSON_SPEC_ID));
-                if(!item.isNull(DBSchema.PERSON_LAST_NAME2))
+                if (!item.isNull(DBSchema.PERSON_LAST_NAME2))
                     values.put(DBSchema.PERSON_LAST_NAME2, item.getString(DBSchema.PERSON_LAST_NAME2));
-                if(!item.isNull(DBSchema.PERSON_MIDDLE_INITIAL))
+                if (!item.isNull(DBSchema.PERSON_MIDDLE_INITIAL))
                     values.put(DBSchema.PERSON_MIDDLE_INITIAL, item.getString(DBSchema.PERSON_MIDDLE_INITIAL));
-                if(!item.isNull(DBSchema.PERSON_PHONE_NUMBER))
+                if (!item.isNull(DBSchema.PERSON_PHONE_NUMBER))
                     values.put(DBSchema.PERSON_PHONE_NUMBER, item.getString(DBSchema.PERSON_PHONE_NUMBER));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -541,25 +551,26 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setAppointments(JSONArray data){
+
+    private long setAppointments(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.APPOINTMENT_ID))
+                if (!item.isNull(DBSchema.APPOINTMENT_ID))
                     values.put(DBSchema.APPOINTMENT_ID, item.getLong(DBSchema.APPOINTMENT_ID));
-                if(!item.isNull(DBSchema.APPOINTMENT_DATE))
+                if (!item.isNull(DBSchema.APPOINTMENT_DATE))
                     values.put(DBSchema.APPOINTMENT_DATE, item.getString(DBSchema.APPOINTMENT_DATE));
-                if(!item.isNull(DBSchema.APPOINTMENT_TIME))
+                if (!item.isNull(DBSchema.APPOINTMENT_TIME))
                     values.put(DBSchema.APPOINTMENT_TIME, item.getString(DBSchema.APPOINTMENT_TIME));
-                if(!item.isNull(DBSchema.APPOINTMENT_REPORT_ID))
+                if (!item.isNull(DBSchema.APPOINTMENT_REPORT_ID))
                     values.put(DBSchema.APPOINTMENT_REPORT_ID, item.getLong(DBSchema.APPOINTMENT_REPORT_ID));
-                if(!item.isNull(DBSchema.APPOINTMENT_PURPOSE))
+                if (!item.isNull(DBSchema.APPOINTMENT_PURPOSE))
                     values.put(DBSchema.APPOINTMENT_PURPOSE, item.getString(DBSchema.APPOINTMENT_PURPOSE));
-                if(!item.isNull(DBSchema.APPOINTMENT_MAKER_ID))
+                if (!item.isNull(DBSchema.APPOINTMENT_MAKER_ID))
                     values.put(DBSchema.APPOINTMENT_MAKER_ID, item.getLong(DBSchema.APPOINTMENT_MAKER_ID));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -571,22 +582,23 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
+
     // not to be needed
-    private long setDevices(JSONArray data){
+    private long setDevices(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.DEVICE_ID))
+                if (!item.isNull(DBSchema.DEVICE_ID))
                     values.put(DBSchema.DEVICE_ID, item.getLong(DBSchema.DEVICE_ID));
-                if(!item.isNull(DBSchema.DEVICE_NAME))
+                if (!item.isNull(DBSchema.DEVICE_NAME))
                     values.put(DBSchema.DEVICE_NAME, item.getString(DBSchema.DEVICE_NAME));
-                if(!item.isNull(DBSchema.DEVICE_ID_NUMBER))
+                if (!item.isNull(DBSchema.DEVICE_ID_NUMBER))
                     values.put(DBSchema.DEVICE_ID_NUMBER, item.getLong(DBSchema.DEVICE_ID_NUMBER));
-                if(!item.isNull(DBSchema.DEVICE_USER_ID))
+                if (!item.isNull(DBSchema.DEVICE_USER_ID))
                     values.put(DBSchema.DEVICE_USER_ID, item.getLong(DBSchema.DEVICE_USER_ID));
                 // if(!item.isNull(DBSchema.DEVICE_LATEST_SYNC))
 //                values.put(DBSchema.DEVICE_LATEST_SYNC, item.getLong(DBSchema.DEVICE_LATEST_SYNC));
@@ -600,23 +612,24 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setAddress(JSONArray data){
+
+    private long setAddress(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.ADDRESS_ID))
+                if (!item.isNull(DBSchema.ADDRESS_ID))
                     values.put(DBSchema.ADDRESS_ID, item.getLong(DBSchema.ADDRESS_ID));
-                if(!item.isNull(DBSchema.ADDRESS_LINE1))
+                if (!item.isNull(DBSchema.ADDRESS_LINE1))
                     values.put(DBSchema.ADDRESS_LINE1, item.getString(DBSchema.ADDRESS_LINE1));
-                if(!item.isNull(DBSchema.ADDRESS_CITY))
+                if (!item.isNull(DBSchema.ADDRESS_CITY))
                     values.put(DBSchema.ADDRESS_CITY, item.getString(DBSchema.ADDRESS_CITY));
-                if(!item.isNull(DBSchema.ADDRESS_ZIPCODE))
+                if (!item.isNull(DBSchema.ADDRESS_ZIPCODE))
                     values.put(DBSchema.ADDRESS_ZIPCODE, item.getString(DBSchema.ADDRESS_ZIPCODE));
-                if(!item.isNull(DBSchema.ADDRESS_LINE2))
+                if (!item.isNull(DBSchema.ADDRESS_LINE2))
                     values.put(DBSchema.ADDRESS_LINE2, item.getString(DBSchema.ADDRESS_LINE2));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -628,17 +641,18 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setCategory(JSONArray data){
+
+    private long setCategory(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.CATEGORY_ID))
+                if (!item.isNull(DBSchema.CATEGORY_ID))
                     values.put(DBSchema.CATEGORY_ID, item.getLong(DBSchema.CATEGORY_ID));
-                if(!item.isNull(DBSchema.CATEGORY_NAME))
+                if (!item.isNull(DBSchema.CATEGORY_NAME))
                     values.put(DBSchema.CATEGORY_NAME, item.getString(DBSchema.CATEGORY_NAME));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -650,17 +664,18 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setLocation_category(JSONArray data){
+
+    private long setLocation_category(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.LOCATION_CATEGORY_LOCATION_ID))
+                if (!item.isNull(DBSchema.LOCATION_CATEGORY_LOCATION_ID))
                     values.put(DBSchema.LOCATION_CATEGORY_LOCATION_ID, item.getLong(DBSchema.LOCATION_CATEGORY_LOCATION_ID));
-                if(!item.isNull(DBSchema.LOCATION_CATEGORY_CATEGORY_ID))
+                if (!item.isNull(DBSchema.LOCATION_CATEGORY_CATEGORY_ID))
                     values.put(DBSchema.LOCATION_CATEGORY_CATEGORY_ID, item.getLong(DBSchema.LOCATION_CATEGORY_CATEGORY_ID));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
                 db.insertWithOnConflict(DBSchema.TABLE_LOCATION_CATEGORY, null, values, 5);
@@ -671,25 +686,26 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setLocation(JSONArray data){
+
+    private long setLocation(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.LOCATION_ID))
+                if (!item.isNull(DBSchema.LOCATION_ID))
                     values.put(DBSchema.LOCATION_ID, item.getLong(DBSchema.LOCATION_ID));
-                if(!item.isNull(DBSchema.LOCATION_NAME))
+                if (!item.isNull(DBSchema.LOCATION_NAME))
                     values.put(DBSchema.LOCATION_NAME, item.getString(DBSchema.LOCATION_NAME));
-                if(!item.isNull(DBSchema.LOCATION_ADDRESS_ID))
+                if (!item.isNull(DBSchema.LOCATION_ADDRESS_ID))
                     values.put(DBSchema.LOCATION_ADDRESS_ID, item.getLong(DBSchema.LOCATION_ADDRESS_ID));
                 // if(!item.isNull(DBSchema.LOCATION_OWNER_ID))
 //                values.put(DBSchema.LOCATION_OWNER_ID, item.getLong(DBSchema.LOCATION_OWNER_ID));
                 // if(!item.isNull(DBSchema.LOCATION_MANAGER_ID))
 //                values.put(DBSchema.LOCATION_MANAGER_ID, item.getLong(DBSchema.LOCATION_MANAGER_ID));
-                if(!item.isNull(DBSchema.LOCATION_LICENSE))
+                if (!item.isNull(DBSchema.LOCATION_LICENSE))
                     values.put(DBSchema.LOCATION_LICENSE, item.getString(DBSchema.LOCATION_LICENSE));
                 // if(!item.isNull(DBSchema.LOCATION_AGENT_ID))
 //                values.put(DBSchema.LOCATION_AGENT_ID, item.getLong(DBSchema.LOCATION_AGENT_ID));
@@ -703,29 +719,30 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setReport(JSONArray data){
+
+    private long setReport(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.REPORT_ID))
+                if (!item.isNull(DBSchema.REPORT_ID))
                     values.put(DBSchema.REPORT_ID, item.getLong(DBSchema.REPORT_ID));
-                if(!item.isNull(DBSchema.REPORT_CREATOR_ID))
+                if (!item.isNull(DBSchema.REPORT_CREATOR_ID))
                     values.put(DBSchema.REPORT_CREATOR_ID, item.getLong(DBSchema.REPORT_CREATOR_ID));
-                if(!item.isNull(DBSchema.REPORT_LOCATION_ID))
+                if (!item.isNull(DBSchema.REPORT_LOCATION_ID))
                     values.put(DBSchema.REPORT_LOCATION_ID, item.getLong(DBSchema.REPORT_LOCATION_ID));
                 // if(!item.isNull(DBSchema.REPORT_SUBJECT_ID))
 //                values.put(DBSchema.REPORT_SUBJECT_ID, item.getLong(DBSchema.REPORT_SUBJECT_ID));
-                if(!item.isNull(DBSchema.REPORT_FLOWCHART_ID))
+                if (!item.isNull(DBSchema.REPORT_FLOWCHART_ID))
                     values.put(DBSchema.REPORT_FLOWCHART_ID, item.getLong(DBSchema.REPORT_FLOWCHART_ID));
-                if(!item.isNull(DBSchema.REPORT_NOTE))
+                if (!item.isNull(DBSchema.REPORT_NOTE))
                     values.put(DBSchema.REPORT_NOTE, item.getString(DBSchema.REPORT_NOTE));
-                if(!item.isNull(DBSchema.REPORT_DATE_FILED))
+                if (!item.isNull(DBSchema.REPORT_DATE_FILED))
                     values.put(DBSchema.REPORT_DATE_FILED, item.getString(DBSchema.REPORT_DATE_FILED));
-                if(!item.isNull(DBSchema.REPORT_NAME))
+                if (!item.isNull(DBSchema.REPORT_NAME))
                     values.put(DBSchema.REPORT_NAME, item.getString(DBSchema.REPORT_NAME));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -737,23 +754,24 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long setUsers(JSONArray data){
+
+    private long setUsers(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.USER_ID))
+                if (!item.isNull(DBSchema.USER_ID))
                     values.put(DBSchema.USER_ID, item.getLong(DBSchema.USER_ID));
-                if(!item.isNull(DBSchema.USER_USERNAME))
+                if (!item.isNull(DBSchema.USER_USERNAME))
                     values.put(DBSchema.USER_USERNAME, item.getString(DBSchema.USER_USERNAME));
-                if(!item.isNull(DBSchema.USER_PASSHASH))
+                if (!item.isNull(DBSchema.USER_PASSHASH))
                     values.put(DBSchema.USER_PASSHASH, item.getString(DBSchema.USER_PASSHASH));
-                if(!item.isNull(DBSchema.USER_PERSON_ID))
+                if (!item.isNull(DBSchema.USER_PERSON_ID))
                     values.put(DBSchema.USER_PERSON_ID, item.getLong(DBSchema.USER_PERSON_ID));
-                if(!item.isNull(DBSchema.USER_SALT))
+                if (!item.isNull(DBSchema.USER_SALT))
                     values.put(DBSchema.USER_SALT, item.getString(DBSchema.USER_SALT));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -766,25 +784,25 @@ public final class DBHelper extends SQLiteOpenHelper {
         return i;
     }
 
-    private long setFlowchart(JSONArray data){
+    private long setFlowchart(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
 
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.FLOWCHART_ID))
+                if (!item.isNull(DBSchema.FLOWCHART_ID))
                     values.put(DBSchema.FLOWCHART_ID, item.getLong(DBSchema.FLOWCHART_ID));
-                if(!item.isNull(DBSchema.FLOWCHART_FIRST_ID))
+                if (!item.isNull(DBSchema.FLOWCHART_FIRST_ID))
                     values.put(DBSchema.FLOWCHART_FIRST_ID, item.getString(DBSchema.FLOWCHART_FIRST_ID));
-                if(!item.isNull(DBSchema.FLOWCHART_NAME))
+                if (!item.isNull(DBSchema.FLOWCHART_NAME))
                     values.put(DBSchema.FLOWCHART_NAME, item.getString(DBSchema.FLOWCHART_NAME));
-                if(!item.isNull(DBSchema.FLOWCHART_END_ID))
+                if (!item.isNull(DBSchema.FLOWCHART_END_ID))
                     values.put(DBSchema.FLOWCHART_END_ID, item.getLong(DBSchema.FLOWCHART_END_ID));
-                if(!item.isNull(DBSchema.FLOWCHART_CREATOR_ID))
+                if (!item.isNull(DBSchema.FLOWCHART_CREATOR_ID))
                     values.put(DBSchema.FLOWCHART_CREATOR_ID, item.getString(DBSchema.FLOWCHART_CREATOR_ID));
-                if(!item.isNull(DBSchema.FLOWCHART_VERSION))
+                if (!item.isNull(DBSchema.FLOWCHART_VERSION))
                     values.put(DBSchema.FLOWCHART_VERSION, item.getString(DBSchema.FLOWCHART_VERSION));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
@@ -797,43 +815,43 @@ public final class DBHelper extends SQLiteOpenHelper {
         return i;
     }
 
-    private JSONArray getItem(){
+    private JSONArray getItem() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_ITEM,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_ITEM, new String[]{
                         DBSchema.ITEM_ID,
                         DBSchema.ITEM_FLOWCHART_ID,
                         DBSchema.ITEM_LABEL,
                         DBSchema.ITEM_TYPE
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.ITEM_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.ITEM_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.ITEM_FLOWCHART_ID,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.ITEM_FLOWCHART_ID, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.ITEM_LABEL,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.ITEM_LABEL, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.ITEM_TYPE,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.ITEM_TYPE, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -846,43 +864,44 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getPath(){
+
+    private JSONArray getPath() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_PATH,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_PATH, new String[]{
                         DBSchema.PATH_REPORT_ID,
                         DBSchema.PATH_OPTION_ID,
                         DBSchema.PATH_DATA,
                         DBSchema.PATH_SEQUENCE
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.PATH_REPORT_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.PATH_REPORT_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.PATH_OPTION_ID,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.PATH_OPTION_ID, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.PATH_DATA,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.PATH_DATA, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.PATH_SEQUENCE,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.PATH_SEQUENCE, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -894,7 +913,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getUsers_specialization(){
+
+    private JSONArray getUsers_specialization() {
 
         JSONArray data;
         data = new JSONArray();
@@ -929,43 +949,44 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getOption(){
+
+    private JSONArray getOption() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_OPTION,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_OPTION, new String[]{
                         DBSchema.OPTION_ID,
                         DBSchema.OPTION_PARENT_ID,
                         DBSchema.OPTION_NEXT_ID,
                         DBSchema.OPTION_LABEL
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.OPTION_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.OPTION_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.OPTION_PARENT_ID,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.OPTION_PARENT_ID, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.OPTION_NEXT_ID,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.OPTION_NEXT_ID, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.OPTION_LABEL,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.OPTION_LABEL, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -978,29 +999,30 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getSpecialization(){
+
+    private JSONArray getSpecialization() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_SPECIALIZATION,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_SPECIALIZATION, new String[]{
                         DBSchema.SPECIALIZATION_ID,
                         DBSchema.SPECIALIZATION_NAME
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.SPECIALIZATION_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.SPECIALIZATION_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.SPECIALIZATION_NAME,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.SPECIALIZATION_NAME, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1013,12 +1035,13 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getPerson(){
+
+    private JSONArray getPerson() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{
                         DBSchema.PERSON_ID,
                         DBSchema.PERSON_LAST_NAME1,
                         DBSchema.PERSON_FIRST_NAME,
@@ -1028,56 +1051,56 @@ public final class DBHelper extends SQLiteOpenHelper {
                         DBSchema.PERSON_MIDDLE_INITIAL,
                         DBSchema.PERSON_PHONE_NUMBER
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.PERSON_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.PERSON_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.PERSON_LAST_NAME1,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.PERSON_LAST_NAME1, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.PERSON_FIRST_NAME,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.PERSON_FIRST_NAME, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.PERSON_EMAIL,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.PERSON_EMAIL, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.PERSON_SPEC_ID,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.PERSON_SPEC_ID, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(5))
-                            map.put(DBSchema.PERSON_LAST_NAME2,    cursor.getString(5));
+                        if (!cursor.isNull(5))
+                            map.put(DBSchema.PERSON_LAST_NAME2, cursor.getString(5));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(6))
-                            map.put(DBSchema.PERSON_MIDDLE_INITIAL,    cursor.getString(6));
+                        if (!cursor.isNull(6))
+                            map.put(DBSchema.PERSON_MIDDLE_INITIAL, cursor.getString(6));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(7))
-                            map.put(DBSchema.PERSON_PHONE_NUMBER,    cursor.getString(7));
+                        if (!cursor.isNull(7))
+                            map.put(DBSchema.PERSON_PHONE_NUMBER, cursor.getString(7));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1090,12 +1113,13 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getAppointments(){
+
+    private JSONArray getAppointments() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{
                         DBSchema.APPOINTMENT_ID,
                         DBSchema.APPOINTMENT_DATE,
                         DBSchema.APPOINTMENT_TIME,
@@ -1103,44 +1127,44 @@ public final class DBHelper extends SQLiteOpenHelper {
                         DBSchema.APPOINTMENT_PURPOSE,
                         DBSchema.APPOINTMENT_MAKER_ID
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.APPOINTMENT_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.APPOINTMENT_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.APPOINTMENT_DATE,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.APPOINTMENT_DATE, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.APPOINTMENT_TIME,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.APPOINTMENT_TIME, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.APPOINTMENT_REPORT_ID,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.APPOINTMENT_REPORT_ID, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.APPOINTMENT_PURPOSE,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.APPOINTMENT_PURPOSE, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(5))
-                            map.put(DBSchema.APPOINTMENT_MAKER_ID,    cursor.getString(5));
+                        if (!cursor.isNull(5))
+                            map.put(DBSchema.APPOINTMENT_MAKER_ID, cursor.getString(5));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1153,50 +1177,51 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getDevices(){
+
+    private JSONArray getDevices() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_DEVICES,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_DEVICES, new String[]{
                         DBSchema.DEVICE_ID,
                         DBSchema.DEVICE_NAME,
                         DBSchema.DEVICE_ID_NUMBER,
                         DBSchema.DEVICE_USER_ID,
                         DBSchema.DEVICE_LATEST_SYNC
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.DEVICE_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.DEVICE_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.DEVICE_NAME,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.DEVICE_NAME, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.DEVICE_ID_NUMBER,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.DEVICE_ID_NUMBER, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.DEVICE_USER_ID,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.DEVICE_USER_ID, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.DEVICE_LATEST_SYNC,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.DEVICE_LATEST_SYNC, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1209,50 +1234,51 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getAddress(){
+
+    private JSONArray getAddress() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_ADDRESS,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_ADDRESS, new String[]{
                         DBSchema.ADDRESS_ID,
                         DBSchema.ADDRESS_LINE1,
                         DBSchema.ADDRESS_CITY,
                         DBSchema.ADDRESS_ZIPCODE,
                         DBSchema.ADDRESS_LINE2
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.ADDRESS_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.ADDRESS_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.ADDRESS_LINE1,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.ADDRESS_LINE1, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.ADDRESS_CITY,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.ADDRESS_CITY, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.ADDRESS_ZIPCODE,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.ADDRESS_ZIPCODE, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.ADDRESS_LINE2,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.ADDRESS_LINE2, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1265,29 +1291,30 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getCategory(){
+
+    private JSONArray getCategory() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_CATEGORY,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_CATEGORY, new String[]{
                         DBSchema.CATEGORY_ID,
                         DBSchema.CATEGORY_NAME
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.CATEGORY_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.CATEGORY_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.CATEGORY_NAME,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.CATEGORY_NAME, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1300,29 +1327,30 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getLocation_category(){
+
+    private JSONArray getLocation_category() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION_CATEGORY,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION_CATEGORY, new String[]{
                         DBSchema.LOCATION_CATEGORY_LOCATION_ID,
                         DBSchema.LOCATION_CATEGORY_CATEGORY_ID
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.LOCATION_CATEGORY_LOCATION_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.LOCATION_CATEGORY_LOCATION_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.LOCATION_CATEGORY_CATEGORY_ID,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.LOCATION_CATEGORY_CATEGORY_ID, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1335,12 +1363,13 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getLocation(){
+
+    private JSONArray getLocation() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{
                         DBSchema.LOCATION_ID,
                         DBSchema.LOCATION_NAME,
                         DBSchema.LOCATION_ADDRESS_ID,
@@ -1349,50 +1378,50 @@ public final class DBHelper extends SQLiteOpenHelper {
                         DBSchema.LOCATION_LICENSE,
                         DBSchema.LOCATION_AGENT_ID
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.LOCATION_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.LOCATION_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.LOCATION_NAME,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.LOCATION_NAME, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.LOCATION_ADDRESS_ID,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.LOCATION_ADDRESS_ID, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.LOCATION_OWNER_ID,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.LOCATION_OWNER_ID, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.LOCATION_MANAGER_ID,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.LOCATION_MANAGER_ID, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(5))
-                            map.put(DBSchema.LOCATION_LICENSE,    cursor.getString(5));
+                        if (!cursor.isNull(5))
+                            map.put(DBSchema.LOCATION_LICENSE, cursor.getString(5));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(6))
-                            map.put(DBSchema.LOCATION_AGENT_ID,    cursor.getString(6));
+                        if (!cursor.isNull(6))
+                            map.put(DBSchema.LOCATION_AGENT_ID, cursor.getString(6));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1405,12 +1434,13 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getReport(){
+
+    private JSONArray getReport() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_REPORT,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{
                         DBSchema.REPORT_ID,
                         DBSchema.REPORT_CREATOR_ID,
                         DBSchema.REPORT_LOCATION_ID,
@@ -1420,56 +1450,56 @@ public final class DBHelper extends SQLiteOpenHelper {
                         DBSchema.REPORT_DATE_FILED,
                         DBSchema.REPORT_NAME
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.REPORT_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.REPORT_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.REPORT_CREATOR_ID,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.REPORT_CREATOR_ID, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.REPORT_LOCATION_ID,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.REPORT_LOCATION_ID, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.REPORT_SUBJECT_ID,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.REPORT_SUBJECT_ID, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.REPORT_FLOWCHART_ID,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.REPORT_FLOWCHART_ID, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(5))
-                            map.put(DBSchema.REPORT_NOTE,    cursor.getString(5));
+                        if (!cursor.isNull(5))
+                            map.put(DBSchema.REPORT_NOTE, cursor.getString(5));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(6))
-                            map.put(DBSchema.REPORT_DATE_FILED,    cursor.getString(6));
+                        if (!cursor.isNull(6))
+                            map.put(DBSchema.REPORT_DATE_FILED, cursor.getString(6));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(7))
-                            map.put(DBSchema.REPORT_NAME,    cursor.getString(7));
+                        if (!cursor.isNull(7))
+                            map.put(DBSchema.REPORT_NAME, cursor.getString(7));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1482,50 +1512,51 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getUsers(){
+
+    private JSONArray getUsers() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_USERS,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{
                         DBSchema.USER_ID,
                         DBSchema.USER_USERNAME,
                         DBSchema.USER_PASSHASH,
                         DBSchema.USER_PERSON_ID,
                         DBSchema.USER_SALT
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.USER_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.USER_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.USER_USERNAME,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.USER_USERNAME, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.USER_PASSHASH,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.USER_PASSHASH, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.USER_PERSON_ID,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.USER_PERSON_ID, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.USER_SALT,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.USER_SALT, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1538,12 +1569,13 @@ public final class DBHelper extends SQLiteOpenHelper {
         return data;
 
     }
-    private JSONArray getFlowchart(){
+
+    private JSONArray getFlowchart() {
 
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{
                         DBSchema.FLOWCHART_ID,
                         DBSchema.FLOWCHART_FIRST_ID,
                         DBSchema.FLOWCHART_NAME,
@@ -1551,44 +1583,44 @@ public final class DBHelper extends SQLiteOpenHelper {
                         DBSchema.FLOWCHART_CREATOR_ID,
                         DBSchema.FLOWCHART_VERSION
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))
-                            map.put(DBSchema.FLOWCHART_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))
+                            map.put(DBSchema.FLOWCHART_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))
-                            map.put(DBSchema.FLOWCHART_FIRST_ID,    cursor.getString(1));
+                        if (!cursor.isNull(1))
+                            map.put(DBSchema.FLOWCHART_FIRST_ID, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(2))
-                            map.put(DBSchema.FLOWCHART_NAME,    cursor.getString(2));
+                        if (!cursor.isNull(2))
+                            map.put(DBSchema.FLOWCHART_NAME, cursor.getString(2));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(3))
-                            map.put(DBSchema.FLOWCHART_END_ID,    cursor.getString(3));
+                        if (!cursor.isNull(3))
+                            map.put(DBSchema.FLOWCHART_END_ID, cursor.getString(3));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(4))
-                            map.put(DBSchema.FLOWCHART_CREATOR_ID,    cursor.getString(4));
+                        if (!cursor.isNull(4))
+                            map.put(DBSchema.FLOWCHART_CREATOR_ID, cursor.getString(4));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(5))
-                            map.put(DBSchema.FLOWCHART_VERSION,    cursor.getString(5));
+                        if (!cursor.isNull(5))
+                            map.put(DBSchema.FLOWCHART_VERSION, cursor.getString(5));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1603,7 +1635,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    private JSONObject getData(){
+    private JSONObject getData() {
 
 //        HashMap<String, String> json;
 //        json = new HashMap<String, String >();
@@ -1638,46 +1670,355 @@ public final class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public boolean isEmpty(){
+    private long setSyncItem(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_ITEM, values, DBSchema.ITEM_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.ITEM_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncPath(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_PATH, values, DBSchema.PATH_REPORT_ID + " =? AND " + DBSchema.PATH_OPTION_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.PATH_REPORT_ID)), String.valueOf(item.getLong(DBSchema.PATH_OPTION_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    //copy paste full
+    private long setSyncUsers_specialization(JSONArray data) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        int i = -1;
+//        try {
+//            for ( i = 0; i < data.length(); i++){
+//                JSONObject item = data.getJSONObject(i);
+//                ContentValues values = new ContentValues();
+//                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+//                db.update(DBSchema.TABLE_SPECIALIZATION, values, DBSchema.SPECIALIZATION_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.SPECIALIZATION_ID))});
+//                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        db.close();
+        return -1;
+    }
+
+    private long setSyncOption(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_OPTION, values, DBSchema.OPTION_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.OPTION_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncSpecialization(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_SPECIALIZATION, values, DBSchema.SPECIALIZATION_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.SPECIALIZATION_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+
+    }
+
+    private long setSyncPerson(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.PERSON_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncAppointments(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_APPOINTMENTS, values, DBSchema.APPOINTMENT_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.APPOINTMENT_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    // not to be needed
+    private long setSyncDevices(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_DEVICES, values, DBSchema.DEVICE_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.DEVICE_ID))});
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncAddress(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_ADDRESS, values, DBSchema.ADDRESS_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.ADDRESS_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncCategory(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_CATEGORY, values, DBSchema.CATEGORY_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.CATEGORY_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncLocation_category(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_LOCATION_CATEGORY, values, DBSchema.LOCATION_CATEGORY_LOCATION_ID + " =? AND " + DBSchema.LOCATION_CATEGORY_CATEGORY_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_LOCATION_ID)), String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_CATEGORY_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncLocation(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.LOCATION_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncReport(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.REPORT_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncUsers(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_USERS, values, DBSchema.USER_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.USER_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    private long setSyncFlowchart(JSONArray data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
+                db.update(DBSchema.TABLE_FLOWCHART, values, DBSchema.FLOWCHART_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.FLOWCHART_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+
+    public boolean isEmpty() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_USERS,new String[] {DBSchema.USER_ID},
-                null,null,null,null,null,null);
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID},
+                null, null, null, null, null, null);
         boolean flag = cursor != null ? (cursor.getCount() > 0) : false;
         db.close();
         cursor.close();
         return flag;
 
     }
-    // TODO: set sync status
-    public void setSyncDone(){
 
-//
-//        try {
-//            JSONArray items;
-//            items = new JSONArray(data.get("flowchart"));
-//            items
-//            items = new JSONArray(data.get("item"));
-//            items = new JSONArray(data.get("path"));
-//            items = new JSONArray(data.get("users_specialization"));
-//            items = new JSONArray(data.get("option");
-//            items = new JSONArray(data.get("specialization"));
-//            items = new JSONArray(data.get("person"));
-//            items = new JSONArray(data.get("appointments"));
-//            items = new JSONArray(data.get("devices"));
-//            items = new JSONArray(data.get("address"));
-//            items = new JSONArray(data.get("category"));
-//            items = new JSONArray(data.get("location_category"));
-//            items = new JSONArray(data.get("location"));
-//            items = new JSONArray(data.get("report"));
-//            items = new JSONArray(data.get("users"));
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//
-//
-//
+    // TODO: set sync status
+    public void setSyncDone() {
+
+        try {
+            setSyncItem(dataSync.getJSONArray("item"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncPath(dataSync.getJSONArray("path"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncUsers_specialization(dataSync.getJSONArray("users_specialization"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncOption(dataSync.getJSONArray("option"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncSpecialization(dataSync.getJSONArray("specialization"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncPerson(dataSync.getJSONArray("person"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncAppointments(dataSync.getJSONArray("appointments"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncDevices(dataSync.getJSONArray("devices"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncAddress(dataSync.getJSONArray("address"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncCategory(dataSync.getJSONArray("category"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncLocation_category(dataSync.getJSONArray("location_category"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncLocation(dataSync.getJSONArray("location"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncReport(dataSync.getJSONArray("report"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncUsers(dataSync.getJSONArray("users"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncFlowchart(dataSync.getJSONArray("flowchart"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -1688,18 +2029,17 @@ public final class DBHelper extends SQLiteOpenHelper {
     // TODO: set tuple as sync and set the path
     // puede devolver true todo el tiempo
 
-    public void syncDB(){
+    public void syncDB() {
         String prefKey = context.getResources().getString(R.string.preference_file_key);
         String usernameKey = context.getResources().getString(R.string.key_saved_username);
         SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(usernameKey, null);
         long userID = findUserByUsername(sUsername).getId();
-        SYNC_STATUS = 0;
         Log.i(this.toString(), "HTTP Sync called ");
         //Create AsycHttpClient object
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        if(!isEmpty()){
+        if (!isEmpty()) {
             params.put("user_id", userID);
             params.put("type", "agent");
             params.put("sync", "update");
@@ -1708,7 +2048,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             //http://136.145.116.231:3000/synchronization/
 
 //            RequestHandle result  = client.post("http://136.145.116.231:3000/synchronization", params, new JsonHttpResponseHandler() {
-                client.post("http://136.145.116.231/mobile/test1.php",params ,new JsonHttpResponseHandler(){
+            client.post("http://136.145.116.231/mobile/test1.php", params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // If the response is JSONObject instead of expected JSONArray
@@ -1739,18 +2079,19 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                         e.printStackTrace();
                     }
-                try{
-                    JSONObject localJSONObject = response.getJSONObject("local");
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
-                } catch (JSONException e) {
+                    try {
+                        JSONObject localJSONObject = response.getJSONObject("local");
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
+                    } catch (JSONException e) {
 
-                    e.printStackTrace();
-                }
+                        e.printStackTrace();
+                    }
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                     intent.setAction("SYNC");
                     intent.putExtra("SYNC_RESULT", 200);
                     context.sendBroadcast(intent);
+//                    setSyncDone();
 
                 }
 
@@ -1810,7 +2151,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 //            result.isFinished();
 //            setSyncDone(data);
 
-        }else{
+        } else {
 //            The Database is empty
             params.put("user_id", userID);
             params.put("type", "agent");
@@ -1819,12 +2160,12 @@ public final class DBHelper extends SQLiteOpenHelper {
             Gson gson = new GsonBuilder().create();
             dataSync = getData();
 //            params.put("data", gson.toJson(data));
-            params.put("data",dataSync);
+            params.put("data", dataSync);
             // send user id
             //http://136.145.116.231:3000/synchronization/
 //            client.set
 //            client.post("http://136.145.116.231:3000/synchronization",params ,new JsonHttpResponseHandler(){
-                client.post("http://136.145.116.231/mobile/test1.php",params ,new JsonHttpResponseHandler(){
+            client.post("http://136.145.116.231/mobile/test1.php", params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // If the response is JSONObject instead of expected JSONArray
@@ -1862,7 +2203,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     intent.setAction("SYNC");
                     intent.putExtra("SYNC_RESULT", 200);
                     context.sendBroadcast(intent);
-                    try{
+//                    setSyncDone();
+                    try {
                         JSONObject localJSONObject = response.getJSONObject("local");
                         Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
                     } catch (JSONException e) {
@@ -1888,6 +2230,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 //                        e.printStackTrace();
 //                    }
                 }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
                     Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
@@ -1922,8 +2265,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 }
 
 
-
-                });
+            });
 
         }
     }

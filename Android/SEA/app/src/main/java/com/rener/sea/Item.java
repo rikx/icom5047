@@ -20,7 +20,8 @@ public class Item {
     private long id;
     private List<Option> options;
     private DBHelper dbHelper = null;
-//    new Item(1, fc.getId(), "Is the cow sick?", Item.BOOLEAN, this);
+
+    //    new Item(1, fc.getId(), "Is the cow sick?", Item.BOOLEAN, this);
     public Item(long id, long flowchart_id, String label, String type, DBHelper db) {
 
         this.dbHelper = db;
@@ -44,7 +45,7 @@ public class Item {
         invoke(id);
     }
 
-    private long create(long itemid, long flowchart_id, String label, String type){
+    private long create(long itemid, long flowchart_id, String label, String type) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ITEM_ID, itemid);
@@ -116,7 +117,7 @@ public class Item {
                 DBSchema.ITEM_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 label = cursor.getString(0);
             }
             db.close();
@@ -130,6 +131,7 @@ public class Item {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ITEM_LABEL, String.valueOf(label));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_ITEM, values, DBSchema.ITEM_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -142,7 +144,7 @@ public class Item {
                 DBSchema.ITEM_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 type = cursor.getString(0);
             }
             db.close();
@@ -157,6 +159,7 @@ public class Item {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ITEM_TYPE, String.valueOf(type));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_ITEM, values, DBSchema.ITEM_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update

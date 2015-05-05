@@ -98,7 +98,7 @@ public class Flowchart implements Comparable<Flowchart> {
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 first_id = cursor.getLong(0);
             }
 
@@ -116,6 +116,7 @@ public class Flowchart implements Comparable<Flowchart> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.FLOWCHART_FIRST_ID, first.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_FLOWCHART, values, DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -127,7 +128,8 @@ public class Flowchart implements Comparable<Flowchart> {
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_END_ID},
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();if(!cursor.isNull(0)){
+            cursor.moveToFirst();
+            if (!cursor.isNull(0)) {
                 last_id = cursor.getLong(0);
             }
 
@@ -142,6 +144,7 @@ public class Flowchart implements Comparable<Flowchart> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.FLOWCHART_END_ID, end.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_FLOWCHART, values, DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -155,7 +158,7 @@ public class Flowchart implements Comparable<Flowchart> {
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 name = cursor.getString(0);
             }
             db.close();
@@ -170,6 +173,7 @@ public class Flowchart implements Comparable<Flowchart> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.FLOWCHART_END_ID, String.valueOf(name));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_FLOWCHART, values, DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -194,6 +198,7 @@ public class Flowchart implements Comparable<Flowchart> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.FLOWCHART_CREATOR_ID, creator.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_FLOWCHART, values, DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -206,7 +211,7 @@ public class Flowchart implements Comparable<Flowchart> {
                 DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 version = cursor.getString(0);
             }
             db.close();
@@ -220,6 +225,7 @@ public class Flowchart implements Comparable<Flowchart> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.FLOWCHART_VERSION, String.valueOf(version));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_FLOWCHART, values, DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -254,7 +260,7 @@ public class Flowchart implements Comparable<Flowchart> {
     }
 
     public String toString() {
-        return id==-1 ? dummy : getName();
+        return id == -1 ? dummy : getName();
     }
 
     @Override

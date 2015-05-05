@@ -91,7 +91,7 @@ public class MenuListFragment extends ListFragment {
         if (type.equals(TYPE_PEOPLE)) {
 
             list = db.getAllPersons();
-            Log.i(this.toString(), " "+getActivity()+" Get all People " + list.toString());
+            Log.i(this.toString(), " " + getActivity() + " Get all People " + list.toString());
             adapter = new ArrayAdapter<Person>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_LOCATIONS)) {

@@ -11,8 +11,8 @@ import android.support.annotation.NonNull;
 public class Person implements Comparable<Person> {
 
     DBHelper dbHelper = null;
+    String dummy = null;
     private long id = -1;
-	String dummy = null;
 
     public Person(long personID, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
@@ -29,9 +29,9 @@ public class Person implements Comparable<Person> {
         }
     }
 
-	public Person(String dummy) {
-		this.dummy = dummy;
-	}
+    public Person(String dummy) {
+        this.dummy = dummy;
+    }
 
     private long create(String first_name, String initial, String last_name1, String last_name2, String email, String phone_number) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -76,8 +76,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(person_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            this.id = cursor.getLong(0);
+            if (!cursor.isNull(0))
+                this.id = cursor.getLong(0);
             db.close();
             cursor.close();
             return true;
@@ -93,8 +93,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            specializationID = cursor.getInt(0);
+            if (!cursor.isNull(0))
+                specializationID = cursor.getInt(0);
             db.close();
             cursor.close();
         }
@@ -106,6 +106,7 @@ public class Person implements Comparable<Person> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PERSON_SPEC_ID, specializationID);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
 //        return id;// if -1 error during update
@@ -127,8 +128,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            name = cursor.getString(0);
+            if (!cursor.isNull(0))
+                name = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -139,6 +140,7 @@ public class Person implements Comparable<Person> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PERSON_FIRST_NAME, name);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -151,8 +153,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            initial = cursor.getString(0);
+            if (!cursor.isNull(0))
+                initial = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -163,6 +165,7 @@ public class Person implements Comparable<Person> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PERSON_MIDDLE_INITIAL, initial);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -180,8 +183,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            last1 = cursor.getString(0);
+            if (!cursor.isNull(0))
+                last1 = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -192,6 +195,7 @@ public class Person implements Comparable<Person> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PERSON_LAST_NAME1, name);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -204,8 +208,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            last2 = cursor.getString(0);
+            if (!cursor.isNull(0))
+                last2 = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -216,6 +220,7 @@ public class Person implements Comparable<Person> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PERSON_LAST_NAME2, name);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -236,10 +241,10 @@ public class Person implements Comparable<Person> {
             cursor.moveToFirst();
 
             if (cursor.isNull(1) || "".equals(cursor.getString(1)))
-                fullName = (cursor.getString(0) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" :cursor.getString(3))).trim();
+                fullName = (cursor.getString(0) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" : cursor.getString(3))).trim();
             else
 
-                fullName = (cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" :cursor.getString(3))).trim();
+                fullName = (cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" : cursor.getString(3))).trim();
 
             db.close();
             cursor.close();
@@ -254,8 +259,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            email = cursor.getString(0);
+            if (!cursor.isNull(0))
+                email = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -266,6 +271,7 @@ public class Person implements Comparable<Person> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PERSON_EMAIL, email);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;
@@ -283,8 +289,8 @@ public class Person implements Comparable<Person> {
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            phone = cursor.getString(0);
+            if (!cursor.isNull(0))
+                phone = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -295,6 +301,7 @@ public class Person implements Comparable<Person> {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.PERSON_PHONE_NUMBER, phone_number);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;

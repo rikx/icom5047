@@ -18,19 +18,19 @@ public class Address {
         this.dbHelper = dbHelper;
     }
 
-    public Address( long id, String address1, String address2, String city, String zipcode,DBHelper dbHelper) {
+    public Address(long id, String address1, String address2, String city, String zipcode, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         this.dbHelper = dbHelper;
         //verify if exit
         if (exist(id)) { // can also verify if id == -1
 
         } else {
-            this.id = create(address1,address2,city,zipcode);
+            this.id = create(address1, address2, city, zipcode);
         }
 
     }
 
-    public long create(String address1, String address2, String city, String zipcode){
+    public long create(String address1, String address2, String city, String zipcode) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_LINE1, address1);
@@ -42,7 +42,6 @@ public class Address {
         db.close();
         return id;
     }
-
 
 
     private boolean exist(long address_id) {
@@ -68,7 +67,7 @@ public class Address {
                 DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(address_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)) {
+            if (!cursor.isNull(0)) {
                 this.id = cursor.getLong(0);
             }
             db.close();
@@ -90,7 +89,7 @@ public class Address {
                 DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 address = cursor.getString(0);
             }
             db.close();
@@ -104,6 +103,7 @@ public class Address {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_LINE1, String.valueOf(address1));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_ADDRESS, values, DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -116,7 +116,7 @@ public class Address {
                 DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 address = cursor.getString(0);
             }
             db.close();
@@ -130,13 +130,14 @@ public class Address {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_LINE2, String.valueOf(address2));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_ADDRESS, values, DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
     }
 
     public String getAddressLine(int n) {
-        switch (n){
+        switch (n) {
             case 1:
                 return getAddress1();
             case 2:
@@ -145,8 +146,9 @@ public class Address {
                 return "";
         }
     }
+
     public long setAddressLine(int n, String line) {
-        switch (n){
+        switch (n) {
             case 1:
                 return setAddress1(line);
             case 2:
@@ -163,7 +165,7 @@ public class Address {
                 DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 city = cursor.getString(0);
             }
             db.close();
@@ -177,6 +179,7 @@ public class Address {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_CITY, String.valueOf(city));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_ADDRESS, values, DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -189,7 +192,7 @@ public class Address {
                 DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0)){
+            if (!cursor.isNull(0)) {
                 zipcode = cursor.getString(0);
             }
             db.close();
@@ -202,6 +205,7 @@ public class Address {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.ADDRESS_ZIPCODE, String.valueOf(zipcode));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_ADDRESS, values, DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update

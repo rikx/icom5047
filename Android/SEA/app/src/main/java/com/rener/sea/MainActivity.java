@@ -10,10 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -21,7 +17,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
@@ -113,29 +108,29 @@ public class MainActivity extends FragmentActivity {
         switch (item.getItemId()) {
             case R.id.reports:
                 toggleTab(item);
-                showReportsList() ;
+                showReportsList();
                 break;
             case R.id.new_report_action:
-                newReport() ;
+                newReport();
                 break;
             case R.id.people:
                 toggleTab(item);
-                showPeopleList() ;
+                showPeopleList();
                 break;
             case R.id.locations:
                 toggleTab(item);
-                showLocationsList() ;
+                showLocationsList();
                 break;
-            case R.id.action_logout :
+            case R.id.action_logout:
                 logout();
                 break;
-            case R.id.action_settings :
+            case R.id.action_settings:
                 showSettings();
                 break;
-            case R.id.sync :
+            case R.id.sync:
                 sync();
                 break;
-            default :
+            default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
@@ -220,7 +215,6 @@ public class MainActivity extends FragmentActivity {
      * A listener method that listens for a some changes in the data being displayed
      */
     public void onDataSetChanged() {
-        sync();
         MenuListFragment fragment = (MenuListFragment) leftFragment;
         fragment.notifyDataChanged();
         hideKeyboard();
@@ -309,7 +303,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void sync() {
-        if(networkHelper.isInternetAvailable()) {
+        if (networkHelper.isInternetAvailable()) {
             //Create a new synchronization receiver
             final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
                 @Override
@@ -336,10 +330,10 @@ public class MainActivity extends FragmentActivity {
     private void handleSyncResult(Intent intent) {
         int result = intent.getIntExtra("SYNC_RESULT", -1);
         switch (result) {
-            case 200 :
+            case 200:
                 syncSuccess();
                 break;
-            default :
+            default:
                 syncFailure();
                 break;
         }

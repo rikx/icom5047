@@ -43,12 +43,13 @@ public class Option {
         this.dbHelper = db;
         invoke(optionID);
     }
-    public Option(long optionID,long partentID, long nextID,String label, DBHelper db) {
+
+    public Option(long optionID, long partentID, long nextID, String label, DBHelper db) {
         this.dbHelper = db;
         if (exist(optionID)) { // can also verify if id == -1
 
         } else {
-            this.id = create(optionID, partentID, nextID,label);
+            this.id = create(optionID, partentID, nextID, label);
         }
     }
 
@@ -126,8 +127,8 @@ public class Option {
                 DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            nextItem = cursor.getLong(0);
+            if (!cursor.isNull(0))
+                nextItem = cursor.getLong(0);
             db.close();
             cursor.close();
         }
@@ -139,6 +140,7 @@ public class Option {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.OPTION_NEXT_ID, next.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_OPTION, values, DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -151,8 +153,8 @@ public class Option {
                 DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
-            label = cursor.getString(0);
+            if (!cursor.isNull(0))
+                label = cursor.getString(0);
             db.close();
             cursor.close();
         }
@@ -164,6 +166,7 @@ public class Option {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.OPTION_LABEL, String.valueOf(label));
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_OPTION, values, DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -184,6 +187,7 @@ public class Option {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.OPTION_PARENT_ID, parent.getId());
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_OPTION, values, DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
         return id;// if -1 error during update
@@ -197,7 +201,7 @@ public class Option {
                 DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            if(!cursor.isNull(0))
+            if (!cursor.isNull(0))
                 nextItem = cursor.getLong(0);
             db.close();
             cursor.close();

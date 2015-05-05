@@ -20,7 +20,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
     private String username = null;
     private String password = null;
-	private DBHelper dbHelper;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +32,11 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         dbHelper = new DBHelper(getApplicationContext());
         // TODO: fill db with dummy data eliminar despues
 //        dbHelper.deleteDB();
-        if(dbHelper.getDummy())
+        if (dbHelper.getDummy())
             dbHelper.syncDB();
 
         //Perform the login procedure
-	    loadLogin();
+        loadLogin();
         Button login = (Button) findViewById(R.id.login_button);
         login.setOnClickListener(this);
         EditText passView = (EditText) findViewById(R.id.field_password);
@@ -45,8 +45,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.login_button :
+        switch (view.getId()) {
+            case R.id.login_button:
                 login();
                 break;
         }
@@ -56,7 +56,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
         int action = keyEvent.getAction();
         int vid = textView.getId();
-        if(vid == R.id.field_password && action == 6) {
+        if (vid == R.id.field_password && action == 6) {
             login();
             return true;
         }
