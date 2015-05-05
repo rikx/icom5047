@@ -979,13 +979,16 @@ router.post('/admin/usuarios', function(req, res, next) {
 							if(err) {
 								return console.error('error running query', err);
 							} else {
+								var person_id = result.rows[0].person_id;
 				  			// Insert new user into db
-				  			var person_id = result.rows[0].person_id;
-
+				  			// use as username string content before '@' in usuario_email
+				  			var new_username = req.body.usuario_email;
+				  			var at_index = new_username.indexOf('@');
+				  			new_username = new_username.substring(0, at_index);
 				  			// Insert new user row
 				  			client.query("INSERT into users (person_id, type, username) VALUES ($1, $2, $3) \
 				  										RETURNING user_id", 
-				  										[person_id, req.body.usuario_type, req.body.usuario_email] , function(err, result) {
+				  										[person_id, req.body.usuario_type, new_username] , function(err, result) {
 									if(err) {
 										return console.error('error running query', err);
 									} else {
@@ -1005,8 +1008,6 @@ router.post('/admin/usuarios', function(req, res, next) {
 										});
 									}
 								});
-
-
 		  				}
 		  			});
 					}
@@ -1039,9 +1040,13 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
 			// edit user table
+		  // use as username string content before '@' in usuario_email
+			var new_username = req.body.usuario_email;
+			var at_index = new_username.indexOf('@');
+			new_username = new_username.substring(0, at_index);
 			client.query("UPDATE users SET type = $1, username = $2 \
 										WHERE user_id = $3", 
-										[req.body.usuario_type, req.body.usuario_email, user_id], function(err, result) {
+										[req.body.usuario_type, new_username, user_id], function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
