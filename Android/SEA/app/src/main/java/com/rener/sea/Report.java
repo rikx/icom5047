@@ -57,7 +57,7 @@ public class Report implements Comparable<Report> {
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_CREATOR_ID, creator_id);
         values.put(DBSchema.REPORT_LOCATION_ID, location_id);
-        values.put(DBSchema.REPORT_SUBJECT_ID, subject_id);
+//        values.put(DBSchema.REPORT_SUBJECT_ID, subject_id);
         values.put(DBSchema.REPORT_FLOWCHART_ID, flowchart_id);
         values.put(DBSchema.REPORT_NOTE, String.valueOf(note));
         values.put(DBSchema.REPORT_DATE_FILED, DBSchema.FORMATDATE.format(date.getTime()));
@@ -181,28 +181,28 @@ public class Report implements Comparable<Report> {
     }
 
     public Person getSubject() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        long subject = -1;
-        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_SUBJECT_ID},
-                DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            if (!cursor.isNull(0))
-                subject = cursor.getLong(0);
-            db.close();
-            cursor.close();
-        }
-        return new Person(subject, dbHelper);
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        long subject = -1;
+//        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_SUBJECT_ID},
+//                DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            if (!cursor.isNull(0))
+//                subject = cursor.getLong(0);
+//            db.close();
+//            cursor.close();
+//        }
+        return new Person(-1, dbHelper);
     }
 
     public long setSubject(Person subject) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DBSchema.REPORT_SUBJECT_ID, subject.getId());
-        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
-        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
-        db.close();
-        return id;
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//        values.put(DBSchema.REPORT_SUBJECT_ID, subject.getId());
+//        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
+//        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+//        db.close();
+        return -1;
     }
 
     public Flowchart getFlowchart() {

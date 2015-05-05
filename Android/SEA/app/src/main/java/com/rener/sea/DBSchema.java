@@ -140,7 +140,7 @@ public class DBSchema {
     public static final String PERSON_LAST_NAME1 = "last_name1";
     public static final String PERSON_FIRST_NAME = "first_name";
     public static final String PERSON_EMAIL = "email";
-    public static final String PERSON_SPEC_ID = "spec_id";
+//    public static final String PERSON_SPEC_ID = "spec_id";
     public static final String PERSON_LAST_NAME2 = "last_name2";
     public static final String PERSON_MIDDLE_INITIAL = "middle_initial";
     public static final String PERSON_PHONE_NUMBER = "phone_number";
@@ -149,7 +149,7 @@ public class DBSchema {
             PERSON_LAST_NAME1 + " TEXT," +
             PERSON_FIRST_NAME + " TEXT," +
             PERSON_EMAIL + " TEXT," +
-            PERSON_SPEC_ID + " INTEGER," +
+//            PERSON_SPEC_ID + " INTEGER," +
             PERSON_LAST_NAME2 + " TEXT," +
             PERSON_MIDDLE_INITIAL + " TEXT," +
             PERSON_PHONE_NUMBER + " TEXT," +
@@ -158,7 +158,7 @@ public class DBSchema {
     public static final String REPORT_ID = "report_id";
     public static final String REPORT_CREATOR_ID = "creator_id";
     public static final String REPORT_LOCATION_ID = "location_id";
-    public static final String REPORT_SUBJECT_ID = "subject_id";
+//    public static final String REPORT_SUBJECT_ID = "subject_id";
     public static final String REPORT_FLOWCHART_ID = "flowchart_id";
     public static final String REPORT_NOTE = "note";
     public static final String REPORT_DATE_FILED = "date_filed";
@@ -167,7 +167,7 @@ public class DBSchema {
             REPORT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             REPORT_CREATOR_ID + " INTEGER," +
             REPORT_LOCATION_ID + " INTEGER," +
-            REPORT_SUBJECT_ID + " INTEGER," +
+//            REPORT_SUBJECT_ID + " INTEGER," +
             REPORT_FLOWCHART_ID + " INTEGER," +
             REPORT_NOTE + " TEXT," +
             REPORT_NAME + " TEXT," +
@@ -186,14 +186,23 @@ public class DBSchema {
     public static final String USER_PASSHASH = "passhash";
     public static final String USER_PERSON_ID = "person_id";
     public static final String USER_SALT = "salt";
+    public static final String USER_TYPE = "type";
     public static final String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "(" +
             USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             USER_USERNAME + " TEXT," +
             USER_PASSHASH + " TEXT," +
             USER_PERSON_ID + " INTEGER," +
             USER_SALT + " TEXT," +
+            USER_TYPE + " TEXT," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_USERS_SPECIALIZATION = "users_specialization";
+    public static final String USERS_SPECIALIZATION_USER_ID = "user_id";
+    public static final String USERS_SPECIALIZATION_SPECIALIZATION_ID = "spec_id";
+    public static final String CREATE_USERS_SPECIALIZATION_TABLE = "CREATE TABLE " + TABLE_USERS_SPECIALIZATION + "(" +
+            USERS_SPECIALIZATION_USER_ID + " INTEGER," +
+            USERS_SPECIALIZATION_SPECIALIZATION_ID + " INTEGER," +
+            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "' )";
+
 
     public static final DateFormat FORMATDATE = new SimpleDateFormat("yyyy-MM-dd");
     public static final DateFormat FORMATTIME = new SimpleDateFormat("HH:mm:ss");

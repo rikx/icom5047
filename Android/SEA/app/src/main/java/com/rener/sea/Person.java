@@ -86,31 +86,31 @@ public class Person implements Comparable<Person> {
 
     }
 
-    public int getSpecializationID() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int specializationID = -1;
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_SPEC_ID},
-                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            if (!cursor.isNull(0))
-                specializationID = cursor.getInt(0);
-            db.close();
-            cursor.close();
-        }
-        return specializationID;
+//    public int getSpecializationID() {
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        int specializationID = -1;
+//        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_SPEC_ID},
+//                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            if (!cursor.isNull(0))
+//                specializationID = cursor.getInt(0);
+//            db.close();
+//            cursor.close();
+//        }
+//        return specializationID;
+//
+//    }
 
-    }
-
-    public void setSpecializationID(int specializationID) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DBSchema.PERSON_SPEC_ID, specializationID);
-        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
-        long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
-        db.close();
-//        return id;// if -1 error during update
-    }
+//    public void setSpecializationID(int specializationID) {
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//        values.put(DBSchema.PERSON_SPEC_ID, specializationID);
+//        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
+//        long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
+//        db.close();
+////        return id;// if -1 error during update
+//    }
 
     public long getId() {
 

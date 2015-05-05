@@ -186,4 +186,7 @@ public class User {
         return id;// if -1 error during update
     }
 
+    public String getType() {
+        return "";
+    }
 }
