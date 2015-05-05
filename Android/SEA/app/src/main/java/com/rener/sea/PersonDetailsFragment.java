@@ -103,11 +103,7 @@ public class PersonDetailsFragment extends Fragment {
                 flipToEditLayout();
                 break;
             case R.id.save_person_action:
-                getFields();
-                setFields();
-                flipToShowLayout();
-                //Notify the activity that data has changed
-                ((MainActivity) getActivity()).onDataSetChanged();
+                savePerson();
                 break;
         }
 
@@ -151,12 +147,13 @@ public class PersonDetailsFragment extends Fragment {
     }
 
     private void flipToShowLayout() {
+        ((MainActivity)getActivity()).hideKeyboard();
         flipper.setDisplayedChild(SHOW_LAYOUT);
         options.findItem(R.id.save_person_action).setVisible(false);
         options.findItem(R.id.edit_person_action).setVisible(true);
     }
 
-    private void getFields() {
+    private boolean getFields() {
 
         //Get the text from the fields
         String strFirstName = editFirstName.getText().toString();
@@ -166,7 +163,8 @@ public class PersonDetailsFragment extends Fragment {
         String strEmail = editEmail.getText().toString();
         String strPhone = editPhoneNumber.getText().toString();
 
-        //TODO: validate input
+        if(strFirstName.equals("") || strLastName1.equals(""))
+            return false;
 
         //Set the person instance fields
         person.setFirstName(strFirstName);
@@ -175,6 +173,8 @@ public class PersonDetailsFragment extends Fragment {
         person.setLastName2(strLastName2);
         person.setEmail(strEmail);
         person.setPhoneNumber(strPhone);
+
+        return true;
     }
 
     /**
@@ -188,5 +188,14 @@ public class PersonDetailsFragment extends Fragment {
         if (viewCreated)
             setFields();
         return this.person;
+    }
+
+    private void savePerson() {
+        if(getFields()) {
+            setFields();
+            flipToShowLayout();
+            //Notify the activity that data has changed
+            ((MainActivity) getActivity()).onDataSetChanged();
+        }
     }
 }

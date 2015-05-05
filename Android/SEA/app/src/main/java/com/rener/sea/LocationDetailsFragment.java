@@ -257,6 +257,7 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
     }
 
     private void flipToShowLayout() {
+        ((MainActivity)getActivity()).hideKeyboard();
         options.findItem(R.id.save_location_action).setVisible(false);
         flipper.setDisplayedChild(SHOW_LAYOUT);
         options.findItem(R.id.edit_location_action).setVisible(true);
@@ -266,14 +267,8 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
         if(getFields()) {
             setFields();
             flipToShowLayout();
+            ((MainActivity) getActivity()).onDataSetChanged();
         }
-        else {
-            String message = getResources().getString(R.string.duplicate_license_message);
-            Context context = getActivity().getApplicationContext();
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        }
-        //Notify the activity that data has changed
-        ((MainActivity) getActivity()).onDataSetChanged();
     }
 
     /**
@@ -291,7 +286,9 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
         String city = editCity.getText().toString();
         String zip = editZipCode.getText().toString();
 
-        //TODO check input
+        //
+        if(name.equals(""))
+            return false;
 
         //Set the instance fields
         location.setName(name);

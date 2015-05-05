@@ -94,4 +94,5 @@
 	<string name="sync_success">Sync succesful!</string>
 	<string name="sync_fail">Sync failed!</string>
 	<string name="duplicate_license_message">License already exists</string>
+	<string name="next_question">Next question</string>
 </resources>
