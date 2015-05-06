@@ -35,6 +35,10 @@ $(document).ready(function(){
 		window.location.href = '/users/citas';
 	});
 
+	$('#btn_manejar_categorias').click(function(){
+		window.location.href = '/users/categorias';
+	});
+
 
 	//logout function
 	$('#btn_logout').click(function(){

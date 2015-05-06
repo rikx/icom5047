@@ -19,6 +19,32 @@ var router = express.Router();
   }
  });
 
+/* GET Categorias 
+ * Responds with categorias, 
+ * alphabetically ordered by name
+ */
+router.get('/categorias', function(req, res, next) {
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+ 		client.query('SELECT * FROM category', function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+
+	  	if(err) {
+	  		return console.error('error running query', err);
+	  	} else {
+	  		res.render('manejar_categorias', { 
+	  			title: 'Manejar Categorias', 
+	  			categories: result.rows
+	  		});
+	  	}
+	  });
+ 	});
+});
+
 /* GET Tomar Cuestionario 
  * Responds with first 20 cuestionarios, 
  * alphabetically ordered by name

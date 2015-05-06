@@ -1,0 +1,40 @@
+extends layout
+block css
+	link(rel='stylesheet', href='/stylesheets/style.css')
+
+block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extensión Agrícola
+						h4 Manejar Categorias
+			.col-md-2
+
+		.row
+			.col-md-1
+			.col-md-6
+				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar categoria por nombre')
+			.col-md-4
+			.col-md-1
+
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading Ganaderos
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table(class='table')
+								thead
+								tbody#categories_list(data-categories=categories)
+	
+	//	Latest compiled and minified JavaScript
+	script(src='//code.jquery.com/jquery-1.11.2.min.js')
+	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
+	script(src='/javascripts/typeahead.bundle.min.js')
+	script(src='/javascripts/manejar_categorias.js')
+	script(src='/javascripts/helpers.js')
