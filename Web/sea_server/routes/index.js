@@ -992,7 +992,7 @@ router.get('/list_categories', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// get devices and their assigned user (if any)
-	  client.query("SELECT * FROM category", function(err, result) {
+	  client.query("SELECT * FROM category ORDER BY name", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
     	if(err) {
