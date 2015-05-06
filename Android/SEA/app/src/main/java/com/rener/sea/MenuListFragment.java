@@ -4,7 +4,7 @@ package com.rener.sea;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,11 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,22 +45,6 @@ public class MenuListFragment extends ListFragment {
         return fragment;
     }
 
-    /**
-     * Create a MenuListFragment instance with a given type and preselected index
-     *
-     * @param type  the MenuListFragment type
-     * @param index the preselected index
-     * @return a new MenuListFragment object
-     */
-    public static MenuListFragment newInstance(String type, int index) {
-        MenuListFragment fragment = new MenuListFragment();
-        Bundle args = new Bundle();
-        args.putString("type", type);
-        args.putInt("index", index);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +58,7 @@ public class MenuListFragment extends ListFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.menu_list_fragment, container, false);
     }
@@ -161,7 +142,6 @@ public class MenuListFragment extends ListFragment {
      * Notifies the list adapter that data has changed and it should update it's views
      */
     public void onListDataChanged() {
-        Collections.sort(list);
         adapter.notifyDataSetChanged();
     }
 
@@ -171,14 +151,6 @@ public class MenuListFragment extends ListFragment {
      */
     public String getType() {
         return type;
-    }
-
-    /**
-     * Gets the current position in the this list fragment
-     * @return the current position
-     */
-    public int getPosition() {
-        return curPos;
     }
 
     private void newReport() {
@@ -194,7 +166,7 @@ public class MenuListFragment extends ListFragment {
             String message = getResources().getString(R.string.no_flowcharts);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
-        else if(ls ==0) {
+        else {
             String message = getResources().getString(R.string.no_locations);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
