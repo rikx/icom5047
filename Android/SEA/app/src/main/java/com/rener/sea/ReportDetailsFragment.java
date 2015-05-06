@@ -2,6 +2,7 @@ package com.rener.sea;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -136,6 +137,13 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             interviewLayout.addView(questionView);
             interviewLayout.addView(answerView);
         }
+        boolean completed = false;
+        if(!completed) {
+            Button continueButton = (Button) getActivity().findViewById(R.id
+                    .report_continue_survey_button);
+            continueButton.setVisibility(View.VISIBLE);
+            continueButton.setOnClickListener(this);
+        }
     }
 
     /**
@@ -152,10 +160,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         String dateLabel = getResources().getString(R.string.date_label);
         String date = dateLabel + ": " + report.getDateString(dateFormat, locale);
         textDate.setText(date);
-
-        //Set the type
-        //TODO: review this
-        textType.setText(report.getType());
 
         //Set the location
         String locLabel = getResources().getString(R.string.location_label);
@@ -210,8 +214,11 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             case R.id.report_cancel_appointment_button:
                 appointmentLayout = NO_APPOINTMENT_LAYOUT;
                 setAppointmentViews();
+                break;
+            case R.id.report_continue_survey_button:
+                continueReport();
+                break;
         }
-
     }
 
     private void setAppointmentViews() {
@@ -323,5 +330,12 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
         //Notify activity that data has changed
         ((MainActivity) getActivity()).onDataSetChanged();
+    }
+
+    private void continueReport() {
+        Intent intent = new Intent(getActivity(), SurveyActivity.class);
+        intent.putExtra("REPORT_ID", report.getId());
+        startActivity(intent);
+        getActivity().finish();
     }
 }

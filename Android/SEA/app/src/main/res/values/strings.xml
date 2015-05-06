@@ -95,4 +95,5 @@
 	<string name="sync_fail">Sync failed!</string>
 	<string name="duplicate_license_message">License already exists</string>
 	<string name="next_question">Next question</string>
+	<string name="continue_report">continue</string>
 </resources>

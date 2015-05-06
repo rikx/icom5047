@@ -70,6 +70,14 @@
 			android:inputType="textMultiLine"
 			/>
 
+		<FrameLayout
+			android:id="@+id/survey_appointment_container"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:visibility="gone">
+		</FrameLayout>
+
 	</LinearLayout>
 
 </ScrollView>

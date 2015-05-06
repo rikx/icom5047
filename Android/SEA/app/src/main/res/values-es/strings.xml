@@ -95,4 +95,5 @@
 	<string name="sync_fail">Sincronización fracasada!</string>
 	<string name="duplicate_license_message">La licencia ya existe</string>
 	<string name="next_question">Próxima pregunta</string>
+	<string name="continue_report">continuar</string>
 </resources>
