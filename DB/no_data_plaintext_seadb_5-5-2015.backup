@@ -1,0 +1,1103 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.4.1
+-- Dumped by pg_dump version 9.4.1
+-- Started on 2015-05-05 12:33:31
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'SQL_ASCII';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 201 (class 3079 OID 11855)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2207 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- TOC entry 202 (class 3079 OID 33468)
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- TOC entry 2208 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 172 (class 1259 OID 33503)
+-- Name: address; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE address (
+    address_id bigint NOT NULL,
+    address_line1 character varying,
+    city character varying,
+    address_line2 character varying,
+    zipcode character varying
+);
+
+
+ALTER TABLE address OWNER TO postgres;
+
+--
+-- TOC entry 173 (class 1259 OID 33509)
+-- Name: address_address_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE address_address_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE address_address_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2209 (class 0 OID 0)
+-- Dependencies: 173
+-- Name: address_address_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE address_address_id_seq OWNED BY address.address_id;
+
+
+--
+-- TOC entry 174 (class 1259 OID 33511)
+-- Name: appointments; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE appointments (
+    appointment_id bigint NOT NULL,
+    date date,
+    "time" time without time zone,
+    report_id bigint NOT NULL,
+    purpose text,
+    maker_id bigint
+);
+
+
+ALTER TABLE appointments OWNER TO postgres;
+
+--
+-- TOC entry 175 (class 1259 OID 33517)
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE appointments_appointment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE appointments_appointment_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2210 (class 0 OID 0)
+-- Dependencies: 175
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE appointments_appointment_id_seq OWNED BY appointments.appointment_id;
+
+
+--
+-- TOC entry 176 (class 1259 OID 33519)
+-- Name: category; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE category (
+    category_id bigint NOT NULL,
+    name character varying
+);
+
+
+ALTER TABLE category OWNER TO postgres;
+
+--
+-- TOC entry 177 (class 1259 OID 33525)
+-- Name: category_category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE category_category_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE category_category_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2211 (class 0 OID 0)
+-- Dependencies: 177
+-- Name: category_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE category_category_id_seq OWNED BY category.category_id;
+
+
+--
+-- TOC entry 178 (class 1259 OID 33527)
+-- Name: devices; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE devices (
+    device_id bigint NOT NULL,
+    name character varying,
+    id_number character varying NOT NULL,
+    user_id bigint
+);
+
+
+ALTER TABLE devices OWNER TO postgres;
+
+--
+-- TOC entry 179 (class 1259 OID 33533)
+-- Name: devices_device_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE devices_device_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE devices_device_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2212 (class 0 OID 0)
+-- Dependencies: 179
+-- Name: devices_device_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE devices_device_id_seq OWNED BY devices.device_id;
+
+
+--
+-- TOC entry 180 (class 1259 OID 33535)
+-- Name: flowchart; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE flowchart (
+    flowchart_id bigint NOT NULL,
+    first_id bigint,
+    name character varying,
+    end_id bigint,
+    creator_id bigint,
+    version character varying
+);
+
+
+ALTER TABLE flowchart OWNER TO postgres;
+
+--
+-- TOC entry 181 (class 1259 OID 33541)
+-- Name: flowchart_flowchart_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE flowchart_flowchart_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE flowchart_flowchart_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2213 (class 0 OID 0)
+-- Dependencies: 181
+-- Name: flowchart_flowchart_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE flowchart_flowchart_id_seq OWNED BY flowchart.flowchart_id;
+
+
+--
+-- TOC entry 182 (class 1259 OID 33543)
+-- Name: item; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE item (
+    item_id bigint NOT NULL,
+    flowchart_id bigint NOT NULL,
+    label text,
+    pos_top double precision,
+    pos_left double precision,
+    type character varying,
+    plumb_id smallint,
+    state_id character varying
+);
+
+
+ALTER TABLE item OWNER TO postgres;
+
+--
+-- TOC entry 183 (class 1259 OID 33549)
+-- Name: item_item_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE item_item_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE item_item_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2214 (class 0 OID 0)
+-- Dependencies: 183
+-- Name: item_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE item_item_id_seq OWNED BY item.item_id;
+
+
+--
+-- TOC entry 184 (class 1259 OID 33551)
+-- Name: location; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE location (
+    location_id bigint NOT NULL,
+    name character varying,
+    address_id bigint,
+    owner_id bigint,
+    manager_id bigint,
+    license character varying,
+    agent_id bigint
+);
+
+
+ALTER TABLE location OWNER TO postgres;
+
+--
+-- TOC entry 185 (class 1259 OID 33557)
+-- Name: location_category; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE location_category (
+    location_id bigint NOT NULL,
+    category_id bigint NOT NULL
+);
+
+
+ALTER TABLE location_category OWNER TO postgres;
+
+--
+-- TOC entry 186 (class 1259 OID 33560)
+-- Name: location_location_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE location_location_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE location_location_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2215 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: location_location_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE location_location_id_seq OWNED BY location.location_id;
+
+
+--
+-- TOC entry 187 (class 1259 OID 33562)
+-- Name: option; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE option (
+    option_id bigint NOT NULL,
+    parent_id bigint,
+    next_id bigint,
+    label text
+);
+
+
+ALTER TABLE option OWNER TO postgres;
+
+--
+-- TOC entry 188 (class 1259 OID 33568)
+-- Name: option_option_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE option_option_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE option_option_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2216 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: option_option_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE option_option_id_seq OWNED BY option.option_id;
+
+
+--
+-- TOC entry 189 (class 1259 OID 33570)
+-- Name: path; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE path (
+    report_id bigint NOT NULL,
+    option_id bigint NOT NULL,
+    data text,
+    sequence integer
+);
+
+
+ALTER TABLE path OWNER TO postgres;
+
+--
+-- TOC entry 190 (class 1259 OID 33576)
+-- Name: person; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE person (
+    person_id bigint NOT NULL,
+    last_name1 character varying NOT NULL,
+    first_name character varying NOT NULL,
+    email character varying(254),
+    last_name2 character varying,
+    middle_initial character varying,
+    phone_number text
+);
+
+
+ALTER TABLE person OWNER TO postgres;
+
+--
+-- TOC entry 191 (class 1259 OID 33582)
+-- Name: person_person_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE person_person_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE person_person_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2217 (class 0 OID 0)
+-- Dependencies: 191
+-- Name: person_person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE person_person_id_seq OWNED BY person.person_id;
+
+
+--
+-- TOC entry 192 (class 1259 OID 33584)
+-- Name: report; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE report (
+    report_id bigint NOT NULL,
+    creator_id bigint,
+    location_id bigint,
+    flowchart_id bigint,
+    note text,
+    date_filed date,
+    name character varying
+);
+
+
+ALTER TABLE report OWNER TO postgres;
+
+--
+-- TOC entry 193 (class 1259 OID 33590)
+-- Name: report_report_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE report_report_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE report_report_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2218 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: report_report_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE report_report_id_seq OWNED BY report.report_id;
+
+
+--
+-- TOC entry 194 (class 1259 OID 33592)
+-- Name: session; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE session (
+    sid character varying NOT NULL,
+    sess json NOT NULL,
+    expire timestamp(6) without time zone NOT NULL
+);
+
+
+ALTER TABLE session OWNER TO postgres;
+
+--
+-- TOC entry 195 (class 1259 OID 33598)
+-- Name: specialization; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE specialization (
+    spec_id bigint NOT NULL,
+    name character varying
+);
+
+
+ALTER TABLE specialization OWNER TO postgres;
+
+--
+-- TOC entry 196 (class 1259 OID 33604)
+-- Name: specialization_spec_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE specialization_spec_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE specialization_spec_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2219 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: specialization_spec_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE specialization_spec_id_seq OWNED BY specialization.spec_id;
+
+
+--
+-- TOC entry 197 (class 1259 OID 33606)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE users (
+    user_id bigint NOT NULL,
+    username character varying(32) NOT NULL,
+    passhash text DEFAULT crypt(gen_salt('bf'::text), gen_salt('bf'::text)) NOT NULL,
+    person_id bigint,
+    salt text DEFAULT gen_salt('bf'::text) NOT NULL,
+    type character varying NOT NULL
+);
+
+
+ALTER TABLE users OWNER TO postgres;
+
+--
+-- TOC entry 2220 (class 0 OID 0)
+-- Dependencies: 197
+-- Name: COLUMN users.passhash; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN users.passhash IS 'crypt(''new password'', gen_salt(''bf''))';
+
+
+--
+-- TOC entry 198 (class 1259 OID 33614)
+-- Name: user_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE user_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE user_user_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2221 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: user_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE user_user_id_seq OWNED BY users.user_id;
+
+
+--
+-- TOC entry 199 (class 1259 OID 33616)
+-- Name: users_specialization; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE users_specialization (
+    user_id bigint NOT NULL,
+    spec_id bigint NOT NULL
+);
+
+
+ALTER TABLE users_specialization OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1259 OID 33619)
+-- Name: view_users; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW view_users AS
+ SELECT users.username,
+    person.first_name,
+    person.last_name1,
+    person.last_name2,
+    person.email
+   FROM (users
+     JOIN person ON ((users.person_id = person.person_id)));
+
+
+ALTER TABLE view_users OWNER TO postgres;
+
+--
+-- TOC entry 2016 (class 2604 OID 33623)
+-- Name: address_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY address ALTER COLUMN address_id SET DEFAULT nextval('address_address_id_seq'::regclass);
+
+
+--
+-- TOC entry 2017 (class 2604 OID 33624)
+-- Name: appointment_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY appointments ALTER COLUMN appointment_id SET DEFAULT nextval('appointments_appointment_id_seq'::regclass);
+
+
+--
+-- TOC entry 2018 (class 2604 OID 33625)
+-- Name: category_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY category ALTER COLUMN category_id SET DEFAULT nextval('category_category_id_seq'::regclass);
+
+
+--
+-- TOC entry 2019 (class 2604 OID 33626)
+-- Name: device_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY devices ALTER COLUMN device_id SET DEFAULT nextval('devices_device_id_seq'::regclass);
+
+
+--
+-- TOC entry 2020 (class 2604 OID 33627)
+-- Name: flowchart_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY flowchart ALTER COLUMN flowchart_id SET DEFAULT nextval('flowchart_flowchart_id_seq'::regclass);
+
+
+--
+-- TOC entry 2021 (class 2604 OID 33628)
+-- Name: item_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY item ALTER COLUMN item_id SET DEFAULT nextval('item_item_id_seq'::regclass);
+
+
+--
+-- TOC entry 2022 (class 2604 OID 33629)
+-- Name: location_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY location ALTER COLUMN location_id SET DEFAULT nextval('location_location_id_seq'::regclass);
+
+
+--
+-- TOC entry 2023 (class 2604 OID 33630)
+-- Name: option_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY option ALTER COLUMN option_id SET DEFAULT nextval('option_option_id_seq'::regclass);
+
+
+--
+-- TOC entry 2024 (class 2604 OID 33631)
+-- Name: person_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY person ALTER COLUMN person_id SET DEFAULT nextval('person_person_id_seq'::regclass);
+
+
+--
+-- TOC entry 2025 (class 2604 OID 33632)
+-- Name: report_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY report ALTER COLUMN report_id SET DEFAULT nextval('report_report_id_seq'::regclass);
+
+
+--
+-- TOC entry 2026 (class 2604 OID 33633)
+-- Name: spec_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY specialization ALTER COLUMN spec_id SET DEFAULT nextval('specialization_spec_id_seq'::regclass);
+
+
+--
+-- TOC entry 2029 (class 2604 OID 33634)
+-- Name: user_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users ALTER COLUMN user_id SET DEFAULT nextval('user_user_id_seq'::regclass);
+
+
+--
+-- TOC entry 2031 (class 2606 OID 33636)
+-- Name: address_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY address
+    ADD CONSTRAINT address_pkey PRIMARY KEY (address_id);
+
+
+--
+-- TOC entry 2033 (class 2606 OID 33638)
+-- Name: appointments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY appointments
+    ADD CONSTRAINT appointments_pkey PRIMARY KEY (appointment_id);
+
+
+--
+-- TOC entry 2035 (class 2606 OID 33640)
+-- Name: category_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY category
+    ADD CONSTRAINT category_name_key UNIQUE (name);
+
+
+--
+-- TOC entry 2037 (class 2606 OID 33642)
+-- Name: category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY category
+    ADD CONSTRAINT category_pkey PRIMARY KEY (category_id);
+
+
+--
+-- TOC entry 2039 (class 2606 OID 33644)
+-- Name: devices_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY devices
+    ADD CONSTRAINT devices_pkey PRIMARY KEY (device_id);
+
+
+--
+-- TOC entry 2041 (class 2606 OID 33646)
+-- Name: flowchart_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY flowchart
+    ADD CONSTRAINT flowchart_pkey PRIMARY KEY (flowchart_id);
+
+
+--
+-- TOC entry 2043 (class 2606 OID 33648)
+-- Name: item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY item
+    ADD CONSTRAINT item_pkey PRIMARY KEY (item_id);
+
+
+--
+-- TOC entry 2047 (class 2606 OID 33650)
+-- Name: location_category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY location_category
+    ADD CONSTRAINT location_category_pkey PRIMARY KEY (location_id, category_id);
+
+
+--
+-- TOC entry 2045 (class 2606 OID 33652)
+-- Name: location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY location
+    ADD CONSTRAINT location_pkey PRIMARY KEY (location_id);
+
+
+--
+-- TOC entry 2049 (class 2606 OID 33654)
+-- Name: option_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY option
+    ADD CONSTRAINT option_pkey PRIMARY KEY (option_id);
+
+
+--
+-- TOC entry 2051 (class 2606 OID 33656)
+-- Name: path_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY path
+    ADD CONSTRAINT path_pkey PRIMARY KEY (report_id, option_id);
+
+
+--
+-- TOC entry 2053 (class 2606 OID 33658)
+-- Name: person_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY person
+    ADD CONSTRAINT person_pkey PRIMARY KEY (person_id);
+
+
+--
+-- TOC entry 2055 (class 2606 OID 33660)
+-- Name: report_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY report
+    ADD CONSTRAINT report_pkey PRIMARY KEY (report_id);
+
+
+--
+-- TOC entry 2057 (class 2606 OID 33662)
+-- Name: session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY session
+    ADD CONSTRAINT session_pkey PRIMARY KEY (sid);
+
+
+--
+-- TOC entry 2059 (class 2606 OID 33664)
+-- Name: specialization_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY specialization
+    ADD CONSTRAINT specialization_name_key UNIQUE (name);
+
+
+--
+-- TOC entry 2061 (class 2606 OID 33666)
+-- Name: specialization_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY specialization
+    ADD CONSTRAINT specialization_pkey PRIMARY KEY (spec_id);
+
+
+--
+-- TOC entry 2063 (class 2606 OID 33668)
+-- Name: user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT user_pkey PRIMARY KEY (user_id);
+
+
+--
+-- TOC entry 2065 (class 2606 OID 33670)
+-- Name: user_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT user_username_key UNIQUE (username);
+
+
+--
+-- TOC entry 2067 (class 2606 OID 33672)
+-- Name: users_specialization_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users_specialization
+    ADD CONSTRAINT users_specialization_pkey PRIMARY KEY (user_id, spec_id);
+
+
+--
+-- TOC entry 2068 (class 2606 OID 33673)
+-- Name: appointments_report_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY appointments
+    ADD CONSTRAINT appointments_report_fkey FOREIGN KEY (report_id) REFERENCES report(report_id);
+
+
+--
+-- TOC entry 2069 (class 2606 OID 33678)
+-- Name: devices_users_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY devices
+    ADD CONSTRAINT devices_users_fkey FOREIGN KEY (user_id) REFERENCES users(user_id);
+
+
+--
+-- TOC entry 2070 (class 2606 OID 33683)
+-- Name: flowchart_creator_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY flowchart
+    ADD CONSTRAINT flowchart_creator_id_fkey FOREIGN KEY (creator_id) REFERENCES users(user_id);
+
+
+--
+-- TOC entry 2071 (class 2606 OID 33688)
+-- Name: flowchart_end_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY flowchart
+    ADD CONSTRAINT flowchart_end_id_fkey FOREIGN KEY (end_id) REFERENCES item(item_id);
+
+
+--
+-- TOC entry 2072 (class 2606 OID 33693)
+-- Name: flowchart_first_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY flowchart
+    ADD CONSTRAINT flowchart_first_id_fkey FOREIGN KEY (first_id) REFERENCES item(item_id);
+
+
+--
+-- TOC entry 2073 (class 2606 OID 33698)
+-- Name: item_flowchart_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY item
+    ADD CONSTRAINT item_flowchart_id_fkey FOREIGN KEY (flowchart_id) REFERENCES flowchart(flowchart_id);
+
+
+--
+-- TOC entry 2074 (class 2606 OID 33703)
+-- Name: location_address_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY location
+    ADD CONSTRAINT location_address_id_fkey FOREIGN KEY (address_id) REFERENCES address(address_id);
+
+
+--
+-- TOC entry 2075 (class 2606 OID 33708)
+-- Name: location_agent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY location
+    ADD CONSTRAINT location_agent_id_fkey FOREIGN KEY (agent_id) REFERENCES users(user_id);
+
+
+--
+-- TOC entry 2078 (class 2606 OID 33713)
+-- Name: location_category_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY location_category
+    ADD CONSTRAINT location_category_category_id_fkey FOREIGN KEY (category_id) REFERENCES category(category_id);
+
+
+--
+-- TOC entry 2079 (class 2606 OID 33718)
+-- Name: location_category_location_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY location_category
+    ADD CONSTRAINT location_category_location_id_fkey FOREIGN KEY (location_id) REFERENCES location(location_id);
+
+
+--
+-- TOC entry 2076 (class 2606 OID 33723)
+-- Name: location_manager_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY location
+    ADD CONSTRAINT location_manager_id_fkey FOREIGN KEY (manager_id) REFERENCES person(person_id);
+
+
+--
+-- TOC entry 2077 (class 2606 OID 33728)
+-- Name: location_owner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY location
+    ADD CONSTRAINT location_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES person(person_id);
+
+
+--
+-- TOC entry 2080 (class 2606 OID 33733)
+-- Name: option_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY option
+    ADD CONSTRAINT option_item_id_fkey FOREIGN KEY (parent_id) REFERENCES item(item_id);
+
+
+--
+-- TOC entry 2081 (class 2606 OID 33738)
+-- Name: option_next_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY option
+    ADD CONSTRAINT option_next_id_fkey FOREIGN KEY (next_id) REFERENCES item(item_id);
+
+
+--
+-- TOC entry 2082 (class 2606 OID 33743)
+-- Name: path_option_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY path
+    ADD CONSTRAINT path_option_id_fkey FOREIGN KEY (option_id) REFERENCES option(option_id);
+
+
+--
+-- TOC entry 2083 (class 2606 OID 33748)
+-- Name: path_report_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY path
+    ADD CONSTRAINT path_report_id_fkey FOREIGN KEY (report_id) REFERENCES report(report_id);
+
+
+--
+-- TOC entry 2084 (class 2606 OID 33753)
+-- Name: report_creator_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY report
+    ADD CONSTRAINT report_creator_id_fkey FOREIGN KEY (creator_id) REFERENCES users(user_id);
+
+
+--
+-- TOC entry 2085 (class 2606 OID 33758)
+-- Name: report_flowchart_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY report
+    ADD CONSTRAINT report_flowchart_id_fkey FOREIGN KEY (flowchart_id) REFERENCES flowchart(flowchart_id);
+
+
+--
+-- TOC entry 2086 (class 2606 OID 33763)
+-- Name: report_location_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY report
+    ADD CONSTRAINT report_location_id_fkey FOREIGN KEY (location_id) REFERENCES location(location_id);
+
+
+--
+-- TOC entry 2087 (class 2606 OID 33768)
+-- Name: user_person_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT user_person_fkey FOREIGN KEY (person_id) REFERENCES person(person_id);
+
+
+--
+-- TOC entry 2088 (class 2606 OID 33773)
+-- Name: users_specialization_spec_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users_specialization
+    ADD CONSTRAINT users_specialization_spec_id_fkey FOREIGN KEY (spec_id) REFERENCES specialization(spec_id);
+
+
+--
+-- TOC entry 2089 (class 2606 OID 33778)
+-- Name: users_specialization_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users_specialization
+    ADD CONSTRAINT users_specialization_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id);
+
+
+--
+-- TOC entry 2206 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2015-05-05 12:33:31
+
+--
+-- PostgreSQL database dump complete
+--
+
