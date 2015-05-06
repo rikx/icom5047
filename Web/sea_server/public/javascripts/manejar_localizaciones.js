@@ -14,6 +14,10 @@ $(document).ready(function(){
   var user_info = JSON.parse($localizaciones_list.attr('data-user'));
 
 
+  console.log(user_info);
+
+  $('#currently_signed_in').text("Usuario actual: " + user_info.username);
+
   // initial info panel population
   if(localizaciones_array.length > 0)
   populate_info_panel(localizaciones_array[0]);
