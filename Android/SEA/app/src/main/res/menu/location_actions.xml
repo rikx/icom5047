@@ -17,4 +17,12 @@
 		  android:orderInCategory="22"
 		  />
 
+	<item android:id="@+id/new_report_location_action"
+		  android:title="@string/new_report"
+		  android:icon="@drawable/ic_action_new_event"
+		  android:visible="true"
+		  android:showAsAction="always"
+		  android:orderInCategory="11"
+		/>
+
 </menu>

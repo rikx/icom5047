@@ -24,9 +24,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
@@ -78,7 +80,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         //Check if a new report must be created
         Intent intent = getIntent();
         long id = intent.getLongExtra("REPORT_ID", -1);
-        long loc_id = intent.getLongExtra("LOCATION_ID", -1);
         if(id == -1) {
             report = new Report(dbHelper, setCreator());
         }
@@ -91,7 +92,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         editName.addTextChangedListener(this);
         editNotes = (EditText) findViewById(R.id.survey_edit_notes);
         spinnerLocation = (Spinner) findViewById(R.id.survey_location_spinner);
-        //spinnerSubject = (Spinner) findViewById(R.id.survey_subject_spinner);
         spinnerFlowchart = (Spinner) findViewById(R.id.survey_flowchart_spinner);
 
         progressLayout = (LinearLayout) findViewById(R.id.survey_progress_layout);
@@ -221,15 +221,20 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         spinnerLocation.setAdapter(locationAdapter);
         spinnerLocation.setOnItemSelectedListener(this);
 
-//        DummyAdapter personAdapter = new DummyAdapter(this,
-//                android.R.layout.simple_list_item_1, people, 0);
-//        spinnerSubject.setAdapter(personAdapter);
-//        spinnerSubject.setOnItemSelectedListener(this);
-
         DummyAdapter flowchartAdapter = new DummyAdapter(this,
                 android.R.layout.simple_list_item_1, flowcharts, 0);
         spinnerFlowchart.setAdapter(flowchartAdapter);
         spinnerFlowchart.setOnItemSelectedListener(this);
+
+        //Set preselected location if necessary
+        long loc_id = getIntent().getLongExtra("LOCATION_ID", -1);
+        if(loc_id != -1) {
+            for(int i=0; i<locations.size(); i++) {
+                Location l = (Location) spinnerLocation.getAdapter().getItem(i);
+                if(l.getId() == loc_id)
+                    spinnerLocation.setSelection(i);
+            }
+        }
     }
 
     @Override
@@ -319,10 +324,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 newQuestion(next);
                 break;
             default:
-                nextButton.setEnabled(false);
-                nextButton.setVisibility(View.INVISIBLE);
-                surveyEnded = true;
-                checkSubmittable();
+                endSurvey();
                 break;
         }
     }
@@ -343,12 +345,14 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         path.addEntry(answer);
         Item next = answer.getNext();
         newQuestion(next);
+        scrollToBottom();
     }
 
     private void questionAnswered(Option answer, String data) {
         path.addEntry(answer, data);
         Item next = answer.getNext();
         newQuestion(next);
+        scrollToBottom();
     }
 
     @Override
@@ -460,6 +464,24 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 questionAnswered(checked);
             }
         }
+    }
+
+    private void endSurvey() {
+        nextButton.setEnabled(false);
+        surveyEnded = true;
+        String message = getResources().getString(R.string.survey_completed);
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        checkSubmittable();
+    }
+
+    private void scrollToBottom() {
+        final ScrollView scroll = (ScrollView) findViewById(R.id.survey_activity_view);
+        scroll.post(new Runnable() {
+            @Override
+            public void run() {
+                scroll.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     private void setAppointmentViews() {

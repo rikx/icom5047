@@ -107,4 +107,5 @@
 	<string name="select_owner">seleccione un ganadero</string>
 	<string name="licence_label">Licencia</string>
 	<string name="address_label">Dirección</string>
+	<string name="survey_completed">Cuestionario completado</string>
 </resources>

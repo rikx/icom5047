@@ -107,4 +107,5 @@
 	<string name="select_manager">select manager</string>
 	<string name="licence_label">Licence</string>
 	<string name="address_label">Address</string>
+	<string name="survey_completed">Survey complete</string>
 </resources>
