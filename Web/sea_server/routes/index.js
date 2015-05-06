@@ -969,11 +969,36 @@ router.get('/list_dispositivos', function(req, res, next) {
 									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
 									ORDER BY username ASC \
 									LIMIT 20", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
 	    	dispositivos_list = result.rows;
 	    	res.json({dispositivos: dispositivos_list});
+	    }
+	  });
+	});
+});
+
+/* GET Dispositivos List data 
+ * Responds with first 20 dispositivos, 
+ * ordered by assigned user
+ */
+router.get('/list_categories', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// get devices and their assigned user (if any)
+	  client.query("SELECT * FROM category", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({categories: result.rows});
 	    }
 	  });
 	});

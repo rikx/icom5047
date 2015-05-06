@@ -1,10 +1,27 @@
 	.item_question {
 		position: absolute;
 		border: 1px solid black;
-		background-color: lime;
-
+		background-color: lime; 
 	}
 
+	.item_multi {
+		position: absolute;
+		border: 1px solid black;
+		background-color: #32CD32; /*lime green*/
+	}
+
+	.item_abierta {
+		position: absolute;
+		border: 1px solid black;
+		background-color: #3CB371; /* Medium Sea Green */
+	}
+
+	.item_conditional {
+		position: absolute;
+		border: 1px solid black;
+		background-color: #FF7F50; /* Coral */
+
+	}
 	.item_recom {
 		position: absolute;
 		border: 1px solid black;
