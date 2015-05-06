@@ -13,8 +13,9 @@ $(document).ready(function(){
 		e.preventDefault();
 		var category_id = $(this).attr('data-id');
 		$('#btn_edit_categories').attr("data-id", category_id);
-		var category_name = $(this).attr('category_name');
-		$('#btn_edit_categories').attr("category_name", category_name);
+		var category_name = $(this).attr('data-category-name');
+		$('#btn_edit_categories').attr("data-category-name", category_name);
+		$('#category_name').val(category_name);
 		console.log(category_id);
 		console.log(category_name);
     // remove active from previous list item 
@@ -29,7 +30,7 @@ $(document).ready(function(){
 	$('#btn_edit_categories').on('click', function(){
 		$('#add_category_panel').hide();
 		$('#edit_category_panel').show();
-		var category_name = $('#btn_edit_categories').attr("category_name");
+		var category_name = $('#btn_edit_categories').attr("data-category-name");
 		$('#category_name').val(category_name);
 
 
@@ -83,7 +84,7 @@ error: function( xhr, status, errorThrown ) {
 /* POSTs new category information */
 $('#btn_put_new_category').on('click', function(){
   // get form data and conver to json format
-  var category_name = $('#btn_edit_categories').attr("category_name");
+  var category_name = $('#btn_edit_categories').attr("data-category-name");
   var category_id = $('#btn_edit_categories').attr("data-id");
   // ajax call to post new category
   var $the_form = $('#form_edit_category');
@@ -97,18 +98,17 @@ $('#btn_put_new_category').on('click', function(){
   	data: JSON.stringify(new_category),
   	contentType: "application/json",
   	dataType: "json",
-
   	success: function(data) {
-  		alert("Categoria fue editada exitosamente");
-  		// if(data.exists){
-  		// 	alert("Localización con este número de licensia ya existe");
-  		// } else {
-  		// 	alert("Localización ha sido añadido al sistema.");
-    //     // clear add form
-    //     $the_form[0].reset();
-    //     // update locations list after posting 
-    //     populate_localizaciones();
-    // }
+    alert("Categoria fue editada exitosamente");
+  		if(data.exists){
+  			alert("Localización con este número de licensia ya existe");
+  		} else {
+  			alert("Localización ha sido añadido al sistema.");
+        // clear add form
+        $the_form[0].reset();
+        // update locations list after posting 
+        populate_categories();
+    }
 
 
 },
@@ -139,7 +139,7 @@ function populate_list(all_categories){
       if(i==0) {
       	table_content +=  'active ';
       }
-      table_content += "the_category' href='#', data-id='"+all_categories[i].category_id+"',  category_name='"+all_categories[i].name+"'>"+all_categories[i].name+"</a></td>";
+      table_content += "the_category' href='#', data-id='"+all_categories[i].category_id+"',  data-category-name='"+all_categories[i].name+"'>"+all_categories[i].name+"</a></td>";
       table_content += '</tr>';
   });
 	$('#categories').html(table_content);

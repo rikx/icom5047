@@ -31,8 +31,17 @@ block content
 										table(class='table')
 											tbody#categories
 										button#btn_add_categories(class='btn btn-default btn-success', type='button') Agregar 
-										button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar
-										button#btn_delete_categories(class='btn btn-default btn-success', type='button') Eliminar
+										button#btn_edit_categories(class='btn btn-default btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
+										button#btn_delete_categories(class='btn btn-default btn-success', type='button', data-id=categories[0].category_id) Eliminar
+				#specialty_panel.form-group(data-all-categorias=categories)
+								.panel.panel-success
+									#specialty_panel_title.panel-heading Especialidades
+									.panel-body
+										table(class='table')
+											tbody#specialties
+										button#btn_add_specialties(class='btn btn-default btn-success', type='button') Agregar 
+										button#btn_edit_specialties(class='btn btn-default btn-success', type='button', data-id=specialties[0].specialty_id, data-specialty-name=categories[0].name) Editar
+										button#btn_delete_specialties(class='btn btn-default btn-success', type='button', data-id=specialties[0].specialty_id) Eliminar
 			.col-md-4
 				#add_category_panel.form-group
 								.panel.panel-success
@@ -57,7 +66,6 @@ block content
 										br
 										.btn-group(role='group', aria-label='edit panel buttons')
 											button#btn_put_new_category(class='btn btn-default') Someter
-
 	
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
