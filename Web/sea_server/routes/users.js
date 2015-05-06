@@ -29,7 +29,7 @@ router.get('/categorias', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		client.query('SELECT * FROM category', function(err, result) {
+ 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
 
@@ -616,6 +616,35 @@ router.put('/admin/user_specialties', function(req, res, next) {
 			// Edit ganadero
 			client.query("UPDATE person SET first_name = $1, middle_initial = $2, last_name1 = $3, last_name2 = $4, email = $5, phone_number = $6 WHERE person_id = $7", 
 										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono, ganadero_id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					res.json(true);
+				}
+			});
+		});
+	}
+});
+
+/* PUT Admin Manejar Ganaderos 
+ * Edit ganadero matching :id in database
+ */
+ router.put('/admin/edit_category/:id', function(req, res, next) {
+ 	console.log("edit category");
+ 	if(!req.body.hasOwnProperty('category_name')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for put categories.');
+ 	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// Edit category
+			client.query("UPDATE category SET name = $1 WHERE category_id = $2", 
+										[req.body.category_name, req.params.id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {

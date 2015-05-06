@@ -2259,6 +2259,8 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 
     public void syncDBFull() {
+        deleteDB();
+        getDummy();
         String device_id = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
         String prefKey = context.getResources().getString(R.string.preference_file_key);
         String usernameKey = context.getResources().getString(R.string.key_saved_username);

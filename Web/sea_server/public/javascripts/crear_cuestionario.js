@@ -1,8 +1,8 @@
 jsPlumb.ready(function() {
 	$preguntas_list = $('#preguntas_list');
 	// stores current elements in the jsPlumb container
-	var elements_array = new Array();
-	var connections_array = new Array();
+	var elements_array = [];
+	var connections_array = [];
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
@@ -56,26 +56,6 @@ jsPlumb.ready(function() {
 	  }
   }
 
-  /* Check all items are a source in at least one connection 
-   * for use when user submits a finished flowchart
-   * not used when user just saves a flowchart under construction
-   */
-  function check_item_connections(){
-  	var has_child = false;
-  	for(var i = 0; i < elements_array.length; i++){
-  		for(var j = 0; j < connections_array.length; j++){
-  			if(elements_array[i].id == connections_array[j].source){
-  				has_child = true;
-  			}
-  		}
-  		if(!has_child){
-  			console.log('item '+elements_array[i].id+' necesita una connecion');
-  		} else {
-  			has_child = false;
-  		}
-  	}
-  }
-
   /* */
   function populate_elements_list(){
 		// add new element to elements list
@@ -120,63 +100,114 @@ jsPlumb.ready(function() {
  					}	
  				}
  			} else if(elements_array[i].type == 'END'){
- 				end_item = elements_array[i].id;
+ 				for(var x=0; x<connections_array.length; x++){
+ 					if(elements_array[i].id == connections_array[x].target){
+ 						end_item = connections_array[x].source;
+ 					}	
+ 				}
  			}
  		}
  		return {first_id: first_item, end_id: end_item};
  	}
 
+  /* Check item type == 'START' is a source in only one connection
+   * all items where type != 'END' || 'START' are a source in at least one connection
+   * and item type == 'END' is a target in at least one connection
+   * not used when user just saves a flowchart under construction
+   */
+  function check_item_connections(){
+  	var start_count = 0;
+  	var end_count = 0;
+  	var valid_item_count = 0;
+  	var this_element;
+  	
+  	for(var i = 0; i < elements_array.length; i++){
+  		this_element = elements_array[i];
+  		for(var j = 0; j < connections_array.length; j++){
+  			if(this_element.type == 'START'){
+  				if(this_element.id == connections_array[j].source){
+	  				start_count++;
+	  			}
+  			} else if(this_element.type == 'END'){
+  				if(this_element.id == connections_array[j].target){
+  					end_count++;
+  				}
+  			} else {
+  				if(this_element.id == connections_array[j].source){
+	  				valid_item_count++;
+	  			}
+  			}
+  		}
+  	}
+
+	  if(start_count == 1 && end_count > 0 && (valid_item_count==elements_array.length)){
+			return true;
+		} else {
+			return false;
+		}
+  }
+
   /* POSTs new flowchart information */
   $('#btn_submit').on('click', function(){
   	var end_points = check_for_endpoints();
+  	console.log('Elements:');
+  	console.log(elements_array);
+  	console.log('Connections:');
+  	console.log(connections_array);
 
+		// get form data and conver to json format
+		var $the_form = $('#form_create_flowchart');
+		var form_data = $the_form.serializeArray();
+		var new_flowchart = ConverToJSON(form_data);
   	// checks created flowchart has a first item
-  	if(end_points.first_id != -1){
-	    // get form data and conver to json format
-	    var $the_form = $('#form_create_flowchart');
-	    var form_data = $the_form.serializeArray();
-	    var new_flowchart = ConverToJSON(form_data);
+  	if(!empty_field_check(form_data)){
+	    if(end_points.first_id != -1){
+	    	if(check_item_connections()){
+					// add missing flowchart fields
+					new_flowchart.first_id = end_points.first_id;
+					new_flowchart.end_id = end_points.end_id;
+					// ajax call to post new ganadero
+					$.ajax({
+					  url: "http://localhost:3000/users/admin/cuestionarios/crear",
+					  method: "POST",
+					  data: JSON.stringify({
+					  	info: new_flowchart,
+					  	items: elements_array,
+					  	options: connections_array
+					  }),
+					  contentType: "application/json",
+					  dataType: "json",
 
-	    // add missing flowchart fields
-	    new_flowchart.first_id = end_points.first_id;
-	    new_flowchart.end_id = end_points.end_id;
-	    console.log(new_flowchart);
-	    // ajax call to post new ganadero
-	    $.ajax({
-	      url: "http://localhost:3000/users/admin/cuestionarios/crear",
-	      method: "POST",
-	      data: JSON.stringify({
-	      	info: new_flowchart,
-	      	items: elements_array,
-	      	options: connections_array
-	      }),
-	      contentType: "application/json",
-	      dataType: "json",
-
-	      success: function(data) {
-	        if(data.exists){
-	          alert("Cuestionario con este nombre y versión ya existe.");
-	        } else {
-	          alert("Cuestionario ha sido añadido al sistema.");
-	         	if(typeof data.redirect == 'string') {
-					    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+					  success: function(data) {
+					    if(data.exists){
+					      alert("Cuestionario con este nombre y versión ya existe.");
+					    } else {
+					      alert("Cuestionario ha sido añadido al sistema.");
+					     	if(typeof data.redirect == 'string') {
+							    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+							  }
+					    }
+					  },
+					  error: function( xhr, status, errorThrown ) {
+					    alert( "Sorry, there was a problem!" );
+					    console.log( "Error: " + errorThrown );
+					    console.log( "Status: " + status );
+					    console.dir( xhr );
 					  }
-	        }
-	      },
-	      error: function( xhr, status, errorThrown ) {
-	        alert( "Sorry, there was a problem!" );
-	        console.log( "Error: " + errorThrown );
-	        console.log( "Status: " + status );
-	        console.dir( xhr );
-	      }
-	    });
+					});	
+	    	} else {
+	    		alert('Verifique que todas preguntas y recomendaciones tienen una conección hacia otro elemento');
+	    	}
+	    } else {
+	    	alert('Cuestionario no tiene preguntas o recomendaciones');
+	    }
+	  } else {
+	  	alert('Ingrese nombre y version de cuestionario');
 	  }
   });
 
 
  	var j =0; // item id
- 	var array = [];
- 	var arrayConnection = [];
  	var trigger = "yes";
  	jsPlumb.Defaults.Container = $('#container_plumbjs');
 
@@ -212,25 +243,34 @@ jsPlumb.ready(function() {
 				$('#start_item').addClass('disabled');
 				title_id.text('INICIO');
  			} else if(itemType == 'END'){
- 				newState.addClass('item_end_point');
- 				newState.attr('data-state-name', 'FIN');
- 				$('#end_item').addClass('disabled');
- 				title_id.text('FIN');
+	 				newState.addClass('item_end_point');
+	 				newState.attr('data-state-name', 'FIN');
+	 				$('#end_item').addClass('disabled');
+	 				title_id.text('FIN');
  			} else {
- 				if(itemType == 'RECOM'){
-					newState.addClass('item_recom');
- 				} else {
- 					newState.addClass('item_question');	
- 				}
- 				// Set item identifier text
-				title_id.text('Elemento ' + j);
-				// add input for item text content
-				has_input = true;
- 				var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
- 				var stateName = $('<input>').attr('type', 'text');
+					switch(itemType){
+						case 'OPEN':
+							newState.addClass('item_abierta');	
+							break;
+						case 'MULTI':
+							newState.addClass('item_multi');	
+							break;
+						case 'CONDITIONAL':
+							newState.addClass('item_conditional');	
+							break;
+						case 'RECOM':
+							newState.addClass('item_recom');
+							break;
+					}
+	 				// Set item identifier text
+					title_id.text('Elemento ' + j);
+					// add input for item text content
+					has_input = true;
+	 				var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
+	 				var stateName = $('<input>').attr('type', 'text');
 
- 				// store element id as data attribute
-				stateName.attr('data-id', 'state' + j);
+	 				// store element id as data attribute
+					stateName.attr('data-id', 'state' + j);
  			}
  			
  			// append title_id to state item
@@ -253,27 +293,35 @@ jsPlumb.ready(function() {
 			//add new state item to container
 			$('#container_plumbjs').append(newState);
 			
-			jsPlumb.makeTarget(newState, {
-				anchor: 'Continuous',
-				endpoint:'Blank'
-			});
-			jsPlumb.makeSource(connect, {
-				parent: newState,
-				anchor: 'Continuous',
-				connector: 'Flowchart',
-				endpoint:'Blank'
-			});   
+			if(itemType != 'START'){
+				jsPlumb.makeTarget(newState, {
+					anchor: 'Continuous',
+					endpoint:'Blank'
+				});
+			}
 
+			if(itemType != 'END'){
+				jsPlumb.makeSource(connect, {
+					parent: newState,
+					anchor: 'Continuous',
+					connector: 'Flowchart',
+					endpoint:'Blank'
+				});				
+			}
+   
 			jsPlumb.draggable(newState, {
 				containment: 'parent',
 				stop: function(event) {
 					if ($(event.target).find('select').length == 0) {
-						//saveState(event.target);
-						array.push(newState);
+
 						// create item object
+						var this_name = $('#'+newState.attr('id')).attr('data-state-name');
+						if(this_name == undefined){
+							this_name = 'Elemento sin título'
+						}
 						var this_item = {
 							id: newState.attr('id'),
-							name: $('#'+newState.attr('id')).attr('data-state-name'),
+							name: this_name,
 							type: itemType,
 							left: newState.position().left,
 							top: newState.position().top
@@ -325,6 +373,8 @@ jsPlumb.ready(function() {
 						//return;
 					}
 				}
+				// populate elements list with new element
+				populate_elements_list();
 			}); 
 
 			if(itemType != 'START' && itemType != 'END'){
@@ -369,6 +419,37 @@ jsPlumb.ready(function() {
 		e.stopPropagation();
 	}); 
 
+	jsPlumb.bind("beforeDrop", function(connection) {
+		var source_id = connection.sourceId;
+		var target_id = connection.targetId;
+		// get source item type
+		for(var y = 0; y<elements_array.length; y++){
+			this_item = elements_array[y];
+			if(this_item.id == source_id){
+				source_type = this_item.type;
+			} else if(this_item.id == target_id){
+				target_type = this_item.type;
+			}
+		}
+		var start_count = 0;
+		// if source_type == 'START' check its not connected to an 'END' type
+		if(source_type == 'START'){
+			for(var z = 0; z<connections_array.length; z++){
+				// dont allow start element to connect to end
+				if(target_type == 'END'){
+					return false;
+				} else if(source_id == connections_array[z].source){
+					start_count++;
+				}
+			}
+		}
+		// dont allow 'START' to have more than 1 connection;
+		if(start_count == 1){
+			return false;
+		} else{
+			return true;
+		}
+	});
 
 	jsPlumb.bind("connection", function(info, originalEvent) {
 		jsPlumb.ready(function() {
