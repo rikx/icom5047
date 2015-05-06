@@ -42,7 +42,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        Log.i(this.toString(), "instanced " + context.toString());
+//        Log.i(this.toString(), "instanced " + context.toString());
     }
 
     @Override
@@ -63,7 +63,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DBSchema.CREATE_SPECIALIZATION_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_SPECIALIZATION_TABLE);
-        Log.i(this.toString(), "created");
+//        Log.i(this.toString(), "created");
         dummyDB = true;
 
 
@@ -135,23 +135,23 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Person> getAllPersons() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
-                null, null, null, null, DBSchema.PERSON_FIRST_NAME + " ASC", null);
+                null, null, null, null, DBSchema.PERSON_FIRST_NAME + " COLLATE NOCASE", null);
         ArrayList<Person> persons;
         persons = new ArrayList<>();
-        Log.i(this.toString(), "Cursor " + cursor);
-        Log.i(this.toString(), "Cursor count " + cursor.getCount());
+//        Log.i(this.toString(), "Cursor " + cursor);
+//        Log.i(this.toString(), "Cursor count " + cursor.getCount());
         if ((cursor != null) && (cursor.getCount() > 0)) {
-            Log.i(this.toString(), "Inside if");
+//            Log.i(this.toString(), "Inside if");
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 persons.add(new Person(cursor.getLong(0), this));
-                Log.i(this.toString(), "People created " + cursor.getLong(0));
+//                Log.i(this.toString(), "People created " + cursor.getLong(0));
             }
 
             db.close();
             cursor.close();
 
         }
-        Log.i(this.toString(), "persons not found");
+//        Log.i(this.toString(), "persons not found");
         return persons;
 
     }
@@ -159,7 +159,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Flowchart> getAllFlowcharts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_ID},
-                null, null, null, null, DBSchema.FLOWCHART_NAME + " ASC", null);
+                null, null, null, null, DBSchema.FLOWCHART_NAME + " COLLATE NOCASE", null);
         ArrayList<Flowchart> flowcharts;
         flowcharts = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -179,7 +179,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Location> getAllLocations() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID},
-                null, null, null, null, DBSchema.LOCATION_NAME + " ASC", null);
+                null, null, null, null, DBSchema.LOCATION_NAME + " COLLATE NOCASE", null);
         ArrayList<Location> location;
         location = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -199,7 +199,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
-                null, null, null, null, DBSchema.REPORT_DATE_FILED + " ASC", null);
+                null, null, null, null, DBSchema.REPORT_DATE_FILED + " COLLATE NOCASE", null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -760,7 +760,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     }
 
     private long setUsers(JSONArray data) {
-        Log.i(this.toString(), "USERS : " + data);
+//        Log.i(this.toString(), "USERS : " + data);
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -1665,7 +1665,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             json.put("users", getUsers());
             Gson gson = new GsonBuilder().create();
             String temp = gson.toJson(json);
-            Log.i(this.toString(), "DUMP  = " + json.toString());
+//            Log.i(this.toString(), "DUMP  = " + json.toString());
             return json;
 
         } catch (JSONException e) {
@@ -2038,7 +2038,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public void syncDB() {
         String device_id = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
 
-        Log.i(this.toString(), "HTTP Sync called ");
+//        Log.i(this.toString(), "HTTP Sync called ");
         //Create AsycHttpClient object
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -2050,11 +2050,11 @@ public final class DBHelper extends SQLiteOpenHelper {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                     SQLiteDatabase db = getWritableDatabase();
                     try {
                         JSONObject serverJSONObject = response.getJSONObject(DBSchema.POST_SERVER_DATA);
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
 
                         setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
                         setPath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
@@ -2079,7 +2079,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     }
                     try {
                         JSONObject localJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -2093,13 +2093,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
 
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                     switch (statusCode) {
                         case 404:
                             Intent intent404 = new Intent();
@@ -2144,7 +2144,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             User currentUser = findUserByUsername(sUsername);
             long userID = currentUser.getId();
             String type = currentUser.getType();
-            Log.i(this.toString(), "DEVICE ID = " + String.valueOf(device_id));
+//            Log.i(this.toString(), "DEVICE ID = " + String.valueOf(device_id));
             params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_INC);
             params.put(DBSchema.POST_USER_ID, userID);
             params.put(DBSchema.POST_USER_TYPE, type);
@@ -2157,13 +2157,13 @@ public final class DBHelper extends SQLiteOpenHelper {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                     SQLiteDatabase db = getWritableDatabase();
 
                     try {
 
                         JSONObject serverJSONObject = response.getJSONObject(DBSchema.POST_SERVER_DATA);
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
                         setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
                         setPath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
                         setUsers_specialization(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS_SPECIALIZATION));
@@ -2193,9 +2193,9 @@ public final class DBHelper extends SQLiteOpenHelper {
                     try {
                         JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
                         long status = syncInf.getLong(DBSchema.SYNC_STATUS);
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
                         String  local_data = syncInf.getString("local_data");
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
                         if(status == DBSchema.STATUS_SUCCESS){
                             setSyncDone();
                         }
@@ -2214,13 +2214,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
 
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                     switch (statusCode) {
                         case 404:
                             Intent intent404 = new Intent();
@@ -2267,7 +2267,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(usernameKey, null);
         long userID = findUserByUsername(sUsername).getId();
-        Log.i(this.toString(), "HTTP Sync called ");
+//        Log.i(this.toString(), "HTTP Sync called ");
 
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -2279,11 +2279,11 @@ public final class DBHelper extends SQLiteOpenHelper {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                 SQLiteDatabase db = getWritableDatabase();
                 try {
-                    JSONObject serverJSONObject = response.getJSONObject("server");
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
+                    JSONObject serverJSONObject = response.getJSONObject(DBSchema.POST_SERVER_DATA);
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
 
                     setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
                     setPath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
@@ -2305,13 +2305,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                     e.printStackTrace();
                 }
-                try {
-                    JSONObject localJSONObject = response.getJSONObject("local");
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-                }
+//                try {
+////                    JSONObject localJSONObject = response.getJSONObject("local");
+////                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
+//                } catch (JSONException e) {
+//
+//                    e.printStackTrace();
+//                }
                 Intent intent = new Intent();
                 intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                 intent.setAction("SYNC");
@@ -2323,13 +2323,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
 
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                 switch (statusCode) {
                     case 404:
                         Intent intent404 = new Intent();
