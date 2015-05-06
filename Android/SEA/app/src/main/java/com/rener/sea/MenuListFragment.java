@@ -113,7 +113,7 @@ public class MenuListFragment extends ListFragment {
         //TODO: set empty view programmatically
 
         //Sort the list
-        Collections.sort(list);
+        //Collections.sort(list);
 
         //Set the list adapter
         setListAdapter(adapter);
@@ -181,7 +181,6 @@ public class MenuListFragment extends ListFragment {
     }
 
     private void newReport() {
-        //TODO: check if the survey activity should be started
         DBHelper dbHelper = ((MainActivity)getActivity()).getDBHelper();
         int fcs = dbHelper.getAllFlowcharts().size();
         int ls = dbHelper.getAllLocations().size();
