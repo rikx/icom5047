@@ -44,6 +44,14 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical"
 			android:padding="16dp">
+
+			<TextView
+				android:id="@+id/person_edit_first_name_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_first_name"
+				/>
 	
 			<EditText
 				android:id="@+id/person_edit_first_name"
@@ -51,6 +59,14 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/person_first_name"
 				android:inputType="textPersonName"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_middle_name_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_middle_name"
 				/>
 	
 			<EditText
@@ -60,6 +76,14 @@
 				android:hint="@string/person_middle_name"
 				android:inputType="textPersonName"
 				/>
+
+			<TextView
+				android:id="@+id/person_edit_last_name1_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_last_name1"
+				/>
 	
 			<EditText
 				android:id="@+id/person_edit_last_name1"
@@ -67,6 +91,14 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/person_last_name1"
 				android:inputType="textPersonName"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_last_name2_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_last_name2"
 				/>
 	
 			<EditText
@@ -76,6 +108,14 @@
 				android:hint="@string/person_last_name2"
 				android:inputType="textPersonName"
 				/>
+
+			<TextView
+				android:id="@+id/person_edit_email_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/no_data"
+				/>
 	
 			<EditText
 				android:id="@+id/person_edit_email"
@@ -83,6 +123,14 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/person_email"
 				android:inputType="textEmailAddress"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_phone_number_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_phone_number"
 				/>
 	
 			<EditText
