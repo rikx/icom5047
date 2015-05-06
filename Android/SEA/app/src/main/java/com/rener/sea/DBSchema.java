@@ -173,7 +173,7 @@ public class DBSchema {
             REPORT_NOTE + " TEXT," +
             REPORT_NAME + " TEXT," +
             REPORT_DATE_FILED + " TEXT," +
-            REPORT_STATUS + " INTEGER," +
+            REPORT_STATUS + " INTEGER DEFAULT 0," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_SPECIALIZATION = "specialization";
     public static final String SPECIALIZATION_ID = "spec_id";
