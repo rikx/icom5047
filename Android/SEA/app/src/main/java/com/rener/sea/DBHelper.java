@@ -135,7 +135,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Person> getAllPersons() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
-                null, null, null, null, null, null);
+                null, null, null, null, DBSchema.PERSON_FIRST_NAME + " ASC", null);
         ArrayList<Person> persons;
         persons = new ArrayList<>();
         Log.i(this.toString(), "Cursor " + cursor);
@@ -159,7 +159,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Flowchart> getAllFlowcharts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_ID},
-                null, null, null, null, null, null);
+                null, null, null, null, DBSchema.FLOWCHART_NAME + " ASC", null);
         ArrayList<Flowchart> flowcharts;
         flowcharts = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -179,7 +179,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Location> getAllLocations() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID},
-                null, null, null, null, null, null);
+                null, null, null, null, DBSchema.LOCATION_NAME + " ASC", null);
         ArrayList<Location> location;
         location = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -199,7 +199,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
-                null, null, null, null, null, null);
+                null, null, null, null, DBSchema.REPORT_DATE_FILED + " ASC", null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
