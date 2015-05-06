@@ -1,7 +1,6 @@
 package com.rener.sea;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
@@ -23,7 +21,7 @@ import java.util.List;
 /**
  * An Android fragment that manages the display of details for a single Location object
  */
-public class LocationDetailsFragment extends Fragment implements AdapterView
+public class LocationDetailsFragment extends Fragment implements DetailsFragment, AdapterView
         .OnItemSelectedListener {
 
     private static final int SHOW_LAYOUT = 0;
@@ -127,8 +125,10 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
                 android.R.layout.simple_list_item_1, agentList, 0);
         agentSpinner.setAdapter(adapter);
 
+        //Determine if the new location view should be displayed
+        //TODO: check this
         if(location != null) {
-            setFields();
+            setDataViews();
             flipper.setDisplayedChild(SHOW_LAYOUT);
         }
         else {
@@ -193,9 +193,9 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
     }
 
     /**
-     * Sets the static views using the Location data
+     * Sets the location views using the Location data
      */
-    private void setFields() {
+    private void setDataViews() {
 
         //Set the name fields
         textName.setText(location.getName());
@@ -270,9 +270,9 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
 
     private void saveLocation() {
         if(getFields()) {
-            setFields();
+            setDataViews();
             flipToShowLayout();
-            ((MainActivity) getActivity()).onDataSetChanged();
+            ((MainActivity) getActivity()).onDataChanged();
         }
     }
 
@@ -314,6 +314,14 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
     public void setLocation(Location location) {
         this.location = location;
         if (viewCreated)
-            setFields();
+            setDataViews();
+    }
+
+    @Override
+    public void onDetailsChanged() {
+        int displayed = flipper.getDisplayedChild();
+        if(viewCreated && displayed == SHOW_LAYOUT) {
+            setDataViews();
+        }
     }
 }

@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * An Android fragment class used to manage the display of data pertaining to a report.
  */
-public class ReportDetailsFragment extends Fragment implements View.OnClickListener {
+public class ReportDetailsFragment extends Fragment implements View.OnClickListener, DetailsFragment {
 
     public static final int NO_APPOINTMENT_LAYOUT = 0;
     private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
@@ -39,6 +39,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     private LinearLayout interviewLayout;
     private ViewFlipper appointmentFlipper;
     private View appointmentView;
+    private boolean viewCreated;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,8 +79,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         appointmentLayout.addView(aView);
         appointmentFlipper = (ViewFlipper) aView.findViewById(R.id.appointment_flipper);
         appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
-        setFields();
+        setDataViews();
 
+        viewCreated = true;
         return view;
     }
 
@@ -150,7 +152,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     /**
      * Set the static views for this fragment
      */
-    private void setFields() {
+    private void setDataViews() {
 
         //Set the name
         textName.setText(report.getName());
@@ -330,7 +332,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         setAppointmentViews();
 
         //Notify activity that data has changed
-        ((MainActivity) getActivity()).onDataSetChanged();
+        ((MainActivity) getActivity()).onDataChanged();
     }
 
     private void continueReport() {
@@ -338,5 +340,11 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         intent.putExtra("REPORT_ID", report.getId());
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onDetailsChanged() {
+        if(viewCreated)
+            setDataViews();
     }
 }

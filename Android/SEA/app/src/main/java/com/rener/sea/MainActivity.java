@@ -232,9 +232,23 @@ public class MainActivity extends FragmentActivity {
     /**
      * A listener method that listens for a some changes in the data being displayed
      */
-    public void onDataSetChanged() {
+    public void onDataChanged() {
         MenuListFragment fragment = (MenuListFragment) leftFragment;
         fragment.notifyDataChanged();
+        String type = fragment.getType();
+        if(rightFragment != null) {
+            DetailsFragment details;
+            if (type.equals(MenuListFragment.TYPE_LOCATIONS)) {
+                details = (LocationDetailsFragment) rightFragment;
+            } else if (type.equals(MenuListFragment.TYPE_PEOPLE)) {
+                details = (PersonDetailsFragment) rightFragment;
+            }
+            else {
+                details = (ReportDetailsFragment) rightFragment;
+            }
+            details.onDetailsChanged();
+        }
+        //TODO: possible report details changed
         hideKeyboard();
     }
 
@@ -358,7 +372,7 @@ public class MainActivity extends FragmentActivity {
 
     private void syncSuccess() {
         dbHelper.setSyncDone();
-        onDataSetChanged();
+        onDataChanged();
     }
 
     private void syncFailure() {

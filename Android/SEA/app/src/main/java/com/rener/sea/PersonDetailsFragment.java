@@ -19,7 +19,7 @@ import android.widget.ViewFlipper;
 /**
  * An Android fragment class used to display data pertaining to a person.
  */
-public class PersonDetailsFragment extends Fragment {
+public class PersonDetailsFragment extends Fragment implements DetailsFragment {
 
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
@@ -61,7 +61,7 @@ public class PersonDetailsFragment extends Fragment {
         editPhoneNumber = (EditText) view.findViewById(R.id.person_edit_phone_number);
 
         if(person != null) {
-            setFields();
+            setDataViews();
             flipper.setDisplayedChild(SHOW_LAYOUT);
         }
         else {
@@ -120,7 +120,7 @@ public class PersonDetailsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setFields() {
+    private void setDataViews() {
 
         //Set the name fields
         textName.setText(person.getFullNameFirstLast());
@@ -196,16 +196,16 @@ public class PersonDetailsFragment extends Fragment {
     public Person setPerson(Person person) {
         this.person = person;
         if (viewCreated)
-            setFields();
+            setDataViews();
         return this.person;
     }
 
     private void savePerson() {
         if(getFields()) {
-            setFields();
+            setDataViews();
             flipToShowLayout();
             //Notify the activity that data has changed
-            ((MainActivity) getActivity()).onDataSetChanged();
+            ((MainActivity) getActivity()).onDataChanged();
         }
     }
 
@@ -220,6 +220,14 @@ public class PersonDetailsFragment extends Fragment {
 
         if(!strFirstName.equals("") && !strLastName1.equals("")) {
             //TODO: create the new person
+        }
+    }
+
+    @Override
+    public void onDetailsChanged() {
+        int displayed = flipper.getDisplayedChild();
+        if(viewCreated && displayed == SHOW_LAYOUT) {
+            setDataViews();
         }
     }
 }
