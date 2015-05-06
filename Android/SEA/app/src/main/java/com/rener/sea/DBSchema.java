@@ -163,6 +163,7 @@ public class DBSchema {
     public static final String REPORT_NOTE = "note";
     public static final String REPORT_DATE_FILED = "date_filed";
     public static final String REPORT_NAME = "name";
+    public static final String REPORT_STATUS = "status"; //0:started,1:done,2:deleted,3:tramper-start,4:tramper-done
     public static final String CREATE_REPORT_TABLE = "CREATE TABLE " + TABLE_REPORT + "(" +
             REPORT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             REPORT_CREATOR_ID + " INTEGER," +
@@ -172,6 +173,7 @@ public class DBSchema {
             REPORT_NOTE + " TEXT," +
             REPORT_NAME + " TEXT," +
             REPORT_DATE_FILED + " TEXT," +
+            REPORT_STATUS + " INTEGER," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_SPECIALIZATION = "specialization";
     public static final String SPECIALIZATION_ID = "spec_id";

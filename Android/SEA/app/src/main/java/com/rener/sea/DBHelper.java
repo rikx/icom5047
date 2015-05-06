@@ -33,7 +33,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
-    private static int DATABASE_VERSION = 2;
+    private static int DATABASE_VERSION = 3;
     //    public static int SYNC_STATUS = 0;
     private static JSONObject dataSync = new JSONObject();
     private boolean dummyDB = false;

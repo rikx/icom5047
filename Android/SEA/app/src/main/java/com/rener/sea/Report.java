@@ -422,4 +422,46 @@ public class Report implements Comparable<Report> {
     public int compareTo(@NonNull Report r) {
         return getDate().compareTo(r.getDate());
     }
+
+    //TODO:is complited set comleted
+    public long getStatus(){
+        long status = -1;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_STATUS},
+                DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+                cursor.moveToFirst();
+                if (!cursor.isNull(0))
+                    status = cursor.getLong(0);
+        }
+
+        return status;
+    }
+
+    public long setCompleted(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.REPORT_STATUS, 1);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
+        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
+
+    public long delete(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.REPORT_STATUS, 2);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
+        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
+    // TODO: test this method
+    public long destroy(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long id = db.delete(DBSchema.TABLE_REPORT, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
 }
