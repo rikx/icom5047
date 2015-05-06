@@ -34,6 +34,7 @@ router.get('/categorias', function(req, res, next) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
+				categories_list = result.rows;
 		  	client.query('SELECT * FROM specialization ORDER BY name', function(err, result){
 			  	//call `done()` to release the client back to the pool
 			  	done();
