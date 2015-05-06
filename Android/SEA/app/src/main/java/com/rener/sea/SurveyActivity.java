@@ -78,6 +78,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         //Check if a new report must be created
         Intent intent = getIntent();
         long id = intent.getLongExtra("REPORT_ID", -1);
+        long loc_id = intent.getLongExtra("LOCATION_ID", -1);
         if(id == -1) {
             report = new Report(dbHelper, setCreator());
         }
@@ -145,6 +146,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     @Override
     public void onBackPressed() {
+        report.destroy();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
@@ -447,11 +449,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 .getNext();
         String type = item.getType();
         if(type.equals(Item.CONDITIONAL) || type.equals(Item.OPEN)) {
+            currentText.setEnabled(false);
             String input = currentText.getText().toString();
             handleUserInput(item, input);
         }
         else if(type.equals(Item.BOOLEAN) || type.equals(Item.MULTIPLE_CHOICE)) {
             if(groupChecked != -1) {
+                currentGroup.setEnabled(false);
                 Option checked = item.getOptions().get(groupChecked);
                 questionAnswered(checked);
             }
