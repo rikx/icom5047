@@ -309,7 +309,7 @@ public class Location implements Comparable<Location> {
 
     @Override
     public int compareTo(Location l) {
-        return toString().compareTo(l.toString());
+        return toString().toLowerCase().compareTo(l.toString().toLowerCase());
     }
 
     public boolean equals(Location l) {

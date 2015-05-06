@@ -318,7 +318,7 @@ public class Person implements Comparable<Person> {
 
     @Override
     public int compareTo(@NonNull Person other) {
-        return toString().compareTo(other.toString());
+        return toString().toLowerCase().compareTo(other.toString().toLowerCase());
     }
 
     /**
