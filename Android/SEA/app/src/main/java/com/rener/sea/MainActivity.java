@@ -110,9 +110,6 @@ public class MainActivity extends FragmentActivity {
                 toggleTab(item);
                 showReportsList();
                 break;
-            case R.id.new_report_action:
-                newReport();
-                break;
             case R.id.people:
                 toggleTab(item);
                 showPeopleList();
@@ -141,6 +138,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showReportsList() {
+        //Set the action bar title
+        String app = getResources().getString(R.string.app_name);
+        String label = getResources().getString(R.string.reports);
+        String title = app+" > "+label;
+        getActionBar().setTitle(title);
+
+        //Perform the fragment transaction
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         leftFragment = manager.findFragmentByTag("REPORTS");
@@ -158,6 +162,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showPeopleList() {
+        //Set the action bar title
+        String app = getResources().getString(R.string.app_name);
+        String label = getResources().getString(R.string.people);
+        String title = app+" > "+label;
+        getActionBar().setTitle(title);
+
+        //Perform the fragment transaction
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         leftFragment = manager.findFragmentByTag("PEOPLE");
@@ -175,6 +186,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showLocationsList() {
+        //Set the action bar title
+        String app = getResources().getString(R.string.app_name);
+        String label = getResources().getString(R.string.reports);
+        String title = app+" > "+label;
+        getActionBar().setTitle(title);
+
+        //Perform the fragment transaction
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         leftFragment = manager.findFragmentByTag("LOCATIONS");
@@ -290,11 +308,6 @@ public class MainActivity extends FragmentActivity {
 
     private void showSettings() {
         //TODO: settings
-    }
-
-    private void newReport() {
-        startActivity(new Intent(this, SurveyActivity.class));
-        finish();
     }
 
     /**

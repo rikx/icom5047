@@ -44,6 +44,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         login.setOnClickListener(this);
         EditText passView = (EditText) findViewById(R.id.field_password);
         passView.setOnEditorActionListener(this);
+
+        //Set the action bar title
+        String app = getResources().getString(R.string.app_name);
+        String label = getResources().getString(R.string.login);
+        String title = app+" > "+label;
+        getActionBar().setTitle(title);
     }
 
     @Override

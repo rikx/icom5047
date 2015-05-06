@@ -96,4 +96,10 @@
 	<string name="duplicate_license_message">La licencia ya existe</string>
 	<string name="next_question">Próxima pregunta</string>
 	<string name="continue_report">continuar</string>
+	<string name="login">Inicio</string>
+	<string name="no_reports">No hay reportes</string>
+	<string name="no_people">No hay personas</string>
+	<string name="no_locations">No hay localizaciones</string>
+	<string name="no_flowcharts">No hay flujogramas</string>
+	<string name="synchronize">Sincronizar</string>
 </resources>

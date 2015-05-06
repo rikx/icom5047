@@ -2,15 +2,20 @@ package com.rener.sea;
 
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,21 +92,25 @@ public class MenuListFragment extends ListFragment {
         //Set the list and it's respective adapter
         List list = new ArrayList();
         DBHelper db = ((MainActivity) getActivity()).getDBHelper();
-        //ArrayAdapter adapter = null;
+        String empty = getResources().getString(R.string.no_data);
         if (type.equals(TYPE_PEOPLE)) {
-
+            empty = getResources().getString(R.string.no_people);
             list = db.getAllPersons();
-            Log.i(this.toString(), " " + getActivity() + " Get all People " + list.toString());
             adapter = new ArrayAdapter<Person>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_LOCATIONS)) {
+            empty = getResources().getString(R.string.no_locations);
             list = db.getAllLocations();
             adapter = new ArrayAdapter<Location>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_REPORTS)) {
+            empty = getResources().getString(R.string.no_reports);
             list = db.getAllReports();
             adapter = new ReportListAdapter(getActivity(), list);
         }
+
+        //Set the empty view
+        //TODO: set empty view programmatically
 
         //Sort the list
         Collections.sort(list);
@@ -138,6 +147,16 @@ public class MenuListFragment extends ListFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_report_action:
+                newReport();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Notifies the list adapter that data has changed and it should update it's views
      */
@@ -159,5 +178,25 @@ public class MenuListFragment extends ListFragment {
      */
     public int getPosition() {
         return curPos;
+    }
+
+    private void newReport() {
+        //TODO: check if the survey activity should be started
+        DBHelper dbHelper = ((MainActivity)getActivity()).getDBHelper();
+        int fcs = dbHelper.getAllFlowcharts().size();
+        int ls = dbHelper.getAllLocations().size();
+        boolean allow = (fcs != 0 && ls != 0);
+        if(allow) {
+            startActivity(new Intent(getActivity(), SurveyActivity.class));
+            getActivity().finish();
+        }
+        else if(fcs ==0) {
+            String message = getResources().getString(R.string.no_flowcharts);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
+        else if(ls ==0) {
+            String message = getResources().getString(R.string.no_locations);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 }

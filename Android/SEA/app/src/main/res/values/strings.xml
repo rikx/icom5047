@@ -10,7 +10,7 @@
 	<string name="title_activity_main" translatable="false">SEA</string>
 	<string name="key_saved_username" translatable="false">USERNAME</string>
 	<string name="no_username">No user</string>
-	<string name="no_data">NO DATA</string>
+	<string name="no_data">No data found</string>
 	<string name="key_saved_password" translatable="false">PASSWORD</string>
 	<string name="db_name" translatable="false">SEA.db</string>
 	<string name="person_first_name">first name</string>
@@ -96,4 +96,10 @@
 	<string name="duplicate_license_message">License already exists</string>
 	<string name="next_question">Next question</string>
 	<string name="continue_report">continue</string>
+	<string name="login">Login</string>
+	<string name="no_reports">No reports found</string>
+	<string name="no_people">No people found</string>
+	<string name="no_locations">No locations found</string>
+	<string name="no_flowcharts">No flowcharts found</string>
+	<string name="synchronize">Synchronize</string>
 </resources>

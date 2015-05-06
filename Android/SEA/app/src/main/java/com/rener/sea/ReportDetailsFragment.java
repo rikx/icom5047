@@ -137,13 +137,14 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             interviewLayout.addView(questionView);
             interviewLayout.addView(answerView);
         }
-        boolean completed = false;
-        if(!completed) {
-            Button continueButton = (Button) getActivity().findViewById(R.id
-                    .report_continue_survey_button);
-            continueButton.setVisibility(View.VISIBLE);
-            continueButton.setOnClickListener(this);
-        }
+//        long status = report.getStatus();
+//        if(status == 0) {
+//            //TODO: handle incomplete report
+//            Button continueButton = (Button) getActivity().findViewById(R.id
+//                    .report_continue_survey_button);
+//            continueButton.setVisibility(View.VISIBLE);
+//            continueButton.setOnClickListener(this);
+//        }
     }
 
     /**
