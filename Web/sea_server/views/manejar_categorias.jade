@@ -17,20 +17,47 @@ block content
 		.row
 			.col-md-1
 			.col-md-6
-				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar categoria por nombre')
+				//input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar categoria por nombre')
 			.col-md-4
 			.col-md-1
 
 		.row
 			.col-md-1
 			.col-md-6
-				.panel.panel-success
-					.panel-heading Ganaderos
-					.panel-body
-						.list-group(style='overflow:auto; height:300px;')
-							table(class='table')
-								thead
-								tbody#categories_list(data-categories=categories)
+				#categoria_panel.form-group(data-all-categorias=categories)
+								.panel.panel-success
+									#categoria_panel_title.panel-heading Categorías de Localización
+									.panel-body
+										table(class='table')
+											tbody#categories
+										button#btn_add_categories(class='btn btn-default btn-success', type='button') Agregar 
+										button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar
+										button#btn_delete_categories(class='btn btn-default btn-success', type='button') Eliminar
+			.col-md-4
+				#add_category_panel.form-group
+								.panel.panel-success
+									.panel-heading
+									.panel-body
+										form#form_new_category(role='form')
+											.form-group
+											label(for='new_category') Nueva Categoria:
+											input#new_category(class='form-control', name='new_category', type='text', placeholder='Nueva Categoria')
+										br
+										.btn-group(role='group', aria-label='edit panel buttons')
+											button#btn_post_new_category(class='btn btn-default') Someter
+
+				#edit_category_panel.form-group
+								.panel.panel-success
+									.panel-heading
+									.panel-body
+										form#form_edit_category(role='form')
+											.form-group
+											label(for='category_name') Editar Categoria:
+											input#category_name(class='form-control', name='category_name', type='text', placeholder='Editar Categoria')
+										br
+										.btn-group(role='group', aria-label='edit panel buttons')
+											button#btn_put_new_category(class='btn btn-default') Someter
+
 	
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
