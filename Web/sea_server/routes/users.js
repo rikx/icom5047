@@ -143,7 +143,7 @@ router.get('/agent', function(req, res, next) {
 	var user_type = req.session.user_type;
 
   if (username != null && user_type == 'agent') {
-  	res.render('agente', { title: 'Agente Home'});
+  	res.render('agente', { title: 'Agente Home', username: username});
   } else {
   	res.redirect('/users');
   }
@@ -157,7 +157,7 @@ router.get('/admin', function(req, res, next) {
 	var user_type = req.session.user_type;
 
   if (username != null && user_type == 'admin') {
-  	res.render('admin', { title: 'Admin Home'});
+  	res.render('admin', { title: 'Admin Home', username: username});
   } else {
   	res.redirect('/users');
   }
@@ -171,7 +171,7 @@ router.get('/specialist', function(req, res, next) {
 	var user_type = req.session.user_type;
 
   if (username != null && user_type == 'specialist') {
-  	res.render('specialist', { title: 'Especialista Home'});
+  	res.render('specialist', { title: 'Especialista Home', username: username});
   } else {
   	res.redirect('/users');
   }
