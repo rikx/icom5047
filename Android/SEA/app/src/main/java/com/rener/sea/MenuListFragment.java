@@ -32,6 +32,7 @@ public class MenuListFragment extends ListFragment {
     private int curPos = -1;
     private String type;
     private ArrayAdapter adapter;
+    private List list;
 
     /**
      * Create a MenuListFragment instance with a given type
@@ -90,7 +91,6 @@ public class MenuListFragment extends ListFragment {
         type = getArguments().getString("type");
 
         //Set the list and it's respective adapter
-        List list = new ArrayList();
         DBHelper db = ((MainActivity) getActivity()).getDBHelper();
         String empty = getResources().getString(R.string.no_data);
         if (type.equals(TYPE_PEOPLE)) {
@@ -161,6 +161,7 @@ public class MenuListFragment extends ListFragment {
      * Notifies the list adapter that data has changed and it should update it's views
      */
     public void onListDataChanged() {
+        Collections.sort(list);
         adapter.notifyDataSetChanged();
     }
 

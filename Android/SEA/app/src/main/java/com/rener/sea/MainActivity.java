@@ -236,8 +236,11 @@ public class MainActivity extends FragmentActivity {
      * A listener method that listens for a some changes in the data being displayed
      */
     public void onDataChanged() {
+        //Refresh the list view
         MenuListFragment list = (MenuListFragment) leftFragment;
         list.onListDataChanged();
+
+        //Refresh the details view
         String type =list.getType();
         if(rightFragment != null) {
             DetailsFragment details;
