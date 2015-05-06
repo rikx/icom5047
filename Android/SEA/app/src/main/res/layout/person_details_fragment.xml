@@ -6,7 +6,8 @@
 	<ViewFlipper
 		android:id="@+id/person_flipper"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:padding="16dp">
 
 		<LinearLayout
 			android:id="@+id/person_show_layout"

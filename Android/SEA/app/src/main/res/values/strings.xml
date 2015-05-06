@@ -29,9 +29,9 @@
 	<string name="address_line2">address line 2</string>
 	<string name="address_city">city</string>
 	<string name="address_zip_code">zip code</string>
-	<string name="no_owner">No owner</string>
-	<string name="no_manager">No manager</string>
-	<string name="no_agent">No agent</string>
+	<string name="no_owner">No owner on file</string>
+	<string name="no_manager">No manager on file</string>
+	<string name="no_agent">No agent assigned</string>
 	<string name="owner_label">Owner</string>
 	<string name="manager_label">Manager</string>
 	<string name="agent_label">Assigned agent</string>
@@ -103,4 +103,8 @@
 	<string name="no_flowcharts">No flowcharts found</string>
 	<string name="synchronize">Synchronize</string>
 	<string name="creating_report">Creating a report</string>
+	<string name="select_owner">select owner</string>
+	<string name="select_manager">select manager</string>
+	<string name="licence_label">Licence</string>
+	<string name="address_label">Address</string>
 </resources>

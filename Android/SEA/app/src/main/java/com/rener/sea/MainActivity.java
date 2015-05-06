@@ -125,7 +125,10 @@ public class MainActivity extends FragmentActivity {
                 showSettings();
                 break;
             case R.id.sync:
-                sync();
+                sync(false);
+                break;
+            case R.id.sync_full:
+                sync(true);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -233,9 +236,9 @@ public class MainActivity extends FragmentActivity {
      * A listener method that listens for a some changes in the data being displayed
      */
     public void onDataChanged() {
-        MenuListFragment fragment = (MenuListFragment) leftFragment;
-        fragment.notifyDataChanged();
-        String type = fragment.getType();
+        MenuListFragment list = (MenuListFragment) leftFragment;
+        list.onListDataChanged();
+        String type =list.getType();
         if(rightFragment != null) {
             DetailsFragment details;
             if (type.equals(MenuListFragment.TYPE_LOCATIONS)) {
@@ -248,7 +251,6 @@ public class MainActivity extends FragmentActivity {
             }
             details.onDetailsChanged();
         }
-        //TODO: possible report details changed
         hideKeyboard();
     }
 
@@ -333,7 +335,7 @@ public class MainActivity extends FragmentActivity {
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
-    private void sync() {
+    private void sync(boolean full) {
         if (networkHelper.isInternetAvailable()) {
             //Create a new synchronization receiver
             final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
@@ -345,7 +347,8 @@ public class MainActivity extends FragmentActivity {
             };
             IntentFilter filter = new IntentFilter("SYNC");
             registerReceiver(syncReceiver, filter);
-            dbHelper.syncDB();
+            if(full) dbHelper.syncDBFull();
+            else dbHelper.syncDB();
         }
     }
 
@@ -376,6 +379,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void syncFailure() {
+        //TODO: do something on sync failure
         //scheduleSync(5000);
     }
 

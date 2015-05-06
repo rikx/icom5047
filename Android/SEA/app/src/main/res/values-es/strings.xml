@@ -45,10 +45,10 @@
 	<string name="new_location">Añadir Localización</string>
 	<string name="new_person">Añadir Persona</string>
 	<string name="new_report">Añadir Entrevista</string>
-	<string name="no_agent">No hay agente</string>
+	<string name="no_agent">No hay agente asignado</string>
 	<string name="no_data">No hay datos</string>
-	<string name="no_manager">No hay gerente</string>
-	<string name="no_owner">No hay dueño</string>
+	<string name="no_manager">No hay gerente asignado</string>
+	<string name="no_owner">No hay dueño asignado</string>
 	<string name="no_username">No hay usuario</string>
 	<string name="open_hint">Entre los datos aqui</string>
 	<string name="people">Personas</string>
@@ -103,4 +103,8 @@
 	<string name="no_flowcharts">No hay flujogramas</string>
 	<string name="synchronize">Sincronizar</string>
 	<string name="creating_report">Creando un reporte</string>
+	<string name="select_manager">seleccione el dueño</string>
+	<string name="select_owner">seleccione un ganadero</string>
+	<string name="licence_label">Licencia</string>
+	<string name="address_label">Dirección</string>
 </resources>

@@ -224,10 +224,12 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment {
     }
 
     @Override
-    public void onDetailsChanged() {
+    public boolean onDetailsChanged() {
         int displayed = flipper.getDisplayedChild();
         if(viewCreated && displayed == SHOW_LAYOUT) {
             setDataViews();
+            return true;
         }
+        return false;
     }
 }

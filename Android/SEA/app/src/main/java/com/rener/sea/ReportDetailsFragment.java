@@ -343,8 +343,11 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     }
 
     @Override
-    public void onDetailsChanged() {
-        if(viewCreated)
+    public boolean onDetailsChanged() {
+        if(viewCreated) {
             setDataViews();
+            return true;
+        }
+        return false;
     }
 }

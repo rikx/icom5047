@@ -34,7 +34,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     private EditText editName, editLicense;
     private EditText editAddressLine1, editAddressLine2, editCity, editZipCode;
     private boolean viewCreated;
-    private Spinner ownerSpinner, managerSpinner, agentSpinner;
+    private Spinner ownerSpinner, managerSpinner;
     private List peopleList;
     private Menu options;
 
@@ -93,37 +93,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         managerSpinner = (Spinner) view.findViewById(R.id.location_manager_spinner);
         managerSpinner.setOnItemSelectedListener(this);
 
-        //Set the agent spinner
-        agentSpinner = (Spinner) view.findViewById(R.id.location_agent_spinner);
-        agentSpinner.setOnItemSelectedListener(this);
-
-
-        //Populate the spinner lists
-        DBHelper dbHelper = ((MainActivity) getActivity()).getDBHelper();
-        peopleList = dbHelper.getAllPersons();
-        Collections.sort(peopleList);
-        List<Person> managerList = new ArrayList(peopleList);
-        List<Person> agentList = new ArrayList(peopleList);
-        List<Person> ownerList = new ArrayList(peopleList);
-
-        //Add a dummy person to each list
-        String dummy = getString(R.string.manager);
-        managerList.add(0, new Person(dummy));
-        dummy = getString(R.string.owner);
-        ownerList.add(0, new Person(dummy));
-        dummy = getString(R.string.agent);
-        agentList.add(0, new Person(dummy));
-
-        //Set the adapters
-        DummyAdapter adapter = new DummyAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, ownerList, 0);
-        ownerSpinner.setAdapter(adapter);
-        adapter = new DummyAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, managerList, 0);
-        managerSpinner.setAdapter(adapter);
-        adapter = new DummyAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, agentList, 0);
-        agentSpinner.setAdapter(adapter);
+        populateSpinners();
 
         //Determine if the new location view should be displayed
         //TODO: check this
@@ -163,8 +133,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             location.setOwner(owner);
             Person manager = (Person) managerSpinner.getSelectedItem();
             location.setManager(manager);
-            Person agent = (Person) agentSpinner.getSelectedItem();
-            location.setAgent(agent);
         }
     }
 
@@ -198,22 +166,28 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     private void setDataViews() {
 
         //Set the name fields
-        textName.setText(location.getName());
-        editName.setText(location.getName());
+        String name = location.getName();
+        textName.setText(name);
+        editName.setText(name);
 
         //Set the license fields
-        textLicense.setText(location.getLicense());
-        editLicense.setText(location.getLicense());
+        String licence = location.getLicense();
+        textLicense.setText(licence);
+        editLicense.setText(licence);
 
         //Set the address fields
-        textAddressLine1.setText(location.getAddressLine(1));
-        editAddressLine1.setText(location.getAddressLine(1));
-        textAddressLine2.setText(location.getAddressLine(2));
-        editAddressLine2.setText(location.getAddressLine(2));
-        textCity.setText(location.getCity());
-        editCity.setText(location.getCity());
-        textZipCode.setText(location.getZipCode());
-        editZipCode.setText(location.getZipCode());
+        String al1 = location.getAddressLine(1);
+        textAddressLine1.setText(al1);
+        editAddressLine1.setText(al1);
+        String al2 = location.getAddressLine(2);
+        textAddressLine2.setText(al2);
+        editAddressLine2.setText(al2);
+        String city = location.getCity();
+        textCity.setText(city);
+        editCity.setText(city);
+        String zip = location.getZipCode();
+        textZipCode.setText(zip);
+        editZipCode.setText(zip);
 
         if (location.hasOwner()) {
             for (int i = 0; i < peopleList.size(); i++) {
@@ -242,11 +216,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         }
 
         if (location.hasAgent()) {
-            for (int i = 0; i < peopleList.size(); i++) {
-                Person item = (Person) agentSpinner.getAdapter().getItem(i);
-                if (location.getAgent().getId() == item.getId())
-                    agentSpinner.setSelection(i);
-            }
             String label = getResources().getString(R.string.agent_label);
             String assigned = location.getAgent().toString();
             textAgent.setText(label + ": " + assigned);
@@ -318,10 +287,42 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     }
 
     @Override
-    public void onDetailsChanged() {
+    public boolean onDetailsChanged() {
         int displayed = flipper.getDisplayedChild();
-        if(viewCreated && displayed == SHOW_LAYOUT) {
-            setDataViews();
+        if(viewCreated) {
+            if(displayed == SHOW_LAYOUT) {
+                setDataViews();
+            }
+            else if(displayed == EDIT_LAYOUT) {
+                populateSpinners();
+            }
         }
+        return false;
+    }
+
+    private void populateSpinners() {
+        //Populate the spinner lists
+        DBHelper dbHelper = ((MainActivity) getActivity()).getDBHelper();
+        peopleList = dbHelper.getAllPersons();
+        Collections.sort(peopleList);
+        List<Person> managerList = new ArrayList(peopleList);
+        List<Person> agentList = new ArrayList(peopleList);
+        List<Person> ownerList = new ArrayList(peopleList);
+
+        //Add a dummy person to each list
+        String dummy = getString(R.string.manager);
+        managerList.add(0, new Person(dummy));
+        dummy = getString(R.string.owner);
+        ownerList.add(0, new Person(dummy));
+        dummy = getString(R.string.agent);
+        agentList.add(0, new Person(dummy));
+
+        //Set the adapters
+        DummyAdapter adapter = new DummyAdapter(getActivity(),
+                android.R.layout.simple_list_item_1, ownerList, 0);
+        ownerSpinner.setAdapter(adapter);
+        adapter = new DummyAdapter(getActivity(),
+                android.R.layout.simple_list_item_1, managerList, 0);
+        managerSpinner.setAdapter(adapter);
     }
 }

@@ -160,7 +160,7 @@ public class MenuListFragment extends ListFragment {
     /**
      * Notifies the list adapter that data has changed and it should update it's views
      */
-    public void notifyDataChanged() {
+    public void onListDataChanged() {
         adapter.notifyDataSetChanged();
     }
 
