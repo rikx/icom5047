@@ -107,12 +107,40 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         setAppointmentViews();
 
         setSpinnerData();
+
+        //Set the action bar title
+        String app = getResources().getString(R.string.app_name);
+        String label = getResources().getString(R.string.creating_report);
+        String title = app+" > "+label;
+        getActionBar().setTitle(title);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         Log.i(this.toString(), "configuration changed");
         super.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -136,6 +164,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 submit();
                 break;
             case R.id.discard_report:
+                report.destroy();
                 onBackPressed();
                 break;
         }
@@ -297,6 +326,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void checkSubmittable() {
+        //TODO: incomplete reports
         boolean submittable =
                 (!editName.getText().toString().equals("") &&
                         spinnerLocation.getSelectedItemPosition() != 0 &&
