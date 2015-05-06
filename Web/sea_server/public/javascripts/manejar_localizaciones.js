@@ -17,6 +17,9 @@ $(document).ready(function(){
   console.log(user_info);
 
   $('#currently_signed_in').text("Usuario actual: " + user_info.username);
+  $('#current_type').text("Tipo de cuenta: " + user_info.user_type);
+
+
 
   // initial info panel population
   if(localizaciones_array.length > 0)
