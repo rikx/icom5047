@@ -127,9 +127,14 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
                 android.R.layout.simple_list_item_1, agentList, 0);
         agentSpinner.setAdapter(adapter);
 
+        if(location != null) {
+            setFields();
+            flipper.setDisplayedChild(SHOW_LAYOUT);
+        }
+        else {
+            flipper.setDisplayedChild(EDIT_LAYOUT);
+        }
         viewCreated = true;
-        setFields();
-        flipper.setDisplayedChild(SHOW_LAYOUT);
         return view;
     }
 
@@ -276,7 +281,7 @@ public class LocationDetailsFragment extends Fragment implements AdapterView
      * @return true if all data was set correctly
      */
     private boolean getFields() {
-        boolean allow = true;
+        boolean allow;
 
         //Get the text from the fields
         String name = editName.getText().toString();

@@ -60,10 +60,15 @@ public class PersonDetailsFragment extends Fragment {
         textPhoneNumber = (TextView) view.findViewById(R.id.person_text_phone);
         editPhoneNumber = (EditText) view.findViewById(R.id.person_edit_phone_number);
 
-        viewCreated = true;
-        setFields();
-        flipper.setDisplayedChild(SHOW_LAYOUT);
+        if(person != null) {
+            setFields();
+            flipper.setDisplayedChild(SHOW_LAYOUT);
+        }
+        else {
+            flipper.setDisplayedChild(EDIT_LAYOUT);
+        }
 
+        viewCreated = true;
         return view;
     }
 
@@ -103,7 +108,12 @@ public class PersonDetailsFragment extends Fragment {
                 flipToEditLayout();
                 break;
             case R.id.save_person_action:
-                savePerson();
+                if(person != null) {
+                    savePerson();
+                }
+                else {
+                    saveNewPerson();
+                }
                 break;
         }
 
@@ -196,6 +206,20 @@ public class PersonDetailsFragment extends Fragment {
             flipToShowLayout();
             //Notify the activity that data has changed
             ((MainActivity) getActivity()).onDataSetChanged();
+        }
+    }
+
+    private void saveNewPerson() {
+        //Get the text from the fields
+        String strFirstName = editFirstName.getText().toString();
+        String strMiddleName = editMiddleName.getText().toString();
+        String strLastName1 = editLastName1.getText().toString();
+        String strLastName2 = editLastName2.getText().toString();
+        String strEmail = editEmail.getText().toString();
+        String strPhone = editPhoneNumber.getText().toString();
+
+        if(!strFirstName.equals("") && !strLastName1.equals("")) {
+            //TODO: create the new person
         }
     }
 }
