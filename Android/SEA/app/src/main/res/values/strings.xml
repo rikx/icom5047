@@ -102,4 +102,5 @@
 	<string name="no_locations">No locations found</string>
 	<string name="no_flowcharts">No flowcharts found</string>
 	<string name="synchronize">Synchronize</string>
+	<string name="creating_report">Creating a report</string>
 </resources>

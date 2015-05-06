@@ -102,4 +102,5 @@
 	<string name="no_locations">No hay localizaciones</string>
 	<string name="no_flowcharts">No hay flujogramas</string>
 	<string name="synchronize">Sincronizar</string>
+	<string name="creating_report">Creando un reporte</string>
 </resources>
