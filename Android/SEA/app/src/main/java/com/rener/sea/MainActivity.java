@@ -191,7 +191,7 @@ public class MainActivity extends FragmentActivity {
     private void showLocationsList() {
         //Set the action bar title
         String app = getResources().getString(R.string.app_name);
-        String label = getResources().getString(R.string.reports);
+        String label = getResources().getString(R.string.locations);
         String title = app+" > "+label;
         getActionBar().setTitle(title);
 
@@ -333,6 +333,10 @@ public class MainActivity extends FragmentActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity
                 .INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    private void sync() {
+        sync(false);
     }
 
     private void sync(boolean full) {
