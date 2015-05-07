@@ -255,7 +255,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
      * @return true if all data was set correctly
      */
     private boolean getFields() {
-        boolean allow;
 
         //Get the text from the fields
         String name = editName.getText().toString();
@@ -265,19 +264,27 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         String city = editCity.getText().toString();
         String zip = editZipCode.getText().toString();
 
-        //
-        if(name.equals(""))
+        if(name.equals("")) {
+            String message = getString(R.string.empty_location_name);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
+        }
 
         //Set the instance fields
         location.setName(name);
-        allow = location.setLicense(license) != 0;
+        boolean invalid = location.setLicense(license) != 0;
         location.setAddressLine(1, line1);
         location.setAddressLine(2, line2);
         location.setCity(city);
         location.setZipCode(zip);
 
-        return allow;
+        if (license.equals("")) {
+            String message = getString(R.string.invalid_licence);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     /**

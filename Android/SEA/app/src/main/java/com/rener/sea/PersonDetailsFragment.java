@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 /**
@@ -173,8 +174,17 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment {
         String strEmail = editEmail.getText().toString();
         String strPhone = editPhoneNumber.getText().toString();
 
-        if(strFirstName.equals("") || strLastName1.equals(""))
+
+        boolean allow = (!strFirstName.equals("") && !strLastName1.equals(""));
+        if(!allow) {
+            String message = "";
+            if (strFirstName.equals(""))
+                message = getString(R.string.empty_first_name);
+            else if (strLastName1.equals(""))
+                message = getString(R.string.empty_last_name);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
+        }
 
         //Set the person instance fields
         person.setFirstName(strFirstName);
