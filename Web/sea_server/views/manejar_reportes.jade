@@ -13,80 +13,80 @@ block content
 						h2 Servicio de Extensión Agrícola
 						h4 Manejar Reportes
 			.col-md-2
+		.jumbotron
+			.row
+				.col-md-1
+				.col-md-6
+					input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar reporte por nombre, fecha (dd/mm/aaaa), agente o localización')
+				.col-md-4
+				.col-md-1
 
-		.row
-			.col-md-1
-			.col-md-6
-				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar reporte por nombre, fecha (dd/mm/aaaa), agente o localización')
-			.col-md-4
-			.col-md-1
-
-		.row
-			.col-md-1
-			.col-md-6
-				.panel.panel-success
-					.panel-heading Reportes
-					.panel-body
-						.list-group(style='overflow:auto; height:300px;')
-							table(class='table')
-								thead
-									th
-										center Reporte
-									th 
-										center Localización
-								tbody#reportes_list(data-reports=reports, data-user=user)
-									each report, i in reports
-										tr
-											td
-												if i!=0
-													a(class='list-group-item show_info_report', href='#', data-id=report.report_id)
-														if(report.report_name != null)
-															= report.report_name
-														else
-															| Reporte sin título
-												else 
-													a(class='list-group-item active show_info_report', href='#', data-id=report.report_id)
-														if(report.report_name != null)
-															= report.report_name
-														else
-															| Reporte sin título
-											td
-												center(data-id=report.location_id)= report.location_name
-											if  user.user_type != 'agent'
+			.row
+				.col-md-1
+				.col-md-6
+					.panel.panel-success
+						.panel-heading Reportes
+						.panel-body
+							.list-group(style='overflow:auto; height:550px;')
+								table(class='table')
+									thead
+									tbody#reportes_list(data-reports=reports, data-user=user)
+										each report, i in reports
+											tr
 												td
-													button(class='btn_edit_report btn btn-sm btn-success btn-block', type='button', data-id=report.report_id) Editar
-												td
-													//a(class='btn_delete_report btn btn-sm btn-success', data-toggle='tooltip', data-id=report.report_id)
-													//	i(class='glyphicon glyphicon-trash')
+													if i!=0
+														a(class='list-group-item show_info_report', href='#', data-id=report.report_id)
+															if(report.report_name != null)
+																= report.report_name
+															else
+																| Reporte sin título
+													else 
+														a(class='list-group-item active show_info_report', href='#', data-id=report.report_id)
+															if(report.report_name != null)
+																= report.report_name
+															else
+																| Reporte sin título
+												if  user.user_type != 'agent'
+													//td
+													//	button(class='btn_edit_report btn btn-sm btn-success btn-block', type='button', data-id=report.report_id) Editar
+													//td
+													//	a(class='btn_delete_report btn btn-sm btn-success', data-toggle='tooltip', data-id=report.report_id)
+													//		i(class='glyphicon glyphicon-trash')
 
-			#info_panel.col-md-4
-				.panel.panel-success
-					.panel-heading
-						h3#info_panel_heading(class='panel-title') Reporte
+				#info_panel.col-md-4
+					.panel.panel-success
+						.panel-heading
+							h3#info_panel_heading(class='panel-title')
+								if(reports[0].report_name)
+									| Reporte sin título
+								else
+									= reports[0].report_name
+						.panel-body
+							table#reporte_info(class='table')
+								tr
+									td Reporte ID:
+									td#reporte_info_id 
+								tr
+									td Para Localización: 
+									td#reporte_info_location
+								tr
+									td Creado por:
+									td#reporte_info_creator
+								tr
+									td Fecha:
+									td#report_info_date
+								tr
+									td Encuesta utilizada:
+									td#reporte_info_flowchart
+							button#btn_view_report(class='btn btn-sm btn-success btn-block', type='button', data-id=reports[0].report_id) Ver Reporte
+							a#btn_delete(class='btn btn-success btn-block', data-toggle='tooltip', data-id=reports[0].report_id, data-report-name=reports[0].report_name)
+								i(class='glyphicon glyphicon-trash')
 
-					.panel-body
-						table#reporte_info(class='table')
-							tr
-								td Reporte ID:
-								td#reporte_info_id 
-							tr
-								td Para Localización: 
-								td#reporte_info_location
-							tr
-								td Creado por:
-								td#reporte_info_creator
-							tr
-								td Fecha:
-								td#report_info_date
-							tr
-								td Encuesta utilizada:
-								td#reporte_info_flowchart
-
-		.row
-			.col-md-2
-			.col-md-4
-				// TODO: add home glyphicon
-				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+			.row
+				.col-md-2
+				.col-md-4
+					// TODO: add home glyphicon
+					button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

@@ -139,8 +139,8 @@ jsPlumb.ready(function() {
   			}
   		}
   	}
-
-	  if(start_count == 1 && end_count > 0 && (valid_item_count==elements_array.length)){
+  	console.log(valid_item_count + ' - '+elements_array.length);
+	  if(start_count == 1 && end_count > 0 && (valid_item_count==elements_array.length-2)){
 			return true;
 		} else {
 			return false;
@@ -161,6 +161,7 @@ jsPlumb.ready(function() {
 		var new_flowchart = ConverToJSON(form_data);
   	// checks created flowchart has a first item
   	if(!empty_field_check(form_data)){
+  		// check 
 	    if(end_points.first_id != -1){
 	    	if(check_item_connections()){
 					// add missing flowchart fields
