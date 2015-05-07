@@ -69,12 +69,12 @@ $(document).ready(function(){
   $('#search_bar').on('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
     reportes_array = [datum];
-    populate_list({datum});
+    populate_list([datum]);
   });
 
   $("#search_bar").keypress(function (event) {
     if (event.which == 13) {
-      console.log($('#search_bar').val());
+  
       var user_input = $('#search_bar').val();
       if(user_input == ''){
         populate_reportes();
@@ -155,18 +155,12 @@ $(document).ready(function(){
         url: "http://localhost:3000/users/admin/reportes/"+$(this).attr('data-id'),
         method: "DELETE",
         success: function(data) {
-          if(data.exists){
-            alert("Dispositivo con este numero de identificacion ya existe");
-          } else {
-            alert("Dispositivo ha sido añadido al sistema.");
-            // clear add form
-            $the_form[0].reset();
-          }
-           // update dispositivos list after posting 
-           populate_dispositivos();
-           $('#edit_panel').hide();
-         },
-         error: function( xhr, status, errorThrown ) {
+          alert("Reporte ha sido borrado del sistema.");
+  
+          // update reportes list after posting 
+          populate_reportes();
+        },
+        error: function( xhr, status, errorThrown ) {
           alert( "Sorry, there was a problem!" );
           console.log( "Error: " + errorThrown );
           console.log( "Status: " + status );
@@ -211,6 +205,7 @@ $(document).ready(function(){
       // if initial list item, set to active
       if(i==0) {
         table_content +=  'active ';
+        populate_info_panel(this);
       }
       var report_name;
       if(this.report_name != null) {
