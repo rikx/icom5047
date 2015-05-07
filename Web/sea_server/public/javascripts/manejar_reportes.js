@@ -34,7 +34,7 @@ $(document).ready(function(){
         reportes_array = list.reports;
   
         // populate list with matching results
-        populate_list(reportes_array);
+        //populate_list(reportes_array);
         return $.map(list.reports, function(reporte) { 
           return reporte;
         });
@@ -66,14 +66,34 @@ $(document).ready(function(){
   });
 
   // search bar input select event listener
-  $('#search_bar').bind('typeahead:selected typeahead:active', function(obj, datum, name) {
+  $('#search_bar').on('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
     populate_list({datum});
   });
 
   $("#search_bar").keypress(function (event) {
     if (event.which == 13) {
-      populate_list(reportes_array);
+      console.log($('#search_bar').val());
+      var this_query;
+      if($('#search_bar').val() == ''){
+        this_query = ' ';
+      } else {
+        this_query = $('#search_bar').val()
+      }
+      search_source.get(this_query, sync, async);
+
+      function sync(datums) {
+        //console.log('datums from `local`, `prefetch`, and `#add`');
+        //console.log(datums);
+        populate_list(datums);
+
+      }
+
+      function async(datums) {
+        //console.log('datums from `remote`');
+        //console.log(datums);
+        populate_list(datums);
+      }
     }
   });
   /* Search Code End */
