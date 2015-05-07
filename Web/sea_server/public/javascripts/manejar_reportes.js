@@ -34,7 +34,7 @@ $(document).ready(function(){
         reportes_array = list.reports;
   
         // populate list with matching results
-        //populate_list(reportes_array);
+        populate_list(reportes_array);
         return $.map(list.reports, function(reporte) { 
           return reporte;
         });
@@ -74,25 +74,25 @@ $(document).ready(function(){
   $("#search_bar").keypress(function (event) {
     if (event.which == 13) {
       console.log($('#search_bar').val());
-      var this_query;
-      if($('#search_bar').val() == ''){
-        this_query = ' ';
+      var user_input = $('#search_bar').val();
+      if(user_input == ''){
+        populate_reportes();
+        return;
       } else {
-        this_query = $('#search_bar').val()
-      }
-      search_source.get(this_query, sync, async);
+        search_source.get(user_input, sync, async);
+        $(this).typeahead('close');
+        function sync(datums) {
+          //console.log('datums from `local`, `prefetch`, and `#add`');
+          //console.log(datums);
+          populate_list(datums);
 
-      function sync(datums) {
-        //console.log('datums from `local`, `prefetch`, and `#add`');
-        //console.log(datums);
-        populate_list(datums);
+        }
 
-      }
-
-      function async(datums) {
-        //console.log('datums from `remote`');
-        //console.log(datums);
-        populate_list(datums);
+        function async(datums) {
+          //console.log('datums from `remote`');
+          //console.log(datums);
+          populate_list(datums);
+        }
       }
     }
   });
