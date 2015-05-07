@@ -148,7 +148,7 @@ $(document).ready(function(){
   });
 
   /* Open edit panel */
-  $citas_list.on('click', 'tr td button.btn_edit_cita', function(){
+  $('#btn_edit_cita').on('click', function(){
     $('#btn_edit, #heading_edit').show();
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
