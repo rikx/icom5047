@@ -1,6 +1,7 @@
 package com.rener.sea;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
@@ -121,6 +123,9 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
                 break;
             case R.id.save_location_action:
                 saveLocation();
+                break;
+            case R.id.new_report_location_action:
+                newReport();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -324,5 +329,21 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         adapter = new DummyAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, managerList, 0);
         managerSpinner.setAdapter(adapter);
+    }
+
+    private void newReport() {
+        DBHelper dbHelper = ((MainActivity)getActivity()).getDBHelper();
+        int fcs = dbHelper.getAllFlowcharts().size();
+        boolean allow = (fcs != 0);
+        if(allow) {
+            Intent intent = new Intent(getActivity(), SurveyActivity.class);
+            intent.putExtra("LOCATION_ID", location.getId());
+            startActivity(intent);
+            getActivity().finish();
+        }
+        else if(fcs ==0) {
+            String message = getResources().getString(R.string.no_flowcharts);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
