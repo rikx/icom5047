@@ -337,9 +337,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private void checkSubmittable() {
         //TODO: incomplete reports
         boolean submittable =
-                (!editName.getText().toString().equals("") &&
+                (!editName.getText().toString().trim().equals("") &&
                         spinnerLocation.getSelectedItemPosition() != 0 &&
-//                        spinnerSubject.getSelectedItemPosition() != 0 &&
                         spinnerFlowchart.getSelectedItemPosition() != 0 &&
                         surveyEnded);
         submitItem.setVisible(submittable);
@@ -448,9 +447,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         //Finish the report
         report.setPath(path);
-        String name = editName.getText().toString();
+        String name = editName.getText().toString().trim();
         report.setName(name);
-        String notes = editNotes.getText().toString();
+        String notes = editNotes.getText().toString().trim();
         report.setNotes(notes);
 
         //Finish the activity
@@ -463,7 +462,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 .getNext();
         String type = item.getType();
         if(type.equals(Item.CONDITIONAL) || type.equals(Item.OPEN)) {
-            String input = currentText.getText().toString();
+            String input = currentText.getText().toString().trim();
             handleUserInput(item, input);
         }
         else if(type.equals(Item.BOOLEAN) || type.equals(Item.MULTIPLE_CHOICE)) {
@@ -479,9 +478,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     private void endSurvey() {
         nextButton.setEnabled(false);
+        String ended = getString(R.string.survey_completed);
+        nextButton.setText(ended);
         surveyEnded = true;
-        String message = getResources().getString(R.string.survey_completed);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         checkSubmittable();
     }
 
@@ -587,7 +586,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         DatePicker datePicker = (DatePicker) view.findViewById(R.id.appointment_date_picker);
         TimePicker timePicker = (TimePicker) view.findViewById(R.id.appointment_time_picker);
         EditText purposeEdit = (EditText) view.findViewById(R.id.appointment_purpose_edit);
-        String purpose = purposeEdit.getText().toString();
+        String purpose = purposeEdit.getText().toString().trim();
         int year = datePicker.getYear();
         int month = datePicker.getMonth();
         int dom = datePicker.getDayOfMonth();

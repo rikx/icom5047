@@ -167,21 +167,25 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment {
     private boolean getFields() {
 
         //Get the text from the fields
-        String strFirstName = editFirstName.getText().toString();
-        String strMiddleName = editMiddleName.getText().toString();
-        String strLastName1 = editLastName1.getText().toString();
-        String strLastName2 = editLastName2.getText().toString();
-        String strEmail = editEmail.getText().toString();
-        String strPhone = editPhoneNumber.getText().toString();
+        String strFirstName = editFirstName.getText().toString().trim();
+        String strMiddleName = editMiddleName.getText().toString().trim();
+        String strLastName1 = editLastName1.getText().toString().trim();
+        String strLastName2 = editLastName2.getText().toString().trim();
+        String strEmail = editEmail.getText().toString().trim();
+        String strPhone = editPhoneNumber.getText().toString().trim();
 
 
         boolean allow = (!strFirstName.equals("") && !strLastName1.equals(""));
         if(!allow) {
             String message = "";
-            if (strFirstName.equals(""))
+            if (strFirstName.equals("")) {
+                editFirstName.setText("");
                 message = getString(R.string.empty_first_name);
-            else if (strLastName1.equals(""))
+            }
+            else if (strLastName1.equals("")) {
+                editLastName1.setText("");
                 message = getString(R.string.empty_last_name);
+            }
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
         }

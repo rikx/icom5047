@@ -197,6 +197,7 @@
 					android:layout_height="wrap_content"
 					android:hint="@string/address_zip_code"
 					android:inputType="number"
+					android:maxLength="10"
 					/>
 			</LinearLayout>
 

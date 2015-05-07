@@ -257,14 +257,15 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     private boolean getFields() {
 
         //Get the text from the fields
-        String name = editName.getText().toString();
-        String license = editLicense.getText().toString();
-        String line1 = editAddressLine1.getText().toString();
-        String line2 = editAddressLine2.getText().toString();
-        String city = editCity.getText().toString();
-        String zip = editZipCode.getText().toString();
+        String name = editName.getText().toString().trim();
+        String licence = editLicense.getText().toString().trim();
+        String line1 = editAddressLine1.getText().toString().trim();
+        String line2 = editAddressLine2.getText().toString().trim();
+        String city = editCity.getText().toString().trim();
+        String zip = editZipCode.getText().toString().trim();
 
         if(name.equals("")) {
+            editName.setText("");
             String message = getString(R.string.empty_location_name);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
@@ -272,13 +273,14 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the instance fields
         location.setName(name);
-        boolean invalid = location.setLicense(license) != 0;
+        boolean valid = location.setLicense(licence) != 0;
         location.setAddressLine(1, line1);
         location.setAddressLine(2, line2);
         location.setCity(city);
         location.setZipCode(zip);
 
-        if (license.equals("") || invalid) {
+        if (licence.equals("") || !valid) {
+            if(licence.equals("")) editLicense.setText("");
             String message = getString(R.string.invalid_licence);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;

@@ -32,6 +32,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public static String TYPE_PEOPLE = "PEOPLE";
     public static String TYPE_REPORTS = "REPORTS";
     public static String TYPE_LOCATIONS = "LOCATIONS";
+    public static String TYPE_APPOINTMENTS = "APPOINTMENTS";
     private int curPos = -1;
     private String type;
     private ArrayAdapter adapter;
@@ -69,6 +70,8 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu_list_fragment, container, false);
+
+        //Initialize search views
         editSearch = (EditText) view.findViewById(R.id.inputSearch);
         editSearch.addTextChangedListener(this);
         clearSearchButton = (Button) view.findViewById(R.id.clearSearch);

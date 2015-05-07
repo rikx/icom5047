@@ -14,6 +14,7 @@ public class Appointment {
 
     private long id = -1;
     private DBHelper dbHelper;
+    private SimpleDateFormat dateFormat;
     private User creator; //TODO: integrate this to DB
 
     public Appointment(long id, DBHelper dbHelper) {
@@ -114,7 +115,7 @@ public class Appointment {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 //        Date date = new Date(0);
         Calendar cal = Calendar.getInstance();
-//        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_DATE, DBSchema.APPOINTMENT_TIME},
                 DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -176,11 +177,6 @@ public class Appointment {
         return id;// if -1 error during update
     }
 
-    public String getDateString(String format, Locale locale) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
-        return sdf.format(getDate().getTime());
-    }
-
     public Report getReport() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         long report = -1;
@@ -208,5 +204,13 @@ public class Appointment {
         return id;// if -1 error during update
     }
 
+    public String getDateString(String format, Locale locale) {
+        dateFormat = new SimpleDateFormat(format, locale);
+        return this.dateFormat.format(getDate().getTime());
+    }
+
+    public String toString() {
+        return super.toString();
+    }
 
 }
