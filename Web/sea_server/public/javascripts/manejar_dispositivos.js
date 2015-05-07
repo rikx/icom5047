@@ -136,6 +136,10 @@ $(document).ready(function(){
     
     // populate info panel with this_dispositivo
     populate_info_panel(this_dispositivo);
+
+    // set id values of info panel buttons
+    $('#btn_edit_dispositivo').attr('data-id', dispositivo_id);
+    $('#btn_delete').attr('data-id', dispositivo_id);
   });
 
   /* Add dispositivo */

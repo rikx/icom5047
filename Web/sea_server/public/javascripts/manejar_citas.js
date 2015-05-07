@@ -99,7 +99,8 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
-    remove_active_class($citas_list);
+    $('#info_panel').show();
+    //remove_active_class($citas_list);
   });
 
   /* Close info panel */
@@ -132,6 +133,18 @@ $(document).ready(function(){
 
     // populate info panel with this_cita
     populate_info_panel(this_cita);
+
+    // set id values of info panel buttons
+    $('#btn_view_report').attr('data-id', cita_id);
+    $('#btn_edit_cita').attr('data-id', cita_id);
+    $('#btn_delete').attr('data-id', cita_id);
+  });
+
+  /* View report (redirect to report page) */
+  $('#btn_view_report').on('click', function(){
+    // contains cuestionario id
+    var this_reporte_id = $(this).attr('data-id');
+    window.location.href = '/users/reportes/'+this_reporte_id;
   });
 
   /* Open edit panel */
@@ -281,8 +294,12 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     $('#cita_info_location').html($this_cita.location_name);
     $('#cita_info_date').text($this_cita.date);
     $('#cita_info_purpose').text($this_cita.purpose);
-    $('#cita_info_agent').text($this_cita.username);   
-    //$('#cita_info_report').html("<a href='/users/reportes/" + $this_cita.report_id + "'> Reporte " + $this_cita.report_id + "</a>");
+    $('#cita_info_agent').text($this_cita.username);
+    if($this_cita.report_name == undefined){
+      $('#info_panel_heading').html('Reporte sin título');
+    } else {
+      $('#cita_info_report').html($this_cita.report_name);
+    }
     $('#cita_info_hour').text($this_cita.time);
   }
 

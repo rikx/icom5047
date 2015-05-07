@@ -128,8 +128,9 @@ $(document).ready(function(){
     // populate info panel with this_report info
     populate_info_panel(this_report);
 
-    // set id value of view report
+    // set id values of info panel buttons
     $('#btn_view_report').attr('data-id', report_id);
+    $('#btn_delete').attr('data-id', report_id);
   });
 
   /* View report (redirect to report page) */
