@@ -5,6 +5,8 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,7 +24,7 @@ import java.util.List;
 /**
  * A fragment class used to display a list of objects in the application.
  */
-public class MenuListFragment extends ListFragment {
+public class MenuListFragment extends ListFragment implements TextWatcher {
 
     public static String TYPE_PEOPLE = "PEOPLE";
     public static String TYPE_REPORTS = "REPORTS";
@@ -30,6 +33,7 @@ public class MenuListFragment extends ListFragment {
     private String type;
     private ArrayAdapter adapter;
     private List list;
+    private EditText editSearch;
 
     /**
      * Create a MenuListFragment instance with a given type
@@ -60,7 +64,10 @@ public class MenuListFragment extends ListFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.menu_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.menu_list_fragment, container, false);
+        editSearch = (EditText) view.findViewById(R.id.inputSearch);
+        editSearch.addTextChangedListener(this);
+        return view;
     }
 
     @Override
@@ -170,5 +177,20 @@ public class MenuListFragment extends ListFragment {
             String message = getResources().getString(R.string.no_locations);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        adapter.getFilter().filter(charSequence);
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 }
