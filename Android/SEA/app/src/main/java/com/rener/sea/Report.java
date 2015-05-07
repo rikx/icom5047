@@ -415,7 +415,10 @@ public class Report implements Comparable<Report> {
     }
 
     public String toString() {
-        return super.toString();
+        String name = getName();
+        String loc = getLocation().toString();
+        String date = getDate().toString();
+        return name;
     }
 
     @Override
