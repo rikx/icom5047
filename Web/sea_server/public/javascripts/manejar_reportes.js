@@ -7,7 +7,7 @@ $(document).ready(function(){
   var user_info = JSON.parse($reportes_list.attr('data-user'));
   
   var data_reportes = $reportes_list.attr('data-reports');
-  if(data_reportes != undefined){
+  if(data_reportes.length > 2){
     reportes_array = JSON.parse($reportes_list.attr('data-reports'));
 
     // initial info panel population
@@ -183,6 +183,10 @@ $(document).ready(function(){
     $('#reporte_info_creator').text($this_report.username);
     $('#report_info_date').text($this_report.report_date);
     $('#reporte_info_flowchart').text($this_report.flowchart_name);
+    
+    // set id values of info panel buttons
+    $('#btn_view_report').attr('data-id', $this_report.report_id);
+    $('#btn_delete').attr('data-id', $this_report.report_id);
   }
 
   /* Populate list with first 20 reportes, organized alphabetically by report name */

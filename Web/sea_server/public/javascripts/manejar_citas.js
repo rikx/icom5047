@@ -7,7 +7,7 @@ $(document).ready(function(){
   var user_info = JSON.parse($citas_list.attr('data-user'));
 
   var data_citas = $citas_list.attr('data-citas');
-  if(data_citas != undefined){
+  if(data_citas.length >2){
     citas_array = JSON.parse($citas_list.attr('data-citas'));
 
     // initial info panel population

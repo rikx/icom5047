@@ -5,8 +5,6 @@ $(document).ready(function(){
   var dispositivos_array;
   
   var data_dispositivos = $dispositivos_list.attr('data-dispositivos');
-  //console.log(typeof data_dispositivos);
-  //console.log(data_dispositivos.length);
   if(data_dispositivos.length >2){
     dispositivos_array=  JSON.parse(data_dispositivos);
     

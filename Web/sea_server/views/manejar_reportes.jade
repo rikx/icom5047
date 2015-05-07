@@ -60,10 +60,6 @@ block content
 				.panel.panel-success
 					.panel-heading
 						h3#info_panel_heading(class='panel-title')
-							if(reports[0].report_name)
-								| Reporte sin título
-							else
-								= reports[0].report_name
 					.panel-body
 						table#reporte_info(class='table')
 							thead
@@ -83,9 +79,9 @@ block content
 								tr
 									td Encuesta utilizada:
 									td#reporte_info_flowchart
-						button#btn_view_report(class='btn btn-success btn-block', type='button', data-id=reports[0].report_id) Ver Reporte Completo
+						button#btn_view_report(class='btn btn-success btn-block', type='button') Ver Reporte Completo
 						if(user.user_type == 'admin')
-							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip', data-id=reports[0].report_id, data-report-name=reports[0].report_name)
+							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
 								i(class='glyphicon glyphicon-trash')
 
 		.row
