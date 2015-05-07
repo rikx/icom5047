@@ -2,13 +2,19 @@ $(document).ready(function(){
 	// reportes list
 	$reportes_list = $('#reportes_list');
 	
-	// store data for initial 20 reports
-	var reportes_array = JSON.parse($reportes_list.attr('data-reports'));
+  // store data for initial 20 dispositivos
+  var reportes_array;
   var user_info = JSON.parse($reportes_list.attr('data-user'));
+  
+  var data_reportes = $reportes_list.attr('data-reports');
+  if(data_reportes != undefined){
+    reportes_array = JSON.parse(data_reportes);
 
-  // initial info panel population
-  if(reportes_array.length > 0)
+    // initial info panel population
     populate_info_panel(reportes_array[0]);
+  } else {
+    $('#info_panel').hide();
+  }
 
   /* Search Code start */
   // constructs the suggestion engine

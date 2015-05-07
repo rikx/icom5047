@@ -17,15 +17,17 @@ block content
 			.row
 				.col-md-1
 				.col-md-6
-					input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar reporte por nombre, fecha (dd/mm/aaaa), agente o localización')
+					<small> *Buscar reporte por nombre, fecha (dd/mm/aaaa), agente, localización o cuestionario</small>
+					input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
+
 				.col-md-4
 				.col-md-1
-
+			br
 			.row
 				.col-md-1
 				.col-md-6
 					.panel.panel-success
-						.panel-heading Reportes
+						.panel-heading(class='panel-title') Reportes
 						.panel-body
 							.list-group(style='overflow:auto; height:550px;')
 								table(class='table')
