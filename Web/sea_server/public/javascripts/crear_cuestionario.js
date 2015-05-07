@@ -139,8 +139,8 @@ jsPlumb.ready(function() {
   			}
   		}
   	}
-
-	  if(start_count == 1 && end_count > 0 && (valid_item_count==elements_array.length)){
+  	console.log(valid_item_count + ' - '+elements_array.length);
+	  if(start_count == 1 && end_count > 0 && (valid_item_count==elements_array.length-2)){
 			return true;
 		} else {
 			return false;
@@ -161,6 +161,7 @@ jsPlumb.ready(function() {
 		var new_flowchart = ConverToJSON(form_data);
   	// checks created flowchart has a first item
   	if(!empty_field_check(form_data)){
+  		// check 
 	    if(end_points.first_id != -1){
 	    	if(check_item_connections()){
 					// add missing flowchart fields
@@ -422,6 +423,7 @@ jsPlumb.ready(function() {
 	jsPlumb.bind("beforeDrop", function(connection) {
 		var source_id = connection.sourceId;
 		var target_id = connection.targetId;
+
 		// get source item type
 		for(var y = 0; y<elements_array.length; y++){
 			this_item = elements_array[y];
@@ -434,19 +436,22 @@ jsPlumb.ready(function() {
 		var start_count = 0;
 		// if source_type == 'START' check its not connected to an 'END' type
 		if(source_type == 'START'){
+			// dont allow start element to connect to end
+			if(target_type == 'END'){
+				return false;
+			} 
 			for(var z = 0; z<connections_array.length; z++){
-				// dont allow start element to connect to end
-				if(target_type == 'END'){
-					return false;
-				} else if(source_id == connections_array[z].source){
+				if(source_id == connections_array[z].source){
 					start_count++;
-				}
+				} 
 			}
-		}
-		// dont allow 'START' to have more than 1 connection;
-		if(start_count == 1){
-			return false;
-		} else{
+			// dont allow 'START' to have more than 1 connection;
+			if(start_count >= 1){
+				return false;
+			} else {
+				return true;
+			}
+		} else {
 			return true;
 		}
 	});
@@ -475,7 +480,7 @@ jsPlumb.ready(function() {
 					mylabel = 'con-start';
 				} else if(source_type == 'OPEN'){
 					mylabel = 'con-open';
-				} else if(target_type == 'END'){
+				} else if(target_type == 'END' && source_type == 'OPEN'){
 					mylabel = 'con-end';
 				} else {
 					mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");

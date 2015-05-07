@@ -981,9 +981,9 @@ router.get('/list_dispositivos', function(req, res, next) {
 	});
 });
 
-/* GET Dispositivos List data 
- * Responds with first 20 dispositivos, 
- * ordered by assigned user
+/* GET categories list data 
+ * Responds with all categories
+ * ordered by name
  */
 router.get('/list_categories', function(req, res, next) {
 	var db = req.db;
@@ -991,7 +991,7 @@ router.get('/list_categories', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-		// get devices and their assigned user (if any)
+		// get categories
 	  client.query("SELECT * FROM category ORDER BY name", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
@@ -999,6 +999,29 @@ router.get('/list_categories', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	res.json({categories: result.rows});
+	    }
+	  });
+	});
+});
+
+/* GET specialties list data 
+ * Responds with all specializations, 
+ * ordered by name
+ */
+router.get('/list_specialties', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// get specialties
+	  client.query("SELECT * FROM specialization ORDER BY name", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({specialties: result.rows});
 	    }
 	  });
 	});

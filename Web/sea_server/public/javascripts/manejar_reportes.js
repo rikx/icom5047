@@ -8,13 +8,13 @@ $(document).ready(function(){
 
   // initial info panel population
   if(reportes_array.length > 0)
-  populate_info_panel(reportes_array[0]);
+    populate_info_panel(reportes_array[0]);
 
   /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
     // user input is tokenized and compared with agent, report_name, location_name or date
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username', 'report_name', 'location_name', 'report_date'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username', 'report_name', 'location_name', 'report_date', 'flowchart_name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
     dupDetector: function(remoteMatch, localMatch) {
@@ -94,6 +94,16 @@ $(document).ready(function(){
 
     // populate info panel with this_report info
     populate_info_panel(this_report);
+
+    // set id value of view report
+    $('#btn_view_report') = $this.attr('data-id', report_id);
+  });
+
+  /* View report (redirect to report page) */
+  $('#btn_view_report').on('click', function(){
+    // contains cuestionario id
+    var this_reporte_id = $(this).attr('data-id');
+    window.location.href = '/users/reportes/'+this_reporte_id;
   });
 
   /* Redirect to report page to edit it */
@@ -103,9 +113,44 @@ $(document).ready(function(){
     window.location.href = '/users/reportes/'+this_reporte_id;
   });
 
+  /* Delete report */
+  $('#btn_delete').on('click', function(){
+    var confirm_delete = confirm('Desea borrar el reporte "'+$(this).attr('data-report-name')+'"?');
+    if(confirm_delete){
+      // ajax call to delete report
+      $.ajax({
+        url: "http://localhost:3000/users/admin/reportes/"+$(this).attr('data-id'),
+        method: "DELETE",
+        success: function(data) {
+          if(data.exists){
+            alert("Dispositivo con este numero de identificacion ya existe");
+          } else {
+            alert("Dispositivo ha sido añadido al sistema.");
+            // clear add form
+            $the_form[0].reset();
+          }
+           // update dispositivos list after posting 
+           populate_dispositivos();
+           $('#edit_panel').hide();
+         },
+         error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+        }
+      });
+    }
+  });
+
   /* Populates info panel with $this_report information */
   function populate_info_panel($this_report){
-    $('#reporte_info_id').html("<a href='/users/reportes/" +$this_report.report_id+ "'>"+$this_report.report_id+"</a>");
+    if($this_report.report_name == undefined){
+      $('#info_panel_heading').html('Reporte sin título');
+    } else {
+      $('#info_panel_heading').html($this_report.report_name);
+    }  
+    $('#reporte_info_id').html($this_report.report_id);
     $('#reporte_info_location').text($this_report.location_name);
     $('#reporte_info_creator').text($this_report.username);
     $('#report_info_date').text($this_report.report_date);

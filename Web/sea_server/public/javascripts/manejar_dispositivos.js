@@ -1,16 +1,19 @@
 $(document).ready(function(){
   // dispositivos list
   $dispositivos_list = $('#dispositivos_list');
-
   // store data for initial 20 dispositivos
-  var dispositivos_array =  JSON.parse($dispositivos_list.attr('data-dispositivos'));
-
-  // initial population of dispositivos list
-  populate_list(dispositivos_array)
-  // initial info panel population
-
-  if(dispositivos_array.length > 0)
-  populate_info_panel(dispositivos_array[0]);
+  var dispositivos_array;
+  
+  var data_dispositivos = $dispositivos_list.attr('data-dispositivos');
+  if(data_dispositivos != undefined){
+    dispositivos_array=  JSON.parse(data_dispositivos);
+    // initial population of dispositivos list
+    populate_list(dispositivos_array)
+    // initial info panel population
+    populate_info_panel(dispositivos_array[0]);
+  } else {
+    $('#info_panel').hide();
+  }
 
   // hide input that contains user chosen from dropdown
   $('#dispositivo_usuario').hide();
