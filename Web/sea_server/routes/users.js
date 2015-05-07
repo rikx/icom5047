@@ -1627,7 +1627,7 @@ router.put('/admin/category_location', function(req, res, next) {
 												INNER JOIN location_category ON location.location_id = location_category.location_id \
 												INNER JOIN category ON location_category.category_id = category.category_id \
 												WHERE location.location_id = $1', 
-												[location_id], function(err, result) {
+												[req.body.location], function(err, result) {
 				  	//call `done()` to release the client back to the pool
 				    done();
 			    	if(err) {
