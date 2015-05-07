@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -279,6 +282,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         TextView textQuestion = new TextView(this);
         int sequence = path.size() + 1;
         textQuestion.setText(sequence + ". " + question.getLabel());
+        textQuestion.setPadding(0, 30, 0, 0);
         String type = question.getType();
         switch (type) {
             case Item.BOOLEAN:
@@ -317,6 +321,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 break;
             }
             case Item.RECOMMENDATION:
+                highlightTextView(textQuestion);
                 progressLayout.addView(textQuestion);
                 Option only = question.getOptions().get(0);
                 path.addEntry(only);
@@ -357,6 +362,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
+        currentGroup = radioGroup;
         groupChecked = i;
     }
 
@@ -382,12 +388,16 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     }
 
+
+
     private void handleUserInput(Item item, String input) {
         String type = item.getType();
         if (type.equals(Item.OPEN)) {
+            currentText.setEnabled(false);
             Option option = item.getOptions().get(0);
             questionAnswered(option, input);
         } else if (type.equals(Item.CONDITIONAL)) {
+            currentText.setEnabled(false);
             double d = Double.valueOf(input);
             Option option = handleConditional(d, item.getOptions());
             questionAnswered(option, input);
@@ -453,13 +463,14 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 .getNext();
         String type = item.getType();
         if(type.equals(Item.CONDITIONAL) || type.equals(Item.OPEN)) {
-            currentText.setEnabled(false);
             String input = currentText.getText().toString();
             handleUserInput(item, input);
         }
         else if(type.equals(Item.BOOLEAN) || type.equals(Item.MULTIPLE_CHOICE)) {
             if(groupChecked != -1) {
-                currentGroup.setEnabled(false);
+                for(int i=0; i<currentGroup.getChildCount(); i++) {
+                    currentGroup.getChildAt(i).setEnabled(false);
+                }
                 Option checked = item.getOptions().get(groupChecked);
                 questionAnswered(checked);
             }
@@ -472,6 +483,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         String message = getResources().getString(R.string.survey_completed);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         checkSubmittable();
+    }
+
+    private void highlightTextView(TextView textView) {
+        String text = textView.getText().toString();
+        SpannableString spanString = new SpannableString(text);
+        spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
+        textView.setText(spanString);
     }
 
     private void scrollToBottom() {
