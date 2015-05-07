@@ -7,6 +7,7 @@ $(document).ready(function(){
   var data_dispositivos = $dispositivos_list.attr('data-dispositivos');
   if(data_dispositivos != undefined){
     dispositivos_array=  JSON.parse(data_dispositivos);
+    
     // initial population of dispositivos list
     populate_list(dispositivos_array)
     // initial info panel population
@@ -64,7 +65,33 @@ $(document).ready(function(){
   // search bar input select event listener
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
-    populate_list({datum});
+    dispositivos_array = [datum];
+    populate_list([datum]);
+  });
+
+  $("#search_bar").keypress(function (event) {
+    if (event.which == 13) {
+      var user_input = $('#search_bar').val();
+      if(user_input == ''){
+        populate_dispositivos();
+        return;
+      } else {
+        search_source.get(user_input, sync, async);
+        $(this).typeahead('close');
+        function sync(datums) {
+          console.log('datums from `local`, `prefetch`, and `#add`');
+          console.log(datums);
+          populate_list(datums);
+
+        }
+
+        function async(datums) {
+          console.log('datums from `remote`');
+          console.log(datums);
+          populate_list(datums);
+        }
+      }
+    }
   });
   /* Search Code End */
 
@@ -76,7 +103,8 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
-    remove_active_class($dispositivos_list);
+    $('#info_panel').show();
+    //remove_active_class($dispositivos_list);
   });
 
   /* Close info panel */
@@ -108,6 +136,10 @@ $(document).ready(function(){
     
     // populate info panel with this_dispositivo
     populate_info_panel(this_dispositivo);
+
+    // set id values of info panel buttons
+    $('#btn_edit_dispositivo').attr('data-id', dispositivo_id);
+    $('#btn_delete').attr('data-id', dispositivo_id);
   });
 
   /* Add dispositivo */
@@ -164,7 +196,7 @@ $(document).ready(function(){
   });
 
   /* Open edit panel */
-  $dispositivos_list.on('click', 'tr td button.btn_edit_dispositivo', function(){
+  $('#btn_edit_dispositivo').on('click', function(){
     $('#btn_edit, #heading_edit').show();
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
@@ -218,6 +250,30 @@ $(document).ready(function(){
   }
   });
 
+  /* Delete device */
+  $('#btn_delete').on('click', function(){
+    var confirm_delete = confirm('Desea borrar el dispositivo "'+$(this).attr('data-device-name')+'"?');
+    if(confirm_delete){
+      // ajax call to delete device
+      $.ajax({
+        url: "http://localhost:3000/users/admin/dispositivos/"+$(this).attr('data-id'),
+        method: "DELETE",
+        success: function(data) {
+          alert("Dispositivo ha sido borrado del sistema.");
+  
+          // update devices list after posting 
+          populate_dispositivos();
+        },
+        error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+        }
+      });
+    }
+  });
+
   /* Change asigned agente dropdown selected value */
   $('#list_dropdown_agentes').on('click', 'li a', function(e){
     // prevents link from firing
@@ -230,7 +286,7 @@ $(document).ready(function(){
 
   /* Populate info panel with $this_dispositivo info */
   function populate_info_panel($this_dispositivo) {
-    $('#info_panel_heading').text($this_dispositivo.device_name);
+    $('#info_panel_heading').html($this_dispositivo.device_name);
     $('#dispositivo_info_name').text($this_dispositivo.device_name);
     $('#dispositivo_info_id_num').text($this_dispositivo.id_number);
     $('#dispositivo_info_usuario').text($this_dispositivo.username);
@@ -268,18 +324,19 @@ $(document).ready(function(){
       // if initial list item, set to active
       if(i==0) {
         table_content +=  'active ';
+        populate_info_panel(this);
       }
       table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+this.device_name+"</a></td>";
-      if(this.last_sync == null)
+/*      if(this.last_sync == null)
       {
         table_content += '<td><center>'+"Nunca se ha sincronizado"+'</center></td>';
       }
       else
       {
         table_content += '<td><center>'+this.last_sync+'</center></td>';
-      }
+      }*/
       //table_content += '<td><center>'+this.last_sync+'</center></td>';
-      table_content += "<td><button class='btn_edit_dispositivo btn btn-sm btn-success btn-block' type='button' data-id='"+this.device_id+"'>Editar</button></td>";
+      //table_content += "<td><button class='btn_edit_dispositivo btn btn-sm btn-success btn-block' type='button' data-id='"+this.device_id+"'>Editar</button></td>";
       //table_content += "<td><a class='btn_delete_dispositivo btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.device_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });  
@@ -287,6 +344,6 @@ $(document).ready(function(){
     // inject content string into html
     $dispositivos_list.html(table_content);
     // close current info panel 
-    $('#btn_close_info_panel').trigger('click');
+    //$('#btn_close_info_panel').trigger('click');
   };
 });

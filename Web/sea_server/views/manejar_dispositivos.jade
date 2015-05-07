@@ -14,34 +14,32 @@ block content
 						h4 Manejar Dispositivos
 			.col-md-2
 		
-		.jumbotron
-			.row
-				.col-md-1
-				.col-md-6
-					input#search_bar(class='form-control typeahead', type='text', placeholder='Buscar dispositivos por nombre, # de identificación o usuario asignado')
-				.col-md-4
-				.col-md-1
+		.row
+			.col-md-1
+			.col-md-6
+				<small> *Buscar dispositivos por nombre, # de identificación o usuario asignado</small>
+				input#search_bar(class='form-control typeahead', type='text', placeholder='Buscar')
+			.col-md-4
+			.col-md-1
+		br
 
-			.row
-				.col-md-1
-				.col-md-6
-					.panel.panel-success
-						.panel-heading Dispositivos
-						.panel-body
-							.list-group(style='overflow:auto; height:550px;')
-								table(class='table')
-									thead
-										tr
-											th
-												center Dispositivo
-											th
-												center Última sincronicazión
-									tbody#dispositivos_list(data-dispositivos=dispositivos)
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading(class='panel-title') Dispositivos
+					.panel-body
+						.list-group(style='overflow:auto; height:550px;')
+							table(class='table')
+								thead
+								tbody#dispositivos_list(data-dispositivos=dispositivos)
 
-				#edit_panel.col-md-4(style="display:none")
-					.jumbotron
+			#edit_panel.col-md-4(style="display:none")
+				.panel.panel-success
+					.panel-heading(class='panel-title')
 						h4#heading_create Agregar Dispositivo
 						h4#heading_edit Editar Dispositivo
+					.panel-body
 						form#form_manage_dispositivo(role='form')
 							.form-group
 								label(for='dispositivo_name') Dispositivo:
@@ -63,42 +61,47 @@ block content
 												li
 													a(role='menuitem', tabindex='-1', href='#', data-id=user.user_id)
 														= user.username
-
-						.btn-group(role='group', aria-label='info panel buttons')
-							button#btn_close_edit_panel(class='btn btn-default') Cerrar
-							button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
-							button#btn_submit(class='btn btn-default btn-success', type='button') Someter
-			
-				#info_panel.col-md-4
-					.panel.panel-success
-						.panel-heading
-							h3#info_panel_heading(class='panel-title') Dispositivo 1
-						.panel-body
-							table#dispositivo_info(class='table')
+						button#btn_edit(class='btn btn-default btn-success btn-block', type='button') Guardar
+						button#btn_submit(class='btn btn-default btn-success btn-block', type='button') Someter
+						button#btn_close_edit_panel(class='btn btn-default btn-block') Cerrar
+		
+			#info_panel.col-md-4
+				.panel.panel-success
+					.panel-heading
+						h3#info_panel_heading(class='panel-title')
+							= dispositivos[0].device_name
+					.panel-body
+						table#dispositivo_info(class='table')
+							thead
+							tbody
 								tr
 									td Nombre:
 									td#dispositivo_info_name 
 								tr
-									td Numero de Identificación:
+									td 
+										| Numero de Identificación:
 									td#dispositivo_info_id_num
 								tr
-									td Usuario Asignado:
+									td 
+										| Usuario Asignado:
 									td#dispositivo_info_usuario
 								tr 
-									td Última Sincronicazión: 
+									td 
+										| Última Sincronicazión: 
 									td#dispositivo_info_last_sync
-							.btn-group(role='group', aria-label='info panel buttons')
-								button#btn_close_info_panel(class='btn btn-default') Cerrar
-
-
-									
-			.row
-				.col-md-1
-				.col-md-3
-					button#btn_add_dispositivo(class='btn btn-sm btn-default btn-block', type='button') Agregar Dispositivo
-				.col-md-3
-					// TODO: add home glyphicon
-					button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+						button#btn_edit_dispositivo(class='btn btn-success btn-block', type='button', data-id=dispositivos[0].device_id) Editar
+						a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip', data-id=dispositivos[0].device_id, data-device-name=dispositivos[0].device_name)
+							i(class='glyphicon glyphicon-trash')
+						//.btn-group(role='group', aria-label='info panel buttons')
+						//	button#btn_close_info_panel(class='btn btn-default') //Cerrar
+								
+		.row
+			.col-md-1
+			.col-md-3
+				button#btn_add_dispositivo(class='btn btn-sm btn-default btn-block', type='button') Agregar Dispositivo
+			.col-md-3
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

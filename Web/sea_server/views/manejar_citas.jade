@@ -17,10 +17,12 @@ block content
 		.row
 			.col-md-1
 			.col-md-6
-				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar cita por fecha (dd/mm/aaaa), hora (hh:mm AM), localización o reporte')
+				small
+					*Buscar cita por fecha (dd/mm/aaaa), hora (hh:mm AM), localización o reporte
+				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
-
+		br
 		.row
 			.col-md-1
 			.col-md-6
@@ -30,11 +32,11 @@ block content
 						.list-group(style='overflow:auto; height:300px;')
 							table(class='table')
 								thead
-									tr
-										th 
-											center Localización
-										th 
-											center Fecha y Hora
+									//tr
+									//	th 
+									//		center Localización
+									//	th 
+									//		center Fecha y Hora
 								tbody#citas_list(data-citas=citas, data-user=user)
 									each cita, i in citas
 										tr
@@ -43,37 +45,39 @@ block content
 													a(class='list-group-item show_info_cita', href='#', data-id=cita.appointment_id)= cita.location_name
 												else 
 													a(class='list-group-item show_info_cita active', href='#', data-id=cita.appointment_id)= cita.location_name
-											td
-												center
-													= cita.date
-													|  @ 
-													= cita.time
-											if  user.user_type != 'agent'
-												td
-													button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
+											//td
+											//	center
+											//		= cita.date
+											//		|  @ 
+											//		= cita.time
+											//if  user.user_type != 'agent'
+											//	td
+											//		button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
 												//td
 												//	a(class='btn_delete_cita btn btn-sm btn-success', data-toggle='tooltip', data-id=cita.appointment_id)
 												//		i(class='glyphicon glyphicon-trash')
 
 			#edit_panel.col-md-4(style="display:none")
-				.jumbotron
-					h4#heading_edit Editar Cita
-					form#form_manage_cita(role='form')
-						.form-group
-							label(for='cita_location') Localización:
-							input#cita_location(class='form-control', name='cita_location', type='text', disabled)
-						.form-group
-							label(for='cita_date') Fecha:
-							input#cita_date(class='form-control', name='cita_date', type='date')
-						.form-group
-							label(for='cita_time') Hora:
-							input#cita_time(class='form-control', name='cita_time', type='time')
-						.form-group
-							label(for='cita_proposito') Proposito:
-							textarea#cita_proposito(class='form-control', name='cita_proposito', type='text', placeholder='Proposito')
-					.btn-group(role='group', aria-label='info panel buttons')
-						button#btn_close_edit_panel(class='btn btn-default') Cerrar
-						button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
+				.panel.panel-success
+					.panel-heading(class='panel-title')
+						h4#heading_edit Editar Cita
+					.panel-body
+						form#form_manage_cita(role='form')
+							.form-group
+								label(for='cita_location') Localización:
+								input#cita_location(class='form-control', name='cita_location', type='text', disabled)
+							.form-group
+								label(for='cita_date') Fecha:
+								input#cita_date(class='form-control', name='cita_date', type='date')
+							.form-group
+								label(for='cita_time') Hora:
+								input#cita_time(class='form-control', name='cita_time', type='time')
+							.form-group
+								label(for='cita_proposito') Proposito:
+								textarea#cita_proposito(class='form-control', name='cita_proposito', type='text', placeholder='Proposito')
+						button#btn_edit(class='btn btn-default btn-success btn-block', type='button') Guardar
+						button#btn_close_edit_panel(class='btn btn-default btn-block') Cerrar
+						
 
 			#info_panel.col-md-4
 				.panel.panel-success
@@ -97,9 +101,16 @@ block content
 								td Cita hecha por:
 								td#cita_info_agent
 							tr 
-								td Reporte Relacionado:
+								td Reporte Asociado:
 								td#cita_info_report
-						button#btn_close_info_panel(class='btn btn-default') Cerrar
+							tr
+								td Más detalles:
+								td 
+									button#btn_view_report(class='btn btn-sm btn-success', type='button', data-id=citas[0].report_id) Ver Reporte
+						button#btn_edit_cita(class='btn btn-success btn-block', type='button', data-id=citas[0].appointment_id) Editar
+						if(user.user_type == 'admin')
+							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip', data-id=citas[0].appointment_id, data-location-name=citas[0].location_name)
+								i(class='glyphicon glyphicon-trash')
 
 			#location_panel.col-md-4(style="display:none")
 				.panel.panel-success

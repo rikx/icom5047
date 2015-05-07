@@ -115,6 +115,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     private void setInterviewLayout() {
         Path path = report.getPath();
+        Log.i(this.toString(), "path="+path.toString());
         int sequence = 1;
         for (PathEntry e : path) {
             //Get the interview element information

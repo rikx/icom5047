@@ -920,7 +920,7 @@ router.get('/list_citas', function(req, res, next) {
 	 		if(user_type == 'admin' || user_type == 'specialist') {
 	 			// get first 20 citas regardless of creator
 	 			query_config = {
-	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
@@ -930,7 +930,7 @@ router.get('/list_citas', function(req, res, next) {
 	 		} else {
 	 			//get first 20 citas created by this user
 	 			query_config = {
-	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, appointments.maker_id, username \
+	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
@@ -955,7 +955,7 @@ router.get('/list_citas', function(req, res, next) {
 
 /* GET Dispositivos List data 
  * Responds with first 20 dispositivos, 
- * ordered by assigned user
+ * ordered by device name
  */
 router.get('/list_dispositivos', function(req, res, next) {
 	var dispositivos_list;
@@ -967,7 +967,7 @@ router.get('/list_dispositivos', function(req, res, next) {
 		// get devices and their assigned user (if any)
 	  client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
 									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
-									ORDER BY username ASC \
+									ORDER BY devices.name ASC \
 									LIMIT 20", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
