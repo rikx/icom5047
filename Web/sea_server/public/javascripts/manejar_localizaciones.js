@@ -565,6 +565,9 @@ $('#btn_edit_localizacion').on('click', function(){
 
 /* PUTs edited location information */
 $('#btn_edit').on('click', function(){
+
+  //EDIT LOCATIONS
+
   var location_id = $(this).attr('data-id');
   // get form data and conver to json format
   var $the_form = $('#form_manage_location');
@@ -599,6 +602,50 @@ $('#btn_edit').on('click', function(){
     }
   });
 }
+
+
+//EDIT CATEGORIES
+var location_id =  $('#btn_edit').attr('data-id');
+var checkedCategories = [];
+var unCheckedCategories = [];
+$(':checkbox:checked').each(function(i){
+  checkedCategories[i] = $(this).val();
+});
+
+$("input:checkbox:not(:checked)").each(function(i){
+  unCheckedCategories[i] = $(this).val();
+});
+ //json object for category_location
+ var category_location = {
+  location: location_id,
+  categories: checkedCategories,
+  unchecked_categories: unCheckedCategories
+};
+
+console.log("category location is ");
+console.log(category_location);
+
+
+$.ajax({
+  url: "http://localhost:3000/users/admin/category_location",
+  method: "PUT",
+  data: JSON.stringify(category_location),
+  contentType: "application/json",
+  dataType: "json",
+
+  success: function(data) {
+
+    alert("Se han modificado las categorias.");
+
+  },
+  error: function( xhr, status, errorThrown ) {
+    alert( "Sorry, there was a problem!" );
+    console.log( "Error: " + errorThrown );
+    console.log( "Status: " + status );
+    console.dir( xhr );
+  }
+});
+
 });
 
 /* Populates info panel with $this_location's information */
