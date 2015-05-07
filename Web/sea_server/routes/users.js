@@ -1842,7 +1842,7 @@ router.put('/admin/dispositivos/:id', function(req, res, next) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
-					if(){
+					if(false){
 
 					} else {
 						res.json(true);
