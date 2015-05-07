@@ -186,7 +186,8 @@ public class MenuListFragment extends ListFragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        adapter.getFilter().filter(charSequence);
+        if(!type.equals(TYPE_REPORTS))
+            adapter.getFilter().filter(charSequence);
     }
 
     @Override
