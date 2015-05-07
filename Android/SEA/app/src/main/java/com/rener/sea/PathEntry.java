@@ -188,4 +188,9 @@ public class PathEntry {
         db.close();
         return id;// if -1 error during update
     }
+
+    public String toString() {
+        String label = getOption().getLabel();
+        return label.equals("") ? getData() : label;
+    }
 }

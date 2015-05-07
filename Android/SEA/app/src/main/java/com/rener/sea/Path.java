@@ -104,4 +104,8 @@ public class Path implements Iterable<PathEntry> {
         return path.size();
     }
 
+    public String toString() {
+        return path.toString();
+    }
+
 }
