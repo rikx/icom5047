@@ -68,6 +68,7 @@ $(document).ready(function(){
   // search bar input select event listener
   $('#search_bar').on('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
+    reportes_array = [datum];
     populate_list({datum});
   });
 

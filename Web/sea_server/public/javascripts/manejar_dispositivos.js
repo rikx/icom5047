@@ -65,7 +65,34 @@ $(document).ready(function(){
   // search bar input select event listener
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
+    dispositivos_array = [datum];
     populate_list({datum});
+  });
+
+  $("#search_bar").keypress(function (event) {
+    if (event.which == 13) {
+      console.log($('#search_bar').val());
+      var user_input = $('#search_bar').val();
+      if(user_input == ''){
+        populate_reportes();
+        return;
+      } else {
+        search_source.get(user_input, sync, async);
+        $(this).typeahead('close');
+        function sync(datums) {
+          //console.log('datums from `local`, `prefetch`, and `#add`');
+          //console.log(datums);
+          populate_list(datums);
+
+        }
+
+        function async(datums) {
+          //console.log('datums from `remote`');
+          //console.log(datums);
+          populate_list(datums);
+        }
+      }
+    }
   });
   /* Search Code End */
 
