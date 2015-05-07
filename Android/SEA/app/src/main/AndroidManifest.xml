@@ -27,7 +27,8 @@
         <activity
             android:name="com.rener.sea.MainActivity"
             android:label="@string/title_activity_main"
-			android:configChanges="orientation|screenSize|locale">
+			android:configChanges="orientation|screenSize|locale"
+            android:windowSoftInputMode="stateHidden">
         </activity>
 		<activity
 			android:name="com.rener.sea.SurveyActivity"
