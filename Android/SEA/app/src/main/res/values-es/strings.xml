@@ -111,4 +111,9 @@
 	<string name="default_report_name">Reporte sin nombre</string>
 	<string name="no_location">Localización no asignada</string>
 	<string name="search_hint">Buscar...</string>
+	<string name="empty_first_name">Nombre no puede estar vacio</string>
+	<string name="empty_last_name">Apellido no puede estar vacio</string>
+	<string name="empty_licence">La licencia está vacia</string>
+	<string name="empty_location_name">Nombre no puede estar vacío</string>
+	<string name="invalid_licence">Licencia inválida</string>
 </resources>

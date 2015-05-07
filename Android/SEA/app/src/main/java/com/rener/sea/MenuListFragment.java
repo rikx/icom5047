@@ -3,6 +3,7 @@ package com.rener.sea;
 
 import android.app.ListFragment;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -14,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,7 +27,7 @@ import java.util.List;
 /**
  * A fragment class used to display a list of objects in the application.
  */
-public class MenuListFragment extends ListFragment implements TextWatcher {
+public class MenuListFragment extends ListFragment implements TextWatcher, View.OnClickListener {
 
     public static String TYPE_PEOPLE = "PEOPLE";
     public static String TYPE_REPORTS = "REPORTS";
@@ -34,6 +37,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher {
     private ArrayAdapter adapter;
     private List list;
     private EditText editSearch;
+    private Button clearSearchButton;
 
     /**
      * Create a MenuListFragment instance with a given type
@@ -67,6 +71,9 @@ public class MenuListFragment extends ListFragment implements TextWatcher {
         View view = inflater.inflate(R.layout.menu_list_fragment, container, false);
         editSearch = (EditText) view.findViewById(R.id.inputSearch);
         editSearch.addTextChangedListener(this);
+        clearSearchButton = (Button) view.findViewById(R.id.clearSearch);
+        clearSearchButton.setOnClickListener(this);
+        clearSearchButton.setVisibility(View.GONE);
         return view;
     }
 
@@ -186,12 +193,22 @@ public class MenuListFragment extends ListFragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if(!type.equals(TYPE_REPORTS))
-            adapter.getFilter().filter(charSequence);
+        int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE ;
+        clearSearchButton.setVisibility(visibility);
+            //adapter.getFilter().filter(charSequence);
     }
 
     @Override
     public void afterTextChanged(Editable editable) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.clearSearch:
+                editSearch.setText("");
+                break;
+        }
     }
 }

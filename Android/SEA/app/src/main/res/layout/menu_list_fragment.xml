@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent">
+				android:layout_height="match_parent"
+				android:orientation="vertical">
 
-	<EditText
-		android:id="@+id/inputSearch"
+	<RelativeLayout
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:hint="@string/search_hint"
-		android:inputType="textVisiblePassword"/>
+		android:layout_marginTop="9dp"
+		android:padding="5dp">
+
+		<Button
+			android:id="@+id/clearSearch"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:background="@drawable/ic_action_cancel" />
+
+		<EditText
+			android:id="@+id/inputSearch"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@id/clearSearch"
+			android:textSize="20dp"
+			android:hint="@string/search_hint"
+			android:singleLine="true" />
+
+	</RelativeLayout>
 
 	<ListView
 		android:id="@android:id/list"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/inputSearch"
 		android:choiceMode="singleChoice"
 		android:listSelector="@android:color/holo_green_light"
 		android:divider="@android:drawable/divider_horizontal_textfield"
@@ -28,4 +45,4 @@
 		android:text="@string/no_data"
 		/>
 
-</RelativeLayout>
+</LinearLayout>
