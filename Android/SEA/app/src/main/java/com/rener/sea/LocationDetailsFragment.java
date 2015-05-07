@@ -278,7 +278,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         location.setCity(city);
         location.setZipCode(zip);
 
-        if (license.equals("")) {
+        if (license.equals("") || invalid) {
             String message = getString(R.string.invalid_licence);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
