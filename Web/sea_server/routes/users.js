@@ -1269,7 +1269,7 @@ router.get('/localizaciones', function(req, res, next) {
 			});
 
 		  // query for associated agentes
-		  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+		  client.query('WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
 		  	FROM location \
 		  	ORDER BY location_name \
 		  	LIMIT 20) \
@@ -1284,11 +1284,11 @@ router.get('/localizaciones', function(req, res, next) {
 		  });
 
 		  // query for associated ganaderos
-		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
+		  client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
 		  	FROM location natural join address \
 		  	ORDER BY location_name \
 		  	LIMIT 20) \
-		  SELECT person_id, location_id,\
+		  SELECT person_id, locations.location_id,\
 		  CASE WHEN person_id = owner_id THEN 'owner' \
 		  WHEN person_id = manager_id THEN 'manager' \
 		  END AS relation_type, \
@@ -1842,7 +1842,11 @@ router.put('/admin/dispositivos/:id', function(req, res, next) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
-					res.json(true);
+					if(){
+
+					} else {
+						res.json(true);
+					}
 				}
 			});
 		});
