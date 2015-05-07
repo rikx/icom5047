@@ -10,7 +10,7 @@ $(document).ready(function(){
   if(citas_array.length > 0)
   populate_info_panel(citas_array[0]);
 
-   /* Search Code start */
+  /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
     // user input is tokenized and compared with location_name, report_id, report_name, date or time
