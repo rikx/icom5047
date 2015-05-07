@@ -635,6 +635,31 @@ router.get('/location/:id', function(req, res, next) {
 	});
 });
 
+/* GET location categories where :id matches location_id */
+router.get('/location/:id/categories', function(req, res, next){
+	var location_id = req.params.id;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	  client.query('SELECT category.category_id, category.name AS category_name \
+									FROM location \
+									INNER JOIN location_category ON location.location_id = location_category.location_id \
+									INNER JOIN category ON location_category.category_id = category.category_id \
+									WHERE location_id = $1', 
+									[location_id], function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({location_categories: result.rows});
+	    }
+	  });
+	});
+});
+
 /* GET Ganaderos List data 
  * Responds with first 20 ganaderos, alphabetically ordered 
  */
