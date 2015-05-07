@@ -955,7 +955,7 @@ router.get('/list_citas', function(req, res, next) {
 
 /* GET Dispositivos List data 
  * Responds with first 20 dispositivos, 
- * ordered by assigned user
+ * ordered by device name
  */
 router.get('/list_dispositivos', function(req, res, next) {
 	var dispositivos_list;
@@ -967,7 +967,7 @@ router.get('/list_dispositivos', function(req, res, next) {
 		// get devices and their assigned user (if any)
 	  client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
 									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
-									ORDER BY username ASC \
+									ORDER BY devices.name ASC \
 									LIMIT 20", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();

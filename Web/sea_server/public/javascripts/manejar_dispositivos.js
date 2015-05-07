@@ -103,7 +103,8 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
-    remove_active_class($dispositivos_list);
+    $('#info_panel').show();
+    //remove_active_class($dispositivos_list);
   });
 
   /* Close info panel */
@@ -281,7 +282,7 @@ $(document).ready(function(){
 
   /* Populate info panel with $this_dispositivo info */
   function populate_info_panel($this_dispositivo) {
-    $('#info_panel_heading').text($this_dispositivo.device_name);
+    $('#info_panel_heading').html($this_dispositivo.device_name);
     $('#dispositivo_info_name').text($this_dispositivo.device_name);
     $('#dispositivo_info_id_num').text($this_dispositivo.id_number);
     $('#dispositivo_info_usuario').text($this_dispositivo.username);
