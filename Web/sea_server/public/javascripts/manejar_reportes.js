@@ -2,13 +2,19 @@ $(document).ready(function(){
 	// reportes list
 	$reportes_list = $('#reportes_list');
 	
-	// store data for initial 20 reports
-	var reportes_array = JSON.parse($reportes_list.attr('data-reports'));
+  // store data for initial 20 dispositivos
+  var reportes_array;
   var user_info = JSON.parse($reportes_list.attr('data-user'));
+  
+  var data_reportes = $reportes_list.attr('data-reports');
+  if(data_reportes != undefined){
+    reportes_array = JSON.parse($reportes_list.attr('data-reports'));
 
-  // initial info panel population
-  if(reportes_array.length > 0)
+    // initial info panel population
     populate_info_panel(reportes_array[0]);
+  } else {
+    $('#info_panel').hide();
+  }
 
   /* Search Code start */
   // constructs the suggestion engine
@@ -28,7 +34,7 @@ $(document).ready(function(){
         reportes_array = list.reports;
   
         // populate list with matching results
-        populate_list(reportes_array);
+        //populate_list(reportes_array);
         return $.map(list.reports, function(reporte) { 
           return reporte;
         });
@@ -60,9 +66,35 @@ $(document).ready(function(){
   });
 
   // search bar input select event listener
-  $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
+  $('#search_bar').on('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
     populate_list({datum});
+  });
+
+  $("#search_bar").keypress(function (event) {
+    if (event.which == 13) {
+      console.log($('#search_bar').val());
+      var this_query;
+      if($('#search_bar').val() == ''){
+        this_query = ' ';
+      } else {
+        this_query = $('#search_bar').val()
+      }
+      search_source.get(this_query, sync, async);
+
+      function sync(datums) {
+        //console.log('datums from `local`, `prefetch`, and `#add`');
+        //console.log(datums);
+        populate_list(datums);
+
+      }
+
+      function async(datums) {
+        //console.log('datums from `remote`');
+        //console.log(datums);
+        populate_list(datums);
+      }
+    }
   });
   /* Search Code End */
 
@@ -96,7 +128,7 @@ $(document).ready(function(){
     populate_info_panel(this_report);
 
     // set id value of view report
-    $('#btn_view_report') = $this.attr('data-id', report_id);
+    $('#btn_view_report').attr('data-id', report_id);
   });
 
   /* View report (redirect to report page) */
@@ -172,9 +204,7 @@ $(document).ready(function(){
     var table_content = '';
 
     // for each item in JSON, add table row and cells
-    if(user_info.user_type == 'admin')
-    {
-      $.each(reportes_set, function(i){
+    $.each(reportes_set, function(i){
       table_content += '<tr>';
       table_content += "<td><a class='list-group-item ";
       // if initial list item, set to active
@@ -188,34 +218,15 @@ $(document).ready(function(){
         report_name = 'Reporte sin título';
       }
       table_content += "show_info_report' href='#', data-id='"+this.report_id+"'>"+report_name+"</a></td>";
-      table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
-      table_content += "<td><button class='btn_edit_report btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
+      //table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
+      //table_content += "<td><button class='btn_edit_report btn btn-sm btn-success btn-block' type='button' data-id='"+this.report_id+"'>Editar</button></td>";
       //table_content += "<td><a class='btn_delete_report btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.report_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });  
-    }
-    else
-    {
-       $.each(reportes_set, function(i){
-      table_content += '<tr>';
-      table_content += "<td><a class='list-group-item ";
-      // if initial list item, set to active
-      if(i==0) {
-        table_content +=  'active ';
-      }
-      var report_name;
-      if(this.report_name != null) {
-        report_name = this.report_name;
-      } else {
-        report_name = 'Reporte sin título';
-      }
-      table_content += "show_info_report' href='#', data-id='"+this.report_id+"'>"+report_name+"</a></td>";
-      table_content += "<td><center data-id='"+this.location_id+"'>"+this.location_name+"</center></td>"
-      table_content += '</tr>';
-    });  
-    }
     
-
+    if(user_info.user_type != 'admin'){
+      $('#btn_delete').hide();
+    }
     // inject content string into html
     $reportes_list.html(table_content);
   }

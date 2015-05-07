@@ -17,15 +17,17 @@ block content
 			.row
 				.col-md-1
 				.col-md-6
-					input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar reporte por nombre, fecha (dd/mm/aaaa), agente o localización')
+					<small> *Buscar reporte por nombre, fecha (dd/mm/aaaa), agente, localización o cuestionario</small>
+					input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
+
 				.col-md-4
 				.col-md-1
-
+			br
 			.row
 				.col-md-1
 				.col-md-6
 					.panel.panel-success
-						.panel-heading Reportes
+						.panel-heading(class='panel-title') Reportes
 						.panel-body
 							.list-group(style='overflow:auto; height:550px;')
 								table(class='table')
@@ -78,9 +80,10 @@ block content
 								tr
 									td Encuesta utilizada:
 									td#reporte_info_flowchart
-							button#btn_view_report(class='btn btn-sm btn-success btn-block', type='button', data-id=reports[0].report_id) Ver Reporte
-							a#btn_delete(class='btn btn-success btn-block', data-toggle='tooltip', data-id=reports[0].report_id, data-report-name=reports[0].report_name)
-								i(class='glyphicon glyphicon-trash')
+							button#btn_view_report(class='btn btn-sm btn-success btn-block', type='button', data-id=reports[0].report_id) Ver Reporte Completo
+							if(user.user_type == 'admin')
+								a#btn_delete(class='btn btn-success btn-block', data-toggle='tooltip', data-id=reports[0].report_id, data-report-name=reports[0].report_name)
+									i(class='glyphicon glyphicon-trash')
 
 			.row
 				.col-md-2

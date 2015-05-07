@@ -7,6 +7,7 @@ $(document).ready(function(){
   var data_dispositivos = $dispositivos_list.attr('data-dispositivos');
   if(data_dispositivos != undefined){
     dispositivos_array=  JSON.parse(data_dispositivos);
+    
     // initial population of dispositivos list
     populate_list(dispositivos_array)
     // initial info panel population

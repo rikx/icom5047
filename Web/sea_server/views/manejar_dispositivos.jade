@@ -18,9 +18,11 @@ block content
 			.row
 				.col-md-1
 				.col-md-6
-					input#search_bar(class='form-control typeahead', type='text', placeholder='Buscar dispositivos por nombre, # de identificación o usuario asignado')
+					<small> *Buscar dispositivos por nombre, # de identificación o usuario asignado</small>
+					input#search_bar(class='form-control typeahead', type='text', placeholder='Buscar')
 				.col-md-4
 				.col-md-1
+			br
 
 			.row
 				.col-md-1
@@ -31,11 +33,6 @@ block content
 							.list-group(style='overflow:auto; height:550px;')
 								table(class='table')
 									thead
-										tr
-											th
-												center Dispositivo
-											th
-												center Última sincronicazión
 									tbody#dispositivos_list(data-dispositivos=dispositivos)
 
 				#edit_panel.col-md-4(style="display:none")
