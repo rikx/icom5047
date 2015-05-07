@@ -40,7 +40,7 @@ block content
 						table#ganadero_info(class='table')
 							tr
 								td#info_category_name Nombre de Categoría:
-								td#ganadero_info_name 
+								td#category_info_name 
 									=categories[0].name
 						button#btn_edit_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
 						button#btn_delete_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id) Eliminar
@@ -78,10 +78,23 @@ block content
 										.list-group(style='overflow:auto; height:300px;')
 											table(class='table')
 												tbody#specialties
-										button#btn_add_specialties(class='btn btn-default btn-success', type='button') Agregar 
-										button#btn_edit_specialties(class='btn btn-default btn-success', type='button', data-id=specialties[0].spec_id, data-specialty-name=specialties[0].name) Editar
-										button#btn_delete_specialties(class='btn btn-default btn-success', type='button', data-id=specialties[0].spec_id) Eliminar
+										button#btn_add_specialties(class='btn btn-default btn-success', type='button') Agregar Especialidades
 				.col-md-4
+
+
+					.panel.panel-success
+						.panel-heading
+							h3#info_panel_heading(class='panel-title') 
+						.panel-body(data-all-specialties=specialties)
+							table#ganadero_info(class='table')
+								tr
+									td#info_specialty_name Nombre de Especialidad:
+									td#specialty_info_name 
+										=specialties[0].name
+							button#btn_edit_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id, data-category-name=specialties[0].name) Editar
+							button#btn_delete_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id) Eliminar
+
+
 					#add_specialty_panel.form-group
 								.panel.panel-success
 									.panel-heading
