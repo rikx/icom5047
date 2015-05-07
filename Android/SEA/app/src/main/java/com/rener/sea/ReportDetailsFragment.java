@@ -1,5 +1,6 @@
 package com.rener.sea;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -19,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.Calendar;
@@ -31,15 +34,15 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     public static final int NO_APPOINTMENT_LAYOUT = 0;
     private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
-    public static final int EDIT_APPOINTMENT_LAYOUT = 1;
-    public static final int VIEW_APPOINTMENT_LAYOUT = 2;
+    public static final int VIEW_APPOINTMENT_LAYOUT = 1;
     private Report report;
-    private TextView textName, textLocation, textDate, textSubject, textType, textCreator,
+    private TextView textName, textLocation, textDate, textSubject, textCreator,
             textFlowchart, textNotes;
     private LinearLayout interviewLayout;
     private ViewFlipper appointmentFlipper;
     private View appointmentView;
     private boolean viewCreated;
+    private AlertDialog appointmentDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textLocation = (TextView) view.findViewById(R.id.report_text_location);
         textDate = (TextView) view.findViewById(R.id.report_text_date);
         textSubject = (TextView) view.findViewById(R.id.report_text_subject);
-        textType = (TextView) view.findViewById(R.id.report_text_type);
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
@@ -206,18 +208,33 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         return this.report = report;
     }
 
+    private void continueReport() {
+        Intent intent = new Intent(getActivity(), SurveyActivity.class);
+        intent.putExtra("REPORT_ID", report.getId());
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public boolean onDetailsChanged() {
+        if(viewCreated) {
+            setDataViews();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.report_add_appointment_button:
-                displayNewAppointmentLayout();
+                displayAppointmentDialog();
                 break;
             case R.id.report_save_appointment_button:
-                saveAppointment();
+                if(saveAppointment()) appointmentDialog.dismiss();
                 break;
             case R.id.report_cancel_appointment_button:
-                appointmentLayout = NO_APPOINTMENT_LAYOUT;
-                setAppointmentViews();
+                appointmentDialog.dismiss();
                 break;
             case R.id.report_continue_survey_button:
                 continueReport();
@@ -237,8 +254,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             appointmentFlipper.setDisplayedChild(NO_APPOINTMENT_LAYOUT);
             appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
             appointmentView.setVisibility(View.VISIBLE);
-        } else {
-            displayNewAppointmentLayout();
         }
     }
 
@@ -276,41 +291,13 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         appointmentView.setVisibility(View.VISIBLE);
     }
 
-
-    private void displayNewAppointmentLayout() {
-
-        //Set the date & time pickers orientation based on the device's orientation
-        LinearLayout pickersLayout = (LinearLayout) appointmentFlipper.findViewById(R.id
-                .datetime_pickers_layout);
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) { //Orientation is landscape
-            pickersLayout.setOrientation(LinearLayout.HORIZONTAL);
-        } else { //Orientation is portrait
-            pickersLayout.setOrientation(LinearLayout.VERTICAL);
-        }
-
-        //Set the cancel/save buttons
-        Button save = (Button) appointmentFlipper.findViewById(R.id.report_save_appointment_button);
-        save.setOnClickListener(this);
-        Button cancel = (Button) appointmentFlipper.findViewById(R.id
-                .report_cancel_appointment_button);
-        cancel.setOnClickListener(this);
-
-        //Display the layout view
-        appointmentLayout = EDIT_APPOINTMENT_LAYOUT;
-        appointmentView.setVisibility(View.GONE);
-        appointmentFlipper.setDisplayedChild(EDIT_APPOINTMENT_LAYOUT);
-        appointmentView = appointmentFlipper.findViewById(R.id.edit_appointment_layout);
-        appointmentView.setVisibility(View.VISIBLE);
-    }
-
-    private void saveAppointment() {
+    private boolean saveAppointment() {
         //Get the input date, time and purpose from the views
-        View view = appointmentFlipper;
+        View view = appointmentView;
         DatePicker datePicker = (DatePicker) view.findViewById(R.id.appointment_date_picker);
         TimePicker timePicker = (TimePicker) view.findViewById(R.id.appointment_time_picker);
         EditText purposeEdit = (EditText) view.findViewById(R.id.appointment_purpose_edit);
-        String purpose = purposeEdit.getText().toString();
+        String purpose = purposeEdit.getText().toString().trim();
         int year = datePicker.getYear();
         int month = datePicker.getMonth();
         int dom = datePicker.getDayOfMonth();
@@ -318,37 +305,49 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         int minute = timePicker.getCurrentMinute();
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dom, hour, minute);
-        Log.i(this.toString(), "calendar set:" + calendar.toString());
+        Calendar now = Calendar.getInstance();
 
-        //Get the current user id
-        MainActivity main = (MainActivity) getActivity();
-        SharedPreferences sharedPref = main.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
-        DBHelper dbHelper = main.getDBHelper();
-        User creator = dbHelper.findUserByUsername(sUsername);
+        boolean past = calendar.before(now);
 
-        //Create the appointment and set the views for it
-        new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper);
-        setAppointmentViews();
+        if(!past) {
+            //Get the current user id
+            MainActivity main = (MainActivity) getActivity();
+            SharedPreferences sharedPref = main.getSharedPreferences(
+                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
+            DBHelper dbHelper = main.getDBHelper();
+            User creator = dbHelper.findUserByUsername(sUsername);
 
-        //Notify activity that data has changed
-        ((MainActivity) getActivity()).onDataChanged();
-    }
-
-    private void continueReport() {
-        Intent intent = new Intent(getActivity(), SurveyActivity.class);
-        intent.putExtra("REPORT_ID", report.getId());
-        startActivity(intent);
-        getActivity().finish();
-    }
-
-    @Override
-    public boolean onDetailsChanged() {
-        if(viewCreated) {
-            setDataViews();
-            return true;
+            //Create the appointment and set the views for it
+            new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper);
+            setAppointmentViews();
+            ((MainActivity) getActivity()).onDataChanged();
         }
-        return false;
+        else {
+            String message = getString(R.string.past_date_message);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
+
+        return !past;
+    }
+
+    private void displayAppointmentDialog() {
+        if(appointmentDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            appointmentView = inflater.inflate(R.layout.appointment_edit, null);
+            Button save = (Button) appointmentView.findViewById(R.id.report_save_appointment_button);
+            save.setOnClickListener(this);
+            Button cancel = (Button) appointmentView.findViewById(R.id
+                    .report_cancel_appointment_button);
+            cancel.setOnClickListener(this);
+            builder.setView(appointmentView);
+
+            appointmentDialog = builder.create();
+            appointmentDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
+                    .SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        }
+        appointmentDialog.show();
     }
 }

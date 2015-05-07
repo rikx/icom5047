@@ -110,10 +110,12 @@
 	<string name="survey_completed">Survey complete</string>
 	<string name="default_report_name">Unnamed Report</string>
 	<string name="no_location">No location set</string>
-	<string name="search_hint">Search...</string>
+	<string name="search_hint">Search…</string>
 	<string name="empty_first_name">First name cannot be empty</string>
 	<string name="empty_last_name">Last name cannot be empty</string>
 	<string name="empty_licence">Licence is empty</string>
 	<string name="empty_location_name">Name cannot be empty</string>
 	<string name="invalid_licence">Invalid licence</string>
+	<string name="past_date_message">Date cannot be in the past</string>
+	<string name="appointments">Appointments</string>
 </resources>

@@ -116,4 +116,6 @@
 	<string name="empty_licence">La licencia está vacia</string>
 	<string name="empty_location_name">Nombre no puede estar vacío</string>
 	<string name="invalid_licence">Licencia inválida</string>
+	<string name="past_date_message">Fecha no puede ser pasada</string>
+	<string name="appointments">Citas</string>
 </resources>
