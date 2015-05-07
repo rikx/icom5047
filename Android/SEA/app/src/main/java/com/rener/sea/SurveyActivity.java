@@ -52,14 +52,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private static final String GREATER_EQUAL_REGEX = "ge\\d+(\\.\\d+)?";
     private static final String LESS_EQUAL_REGEX = "gt\\d+(\\.\\d+)?";
     private static final String RANGE_REGEX = "ra(\\[|\\()\\d+(\\.\\d+)?,\\d+(\\.\\d+)?(\\]|\\))";
-    public static final int NO_APPOINTMENT_LAYOUT = 0;
-    private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
-    public static final int EDIT_APPOINTMENT_LAYOUT = 1;
-    public static final int VIEW_APPOINTMENT_LAYOUT = 2;
     private DBHelper dbHelper;
     private Report report;
     private EditText editName, editNotes;
-    private Spinner spinnerLocation, spinnerSubject, spinnerFlowchart;
+    private Spinner spinnerLocation, spinnerFlowchart;
     private Path path;
     private LinearLayout progressLayout;
     private boolean surveyEnded = false;
@@ -68,8 +64,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private RadioGroup currentGroup;
     private int groupChecked = -1;
     private EditText currentText;
-    private ViewFlipper appointmentFlipper;
-    private View appointmentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,15 +94,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         progressLayout = (LinearLayout) findViewById(R.id.survey_progress_layout);
         nextButton = (Button) findViewById(R.id.survey_next_question_button);
         nextButton.setOnClickListener(this);
-
-        //Set the appointment views
-        FrameLayout appointmentLayout = (FrameLayout) findViewById(R.id
-                .survey_appointment_container);
-        View aView = getLayoutInflater().inflate(R.layout.appointment_details, appointmentLayout, false);
-        appointmentLayout.addView(aView);
-        appointmentFlipper = (ViewFlipper) aView.findViewById(R.id.appointment_flipper);
-        appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
-        setAppointmentViews();
 
         setSpinnerData();
 
@@ -245,16 +230,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         switch (view.getId()) {
             case R.id.survey_next_question_button :
                 nextPressed();
-                break;
-            case R.id.report_add_appointment_button:
-                displayNewAppointmentLayout();
-                break;
-            case R.id.report_save_appointment_button:
-                saveAppointment();
-                break;
-            case R.id.report_cancel_appointment_button:
-                appointmentLayout = NO_APPOINTMENT_LAYOUT;
-                setAppointmentViews();
                 break;
         }
     }
@@ -501,110 +476,4 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         });
     }
 
-    private void setAppointmentViews() {
-        Appointment appointment = report.getAppointment();
-        if (appointment != null) {
-            displayAppointmentLayout(appointment);
-        } else if (appointmentLayout == NO_APPOINTMENT_LAYOUT) {
-            Button add = (Button) appointmentFlipper.findViewById(R.id
-                    .report_add_appointment_button);
-            add.setOnClickListener(this);
-            appointmentView.setVisibility(View.GONE);
-            appointmentFlipper.setDisplayedChild(NO_APPOINTMENT_LAYOUT);
-            appointmentView = appointmentFlipper.findViewById(R.id.no_appointment_layout);
-            appointmentView.setVisibility(View.VISIBLE);
-        } else {
-            displayNewAppointmentLayout();
-        }
-    }
-
-    private void displayAppointmentLayout(Appointment appointment) {
-        View view = appointmentFlipper;
-
-        //Set appointment date view
-        Locale locale = Locale.getDefault();
-        String dateFormat = getResources().getString(R.string.date_format_long);
-        String timeFormat = getResources().getString(R.string.time_format);
-        String format = dateFormat + " " + timeFormat;
-        String appLabel = getResources().getString(R.string.appointment_label);
-        String date = appointment.getDateString(format, locale);
-        String fullDate = appLabel + ": " + date;
-        TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
-        dateText.setText(fullDate);
-
-        //Set appointment purpose view
-        String purposeLabel = getResources().getString(R.string.purpose_label);
-        String purpose = appointment.getPurpose();
-        TextView purposeText = (TextView) view.findViewById(R.id.appointment_purpose_text);
-        purposeText.setText(purposeLabel + ": " + purpose);
-
-        //Set appointment creator view
-        String creatorLabel = getResources().getString(R.string.appointment_set_by_label);
-        String creator = appointment.getCreator().getPerson().toString();
-        TextView creatorText = (TextView) view.findViewById(R.id.appointment_creator_text);
-        creatorText.setText(creatorLabel + ": " + creator);
-
-        //Display the layout
-        appointmentLayout = VIEW_APPOINTMENT_LAYOUT;
-        appointmentView.setVisibility(View.GONE);
-        appointmentFlipper.setDisplayedChild(VIEW_APPOINTMENT_LAYOUT);
-        appointmentView = appointmentFlipper.findViewById(R.id.view_appointment_layout);
-        appointmentView.setVisibility(View.VISIBLE);
-    }
-
-
-    private void displayNewAppointmentLayout() {
-
-        //Set the date & time pickers orientation based on the device's orientation
-        LinearLayout pickersLayout = (LinearLayout) appointmentFlipper.findViewById(R.id
-                .datetime_pickers_layout);
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) { //Orientation is landscape
-            pickersLayout.setOrientation(LinearLayout.HORIZONTAL);
-        } else { //Orientation is portrait
-            pickersLayout.setOrientation(LinearLayout.VERTICAL);
-        }
-
-        //Set the cancel/save buttons
-        Button save = (Button) appointmentFlipper.findViewById(R.id.report_save_appointment_button);
-        save.setOnClickListener(this);
-        Button cancel = (Button) appointmentFlipper.findViewById(R.id
-                .report_cancel_appointment_button);
-        cancel.setOnClickListener(this);
-
-        //Display the layout view
-        appointmentLayout = EDIT_APPOINTMENT_LAYOUT;
-        appointmentView.setVisibility(View.GONE);
-        appointmentFlipper.setDisplayedChild(EDIT_APPOINTMENT_LAYOUT);
-        appointmentView = appointmentFlipper.findViewById(R.id.edit_appointment_layout);
-        appointmentView.setVisibility(View.VISIBLE);
-    }
-
-    private void saveAppointment() {
-        //Get the input date, time and purpose from the views
-        View view = appointmentFlipper;
-        DatePicker datePicker = (DatePicker) view.findViewById(R.id.appointment_date_picker);
-        TimePicker timePicker = (TimePicker) view.findViewById(R.id.appointment_time_picker);
-        EditText purposeEdit = (EditText) view.findViewById(R.id.appointment_purpose_edit);
-        String purpose = purposeEdit.getText().toString().trim();
-        int year = datePicker.getYear();
-        int month = datePicker.getMonth();
-        int dom = datePicker.getDayOfMonth();
-        int hour = timePicker.getCurrentHour();
-        int minute = timePicker.getCurrentMinute();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, dom, hour, minute);
-        Log.i(this.toString(), "calendar set:" + calendar.toString());
-
-        //Get the current user id
-        SharedPreferences sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
-        User creator = dbHelper.findUserByUsername(sUsername);
-
-        //Create the appointment and set the views for it
-        new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper);
-        setAppointmentViews();
-
-    }
 }
