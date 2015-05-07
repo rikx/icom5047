@@ -108,4 +108,7 @@
 	<string name="licence_label">Licencia</string>
 	<string name="address_label">Dirección</string>
 	<string name="survey_completed">Cuestionario completado</string>
+	<string name="default_report_name">Reporte sin nombre</string>
+	<string name="no_location">Localización no asignada</string>
+	<string name="search_hint">Buscar...</string>
 </resources>
