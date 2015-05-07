@@ -665,6 +665,35 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	}
 });
 
+ /* PUT Admin Manejar Ganaderos 
+ * Edit ganadero matching :id in database
+ */
+ router.put('/admin/edit_specialty/:id', function(req, res, next) {
+ 	console.log("edit spec");
+ 	if(!req.body.hasOwnProperty('specialty_name')) {
+ 		res.statusCode = 400;
+ 		return res.send('Error: Missing fields for put categories.');
+ 	} else {
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+			// Edit category
+			client.query("UPDATE specialization SET name = $1 WHERE spec_id = $2", 
+										[req.body.specialty_name, req.params.id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					res.json(true);
+				}
+			});
+		});
+	}
+});
+
 /* GET User Manejar Reportes
  * Renders page and includes response with first 20 reportes, 
  * alphabetically ordered by location name
