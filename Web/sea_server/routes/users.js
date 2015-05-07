@@ -1595,7 +1595,7 @@ router.put('/admin/category_location', function(req, res, next) {
 								client.query("DELETE FROM location_category WHERE location_id =$1 AND category_id = $2", 
 															[req.body.location,location_category_array[j].category_id] , function(err, result) {
 									//call `done()` to release the client back to the pool
-									done();
+									//done();
 									if(err) {
 										return console.error('error running query', err);
 									} else {
@@ -1612,7 +1612,7 @@ router.put('/admin/category_location', function(req, res, next) {
 							client.query("INSERT into location_category (location_id, category_id) VALUES ($1, $2)", 
 														[req.body.location,req.body.categories[i]] , function(err, result) {
 								//call `done()` to release the client back to the pool
-								done();
+								//done();
 								if(err) {
 									return console.error('error running query', err);
 								} else {
@@ -1622,7 +1622,20 @@ router.put('/admin/category_location', function(req, res, next) {
 						}
 		      }
 		    	// location_category associations were succesfully updated
-					res.json(true);
+		    	client.query('SELECT category.category_id, category.name AS category_name \
+												FROM location \
+												INNER JOIN location_category ON location.location_id = location_category.location_id \
+												INNER JOIN category ON location_category.category_id = category.category_id \
+												WHERE location.location_id = $1', 
+												[location_id], function(err, result) {
+				  	//call `done()` to release the client back to the pool
+				    done();
+			    	if(err) {
+				      return console.error('error running query', err);
+				    } else {
+				    	res.json({location_categories: result.rows});
+				    }
+				  });
 		   	}
 		  });
 	  });
