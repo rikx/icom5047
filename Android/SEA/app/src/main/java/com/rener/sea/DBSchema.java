@@ -134,7 +134,8 @@ public class DBSchema {
             PATH_OPTION_ID + " INTEGER," +
             PATH_SEQUENCE + " INTEGER," +
             PATH_DATA + " TEXT," +
-            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
+            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "', " +
+            "UNIQUE ("+PATH_REPORT_ID+", "+PATH_OPTION_ID+", "+PATH_SEQUENCE+"))";
     public static final String TABLE_PERSON = "person";
     public static final String PERSON_ID = "person_id";
     public static final String PERSON_LAST_NAME1 = "last_name1";
