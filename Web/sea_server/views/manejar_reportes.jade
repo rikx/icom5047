@@ -65,21 +65,23 @@ block content
 									= reports[0].report_name
 						.panel-body
 							table#reporte_info(class='table')
-								tr
-									td Reporte ID:
-									td#reporte_info_id 
-								tr
-									td Para Localización: 
-									td#reporte_info_location
-								tr
-									td Creado por:
-									td#reporte_info_creator
-								tr
-									td Fecha:
-									td#report_info_date
-								tr
-									td Encuesta utilizada:
-									td#reporte_info_flowchart
+								thead
+								tbody
+									tr
+										td Reporte ID:
+										td#reporte_info_id 
+									tr
+										td Para Localización: 
+										td#reporte_info_location
+									tr
+										td Creado por:
+										td#reporte_info_creator
+									tr
+										td Fecha:
+										td#report_info_date
+									tr
+										td Encuesta utilizada:
+										td#reporte_info_flowchart
 							button#btn_view_report(class='btn btn-sm btn-success btn-block', type='button', data-id=reports[0].report_id) Ver Reporte Completo
 							if(user.user_type == 'admin')
 								a#btn_delete(class='btn btn-success btn-block', data-toggle='tooltip', data-id=reports[0].report_id, data-report-name=reports[0].report_name)

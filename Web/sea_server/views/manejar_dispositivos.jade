@@ -69,25 +69,29 @@ block content
 				#info_panel.col-md-4
 					.panel.panel-success
 						.panel-heading
-							h3#info_panel_heading(class='panel-title') Dispositivo 1
+							h3#info_panel_heading(class='panel-title')
+								= dispositivos[0].device_name
 						.panel-body
 							table#dispositivo_info(class='table')
-								tr
-									td Nombre:
-									td#dispositivo_info_name 
-								tr
-									td Numero de Identificación:
-									td#dispositivo_info_id_num
-								tr
-									td Usuario Asignado:
-									td#dispositivo_info_usuario
-								tr 
-									td Última Sincronicazión: 
-									td#dispositivo_info_last_sync
-							.btn-group(role='group', aria-label='info panel buttons')
-								button#btn_close_info_panel(class='btn btn-default') Cerrar
-
-
+								thead
+								tbody
+									tr
+										td Nombre:
+										td#dispositivo_info_name 
+									tr
+										td Numero de Identificación:
+										td#dispositivo_info_id_num
+									tr
+										td Usuario Asignado:
+										td#dispositivo_info_usuario
+									tr 
+										td Última Sincronicazión: 
+										td#dispositivo_info_last_sync
+							button#btn_edit_dispositivo(class='btn btn-success btn-block', type='button', data-id=dispositivos[0].device_id) Editar
+							a#btn_delete(class='btn btn-success btn-block', data-toggle='tooltip', data-id=dispositivos[0].device_id, data-device-name=dispositivos[0].device_name)
+								i(class='glyphicon glyphicon-trash')
+							//.btn-group(role='group', aria-label='info panel buttons')
+							//	button#btn_close_info_panel(class='btn btn-default') //Cerrar
 									
 			.row
 				.col-md-1

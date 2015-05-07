@@ -66,29 +66,28 @@ $(document).ready(function(){
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
     dispositivos_array = [datum];
-    populate_list({datum});
+    populate_list([datum]);
   });
 
   $("#search_bar").keypress(function (event) {
     if (event.which == 13) {
-      console.log($('#search_bar').val());
       var user_input = $('#search_bar').val();
       if(user_input == ''){
-        populate_reportes();
+        populate_dispositivos();
         return;
       } else {
         search_source.get(user_input, sync, async);
         $(this).typeahead('close');
         function sync(datums) {
-          //console.log('datums from `local`, `prefetch`, and `#add`');
-          //console.log(datums);
+          console.log('datums from `local`, `prefetch`, and `#add`');
+          console.log(datums);
           populate_list(datums);
 
         }
 
         function async(datums) {
-          //console.log('datums from `remote`');
-          //console.log(datums);
+          console.log('datums from `remote`');
+          console.log(datums);
           populate_list(datums);
         }
       }
@@ -192,7 +191,7 @@ $(document).ready(function(){
   });
 
   /* Open edit panel */
-  $dispositivos_list.on('click', 'tr td button.btn_edit_dispositivo', function(){
+  $('#btn_edit_dispositivo').on('click', function(){
     $('#btn_edit, #heading_edit').show();
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
@@ -246,6 +245,30 @@ $(document).ready(function(){
   }
   });
 
+  /* Delete device */
+  $('#btn_delete').on('click', function(){
+    var confirm_delete = confirm('Desea borrar el dispositivo "'+$(this).attr('data-device-name')+'"?');
+    if(confirm_delete){
+      // ajax call to delete device
+      $.ajax({
+        url: "http://localhost:3000/users/admin/dispositivos/"+$(this).attr('data-id'),
+        method: "DELETE",
+        success: function(data) {
+          alert("Dispositivo ha sido borrado del sistema.");
+  
+          // update devices list after posting 
+          populate_dispositivos();
+        },
+        error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+        }
+      });
+    }
+  });
+
   /* Change asigned agente dropdown selected value */
   $('#list_dropdown_agentes').on('click', 'li a', function(e){
     // prevents link from firing
@@ -296,18 +319,19 @@ $(document).ready(function(){
       // if initial list item, set to active
       if(i==0) {
         table_content +=  'active ';
+        populate_info_panel(this);
       }
       table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+this.device_name+"</a></td>";
-      if(this.last_sync == null)
+/*      if(this.last_sync == null)
       {
         table_content += '<td><center>'+"Nunca se ha sincronizado"+'</center></td>';
       }
       else
       {
         table_content += '<td><center>'+this.last_sync+'</center></td>';
-      }
+      }*/
       //table_content += '<td><center>'+this.last_sync+'</center></td>';
-      table_content += "<td><button class='btn_edit_dispositivo btn btn-sm btn-success btn-block' type='button' data-id='"+this.device_id+"'>Editar</button></td>";
+      //table_content += "<td><button class='btn_edit_dispositivo btn btn-sm btn-success btn-block' type='button' data-id='"+this.device_id+"'>Editar</button></td>";
       //table_content += "<td><a class='btn_delete_dispositivo btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.device_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });  
@@ -315,6 +339,6 @@ $(document).ready(function(){
     // inject content string into html
     $dispositivos_list.html(table_content);
     // close current info panel 
-    $('#btn_close_info_panel').trigger('click');
+    //$('#btn_close_info_panel').trigger('click');
   };
 });
