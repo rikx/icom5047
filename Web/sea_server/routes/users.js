@@ -980,8 +980,7 @@ router.get('/admin/usuarios', function(req, res, next) {
 				});
 
 			// get all specialties
-			client.query('SELECT spec_id, name as spec_name \
-										FROM specialization', function(err, result) {
+			client.query('SELECT spec_id, name as spec_name FROM specialization ORDER BY name', function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -1246,7 +1245,7 @@ router.get('/localizaciones', function(req, res, next) {
 					}
 				});
 			// get all categories
-			client.query('SELECT category_id, name as category_name FROM category', function(err, result) {
+			client.query('SELECT category_id, name as category_name FROM category ORDER BY name', function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {

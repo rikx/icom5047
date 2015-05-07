@@ -301,6 +301,11 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
       $('#cita_info_report').html($this_cita.report_name);
     }
     $('#cita_info_hour').text($this_cita.time);
+
+    // set id values of info panel buttons
+    $('#btn_view_report').attr('data-id', $this_cita.appointment_id);
+    $('#btn_edit_cita').attr('data-id', $this_cita.appointment_id);
+    $('#btn_delete').attr('data-id', $this_cita.appointment_id);  
   }
 
   /* Populate list with first 20 reportes, organized alphabetically by location */

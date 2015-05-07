@@ -5,7 +5,9 @@ $(document).ready(function(){
   var dispositivos_array;
   
   var data_dispositivos = $dispositivos_list.attr('data-dispositivos');
-  if(data_dispositivos != undefined){
+  //console.log(typeof data_dispositivos);
+  //console.log(data_dispositivos.length);
+  if(data_dispositivos.length >2){
     dispositivos_array=  JSON.parse(data_dispositivos);
     
     // initial population of dispositivos list
@@ -298,7 +300,9 @@ $(document).ready(function(){
     {
       $('#dispositivo_info_last_sync').text($this_dispositivo.last_sync);
     }
-
+    // set id values of info panel buttons
+    $('#btn_edit_dispositivo').attr('data-id', $this_dispositivo.device_id);
+    $('#btn_delete').attr('data-id', $this_dispositivo.device_id);
   }
 
   /* Populate list with first 20 ganaderos, ordered by assigned user */
