@@ -34,6 +34,7 @@ block content
 							table(class='table')
 								thead
 								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories, data-user=user)
+									
 				#categoria_panel.form-group(data-all-categorias=categorias)
 								.panel.panel-success
 									#categoria_panel_title.panel-heading Categoria de Localizacion
@@ -41,17 +42,7 @@ block content
 											form#categories_list(role='form')
 											button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar Categorias
 
-				#add_categoria_panel.form-group
-								.panel.panel-success
-									.panel-heading Categorías De Localizaciones
-									.panel-body
-										form#form_new_category(role='form')
-											.form-group
-											label(for='new_category') Nueva Categoría:
-											input#new_category(class='form-control', name='new_category', type='text', placeholder='Nueva Categoría')
-										br
-										.btn-group(role='group', aria-label='edit panel buttons')
-											button#btn_post_new_category(class='btn btn-default') Someter
+
 				
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
@@ -161,16 +152,17 @@ block content
 								input#change_agent(class='typeahead form-control', name='change_agent', type='text', placeholder='Buscar por correo electrónico')
 							button#btn_submit_agent(class='btn btn-default btn-success', type='button') Someter
 
+
 					button#btn_close_add_panel(class='btn btn-default') Cerrar
 			.col-md-1
 
 		.row
 			.col-md-2
-			.col-md-2
+			.col-md-4
 				button#btn_add_localizacion(class='btn btn-sm btn-default btn-block', type='button') Agregar Localización
-			.col-md-2
+			//.col-md-2
 				// TODO: add home glyphicon
-				button#btn_add_categories(class='btn btn-sm btn-default btn-default btn-block', type='button') Agregar Categorias
+				//button#btn_add_categories(class='btn btn-sm btn-default btn-default btn-block', type='button') Agregar Categorias
 
 		.row
 			.col-md-2
