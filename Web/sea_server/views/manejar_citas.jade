@@ -30,11 +30,11 @@ block content
 						.list-group(style='overflow:auto; height:300px;')
 							table(class='table')
 								thead
-									tr
-										th 
-											center Localización
-										th 
-											center Fecha y Hora
+									//tr
+									//	th 
+									//		center Localización
+									//	th 
+									//		center Fecha y Hora
 								tbody#citas_list(data-citas=citas, data-user=user)
 									each cita, i in citas
 										tr
@@ -43,14 +43,14 @@ block content
 													a(class='list-group-item show_info_cita', href='#', data-id=cita.appointment_id)= cita.location_name
 												else 
 													a(class='list-group-item show_info_cita active', href='#', data-id=cita.appointment_id)= cita.location_name
-											td
-												center
-													= cita.date
-													|  @ 
-													= cita.time
-											if  user.user_type != 'agent'
-												td
-													button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
+											//td
+											//	center
+											//		= cita.date
+											//		|  @ 
+											//		= cita.time
+											//if  user.user_type != 'agent'
+											//	td
+											//		button(class='btn_edit_cita btn btn-sm btn-success btn-block', type='button', data-id=cita.appointment_id) Editar
 												//td
 												//	a(class='btn_delete_cita btn btn-sm btn-success', data-toggle='tooltip', data-id=cita.appointment_id)
 												//		i(class='glyphicon glyphicon-trash')
@@ -97,9 +97,13 @@ block content
 								td Cita hecha por:
 								td#cita_info_agent
 							tr 
-								td Reporte Relacionado:
-								td#cita_info_report
-						button#btn_close_info_panel(class='btn btn-default') Cerrar
+								td Reporte Asociado:
+								td 
+									button#btn_view_report(class='btn btn-sm btn-success btn-block', type='button', data-id=citas[0].report_id) Ver Reporte
+						button#btn_edit_cita(class='btn btn-success btn-block', type='button', citas[0].appointment_id) Editar
+						if(user.user_type == 'admin')
+							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip', data-id=citas[0].appointment_id, data-location-name=citas[0].location_name)
+								i(class='glyphicon glyphicon-trash')
 
 			#location_panel.col-md-4(style="display:none")
 				.panel.panel-success

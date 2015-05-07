@@ -48,7 +48,7 @@ block content
 																= report.report_name
 															else
 																| Reporte sin título
-												if  user.user_type != 'agent'
+												//if  user.user_type != 'agent'
 													//td
 													//	button(class='btn_edit_report btn btn-sm btn-success btn-block', type='button', data-id=report.report_id) Editar
 													//td
@@ -82,9 +82,9 @@ block content
 									tr
 										td Encuesta utilizada:
 										td#reporte_info_flowchart
-							button#btn_view_report(class='btn btn-sm btn-success btn-block', type='button', data-id=reports[0].report_id) Ver Reporte Completo
+							button#btn_view_report(class='btn btn-success btn-block', type='button', data-id=reports[0].report_id) Ver Reporte Completo
 							if(user.user_type == 'admin')
-								a#btn_delete(class='btn btn-success btn-block', data-toggle='tooltip', data-id=reports[0].report_id, data-report-name=reports[0].report_name)
+								a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip', data-id=reports[0].report_id, data-report-name=reports[0].report_name)
 									i(class='glyphicon glyphicon-trash')
 
 			.row

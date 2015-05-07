@@ -220,10 +220,11 @@ $(document).ready(function(){
       table_content += '</tr>';
     });  
     
+    // inject content string into html
+    $reportes_list.html(table_content);
+
     if(user_info.user_type != 'admin'){
       $('#btn_delete').hide();
     }
-    // inject content string into html
-    $reportes_list.html(table_content);
   }
 });
