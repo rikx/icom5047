@@ -34,14 +34,6 @@ block content
 							table(class='table')
 								thead
 								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories, data-user=user)
-									
-				#categoria_panel.form-group(data-all-categorias=categorias)
-								.panel.panel-success
-									#categoria_panel_title.panel-heading Categoria de Localizacion
-									.panel-body
-											form#categories_list(role='form')
-											button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar Categorias
-
 
 				
 			#edit_panel.col-md-4(style="display:none")
@@ -67,11 +59,17 @@ block content
 						.form-group
 							label(for='localizacion_address_zipcode') Código Postal:
 							input#localizacion_address_zipcode(class='form-control', name='localizacion_address_zipcode', type='text', placeholder='Código Postal')
+						#categoria_panel_edit.form-group(data-all-categorias=categorias)
+								.panel.panel-success
+									#categoria_panel_title_edit.panel-heading Categoria de Localizacion
+									.panel-body
+											#categories_list_edit(role='form')
+											br
+											button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar Categorias
 					.btn-group(role='group', aria-label='edit panel buttons')
 						button#btn_close_edit_panel(class='btn btn-default') Cerrar
 						button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
 						button#btn_submit(class='btn btn-default btn-success', type='button') Someter
-
 
 			#info_panel.col-md-4
 				.panel.panel-success
@@ -93,7 +91,15 @@ block content
 								td#localizacion_info_ciudad
 							tr
 								td Código Postál:
-								td#localizacion_info_zipcode 
+								td#localizacion_info_zipcode
+						#categoria_panel.form-group(data-all-categorias=categorias)
+								.panel.panel-success
+									#categoria_panel_title.panel-heading Categoria de Localizacion
+									.panel-body
+											form#categories_list(role='form')
+											//button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar Categorias
+						button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button') Editar
+						br
 						.panel.panel-info
 							.panel-heading Ganaderos Asociados
 							.panel-body
@@ -110,7 +116,12 @@ block content
 							.panel-heading Agentes Asignados
 							.panel-body
 								table#localizacion_agentes(class='table')
+						button#btn_add_associates(class='btn btn-sm btn-info btn-block' type='button') Editar Personas Asociadas
+						br
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
+
+
+
 
 			#add_associates_panel.col-md-4(style="display:none")
 				.jumbotron

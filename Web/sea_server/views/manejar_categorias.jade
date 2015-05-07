@@ -31,10 +31,19 @@ block content
 										.list-group(style='overflow:auto; height:300px;')
 											table(class='table')
 												tbody#categories
-										button#btn_add_categories(class='btn btn-default btn-success', type='button') Agregar 
-										button#btn_edit_categories(class='btn btn-default btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
-										button#btn_delete_categories(class='btn btn-default btn-success', type='button', data-id=categories[0].category_id) Eliminar
+										button#btn_add_categories(class='btn btn-default btn-success', type='button') Agregar Categorías
 			.col-md-4
+				.panel.panel-success
+					.panel-heading
+						h3#info_panel_heading(class='panel-title') 
+					.panel-body(data-all-categorias=categories)
+						table#ganadero_info(class='table')
+							tr
+								td#info_category_name Nombre de Categoría:
+								td#ganadero_info_name 
+									=categories[0].name
+						button#btn_edit_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
+						button#btn_delete_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id) Eliminar
 				#add_category_panel.form-group
 								.panel.panel-success
 									.panel-heading
@@ -95,9 +104,9 @@ block content
 										br
 										.btn-group(role='group', aria-label='edit panel buttons')
 											button#btn_put_new_specialty(class='btn btn-default') Someter
-				
+
 	
-	//	Latest compiled and minified JavaScript
+	//Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
 	script(src='/javascripts/typeahead.bundle.min.js')
