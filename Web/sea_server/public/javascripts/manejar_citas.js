@@ -75,15 +75,15 @@ $(document).ready(function(){
         search_source.get(user_input, sync, async);
         $(this).typeahead('close');
         function sync(datums) {
-          console.log('datums from `local`, `prefetch`, and `#add`');
-          console.log(datums);
+          //console.log('datums from `local`, `prefetch`, and `#add`');
+          //console.log(datums);
           populate_list(datums);
 
         }
 
         function async(datums) {
-          console.log('datums from `remote`');
-          console.log(datums);
+          //console.log('datums from `remote`');
+          //console.log(datums);
           populate_list(datums);
         }
       }
@@ -296,7 +296,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     $('#cita_info_purpose').text($this_cita.purpose);
     $('#cita_info_agent').text($this_cita.username);
     if($this_cita.report_name == undefined){
-      $('#info_panel_heading').html('Reporte sin título');
+      $('#cita_info_report').html('Reporte sin título');
     } else {
       $('#cita_info_report').html($this_cita.report_name);
     }
