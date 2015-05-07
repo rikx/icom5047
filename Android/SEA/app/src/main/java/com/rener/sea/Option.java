@@ -10,34 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class Option {
 
     private long id = -1;
-    private Item next;
-    private String label;
     private DBHelper dbHelper = null;
-
-    /**
-     * Construct a new Option object with the given ID, next Item in the flow, and a text label.
-     *
-     * @param id    a unique ID
-     * @param next  the next Item in the flow
-     * @param label some text
-     */
-    public Option(long id, Item next, String label) {
-        this.id = id;
-        this.next = next;
-        this.label = label;
-    }
-
-    /**
-     * Construct a new Option object with the given ID and next Item in the flow.
-     *
-     * @param id   a unique ID
-     * @param next the next Item object in thw flow
-     */
-    public Option(long id, Item next) {
-        this.id = id;
-        this.next = next;
-        this.label = "";
-    }
 
     public Option(long optionID, DBHelper db) {
         this.dbHelper = db;
