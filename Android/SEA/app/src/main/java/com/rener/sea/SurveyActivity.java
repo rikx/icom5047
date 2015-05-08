@@ -165,10 +165,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (i != 0) {
             switch (adapterView.getId()) {
-//                case R.id.survey_subject_spinner:
-//                    Person subject = (Person) spinnerSubject.getSelectedItem();
-//                    report.setSubject(subject);
-//                    break;
                 case R.id.survey_flowchart_spinner:
                     spinnerFlowchart.setEnabled(false);
                     Flowchart flowchart = (Flowchart) spinnerFlowchart.getSelectedItem();
@@ -200,7 +196,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         //Add a dummy item
         locations.add(0, new Location(getString(R.string.location)));
-        //people.add(0, new Person(getString(R.string.subject)));
         flowcharts.add(0, new Flowchart(getString(R.string.flowchart)));
 
         //Set the adapter

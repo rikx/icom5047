@@ -5,22 +5,22 @@
 			 android:layout_height="match_parent">
 
 	<!-- 0 No appointment layout -->
-	<!--<LinearLayout-->
-		<!--android:id="@+id/no_appointment_layout"-->
-		<!--android:layout_width="wrap_content"-->
-		<!--android:layout_height="wrap_content"-->
-		<!--android:orientation="horizontal"-->
-		<!--android:gravity="center_horizontal">-->
+	<LinearLayout
+		android:id="@+id/no_appointment_layout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_horizontal">
 
-		<!--<Button-->
-			<!--android:id="@+id/report_add_appointment_button"-->
-			<!--android:layout_width="wrap_content"-->
-			<!--android:layout_height="wrap_content"-->
-			<!--android:drawableStart="@drawable/ic_action_new"-->
-			<!--android:text="@string/add_appointment"-->
-			<!--/>-->
+		<Button
+			android:id="@+id/report_add_appointment_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawableStart="@drawable/ic_action_new"
+			android:text="@string/add_appointment"
+			/>
 
-	<!--</LinearLayout>-->
+	</LinearLayout>
 
 	<!-- 1 Show appointment layout-->
 	<LinearLayout

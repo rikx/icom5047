@@ -14,15 +14,15 @@
 			android:id="@+id/clearSearch"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true"
+			android:layout_alignParentEnd="true"
 			android:background="@drawable/ic_action_cancel" />
 
 		<EditText
 			android:id="@+id/inputSearch"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:layout_toLeftOf="@id/clearSearch"
-			android:textSize="20dp"
+			android:layout_toStartOf="@id/clearSearch"
+			android:textSize="20sp"
 			android:hint="@string/search_hint"
 			android:singleLine="true" />
 
