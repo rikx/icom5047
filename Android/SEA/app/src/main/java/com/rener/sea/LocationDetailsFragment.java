@@ -333,10 +333,10 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the adapters
         DummyAdapter adapter = new DummyAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, ownerList, 0);
+                android.R.layout.simple_spinner_dropdown_item, ownerList, 0);
         ownerSpinner.setAdapter(adapter);
         adapter = new DummyAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, managerList, 0);
+                android.R.layout.simple_spinner_dropdown_item, managerList, 0);
         managerSpinner.setAdapter(adapter);
     }
 

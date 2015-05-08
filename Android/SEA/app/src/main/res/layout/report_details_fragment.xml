@@ -74,7 +74,7 @@
 			android:id="@+id/report_continue_survey_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginLeft="16dp"
+			android:layout_marginStart="16dp"
 			android:drawableStart="@drawable/ic_action_directions"
 			android:text="@string/continue_report"
 			android:visibility="gone"
