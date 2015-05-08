@@ -319,13 +319,12 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            appointmentView = inflater.inflate(R.layout.appointment_edit, null);
-            Button save = (Button) appointmentView.findViewById(R.id.report_save_appointment_button);
+            View view = inflater.inflate(R.layout.appointment_edit, null);
+            Button save = (Button) view.findViewById(R.id.report_save_appointment_button);
             save.setOnClickListener(this);
-            Button cancel = (Button) appointmentView.findViewById(R.id
-                    .report_cancel_appointment_button);
+            Button cancel = (Button) view.findViewById(R.id.report_cancel_appointment_button);
             cancel.setOnClickListener(this);
-            builder.setView(appointmentView);
+            builder.setView(view);
 
             appointmentDialog = builder.create();
             appointmentDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
