@@ -576,10 +576,36 @@ jsPlumb.ready(function() {
 	// recreate graph
 	function recreate_graph(elements, connections){
 		jsPlumb.ready(function() {
+
+			
 			// loop through elements to create them in the DOM
 			var this_id;
+			var thing;
 			for(var i=0; i<elements.length; i++){
-				$('#container_plumbjs').append($.parseHTML(elements[i].state));
+				var theState = $.parseHTML(elements[i].state);
+				console.log(elements[i].state_id);
+				console.log($('#' + elements[i].state_id));
+				$('#container_plumbjs').append(theState);
+				console.log($('#' + elements[i].state_id));
+				thing = $('#' + elements[i].state_id).children('.connect_question');
+				$('#' + elements[i].state_id).removeClass('ui-draggable'); // ui-draggable-dragging
+
+				jsPlumb.draggable('' + elements[i].state_id, {
+					containment: 'parent'
+				});
+/*
+				jsPlumb.makeTarget(theState, {
+					anchor: 'Continuos',
+					connector: 'Flowchart'
+				});
+
+				jsPlumb.makeSource(thing, {
+					parent: theState,
+					anchor: 'Continuos',
+					connector: 'Flowchart',
+					endpoint: 'Blank'
+				});*/
+
 /*				console.log(elements[i]);
 				this_id = elements[i].id;
 				var itemType, newState, title, title_id, has_input, stateName, stateNameContainer, connect;
@@ -773,9 +799,9 @@ jsPlumb.ready(function() {
 			} // end of for loop for elements
 
 			console.log('States:');
-			console.log(states_array);
+			console.log(elements);
 			console.log('Connections to add: ');
-			console.log(lines_array);
+			console.log(connections);
 			// loop through connections to connect elements in the DOM
 			var source_item, target_item, this_element, this_connection;
 			trigger = false;
@@ -802,6 +828,7 @@ jsPlumb.ready(function() {
 					source: source_item, 
 					target: target_item,
 					anchors: ['Continuous', 'Continuous'],
+					connector: 'Flowchart',
 					endpoint:'Blank',
 					overlays: [["Label", { label: this_connection.label, location:0.5, id: "connLabel"+count} ]]
 				});
