@@ -7,57 +7,85 @@
 		android:id="@+id/report_details_layout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:padding="16dp">
+		android:layout_margin="16dp"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/report_text_name_label"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/name_label"
+			/>
 
 		<TextView
 			android:id="@+id/report_text_name"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
 			android:text="@string/no_data"
+			/>
+
+		<TextView
+			android:id="@+id/report_date_label"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:text="@string/date_label"
 			/>
 
 		<TextView
 			android:id="@+id/report_text_date"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
 			android:text="@string/no_data"
+			/>
+
+		<TextView
+			android:id="@+id/report_location_label"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:text="@string/location_label"
 			/>
 
 		<TextView
 			android:id="@+id/report_text_location"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
 			android:text="@string/no_data"
+			/>
+
+		<TextView
+			android:id="@+id/report_creator_label"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:text="@string/creator_label"
 			/>
 
 		<TextView
 			android:id="@+id/report_text_creator"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
 			android:text="@string/no_data"
 			/>
 
 		<TextView
-			android:id="@+id/report_text_subject"
+			android:id="@+id/report_flowchart_label"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/no_data"
-			android:visibility="gone"
-			/>
-
-		<TextView
-			android:id="@+id/report_text_type"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/no_data"
-			android:visibility="gone"
+			android:layout_marginTop="16dp"
+			android:text="@string/flowchart_label"
 			/>
 
 		<TextView
 			android:id="@+id/report_text_flowchart"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
 			android:text="@string/no_data"
 			/>
 
@@ -65,8 +93,11 @@
 			android:id="@+id/report_interview_layout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
 			android:orientation="vertical"
-			android:padding="2dp">
+			android:padding="1dp">
+
+			<!-- THE ANNSWERED INTERVIEW GOES HERE -->
 
 			</LinearLayout>
 
@@ -81,9 +112,12 @@
 			/>
 
 		<TextView
+			android:id="@+id/report_notes_label"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/notes_label"/>
+			android:layout_marginTop="16dp"
+			android:text="@string/notes_label"
+			/>
 
 		<TextView
 			android:id="@+id/report_text_notes"
@@ -97,8 +131,9 @@
 			android:id="@+id/report_appointment_container"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:padding="16dp">
-			</FrameLayout>
+			android:layout_margin="16dp"
+			android:padding="1dp"
+			/>
 
 	</LinearLayout>
 
