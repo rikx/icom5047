@@ -120,4 +120,7 @@
 	<string name="appointments">Citas</string>
 	<string name="date_format_medium">EEE, d \'de\' MMM</string>
 	<string name="time_format">hh:mm a</string>
+	<string name="email_label">Correo electrónicro</string>
+	<string name="phone_number_label">Número de teléfono</string>
+	<string name="no_email_clients_installed">No hay aplicaciones de correo electrónico instaladas.</string>
 </resources>

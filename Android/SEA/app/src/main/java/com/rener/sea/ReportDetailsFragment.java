@@ -247,11 +247,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         View view = appointmentFlipper;
 
         //Set appointment date view
-        Locale locale = Locale.getDefault();
         String dateFormat = getResources().getString(R.string.date_format_long);
         String timeFormat = getResources().getString(R.string.time_format);
         String format = dateFormat + " " + timeFormat;
-        String date = appointment.getDateString(format, locale);
+        String date = appointment.getDateString(format);
         TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
         dateText.setText(date);
 

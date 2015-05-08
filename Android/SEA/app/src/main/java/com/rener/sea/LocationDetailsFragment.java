@@ -363,7 +363,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             startActivity(intent);
             getActivity().finish();
         }
-        else if(fcs ==0) {
+        else {
             String message = getResources().getString(R.string.no_flowcharts);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }

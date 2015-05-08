@@ -119,4 +119,7 @@
 	<string name="past_date_message">Date cannot be in the past</string>
 	<string name="appointments">Appointments</string>
 	<string name="date_format_medium">EEE, MMM d</string>
+	<string name="email_label">Email Address</string>
+	<string name="phone_number_label">Phone Number</string>
+	<string name="no_email_clients_installed">There are no email apps installed.</string>
 </resources>

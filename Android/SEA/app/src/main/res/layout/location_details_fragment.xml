@@ -17,17 +17,11 @@
 			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/location_text_name_label"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/name_label"
-				/>
-
-			<TextView
 				android:id="@+id/location_text_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
+				android:textSize="24sp"
+				android:textStyle="bold"
 				android:text="@string/no_data"
 				/>
 
@@ -36,6 +30,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
+				android:textStyle="bold"
 				android:text="@string/licence_label"
 				/>
 
@@ -52,6 +47,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
+				android:textStyle="bold"
 				android:text="@string/address_label"
 				/>
 
@@ -91,29 +87,79 @@
 					/>
 			</LinearLayout>
 
-			<TextView
-				android:id="@+id/location_text_owner"
-				android:layout_width="wrap_content"
+			<LinearLayout
+				android:id="@+id/location_owner_layout"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="@string/no_data"
-				/>
+				android:orientation="vertical">
 
-			<TextView
-				android:id="@+id/location_text_manager"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="@string/no_data"
-				/>
+				<TextView
+					android:id="@+id/location_text_owner_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:text="@string/owner_label"
+					/>
 
-			<TextView
-				android:id="@+id/location_text_agent"
-				android:layout_width="wrap_content"
+				<TextView
+					android:id="@+id/location_text_owner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_owner"
+					/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/location_manager_layout"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="@string/no_data"
-				/>
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/location_text_manager_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:textStyle="bold"
+					android:text="@string/manager_label"
+					/>
+
+				<TextView
+					android:id="@+id/location_text_manager"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_manager"
+					/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/location_agent_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/location_text_agent_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:textStyle="bold"
+					android:text="@string/agent_label"
+					/>
+
+				<TextView
+					android:id="@+id/location_text_agent"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_agent"
+					/>
+			</LinearLayout>
 
 		</LinearLayout>
 

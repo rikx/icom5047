@@ -17,7 +17,7 @@ public class NetworkHelper {
 
     public static final String SEA_HOST_ADDRESS = "136.145.116.231";
     public static final String TEST_URL = "http://www.google.com";
-    boolean internetAvailable;
+    boolean internetAvailable = false;
     private Context context;
 
     /**
@@ -26,7 +26,6 @@ public class NetworkHelper {
      */
     public NetworkHelper(Context context) {
         this.context = context;
-        internetAvailable = false;
     }
 
     /**
@@ -47,7 +46,7 @@ public class NetworkHelper {
     public boolean isInternetAvailable() {
         boolean networkAvailable = isNetworkConnected();
         new CheckInternetTask().execute(TEST_URL);
-        return networkAvailable ? internetAvailable : false;
+        return (networkAvailable && internetAvailable);
     }
 
     /**
