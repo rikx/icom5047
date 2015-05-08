@@ -9,43 +9,44 @@ block content
 			.col-md-2
 			.col-md-8
 				.jumbotron
-					center
+					center#flowchart_jumbotron(data-user=user)
 						h2 Servicio de Extensión Agrícola
 						h4 Creador de Cuestionarios
 			.col-md-2
 
 		.row
-			.col-md-9
+			.col-md-12
 				#container_plumbjs
-			.col-md-3
-				.form-group
-								label(for='btn_user_type') Tipo de Pregunta:
-								.dropdown
-									.btn-group
-										button#btn_question_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
-											span#btn_question_type_text Tipo de Pregunta 
-											span(class='caret')
-										ul#list_question_type(class='dropdown-menu', role='menu')
-											li
-												a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Condicional
-											li
-												a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Abierta
-											li
-												a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Booleana
-											li
-												a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Multiple
-											li
-												a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Recomendación
-				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button') Agregar Pregunta
-				button#btn_add_recommendation(class='btn btn-lg btn-success btn-block', type='button') Agregar Recomendación
-				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
-				button#btn_end(class='btn btn-lg btn-success btn-block', type='button') Agregar Nodo Final
-				button#btn_test(class='btn btn-lg btn-success btn-block', type='button') Test
-
 		br
 		.row
-			.col-md-1
-			.col-md-6
+			.col-md-3
+				.form-group
+					label(for='btn_user_type') Tipo de Elemento:
+					.dropdown
+						button#btn_item_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
+							span#btn_item_type_text Tipo de Elemento 
+							span(class='caret')
+						ul#list_question_type(class='dropdown-menu', role='menu')
+							li#start_item(role='presentation')
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='START') Elemento Inicial
+							li#end_item(role='presentation')
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='END') Elemento Final
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='RECOM') Recomendación
+							li.divider
+							li.dropdown-header Tipos de Pregunta
+							//li
+							//	a(role='menuitem', tabindex='-1', href='#', data-item-type='BOOLEAN') Booleana
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='MULTI') Selección Multiple
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='OPEN') Abierta
+							li
+								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
+				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
+				button#btn_recreate(class='btn btn-lg btn-success btn-block', type='button') Re-Create
+				button#btn_repopulate(class='btn btn-lg btn-success btn-block', type='button', data-id='32') Populate from db
+			.col-md-5
 				.panel.panel-success
 					.panel-heading
 						h3.panel-title Elementos creados
@@ -53,7 +54,7 @@ block content
 						.list-group(style='overflow:auto; height:300px;')
 							table(class='table')
 								thead
-								tbody#preguntas_list
+								tbody#preguntas_list(data-items=items, data-connections=connections)
 			
 			#info_panel.col-md-4
 				.panel.panel-success
@@ -67,22 +68,45 @@ block content
 							tr
 								td Tipo de Pregunta:
 								td#pregunta_info_type
-						.panel.panel-info
-							.panel-heading Posibles Respuestas
+						#possible_answers(class='panel panel-info')
+							.panel-heading 
+								| Posibles Respuestas
 							.panel-body
-								table#pregunta_info_responses(class='table')
-						button#btn_close_info_panel(class='btn btn-default') Cerrar
-			.col-md-1
+								ul#pregunta_info_responses(class='list-group')
+						//button#btn_close_info_panel(class='btn btn-default') Cerrar
+				
+		br
 		.row
-			.col-md-2
 			.col-md-3
+				.panel.panel-warning
+					.panel-heading
+						h3.panel-title Información Básica
+					.panel-body
+						form#form_create_flowchart(role='form')
+							.form-group
+								label(for='flowchart_creator') Creado por:
+								span#flowchart_creator(class='form-control', name='flowchart_creator', disabled, data-id=user.user_id)
+									= user.username
+							.form-group
+								label(for='flowchart_name') Nombre de Flujo:
+								input#flowchart_name(class='form-control', name='flowchart_name', type='text', placeholder='Nombre')
+							.form-group
+								label(for='flowchart_version') Versión:
+								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
+						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
+			.col-md-5
 				// TODO: add home glyphicon
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+		.row
+			.col-md-3
+
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
 	script(src='http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js')
 	script(src='http://stage-preview.gage.com/Creative/Microsoft/EZCourseDemo/scripts/jquery.jsPlumb-1.3.16-all-min.js')
-	script(src='/javascripts/cuestionario.js')
+	//script(src='/javascripts/jquery-ui.js')
+	//script(src='http://jsplumb.googlecode.com/files/jquery.jsPlumb-1.3.2-all-min.js')
+	script(src='/javascripts/crear_cuestionario.js')
 	script(src='/javascripts/helpers.js')

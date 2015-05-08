@@ -242,7 +242,6 @@ $(document).ready(function(){
           alert("Informacion de dispositivo ha sido editada en el sistema.");
           // update dispositivo list after posting 
           populate_dispositivos();
-          $('#edit_panel').hide();
         }
       },
       error: function( xhr, status, errorThrown ) {
@@ -315,6 +314,7 @@ $(document).ready(function(){
   		dispositivos_array = data.dispositivos;
 
       populate_list(data.dispositivos);
+      populate_info_panel(data.citas[0]);
     });
   };
 

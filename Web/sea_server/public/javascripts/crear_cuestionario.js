@@ -70,7 +70,7 @@ jsPlumb.ready(function() {
 	    	table_content +=  'active ';
 	    	populate_info_panel(this);
 	    }
-	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.id+': '+this.name+"</a></td></tr>";
+	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>Elemento "+this.id.substring(5)+': '+this.name+"</a></td></tr>";
 		});
 
 		$('#preguntas_list').html(table_content);
@@ -185,7 +185,7 @@ jsPlumb.ready(function() {
 					  method: "POST",
 					  data: JSON.stringify({
 					  	info: new_flowchart,
-					  	items: states_array,
+					  	items: elements_array,
 					  	options: connections_array
 					  }),
 					  contentType: "application/json",
@@ -336,8 +336,7 @@ jsPlumb.ready(function() {
 							id: newState.attr('id'),
 							name: this_name,
 							type: itemType,
-							left: newState.position().left,
-							top: newState.position().top
+							state: $('#'+newState.attr('id')).prop('outerHTML')
 						};
 
 						var state_item = {
@@ -412,8 +411,7 @@ jsPlumb.ready(function() {
 							id: newState.attr('id'),
 							name: $('#'+newState.attr('id')).attr('data-state-name'),
 							type: itemType,
-							left: newState.position().left,
-							top: newState.position().top
+							state: $('#'+newState.attr('id')).prop('outerHTML')
 						};
 
 						var state_item = {
@@ -454,6 +452,11 @@ jsPlumb.ready(function() {
 			var source_id = connection.sourceId;
 			var target_id = connection.targetId;
 
+			//check if source and target are the same
+			if(source_id == target_id){
+				return false;
+			}
+
 			// get source item type
 			for(var y = 0; y<elements_array.length; y++){
 				this_item = elements_array[y];
@@ -463,13 +466,21 @@ jsPlumb.ready(function() {
 					target_type = this_item.type;
 				}
 			}
+
+			// check source and target pair does not exist
+			for(var z = 0; z<connections_array.length; z++){
+				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
+					return false;
+				}
+			}
+
 			var start_count = 0;
 			// if source_type == 'START' check its not connected to an 'END' type
 			if(source_type == 'START'){
 				// dont allow start element to connect to end
 				if(target_type == 'END'){
 					return false;
-				} 
+				}
 				for(var z = 0; z<connections_array.length; z++){
 					if(source_id == connections_array[z].source){
 						start_count++;
@@ -560,6 +571,7 @@ jsPlumb.ready(function() {
 
 		return false;
 	}
+
 	function replace(obj, list) {
 		var i;
 		for (i = 0; i < list.length; i++) {
@@ -568,280 +580,4 @@ jsPlumb.ready(function() {
 			}
 		}
 	}
-
-	// test recreation
-	$('#btn_recreate').on('click', function(){
-		recreate_graph(states_array, lines_array);
-	});
-	// recreate graph
-	function recreate_graph(elements, connections){
-		jsPlumb.ready(function() {
-
-			
-			// loop through elements to create them in the DOM
-			var this_id;
-			var thing;
-			for(var i=0; i<elements.length; i++){
-				var theState = $.parseHTML(elements[i].state);
-				console.log(elements[i].state_id);
-				console.log($('#' + elements[i].state_id));
-				$('#container_plumbjs').append(theState);
-				console.log($('#' + elements[i].state_id));
-				thing = $('#' + elements[i].state_id).children('.connect_question');
-				$('#' + elements[i].state_id).removeClass('ui-draggable'); // ui-draggable-dragging
-
-				jsPlumb.draggable('' + elements[i].state_id, {
-					containment: 'parent'
-				});
-/*
-				jsPlumb.makeTarget(theState, {
-					anchor: 'Continuos',
-					connector: 'Flowchart'
-				});
-
-				jsPlumb.makeSource(thing, {
-					parent: theState,
-					anchor: 'Continuos',
-					connector: 'Flowchart',
-					endpoint: 'Blank'
-				});*/
-
-/*				console.log(elements[i]);
-				this_id = elements[i].id;
-				var itemType, newState, title, title_id, has_input, stateName, stateNameContainer, connect;
-				itemType = elements[i].type;
-	 			newState = $('<div>').attr('id', this_id);
-	 			title = $('<div>').addClass('title_question');
-	 			title_id = $('<p>');
-	 			has_input = false;
-
-	 			// add css and title fitting item type
-	 			if(itemType == 'START'){
-					newState.addClass('item_end_point');
-					newState.attr('data-state-name', 'INICIO');
-					$('#start_item').addClass('disabled');
-					title_id.text('INICIO');
-	 			} else if(itemType == 'END'){
-		 				newState.addClass('item_end_point');
-		 				newState.attr('data-state-name', 'FIN');
-		 				$('#end_item').addClass('disabled');
-		 				title_id.text('FIN');
-	 			} else {
-						switch(itemType){
-							case 'OPEN':
-								newState.addClass('item_abierta');	
-								break;
-							case 'MULTI':
-								newState.addClass('item_multi');	
-								break;
-							case 'CONDITIONAL':
-								newState.addClass('item_conditional');	
-								break;
-							case 'RECOM':
-								newState.addClass('item_recom');
-								break;
-						}
-		 				// Set item identifier text
-						title_id.text('Elemento ' + this_id.substring(5));
-						// add input for item text content
-						has_input = true;
-		 				stateNameContainer = $('<div>').attr('data-state-id', this_id);
-		 				stateName = $('<p>').text(elements[i].name);
-
-		 				// store element id as data attribute
-						stateName.attr('data-id', this_id);
-	 			}
-	 			
-	 			// append title_id to state item
-				title.append(title_id);
-
-				// if has_input
-			 	// put stateName input field into stateNameContainer div, 
-				// and then append this div to title
-	 			if(has_input){
-					title.append(stateNameContainer.append(stateName));
-	 			}
-
-	 			// append title to state item
-				newState.append(title);
-
-				// append connect node to state item
-				connect = $('<div>').addClass('connect_question');
-				newState.append(connect);
-
-				newState.css({
-	        'top': elements[i].top,
-	        'left': elements[i].left
-	      });
-
-				//add new state item to container
-				$('#container_plumbjs').append(newState);
-
-				if(itemType != 'START'){
-					jsPlumb.makeTarget(newState, {
-						anchor: 'Continuous',
-						endpoint:'Blank'
-					});
-				}
-
-				if(itemType != 'END'){
-					jsPlumb.makeSource(connect, {
-						parent: newState,
-						anchor: 'Continuous',
-						connector: 'Flowchart',
-						endpoint:'Blank'
-					});				
-				}
-	   
-				jsPlumb.draggable(newState, {
-					containment: 'parent',
-					stop: function(event) {
-						if ($(event.target).find('select').length == 0) {
-
-							// create item object
-							var this_name = $('#'+newState.attr('id')).attr('data-state-name');
-							if(this_name == undefined){
-								this_name = 'Elemento sin título'
-							}
-							var this_item = {
-								id: newState.attr('id'),
-								name: this_name,
-								type: itemType,
-								left: newState.position().left,
-								top: newState.position().top
-							};
-
-							// check if item is already in array and updates it
-						  if(containsObject(this_item, elements_array)) {
-						   	replace(this_item, elements_array);
-						   	replace(this_item, states_array);
-						  } else {
-						   	elements_array.push(this_item);
-						   	states_array.push(this_item);
-							}
-							// populate elements list with new item
-							populate_elements_list();
-						}
-					}
-				});
-
-
-					newState.dblclick(function(e) {
-					var this_id = $(this).attr('id');
-
-					jsPlumb.detachAllConnections($(this));
-					$(this).remove();
-					e.stopPropagation();	
-					
-					// find connections where this element is a source or target and 
-					// delete them
-					connections_array=connections_array.filter(isConnectionEndpoint);
-					function isConnectionEndpoint(connection){
-						if(connection.source == this_id){
-							return false; 
-						} else if(connection.target == this_id){
-							return false; 
-						} else {
-							return true;
-						}
-					}
-					// find element in array and delete it
-					var this_item;
-					for(var d=0; d<elements_array.length;d++){
-						this_item = elements_array[d];
-						if(this_item.id == this_id){
-							elements_array.splice(d,1);
-							if(this_item.type=='START'){
-								$('#start_item').removeClass('disabled');
-							} else if(this_item.type=='END'){
-								$('#end_item').removeClass('disabled');
-							}
-							//return;
-						}
-					}
-					// populate elements list with new element
-					populate_elements_list();
-				}); 
-	
-				if(itemType != 'START' && itemType != 'END'){
-					stateName.keyup(function(e) {
-						if (e.keyCode === 13) {
-				      //var state = $(this).closest('.item');
-				      //state.children('.title').text(this.value);
-				      $(this).parent().text(this.value);
-				      var state_id = $(this).attr('data-id');
-				      $('#'+state_id).attr('data-state-name', this.value);
-
-							// create item object
-							var this_item = {
-								id: newState.attr('id'),
-								name: $('#'+newState.attr('id')).attr('data-state-name'),
-								type: itemType,
-								left: newState.position().left,
-								top: newState.position().top
-							};
-
-							// check if item is already in array and updates it
-						  if(containsObject(this_item, elements_array)) {
-						   	replace(this_item, elements_array);
-						   	replace(this_item, states_array);
-						  } else {
-						   	elements_array.push(this_item);
-						   	states_array.push(this_item);
-							}
-				      // populate elements list with new element
-				      populate_elements_list();
-					  }
-					});
-					// focuses on input field of the created element
-					stateName.focus();
-				}*/
-			} // end of for loop for elements
-
-			console.log('States:');
-			console.log(elements);
-			console.log('Connections to add: ');
-			console.log(connections);
-			// loop through connections to connect elements in the DOM
-			var source_item, target_item, this_element, this_connection;
-			trigger = false;
-			console.log(connections.length);
-			for(var count = 0; count < connections.length; count++){
-				this_connection = connections[count];
-				for(var x = 0; x < elements.length; x++){
-					this_element = elements[x];
-					if(this_element.state_id == this_connection.source){
-						//source_item = document.getElementById(this_element.id);
-						source_item = this_element.state_id;
-						console.log('Calling connect on source: '+this_element.state_id);
-					} else if(this_element.state_id   == this_connection.target){
-						//target_item = document.getElementById(this_element.id);
-						target_item = this_element.state_id;
-						console.log('Calling connect on target: '+this_element.state_id);
-					}
-				}
-				var common = {
-					anchors: ['Continuous', 'Continuous'],
-					endpoint:'Blank'
-				};
-				jsPlumb.connect({
-					source: source_item, 
-					target: target_item,
-					anchors: ['Continuous', 'Continuous'],
-					connector: 'Flowchart',
-					endpoint:'Blank',
-					overlays: [["Label", { label: this_connection.label, location:0.5, id: "connLabel"+count} ]]
-				});
-			}
-			trigger = true;
-		});
-	}
-	$('#btn_repopulate').on('click', function(){
-		var flowchart_id = $(this).attr('data-id');
-    $.getJSON('http://localhost:3000/users/admin/cuestionarios/ver/'+flowchart_id, function(data) {
-      states_array = data.items;
-     	connections_array = data.connections;
-      recreate_graph(states_array,connections_array);
-    });
-	});
 });
