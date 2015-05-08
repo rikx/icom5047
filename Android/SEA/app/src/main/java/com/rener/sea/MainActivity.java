@@ -259,7 +259,7 @@ public class MainActivity extends FragmentActivity {
             showPerson(person, "PERSON");
         } else if (type.equals(MenuListFragment.TYPE_LOCATIONS)) {
             Location location = (Location) listView.getAdapter().getItem(position);
-            showLocation(location);
+            showLocation(location, "LOCATION");
         } else if (type.equals(MenuListFragment.TYPE_REPORTS)) {
             Report report = (Report) listView.getAdapter().getItem(position);
             showReport(report);
@@ -277,6 +277,11 @@ public class MainActivity extends FragmentActivity {
             Person person = dbHelper.findPersonById(id);
             if(person.getId() != -1)
                 showPerson(person, tag);
+        }
+        else if(type.equals("LOCATION")) {
+            Location location = dbHelper.findLocationById(id);
+            if(location.getId() != -1)
+                showLocation(location, tag);
         }
     }
 
@@ -328,13 +333,16 @@ public class MainActivity extends FragmentActivity {
      *
      * @param location the Location object to be displayed
      */
-    private void showLocation(Location location) {
+    private void showLocation(Location location, String tag) {
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         LocationDetailsFragment details = new LocationDetailsFragment();
         details.setLocation(location);
         rightFragment = details;
-        transaction.replace(R.id.main_right_container, rightFragment, "LOCATION");
+        transaction.replace(R.id.main_right_container, rightFragment, tag);
+        if(!tag.equals("LOCATION")) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 
