@@ -139,6 +139,7 @@ $(document).ready(function(){
     // prevents link from firing
     e.preventDefault();
 
+
     $('#edit_panel').hide();
     $('#info_panel').show();
     $('#add_specialty_panel').hide();
@@ -165,6 +166,7 @@ $(document).ready(function(){
     var usuario_id = $this.attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
+    $('#btn_edit_panel').attr('data-id', usuario_id);
     
     // populate info panel with this_usuario
     populate_info_panel(this_usuario);
@@ -238,9 +240,9 @@ $(document).ready(function(){
     });
   }
   });
-
+////////////////////////////////////////////////////////
 /* Open edit panel */
-$usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
+ $('#btn_edit_panel').on('click', function(){
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
@@ -290,6 +292,8 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
       $('#specialty_panel').show();
     }
 
+    populate_specialties_edit();
+
   });
 
 /* PUTs edited ganadero information */
@@ -306,20 +310,20 @@ $('#btn_edit').on('click', function(){
   }
   else if(new_usuario.usuario_password != new_usuario.usuario_password_confirm)
   {
-      alert("Las contraseñas no son iguales.");
+    alert("Las contraseñas no son iguales.");
   }
   else
   {
      // ajax call to update ganadero
-  $.ajax({
-    url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
-    method: "PUT",
-    data: JSON.stringify(new_usuario),
-    contentType: "application/json",
-    dataType: "json",
+     $.ajax({
+      url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+      method: "PUT",
+      data: JSON.stringify(new_usuario),
+      contentType: "application/json",
+      dataType: "json",
 
-    success: function(data) {
-      alert("Informacion de usuario ha sido editada en el sistema.");
+      success: function(data) {
+        alert("Informacion de usuario ha sido editada en el sistema.");
       // update ganadero list after posting 
       populate_usuarios();
     },
@@ -330,7 +334,43 @@ $('#btn_edit').on('click', function(){
       console.dir( xhr );
     }
   });
+
+   //get user id and specialty ids associated to said user id
+   var usuario_id =  $('#btn_edit').attr('data-id');
+   var checkedSpecialties = [];
+   $(':checkbox:checked').each(function(i){
+    checkedSpecialties[i] = $(this).val();
+  });
+
+////////SECOND AJAX
+
+ //json object for user_specialties
+ var specialties = {
+  user: usuario_id,
+  specialties: checkedSpecialties
+};
+
+$.ajax({
+  url: "http://localhost:3000/users/admin/user_specialties",
+  method: "PUT",
+  data: JSON.stringify(specialties),
+  contentType: "application/json",
+  dataType: "json",
+
+  success: function(data) {
+
+    alert("Especialidades han sido modificadas.");
+
+  },
+  error: function( xhr, status, errorThrown ) {
+    alert( "Sorry, there was a problem!" );
+    console.log( "Error: " + errorThrown );
+    console.log( "Status: " + status );
+    console.dir( xhr );
   }
+});
+
+}
 });
 
 //updates specialties associated to current user
@@ -477,7 +517,7 @@ function populate_info_panel($this_usuario){
         table_content +=  'active ';
       }
       table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.username+"</a></td>";
-      table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
+      //table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
       //table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });
@@ -488,7 +528,7 @@ function populate_info_panel($this_usuario){
 
 function populate_specialties_edit(){
 
-  var user_id =  $('#btn_edit').attr('data-id');
+  var user_id =  $('#btn_edit_panel').attr('data-id');
   var matches = [];
   //find matches
   $.each(specialties_array, function(i){
@@ -527,7 +567,8 @@ function populate_specialties_edit(){
     found = false;
   });
 
-  $('#specialist_categories_list').html(content);
+  console.log();
+  $('#specialist_categories_list_edit').html(content);
 
 }
 
