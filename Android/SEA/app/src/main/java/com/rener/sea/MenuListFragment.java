@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -105,6 +107,8 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
         } else if(type.equals(TYPE_APPOINTMENTS)) {
             //TODO: get all appointments from DB
             //TODO: set the list adapter
+            list = initDummyAppointments();
+            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
         }
 
         setListAdapter(adapter);
@@ -148,6 +152,32 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE ;
+        clearSearchButton.setVisibility(visibility);
+        //adapter.getFilter().filter(charSequence);
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.clearSearch:
+                editSearch.setText("");
+                break;
+        }
+    }
+
     /**
      * Notifies the list adapter that data has changed and it should update it's views
      */
@@ -164,47 +194,27 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     }
 
     private void newReport() {
-        DBHelper dbHelper = ((MainActivity)getActivity()).getDBHelper();
+        DBHelper dbHelper = ((MainActivity) getActivity()).getDBHelper();
         int fcs = dbHelper.getAllFlowcharts().size();
         int ls = dbHelper.getAllLocations().size();
         boolean allow = (fcs != 0 && ls != 0);
-        if(allow) {
+        if (allow) {
             startActivity(new Intent(getActivity(), SurveyActivity.class));
             getActivity().finish();
-        }
-        else if(fcs ==0) {
+        } else if (fcs == 0) {
             String message = getResources().getString(R.string.no_flowcharts);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             String message = getResources().getString(R.string.no_locations);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+    private List<Calendar> initDummyAppointments() {
+        List<Calendar> dates = new ArrayList<>();
+        for(int i=0; i<4; i++)
+            dates.add(Calendar.getInstance());
+        return dates;
     }
 
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE ;
-        clearSearchButton.setVisibility(visibility);
-            //adapter.getFilter().filter(charSequence);
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.clearSearch:
-                editSearch.setText("");
-                break;
-        }
-    }
 }
