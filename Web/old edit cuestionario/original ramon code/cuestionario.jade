@@ -1,0 +1,88 @@
+extends layout
+block css
+	link(rel='stylesheet', href='/stylesheets/cuestionario_flowchart.css')
+
+block content
+	.container
+		br
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extensión Agrícola
+						h4 Creador de Cuestionarios
+			.col-md-2
+
+		.row
+			.col-md-9
+				#container_plumbjs
+			.col-md-3
+				.form-group
+								label(for='btn_user_type') Tipo de Pregunta:
+								.dropdown
+									.btn-group
+										button#btn_question_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
+											span#btn_question_type_text Tipo de Pregunta 
+											span(class='caret')
+										ul#list_question_type(class='dropdown-menu', role='menu')
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='admin') Condicional
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Abierta
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Booleana
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='especialista') Multiple
+											li
+												a(role='menuitem', tabindex='-1', href='#', data-usario-type='agente') Recomendación
+				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button') Agregar Pregunta
+				button#btn_add_recommendation(class='btn btn-lg btn-success btn-block', type='button') Agregar Recomendación
+				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
+				button#btn_end(class='btn btn-lg btn-success btn-block', type='button') Agregar Nodo Final
+				button#btn_test(class='btn btn-lg btn-success btn-block', type='button') Test
+
+		br
+		.row
+			.col-md-1
+			.col-md-6
+				.panel.panel-success
+					.panel-heading
+						h3.panel-title Elementos creados
+					.panel-body
+						.list-group(style='overflow:auto; height:300px;')
+							table(class='table')
+								thead
+								tbody#preguntas_list
+			
+			#info_panel.col-md-4
+				.panel.panel-success
+					.panel-heading
+						h3#info_panel_heading(class='panel-title') Pregunta 1
+					.panel-body
+						table#pregunta_info(class='table')
+							tr
+								td Pregunta:
+								td#pregunta_info_name 
+							tr
+								td Tipo de Pregunta:
+								td#pregunta_info_type
+						.panel.panel-info
+							.panel-heading Posibles Respuestas
+							.panel-body
+								table#pregunta_info_responses(class='table')
+						button#btn_close_info_panel(class='btn btn-default') Cerrar
+			.col-md-1
+		.row
+			.col-md-2
+			.col-md-3
+				// TODO: add home glyphicon
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+
+	//	Latest compiled and minified JavaScript
+	script(src='//code.jquery.com/jquery-1.11.2.min.js')
+	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
+	script(src='http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js')
+	script(src='http://stage-preview.gage.com/Creative/Microsoft/EZCourseDemo/scripts/jquery.jsPlumb-1.3.16-all-min.js')
+	script(src='/javascripts/cuestionario.js')
+	script(src='/javascripts/helpers.js')

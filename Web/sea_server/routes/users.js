@@ -250,6 +250,61 @@ router.get('/admin/cuestionarios/crear', function(req, res, next) {
 		}
 });
 
+/* Get flowchart items and options
+ *
+ */
+router.get('/admin/cuestionarios/ver/:id', function(req, res, next){
+	var flowchart_id = req.params.id;
+
+	var items_list, connections_list;
+
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+ 		// get items
+ 		client.query("SELECT flowchart_id, item_id, state_id, state \
+									FROM item \
+									WHERE flowchart_id = $1", 
+ 									[flowchart_id], function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} 
+			items_list = result.rows;
+ 		});
+ 		// get connections
+  	client.query("WITH path_targets AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																CASE \
+																WHEN item_id = next_id THEN state_id \
+																END AS target \
+															FROM option \
+															INNER JOIN item ON item.item_id = option.next_id \
+															WHERE flowchart_id = $1), \
+												path_sources AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																CASE \
+																WHEN item_id = parent_id THEN state_id \
+																END AS source \
+															FROM option \
+															INNER JOIN item ON item.item_id = option.parent_id \
+															WHERE flowchart_id = $1) \
+												SELECT * \
+												FROM path_sources natural join path_targets", 
+  											[flowchart_id], function(err, result) {
+  		// call done to release client to pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			}
+			connections_list = result.rows
+			res.json({
+				items: items_list,
+				connections: connections_list
+			});
+		});
+ 	});
+});
+
 /* POST Admin crear cuestionario
  * post new survey
  */
@@ -291,9 +346,9 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  			for(var i=0; i < flowchart_items.length; i++){
 		  				this_item = flowchart_items[i];
 		  				// insert this_item
-							client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, state_id) VALUES ($1, $2, $3, $4, $5, $6) \
+							client.query('INSERT into item (flowchart_id, state_id, state) VALUES ($1, $2, $3) \
 														RETURNING item_id, state_id', 
-														[flowchart_id, this_item.name, this_item.top, this_item.left, this_item.type, this_item.id], function(err, result) {
+														[flowchart_id, this_item.id, this_item.state], function(err, result) {
 								if(err) {
 									return console.error('error running query', err);
 								} else {
