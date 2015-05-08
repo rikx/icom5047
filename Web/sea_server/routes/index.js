@@ -383,8 +383,8 @@ router.get('/citas/:user_input', function(req, res, next) {
 								FROM appointments natural join report \
 								LEFT JOIN users ON user_id = maker_id \
 								INNER JOIN location ON report.location_id = location.location_id \
-								WHERE LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%' \
-								ORDER BY date ASC, time ASC"
+								WHERE appointments.status = '1' AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%') \
+								ORDER BY location.name ASC, date ASC, time ASC"
  			}
  		} else {
  			//get first 20 citas created by this user
@@ -393,8 +393,8 @@ router.get('/citas/:user_input', function(req, res, next) {
 								FROM appointments natural join report \
 								LEFT JOIN users ON user_id = maker_id \
 								INNER JOIN location ON report.location_id = location.location_id \
-								WHERE appointments.maker_id = $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%') \
-								ORDER BY date ASC, time ASC",
+								WHERE appointments.maker_id = $1 AND appointments.status = '1' AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%') \
+								ORDER BY location.name ASC, date ASC, time ASC",
 				values: [user_id]
  			}
  		}
@@ -647,7 +647,7 @@ router.get('/location/:id/categories', function(req, res, next){
 									FROM location \
 									INNER JOIN location_category ON location.location_id = location_category.location_id \
 									INNER JOIN category ON location_category.category_id = category.category_id \
-									WHERE location.location_id = $1', 
+									WHERE location_id = $1', 
 									[location_id], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
@@ -949,7 +949,8 @@ router.get('/list_citas', function(req, res, next) {
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									ORDER BY date ASC, time ASC \
+									WHERE appointments.status = '1' \
+									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20"
 	 			}
 	 		} else {
@@ -959,8 +960,8 @@ router.get('/list_citas', function(req, res, next) {
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE appointments.maker_id = $1 \
-									ORDER BY date ASC, time ASC \
+									WHERE appointments.maker_id = $1 AND appointments.status = '1' \
+									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20",
 					values: [user_id]
 	 			}
