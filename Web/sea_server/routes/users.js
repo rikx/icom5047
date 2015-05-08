@@ -27,14 +27,14 @@ var router = express.Router();
 	// WHERE flowchart.flowchart_id = $1', 
 	// 						  	[cuestionario_id], function(err, result) {
 
-router.get('/categorias', function(req, res, next) {
+router.get('/admin/categorias', function(req, res, next) {
 	var categories_list;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		client.query('SELECT * FROM category WHERE status != $1 ORDER BY name', [-1], function(err, result) {
+ 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
@@ -793,7 +793,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 
 /* PUT/DELETE categories
  */
- router.put('/admin/delete_category/:id', function(req, res, next) {
+ router.delete('/admin/delete_category/:id', function(req, res, next) {
  	console.log("delete category");
  		var db = req.db;
  		db.connect(req.conString, function(err, client, done) {
@@ -801,8 +801,8 @@ router.put('/admin/user_specialties', function(req, res, next) {
  				return console.error('error fetching client from pool', err);
  			}
 			// Edit category
-			client.query("UPDATE category SET status = $1 WHERE category_id = $2", 
-				[-1, req.params.id] , function(err, result) {
+			client.query("DELETE FROM category WHERE category_id = $1", 
+				[req.params.id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
@@ -1996,15 +1996,27 @@ router.post('/admin/dispositivos', function(req, res, next) {
 	  			if(result.rowCount > 0){
 	  				res.send({exists: true});
 	  			} else {
+
+	  				var query_config = {};
+	  				if(req.body.dispositivo_id_usuario.length > 0){
+	  					query_config = {
+	  						text: "INSERT into devices (name, id_number, user_id) VALUES ($1, $2, $3)",
+	  						values: [req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario]
+	  					}
+	  				} else {
+	  					query_config = {
+	  						text: "INSERT into devices (name, id_number) VALUES ($1, $2)",
+	  						values: [req.body.dispositivo_name, req.body.dispositivo_id_num]
+	  					}
+	  				}
+
 		  			// Insert new dispositivo into db
-		  			client.query("INSERT into devices (name, id_number, user_id) VALUES ($1, $2, $3)", 
-		  										[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
+		  			client.query(query_config, function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
 								return console.error('error running query', err);
 							} else {
-								console.log(result.rows);
 								res.json(true);
 							}
 						});

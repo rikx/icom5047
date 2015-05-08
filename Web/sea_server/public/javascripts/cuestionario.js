@@ -7,6 +7,18 @@ jsPlumb.ready(function() {
   var lines_array = [];
   var state_count = 0;
 
+  // store data for flowchart
+  var citas_array; 
+  var user_info = JSON.parse($citas_list.attr('data-user'));
+  var elements_array = $citas_list.attr('data-citas');
+  if(data_citas.length >2){
+    citas_array = JSON.parse($citas_list.attr('data-citas'));
+
+    // initial info panel population
+    populate_info_panel(citas_array[0]);
+  } else {
+    $('#info_panel').hide();
+  }
   // Return to admin page button
   $('#btn_home').on('click', function(){
     window.location.href = '/users';

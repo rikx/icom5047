@@ -195,6 +195,7 @@ $(document).ready(function(){
       reportes_array = data.reports;
 
       populate_list(data.reports);
+      populate_info_panel(data.reports[0]);
     });
   };
 

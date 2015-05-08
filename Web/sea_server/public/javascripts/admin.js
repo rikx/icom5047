@@ -36,7 +36,7 @@ $(document).ready(function(){
 	});
 
 	$('#btn_manejar_categorias').click(function(){
-		window.location.href = '/users/categorias';
+		window.location.href = '/users/admin/categorias';
 	});
 
 

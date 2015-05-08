@@ -17,7 +17,7 @@ $(document).ready(function(){
   }
 
   // hide input that contains user chosen from dropdown
-  $('#dispositivo_usuario').hide();
+  //$('#dispositivo_usuario').hide();
 
   /* Search Code start */
   // constructs the suggestion engine
@@ -129,6 +129,7 @@ $(document).ready(function(){
       $this.addClass('active');
     }
 
+ 
     // contains dispositivo id
     var dispositivo_id = $this.attr('data-id');
     var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(dispositivo_id);
@@ -136,9 +137,11 @@ $(document).ready(function(){
     
     // populate info panel with this_dispositivo
     populate_info_panel(this_dispositivo);
+    console.log(this_dispositivo);
 
     // set id values of info panel buttons
     $('#btn_edit_dispositivo').attr('data-id', dispositivo_id);
+    $('#btn_edit_dispositivo').attr('data-name', this_dispositivo.username);
     $('#btn_delete').attr('data-id', dispositivo_id);
     $('#btn_delete').attr('data-device-name', this_dispositivo.device_name);
   });
@@ -182,9 +185,9 @@ $(document).ready(function(){
           // clear add form
           $the_form[0].reset();
         }
-         // update dispositivos list after posting 
-         populate_dispositivos();
-         $('#edit_panel').hide();
+        // update dispositivos list after posting 
+        populate_dispositivos();
+        //$('#edit_panel').hide();
        },
        error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -202,16 +205,20 @@ $(document).ready(function(){
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
     $('#info_panel').hide();
+    $('#btn_dropdown_agentes_text').text($('#btn_edit_dispositivo').attr('data-name'));
+
+
 
     // contains dispositivo id
     var dispositivo_id = $(this).attr('data-id');
     var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(dispositivo_id);
     var this_dispositivo = dispositivos_array[arrayPosition];
+    console.log();
 
     $('#btn_edit').attr('data-id', dispositivo_id);
     $('#dispositivo_name').val(this_dispositivo.device_name);
     $('#dispositivo_id_num').val(this_dispositivo.id_number);
-    $('#dispositivo_usuario').val(this_dispositivo.username);
+    $('#dispositivo_usuario').val(this_dispositivo.assigned_user);
   });
 
   /* PUTs edited dispositivo information */

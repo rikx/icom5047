@@ -10,7 +10,8 @@ block content
 					center
 						h2 Servicio de Extensión Agricola
 						#title_panel.panel.panel-success
-							.panel-heading Titulo
+							.panel-heading(class='title')
+								h4 Título
 							.panel-body
 									form#form_title(role='form')
 										.form-group
@@ -26,31 +27,33 @@ block content
 
 		.row
 			.col-md-6
-				center
-					h2 Entrevista Contestada
-				#answered_survey(class='jumbotron', data-survey=survey)
-					- var has_recom = false;
-					if survey.length > 0
-						ol
-							each item in survey
-								if item.type != 'RECOM'
-									li
-										strong
-											= item.question
-										br
-										em
-											= item.path_data
-								else
-									- has_recom=true;
+				.panel.panel-success
+					#answered_survey(class='panel-heading title', data-survey=survey)
+						center
+							h4 Entrevista Contestada
+					.panel-body#info_report(data-report=reporte)
+						- var has_recom = false;
+						if survey.length > 0
+							ol
+								each item in survey
+									if item.type != 'RECOM'
+										li
+											strong
+												= item.question
+											br
+											em
+												= item.path_data
+									else
+										- has_recom=true;
 
-					//if !has_recom
-					//	center
-					//		button(class='btn_continue_survey btn btn-sm btn-success') Continuar Entrevista
+						//if !has_recom
+						//	center
+						//		button(class='btn_continue_survey btn btn-sm btn-success') Continuar Entrevista
 			.col-md-6
 				center
-					
 					.panel.panel-success
-							.panel-heading Información General
+							.panel-heading(class='title')
+								h4 Información General
 							.panel-body#info_report(data-report=reporte)
 								p Reporte ID: 
 									= reporte.report_id
@@ -70,7 +73,8 @@ block content
 				center(style="display:none")
 					
 					.panel.panel-success
-							.panel-heading Micelania
+							.panel-heading(class='title')
+								h4 Micelania
 							.panel-body
 								.row
 									.col-xs-6.col-md-3
@@ -82,7 +86,8 @@ block content
 				div(style="display:none")
 				center
 					.panel.panel-success
-								.panel-heading Notas Asociadas
+								.panel-heading(class='title')
+									h4 Notas Asociadas
 								.panel-body
 									#notas
 										if reporte.note == null
@@ -98,16 +103,19 @@ block content
 		.row
 			.col-md-6
 				center
-					h2 Recomendaciones
-				.jumbotron
-					p
-						each item in survey 
-							if item.type == 'RECOM'
-								= item.question
+					.panel.panel-success
+						.panel-heading(class='title')
+							h4 Recomendaciones
+						.panel-body
+							p
+								each item in survey 
+									if item.type == 'RECOM'
+										= item.question
 			.col-md-6
 				center
 					.panel.panel-success
-						.panel-heading Cita de Seguimiento
+						.panel-heading(class='title')
+							h4 Cita de Seguimiento
 						.panel-body
 							#info_panel(data-appointment=appointment)
 								if appointment == undefined
