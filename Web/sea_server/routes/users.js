@@ -598,7 +598,20 @@ router.put('/admin/user_specialties', function(req, res, next) {
 						}
 		      }
 		    	// user_specialties associations were succesfully updated
-					res.json(true);
+		    	client.query('SELECT specialization.spec_id, specialization.name AS spec_name \
+												FROM users \
+												INNER JOIN users_specialization ON users.user_id = users_specialization.user_id \
+												INNER JOIN specialization ON users_specialization.spec_id = specialization.spec_id \
+												WHERE users.user_id = $1 ORDER BY specialization.name', 
+												[req.body.user], function(err, result) {
+				  	//call `done()` to release the client back to the pool
+				    done();
+			    	if(err) {
+				      return console.error('error running query', err);
+				    } else {
+				    	res.json({users_specialization: result.rows});
+				    }
+				  });
 		   	}
 		  });
 	  });

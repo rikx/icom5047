@@ -4,6 +4,7 @@ jsPlumb.ready(function() {
 	var elements_array = [];
 	var connections_array = [];
 	var states_array = [];
+	var lines_array = [];
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
@@ -233,7 +234,7 @@ jsPlumb.ready(function() {
  	function add_item() {
  		jsPlumb.ready(function() {
  			var itemType = $('#btn_item_type').attr('data-item-type');
- 			var newState = $('<div>').attr('id', j);
+ 			var newState = $('<div>').attr('id', 'state' + j);
  			var title = $('<div>').addClass('title_question');
  			var title_id = $('<p>');
  			var has_input = false;
@@ -294,7 +295,6 @@ jsPlumb.ready(function() {
 
 			//add new state item to container
 			$('#container_plumbjs').append(newState);
-			states_array.push(newState);
 
 			if(itemType != 'START'){
 				jsPlumb.makeTarget(newState, {
@@ -333,8 +333,10 @@ jsPlumb.ready(function() {
 						// check if item is already in array and updates it
 					  if(containsObject(this_item, elements_array)) {
 					   	replace(this_item, elements_array);
+					   	replace(this_item, states_array);
 					  } else {
 					   	elements_array.push(this_item);
+					   	states_array.push(this_item);
 						}
 						// populate elements list with new item
 						populate_elements_list();
@@ -401,8 +403,10 @@ jsPlumb.ready(function() {
 						// check if item is already in array and updates it
 					  if(containsObject(this_item, elements_array)) {
 					   	replace(this_item, elements_array);
+					   	replace(this_item, states_array);
 					  } else {
 					   	elements_array.push(this_item);
+					   	states_array.push(this_item);
 						}
 			      // populate elements list with new element
 			      populate_elements_list();
@@ -482,7 +486,7 @@ jsPlumb.ready(function() {
 					mylabel = 'con-start';
 				} else if(source_type == 'OPEN'){
 					mylabel = 'con-open';
-				} else if(target_type == 'END' && source_type == 'OPEN'){
+				} else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
 					mylabel = 'con-end';
 				} else {
 					mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
@@ -496,6 +500,7 @@ jsPlumb.ready(function() {
 				};
 
 				connections_array.push(this_connection);
+				lines_array.push(this_connection);
 			}
 		});
 	});
@@ -528,15 +533,18 @@ jsPlumb.ready(function() {
 
 	// test recreation
 	$('#btn_recreate').on('click', function(){
-		recreate_graph()
+		recreate_graph(states_array, lines_array);
 	});
 	// recreate graph
 	function recreate_graph(elements, connections){
 		// loop through elements to create them in the DOM
+		var this_id;
 		for(var i=0; i<elements.length; i++){
+			console.log(elements[i]);
+			this_id = elements[i].id;
 			var itemType, newState, title, title_id, has_input, stateName, stateNameContainer, connect;
-			itemType = $('#btn_item_type').attr('data-item-type', elements[i].type);
- 			newState = $('<div>').attr('id', elements[i].id);
+			itemType = elements[i].type;
+ 			newState = $('<div>').attr('id', this_id);
  			title = $('<div>').addClass('title_question');
  			title_id = $('<p>');
  			has_input = false;
@@ -568,14 +576,14 @@ jsPlumb.ready(function() {
 							break;
 					}
 	 				// Set item identifier text
-					title_id.text('Elemento ' + j);
+					title_id.text('Elemento ' + this_id.substring(5));
 					// add input for item text content
 					has_input = true;
-	 				stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
-	 				stateName = $('<input>').attr('type', 'text');
+	 				stateNameContainer = $('<div>').attr('data-state-id', this_id);
+	 				stateName = $('<p>').text(elements[i].name);
 
 	 				// store element id as data attribute
-					stateName.attr('data-id', 'state' + j);
+					stateName.attr('data-id', this_id);
  			}
  			
  			// append title_id to state item
@@ -585,7 +593,7 @@ jsPlumb.ready(function() {
 		 	// put stateName input field into stateNameContainer div, 
 			// and then append this div to title
  			if(has_input){
-				title.append(stateNameContfainer.append(stateName));
+				title.append(stateNameContainer.append(stateName));
  			}
 
  			// append title to state item
@@ -595,13 +603,137 @@ jsPlumb.ready(function() {
 			connect = $('<div>').addClass('connect_question');
 			newState.append(connect);
 
+			newState.css({
+        'top': elements[i].top,
+        'left': elements[i].left
+      });
+
 			//add new state item to container
 			$('#container_plumbjs').append(newState);
+			if(itemType != 'START'){
+				jsPlumb.makeTarget(newState, {
+					anchor: 'Continuous',
+					endpoint:'Blank'
+				});
+			}
+
+			if(itemType != 'END'){
+				jsPlumb.makeSource(connect, {
+					parent: newState,
+					anchor: 'Continuous',
+					connector: 'Flowchart',
+					endpoint:'Blank'
+				});				
+			}
+   
+			jsPlumb.draggable(newState, {
+				containment: 'parent',
+				stop: function(event) {
+					if ($(event.target).find('select').length == 0) {
+
+						// create item object
+						var this_name = $('#'+newState.attr('id')).attr('data-state-name');
+						if(this_name == undefined){
+							this_name = 'Elemento sin título'
+						}
+						var this_item = {
+							id: newState.attr('id'),
+							name: this_name,
+							type: itemType,
+							left: newState.position().left,
+							top: newState.position().top
+						};
+
+						// check if item is already in array and updates it
+					  if(containsObject(this_item, elements_array)) {
+					   	replace(this_item, elements_array);
+					   	replace(this_item, states_array);
+					  } else {
+					   	elements_array.push(this_item);
+					   	states_array.push(this_item);
+						}
+						// populate elements list with new item
+						populate_elements_list();
+					}
+				}
+			});
+
+
+			newState.dblclick(function(e) {
+				var this_id = $(this).attr('id');
+
+				jsPlumb.detachAllConnections($(this));
+				$(this).remove();
+				e.stopPropagation();	
+				
+				// find connections where this element is a source or target and 
+				// delete them
+				connections_array=connections_array.filter(isConnectionEndpoint);
+				function isConnectionEndpoint(connection){
+					if(connection.source == this_id){
+						return false; 
+					} else if(connection.target == this_id){
+						return false; 
+					} else {
+						return true;
+					}
+				}
+				// find element in array and delete it
+				var this_item;
+				for(var d=0; d<elements_array.length;d++){
+					this_item = elements_array[d];
+					if(this_item.id == this_id){
+						elements_array.splice(d,1);
+						if(this_item.type=='START'){
+							$('#start_item').removeClass('disabled');
+						} else if(this_item.type=='END'){
+							$('#end_item').removeClass('disabled');
+						}
+						//return;
+					}
+				}
+				// populate elements list with new element
+				populate_elements_list();
+			}); 
+
+			if(itemType != 'START' && itemType != 'END'){
+				stateName.keyup(function(e) {
+					if (e.keyCode === 13) {
+			      //var state = $(this).closest('.item');
+			      //state.children('.title').text(this.value);
+			      $(this).parent().text(this.value);
+			      var state_id = $(this).attr('data-id');
+			      $('#'+state_id).attr('data-state-name', this.value);
+
+						// create item object
+						var this_item = {
+							id: newState.attr('id'),
+							name: $('#'+newState.attr('id')).attr('data-state-name'),
+							type: itemType,
+							left: newState.position().left,
+							top: newState.position().top
+						};
+
+						// check if item is already in array and updates it
+					  if(containsObject(this_item, elements_array)) {
+					   	replace(this_item, elements_array);
+					   	replace(this_item, states_array);
+					  } else {
+					   	elements_array.push(this_item);
+					   	states_array.push(this_item);
+						}
+			      // populate elements list with new element
+			      populate_elements_list();
+				  }
+				});
+				// focuses on input field of the created element
+				stateName.focus();
+			}
 		}
 
 		// loop through connections to connect elements in the DOM
-		for(){
+		//for(){
 
-		}
+		//}
 	}
 });
