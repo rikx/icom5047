@@ -3,6 +3,7 @@ jsPlumb.ready(function() {
 	// stores current elements in the jsPlumb container
 	var elements_array = [];
 	var connections_array = [];
+	var states_array = [];
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
@@ -232,7 +233,7 @@ jsPlumb.ready(function() {
  	function add_item() {
  		jsPlumb.ready(function() {
  			var itemType = $('#btn_item_type').attr('data-item-type');
- 			var newState = $('<div>').attr('id', 'state' + j);
+ 			var newState = $('<div>').attr('id', j);
  			var title = $('<div>').addClass('title_question');
  			var title_id = $('<p>');
  			var has_input = false;
@@ -293,7 +294,8 @@ jsPlumb.ready(function() {
 
 			//add new state item to container
 			$('#container_plumbjs').append(newState);
-			
+			states_array.push(newState);
+
 			if(itemType != 'START'){
 				jsPlumb.makeTarget(newState, {
 					anchor: 'Continuous',
@@ -521,6 +523,85 @@ jsPlumb.ready(function() {
 			if (list[i].id === obj.id) {
 				list[i] = obj;
 			}
+		}
+	}
+
+	// test recreation
+	$('#btn_recreate').on('click', function(){
+		recreate_graph()
+	});
+	// recreate graph
+	function recreate_graph(elements, connections){
+		// loop through elements to create them in the DOM
+		for(var i=0; i<elements.length; i++){
+			var itemType, newState, title, title_id, has_input, stateName, stateNameContainer, connect;
+			itemType = $('#btn_item_type').attr('data-item-type', elements[i].type);
+ 			newState = $('<div>').attr('id', elements[i].id);
+ 			title = $('<div>').addClass('title_question');
+ 			title_id = $('<p>');
+ 			has_input = false;
+
+ 			// add css and title fitting item type
+ 			if(itemType == 'START'){
+				newState.addClass('item_end_point');
+				newState.attr('data-state-name', 'INICIO');
+				$('#start_item').addClass('disabled');
+				title_id.text('INICIO');
+ 			} else if(itemType == 'END'){
+	 				newState.addClass('item_end_point');
+	 				newState.attr('data-state-name', 'FIN');
+	 				$('#end_item').addClass('disabled');
+	 				title_id.text('FIN');
+ 			} else {
+					switch(itemType){
+						case 'OPEN':
+							newState.addClass('item_abierta');	
+							break;
+						case 'MULTI':
+							newState.addClass('item_multi');	
+							break;
+						case 'CONDITIONAL':
+							newState.addClass('item_conditional');	
+							break;
+						case 'RECOM':
+							newState.addClass('item_recom');
+							break;
+					}
+	 				// Set item identifier text
+					title_id.text('Elemento ' + j);
+					// add input for item text content
+					has_input = true;
+	 				stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
+	 				stateName = $('<input>').attr('type', 'text');
+
+	 				// store element id as data attribute
+					stateName.attr('data-id', 'state' + j);
+ 			}
+ 			
+ 			// append title_id to state item
+			title.append(title_id);
+
+			// if has_input
+		 	// put stateName input field into stateNameContainer div, 
+			// and then append this div to title
+ 			if(has_input){
+				title.append(stateNameContfainer.append(stateName));
+ 			}
+
+ 			// append title to state item
+			newState.append(title);
+
+			// append connect node to state item
+			connect = $('<div>').addClass('connect_question');
+			newState.append(connect);
+
+			//add new state item to container
+			$('#container_plumbjs').append(newState);
+		}
+
+		// loop through connections to connect elements in the DOM
+		for(){
+
 		}
 	}
 });

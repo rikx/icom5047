@@ -31,12 +31,6 @@ block content
 							table(class='table')
 								thead
 								tbody#usuarios_list(data-usuarios=usuarios, data-locations=locations, data-specialties=user_specialties)
-				#specialty_panel.form-group(data-all-specialties=specialties)
-								.panel.panel-success
-									#especializacion_title.panel-heading Tipo de Especializacion
-									.panel-body
-											form#specialist_categories_list(role='form')
-											button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
 				#add_specialty_panel.form-group
 								.panel.panel-success
 									.panel-heading Especialidades
@@ -97,6 +91,12 @@ block content
 												a(role='menuitem', tabindex='-1', href='#', data-usario-type='specialist') Especialista
 											li
 												a(role='menuitem', tabindex='-1', href='#', data-usario-type='agent') Agente
+							#specialty_panel_edit.form-group(data-all-specialties=specialties)
+								.panel.panel-success
+									#especializacion_title_edit.panel-heading Tipo de Especializacion
+									.panel-body
+											#specialist_categories_list_edit(role='form')
+											//button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
 						.btn-group(role='group', aria-label='info panel buttons')
 							button#btn_close_edit_panel(class='btn btn-default') Cerrar
 							button#btn_edit(class='btn btn-default btn-success', type='button') Guardar
@@ -122,7 +122,14 @@ block content
 								td#usuario_info_type 
 							tr
 								td Información de Contacto:
-								td#usuario_info_contact 
+								td#usuario_info_contact
+						#specialty_panel.form-group(data-all-specialties=specialties)
+								.panel.panel-success
+									#especializacion_title.panel-heading Tipo de Especializacion
+									.panel-body
+											form#specialist_categories_list(role='form')
+											//button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
+								button#btn_edit_panel(class='btn btn-sm btn-success btn-block' type='button', data-id=specialties[0].spec_id) Editar
 						.panel.panel-info
 							.panel-heading Localizaciones Asignadas
 							.panel-body

@@ -21,6 +21,10 @@ $(document).ready(function(){
 		var category_name = $(this).attr('data-category-name');
 		$('#btn_edit_categories').attr("data-category-name", category_name);
 		$('#category_name').val(category_name);
+    $('#category_info_name').text(category_name);
+
+
+    
 
     // remove active from previous list item 
     remove_active_class($categories_list);

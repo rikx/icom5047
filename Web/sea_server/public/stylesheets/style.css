@@ -59,3 +59,14 @@
 .twitter-typeahead > .form-control{
   width: inherit !important;
 }
+*/
+.table-nowrap {
+  table-layout:fixed;
+}
+
+.table-nowrap td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
