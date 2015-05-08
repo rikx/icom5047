@@ -27,14 +27,14 @@ var router = express.Router();
 	// WHERE flowchart.flowchart_id = $1', 
 	// 						  	[cuestionario_id], function(err, result) {
 
-router.get('/categorias', function(req, res, next) {
+router.get('/admin/categorias', function(req, res, next) {
 	var categories_list;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		client.query('SELECT * FROM category WHERE status != $1 ORDER BY name', [-1], function(err, result) {
+ 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
