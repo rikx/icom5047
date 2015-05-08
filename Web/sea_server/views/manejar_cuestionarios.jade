@@ -38,8 +38,8 @@ block content
 													a(class='list-group-item show_info_cuestionario', href='#', data-id=cuestionario.flowchart_id)= cuestionario.flowchart_name
 												else 
 													a(class='list-group-item active show_info_cuestionario', href='#', data-id=cuestionario.flowchart_id)= cuestionario.flowchart_name
-											td
-												button(class='btn_edit_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionario.flowchart_id) Editar
+											//td
+											//	button(class='btn_edit_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionario.flowchart_id) Editar
 											//td
 											//	a(class='btn_delete_cuestionario btn btn-sm btn-success', data-toggle='tooltip', data-id=cuestionario.flowchart_id)
 											//		i(class='glyphicon glyphicon-trash')
@@ -51,7 +51,7 @@ block content
 					.panel-body
 						table#cuestionario_info(class='table table-nowrap')
 							thead
-							tbody
+							tbody(data-cuestionarios=cuestionarios)
 								tr
 									td Nombre:
 									td#cuestionario_info_name 
@@ -61,6 +61,8 @@ block content
 								tr
 									td Creado por:
 									td#cuestionario_info_creator
+						button(class='btn_edit_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionarios.flowchart_id) Editar
+											
 		.row
 			.col-md-2
 			.col-md-4
