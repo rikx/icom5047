@@ -33,7 +33,7 @@ block content
 												tbody#categories
 										button#btn_add_categories(class='btn btn-default btn-success', type='button') Agregar Categorías
 			.col-md-4
-				.panel.panel-success
+				#info_panel_category.panel.panel-success
 					.panel-heading
 						h3#info_panel_heading(class='panel-title') 
 					.panel-body(data-all-categorias=categories)
@@ -45,7 +45,9 @@ block content
 									td#category_info_name 
 										=categories[0].name
 						button#btn_edit_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
-						button#btn_delete_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id) Eliminar
+						//button#btn_delete_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id) Eliminar
+						a#btn_delete_category(class='btn btn-danger btn-block', data-toggle='tooltip',data-id=categories[0].category_id)
+							i(class='glyphicon glyphicon-trash')
 				#add_category_panel.form-group
 								.panel.panel-success
 									.panel-heading
@@ -96,7 +98,9 @@ block content
 										td#specialty_info_name 
 											=specialties[0].name
 							button#btn_edit_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id, data-category-name=specialties[0].name) Editar
-							button#btn_delete_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id) Eliminar
+							//button#btn_delete_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id) Eliminar
+							a#btn_delete_specialty(class='btn btn-danger btn-block', data-toggle='tooltip',data-id=specialties[0].spec_id)
+								i(class='glyphicon glyphicon-trash')
 
 
 					#add_specialty_panel.form-group

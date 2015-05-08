@@ -23,6 +23,10 @@ var router = express.Router();
  * Responds with categorias, 
  * alphabetically ordered by name
  */
+
+	// WHERE flowchart.flowchart_id = $1', 
+	// 						  	[cuestionario_id], function(err, result) {
+
 router.get('/categorias', function(req, res, next) {
 	var categories_list;
  	var db = req.db;
@@ -30,7 +34,7 @@ router.get('/categorias', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
+ 		client.query('SELECT * FROM category WHERE status != $1 ORDER BY name', [-1], function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
@@ -346,9 +350,9 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  			for(var i=0; i < flowchart_items.length; i++){
 		  				this_item = flowchart_items[i];
 		  				// insert this_item
-							client.query('INSERT into item (flowchart_id, state_id, state) VALUES ($1, $2, $3) \
+							client.query('INSERT into item (flowchart_id, state_id, label, type, state) VALUES ($1, $2, $3, $4, $5) \
 														RETURNING item_id, state_id', 
-														[flowchart_id, this_item.id, this_item.state], function(err, result) {
+														[flowchart_id, this_item.id, this_item.name, this_item.type, this_item.state], function(err, result) {
 								if(err) {
 									return console.error('error running query', err);
 								} else {
@@ -442,8 +446,62 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 	} else if (user_type != 'admin') {
 		res.redirect('/');
 	} else {
-	 	var cuestionario_id = req.params.id;
-	 	res.render('cuestionario', { title: 'Cuestionario'});
+		var flowchart_id = req.params.id;
+
+		var items_list, connections_list;
+
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		// get items
+	 		client.query("SELECT flowchart_id, item_id, state_id, state \
+										FROM item \
+										WHERE flowchart_id = $1", 
+	 									[flowchart_id], function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} 
+				items_list = result.rows;
+	 		});
+	 		// get connections
+	  	client.query("WITH path_targets AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																	CASE \
+																	WHEN item_id = next_id THEN state_id \
+																	END AS target \
+																FROM option \
+																INNER JOIN item ON item.item_id = option.next_id \
+																WHERE flowchart_id = $1), \
+													path_sources AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																	CASE \
+																	WHEN item_id = parent_id THEN state_id \
+																	END AS source \
+																FROM option \
+																INNER JOIN item ON item.item_id = option.parent_id \
+																WHERE flowchart_id = $1) \
+													SELECT * \
+													FROM path_sources natural join path_targets", 
+	  											[flowchart_id], function(err, result) {
+	  		// call done to release client to pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				}
+				connections_list = result.rows;
+				var current_user = {
+	  			user_id: user_id,
+	  			username: username
+	  		}
+
+				res.render('cuestionario', { 
+					title: 'Cuestionario',
+					items: items_list,
+					connections: connections_list,
+					user: current_user
+				});
+			});
+	 	});
 	}
 });
 
@@ -732,6 +790,38 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		});
 	}
 });
+
+/* PUT/DELETE categories
+ */
+ router.put('/admin/delete_category/:id', function(req, res, next) {
+ 	console.log("delete category");
+ 		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+ 			if(err) {
+ 				return console.error('error fetching client from pool', err);
+ 			}
+			// Edit category
+			client.query("UPDATE category SET status = $1 WHERE category_id = $2", 
+				[-1, req.params.id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					//console.log(result.rows);
+					//res.json({"categories": result.rows});
+					res.json(true);
+
+			
+
+				}
+			});
+		});
+ 	
+ });
+
+
+
 
  /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database

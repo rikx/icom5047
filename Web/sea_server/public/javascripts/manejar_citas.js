@@ -344,6 +344,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
       citas_array = data.citas;
 
       populate_list(data.citas);
+      populate_info_panel(data.citas[0]);
     });
   };
 

@@ -58,7 +58,7 @@ block content
 							input#localizacion_address_city(class='form-control', name='localizacion_address_city', type='text', placeholder='Ciudad')
 						.form-group
 							label(for='localizacion_address_zipcode') Código Postal:
-							input#localizacion_address_zipcode(class='form-control', name='localizacion_address_zipcode', type='text', placeholder='Código Postal')
+							input#localizacion_address_zipcode(class='form-control', name='localizacion_address_zipcode', type='text', placeholder='Código Postal', pattern='\d{5,10}')
 						#categoria_panel_edit.form-group(data-all-categorias=categorias)
 								.panel.panel-success
 									#categoria_panel_title_edit.panel-heading Categorías de Localización
