@@ -69,6 +69,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
 
+        //Set the location layout listener
+        LinearLayout location = (LinearLayout) view.findViewById(R.id.report_location_layout);
+        location.setOnClickListener(this);
+
         //Create dynamic views
         interviewLayout = (LinearLayout) view.findViewById(R.id.report_interview_layout);
 
@@ -225,6 +229,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             case R.id.report_continue_survey_button:
                 continueReport();
                 break;
+            case R.id.report_location_layout:
+                goToReportLocation();
+                break;
         }
     }
 
@@ -331,5 +338,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
                     .SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         }
         appointmentDialog.show();
+    }
+
+    private void goToReportLocation() {
+        long id = report.getLocation().getId();
+        ((MainActivity)getActivity()).onDetailsRequest("LOCATION", "REPORT_LOCATION", id);
     }
 }

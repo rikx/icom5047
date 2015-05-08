@@ -11,17 +11,11 @@
 		android:orientation="vertical">
 
 		<TextView
-			android:id="@+id/report_text_name_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/name_label"
-			/>
-
-		<TextView
 			android:id="@+id/report_text_name"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
+			android:textSize="24sp"
+			android:textStyle="bold"
 			android:text="@string/no_data"
 			/>
 
@@ -30,38 +24,49 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
+			android:textStyle="bold"
 			android:text="@string/date_label"
 			/>
 
 		<TextView
 			android:id="@+id/report_text_date"
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:text="@string/no_data"
 			/>
 
-		<TextView
-			android:id="@+id/report_location_label"
-			android:layout_width="wrap_content"
+		<LinearLayout
+			android:id="@+id/report_location_layout"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
-			android:text="@string/location_label"
-			/>
+			android:orientation="vertical">
 
-		<TextView
-			android:id="@+id/report_text_location"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:text="@string/no_data"
-			/>
+			<TextView
+				android:id="@+id/report_location_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textStyle="bold"
+				android:text="@string/location_label"
+				/>
+
+			<TextView
+				android:id="@+id/report_text_location"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:text="@string/no_data"
+				/>
+		</LinearLayout>
+
 
 		<TextView
 			android:id="@+id/report_creator_label"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
+			android:textStyle="bold"
 			android:text="@string/creator_label"
 			/>
 
@@ -78,6 +83,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
+			android:textStyle="bold"
 			android:text="@string/flowchart_label"
 			/>
 
@@ -97,7 +103,7 @@
 			android:orientation="vertical"
 			android:padding="1dp">
 
-			<!-- THE ANNSWERED INTERVIEW GOES HERE -->
+			<!-- THE ANSWERED INTERVIEW GOES HERE BY DYNAMICALLY ADDING CHILDREN -->
 
 			</LinearLayout>
 
@@ -116,15 +122,17 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
+			android:textStyle="bold"
 			android:text="@string/notes_label"
 			/>
 
-		<TextView
+		<EditText
 			android:id="@+id/report_text_notes"
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/no_data"
-			android:padding="16dp"
+			android:layout_marginStart="16dp"
+			android:minLines="5"
+			android:hint="@string/notes"
 			/>
 
 		<FrameLayout

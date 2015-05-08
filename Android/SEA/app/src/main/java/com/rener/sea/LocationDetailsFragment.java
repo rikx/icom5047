@@ -376,7 +376,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     }
 
     private void goToLocationManager() {
-        //TODO: test this
         long id = location.getOwner().getId();
         ((MainActivity)getActivity()).onDetailsRequest("PERSON", "MANAGER", id);
     }
