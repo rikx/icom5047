@@ -73,15 +73,15 @@
 	<string name="select_subject">seleccione persona entrevistada</string>
 	<string name="select_survey">seleccione una entrevista</string>
 	<string name="date">fecha</string>
-	<string name="date_format">d/LLL/yy</string>
+	<string name="date_format">d/MMM/yy</string>
 	<string name="discard_report">descarta reporte</string>
 	<string name="add_appointment">añadir cita</string>
 	<string name="appointment">cita</string>
 	<string name="no_appointment">no hay cita</string>
 	<string name="view_appointments">Ver Citas</string>
 	<string name="appointment_purpose">propósito</string>
-	<string name="cancel_appointment">cancelar</string>
-	<string name="date_format_long">EEEE d \'de\' LLLL \'de\' yyyy</string>
+	<string name="cancel_appointment">Cancelar</string>
+	<string name="date_format_long">EEEE d \'de\' MMMM \'de\' yyyy</string>
 	<string name="no_purpose_set">propósito no asignado</string>
 	<string name="notes_label">Notas:</string>
 	<string name="save_appointment">guardar cita</string>
@@ -95,7 +95,7 @@
 	<string name="sync_fail">Sincronización fracasada!</string>
 	<string name="duplicate_license_message">La licencia ya existe</string>
 	<string name="next_question">Próxima pregunta</string>
-	<string name="continue_report">continuar</string>
+	<string name="continue_report">Continuar</string>
 	<string name="login">Inicio</string>
 	<string name="no_reports">No hay reportes</string>
 	<string name="no_people">No hay personas</string>
@@ -118,4 +118,6 @@
 	<string name="invalid_licence">Licencia inválida</string>
 	<string name="past_date_message">Fecha no puede ser pasada</string>
 	<string name="appointments">Citas</string>
+	<string name="date_format_medium">EEE, d \'de\' MMM</string>
+	<string name="time_format">hh:mm a</string>
 </resources>
