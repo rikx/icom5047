@@ -27,7 +27,7 @@
 
 		<item android:id="@+id/appointments"
 			  android:title="@string/view_appointments"
-			  android:icon="@drawable/ic_action_event"
+			  android:icon="@drawable/ic_action_go_to_today"
 			  android:showAsAction="ifRoom"
 			  android:orderInCategory="0"
 			  />

@@ -9,6 +9,7 @@
 		android:id="@+id/no_appointment_layout"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
 		android:orientation="horizontal"
 		android:gravity="center_horizontal">
 
@@ -33,6 +34,7 @@
 			android:id="@+id/appointment_label"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:textStyle="bold"
 			android:text="@string/appointment_label"
 			/>
 
