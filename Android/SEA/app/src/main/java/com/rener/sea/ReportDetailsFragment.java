@@ -111,7 +111,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setAppointmentViews();
+        inflateAppointmentLayout();
     }
 
     private void setInterviewLayout() {
@@ -162,32 +162,26 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         //Set the date
         Locale locale = Locale.getDefault();
         String dateFormat = getResources().getString(R.string.date_format);
-        String dateLabel = getResources().getString(R.string.date_label);
-        String date = dateLabel + ": " + report.getDateString(dateFormat, locale);
+        String date = report.getDateString(dateFormat, locale);
         textDate.setText(date);
 
         //Set the location
-        String locLabel = getResources().getString(R.string.location_label);
-        String location = locLabel + ": " + report.getLocation().toString();
+        String location = report.getLocation().toString();
         textLocation.setText(location);
 
         //Set the flowchart
-        String fcLabel = getResources().getString(R.string.flowchart_label);
-        String fc = fcLabel + ": " + report.getFlowchart().getName();
+        String fc = report.getFlowchart().getName();
         textFlowchart.setText(fc);
 
         //Set the notes
         textNotes.setText(report.getNotes());
 
         //Set the creator
-        if (report.getCreator() != null) {
-            String label = getResources().getString(R.string.creator_label);
-            String creator = report.getCreator().getPerson().toString();
-            textCreator.setText(label + ": " + creator);
-        }
+        String creator = report.getCreator().getPerson().toString();
+        textCreator.setText(creator);
 
         //Set the appointment if it exists
-        setAppointmentViews();
+        inflateAppointmentLayout();
     }
 
     /**
@@ -234,7 +228,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         }
     }
 
-    private void setAppointmentViews() {
+    private void inflateAppointmentLayout() {
         Appointment appointment = report.getAppointment();
         if (appointment != null) {
             displayAppointmentLayout(appointment);
@@ -257,11 +251,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         String dateFormat = getResources().getString(R.string.date_format_long);
         String timeFormat = getResources().getString(R.string.time_format);
         String format = dateFormat + " " + timeFormat;
-        String appLabel = getResources().getString(R.string.appointment_label);
         String date = appointment.getDateString(format, locale);
-        String fullDate = appLabel + ": " + date;
         TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
-        dateText.setText(fullDate);
+        dateText.setText(date);
 
         //Set appointment purpose view
         String purposeLabel = getResources().getString(R.string.purpose_label);
@@ -312,7 +304,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
             //Create the appointment and set the views for it
             new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper);
-            setAppointmentViews();
+            inflateAppointmentLayout();
             ((MainActivity) getActivity()).onDataChanged();
         }
         else {
