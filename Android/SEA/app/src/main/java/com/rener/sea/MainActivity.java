@@ -118,6 +118,9 @@ public class MainActivity extends FragmentActivity {
                 toggleTab(item);
                 showLocationsList();
                 break;
+            case R.id.appointments:
+                showAppointmentsList();
+                break;
             case R.id.action_logout:
                 logout();
                 break;
@@ -138,6 +141,30 @@ public class MainActivity extends FragmentActivity {
 
     private void toggleTab(MenuItem item) {
         //TODO: highlight navigation buttons
+    }
+
+    private void showAppointmentsList() {
+        //Set the action bar title
+        String app = getResources().getString(R.string.app_name);
+        String label = getResources().getString(R.string.appointments);
+        String title = app+" > "+label;
+        getActionBar().setTitle(title);
+
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        leftFragment = manager.findFragmentByTag("APPOINTMENTS");
+        if (leftFragment == null) {
+            leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_APPOINTMENTS);
+            transaction.replace(R.id.main_list_container, leftFragment, "APPOINTMENTS");
+        }
+        rightFragment = manager.findFragmentByTag("APPOINTMENT");
+        if (rightFragment == null) {
+            transaction.replace(R.id.main_right_container, new Fragment());
+        } else {
+            transaction.replace(R.id.main_right_container, rightFragment);
+        }
+        transaction.commit();
+
     }
 
     private void showReportsList() {
