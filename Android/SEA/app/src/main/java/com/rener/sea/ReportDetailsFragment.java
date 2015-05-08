@@ -36,7 +36,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
     public static final int VIEW_APPOINTMENT_LAYOUT = 1;
     private Report report;
-    private TextView textName, textLocation, textDate, textSubject, textCreator,
+    private TextView textName, textLocation, textDate,textCreator,
             textFlowchart, textNotes;
     private LinearLayout interviewLayout;
     private ViewFlipper appointmentFlipper;
@@ -65,7 +65,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textName = (TextView) view.findViewById(R.id.report_text_name);
         textLocation = (TextView) view.findViewById(R.id.report_text_location);
         textDate = (TextView) view.findViewById(R.id.report_text_date);
-        textSubject = (TextView) view.findViewById(R.id.report_text_subject);
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
@@ -185,13 +184,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             String label = getResources().getString(R.string.creator_label);
             String creator = report.getCreator().getPerson().toString();
             textCreator.setText(label + ": " + creator);
-        }
-
-        //Set the subject
-        if (report.getSubject() != null) {
-            String label = getResources().getString(R.string.subject_label);
-            String subject = report.getSubject().toString();
-            textSubject.setText(label + ": " + subject);
         }
 
         //Set the appointment if it exists
