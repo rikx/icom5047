@@ -51,6 +51,7 @@
 		  android:title="@string/synchronize"
 		  android:showAsAction="never"
 		  android:orderInCategory="80"
+		  android:icon="@drawable/ic_action_refresh"
 		  />
 
 	<item android:id="@+id/sync_full"
