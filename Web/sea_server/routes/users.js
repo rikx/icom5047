@@ -1996,15 +1996,27 @@ router.post('/admin/dispositivos', function(req, res, next) {
 	  			if(result.rowCount > 0){
 	  				res.send({exists: true});
 	  			} else {
+
+	  				var query_config = {};
+	  				if(req.body.dispositivo_id_usuario.length > 0){
+	  					query_config = {
+	  						text: "INSERT into devices (name, id_number, user_id) VALUES ($1, $2, $3)",
+	  						values: [req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario]
+	  					}
+	  				} else {
+	  					query_config = {
+	  						text: "INSERT into devices (name, id_number) VALUES ($1, $2)",
+	  						values: [req.body.dispositivo_name, req.body.dispositivo_id_num]
+	  					}
+	  				}
+
 		  			// Insert new dispositivo into db
-		  			client.query("INSERT into devices (name, id_number, user_id) VALUES ($1, $2, $3)", 
-		  										[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
+		  			client.query(query_config, function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
 								return console.error('error running query', err);
 							} else {
-								console.log(result.rows);
 								res.json(true);
 							}
 						});

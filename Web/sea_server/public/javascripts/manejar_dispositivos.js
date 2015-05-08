@@ -182,9 +182,9 @@ $(document).ready(function(){
           // clear add form
           $the_form[0].reset();
         }
-         // update dispositivos list after posting 
-         populate_dispositivos();
-         $('#edit_panel').hide();
+        // update dispositivos list after posting 
+        populate_dispositivos();
+        //$('#edit_panel').hide();
        },
        error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
