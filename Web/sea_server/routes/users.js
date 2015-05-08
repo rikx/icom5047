@@ -23,6 +23,10 @@ var router = express.Router();
  * Responds with categorias, 
  * alphabetically ordered by name
  */
+
+	// WHERE flowchart.flowchart_id = $1', 
+	// 						  	[cuestionario_id], function(err, result) {
+
 router.get('/categorias', function(req, res, next) {
 	var categories_list;
  	var db = req.db;
@@ -30,7 +34,7 @@ router.get('/categorias', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
+ 		client.query('SELECT * FROM category WHERE status != $1 ORDER BY name', [-1], function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
@@ -732,6 +736,38 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		});
 	}
 });
+
+/* PUT/DELETE categories
+ */
+ router.put('/admin/delete_category/:id', function(req, res, next) {
+ 	console.log("delete category");
+ 		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+ 			if(err) {
+ 				return console.error('error fetching client from pool', err);
+ 			}
+			// Edit category
+			client.query("UPDATE category SET status = $1 WHERE category_id = $2", 
+				[-1, req.params.id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					//console.log(result.rows);
+					//res.json({"categories": result.rows});
+					res.json(true);
+
+			
+
+				}
+			});
+		});
+ 	
+ });
+
+
+
 
  /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
