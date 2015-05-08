@@ -37,11 +37,13 @@ block content
 					.panel-heading
 						h3#info_panel_heading(class='panel-title') 
 					.panel-body(data-all-categorias=categories)
-						table#ganadero_info(class='table')
-							tr
-								td#info_category_name Nombre de Categoría:
-								td#category_info_name 
-									=categories[0].name
+						table#ganadero_info(class='table table-nowrap')
+							thead
+							tbody
+								tr
+									td#info_category_name Nombre de Categoría:
+									td#category_info_name 
+										=categories[0].name
 						button#btn_edit_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
 						button#btn_delete_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id) Eliminar
 				#add_category_panel.form-group
@@ -86,11 +88,13 @@ block content
 						.panel-heading
 							h3#info_panel_heading(class='panel-title') 
 						.panel-body(data-all-specialties=specialties)
-							table#ganadero_info(class='table')
-								tr
-									td#info_specialty_name Nombre de Especialidad:
-									td#specialty_info_name 
-										=specialties[0].name
+							table#ganadero_info(class='table table-nowrap')
+								thead
+								tbody
+									tr
+										td#info_specialty_name Nombre de Especialidad:
+										td#specialty_info_name 
+											=specialties[0].name
 							button#btn_edit_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id, data-category-name=specialties[0].name) Editar
 							button#btn_delete_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id) Eliminar
 

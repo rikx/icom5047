@@ -598,7 +598,20 @@ router.put('/admin/user_specialties', function(req, res, next) {
 						}
 		      }
 		    	// user_specialties associations were succesfully updated
-					res.json(true);
+		    	client.query('SELECT specialization.spec_id, specialization.name AS spec_name \
+												FROM users \
+												INNER JOIN users_specialization ON users.user_id = users_specialization.user_id \
+												INNER JOIN specialization ON users_specialization.spec_id = specialization.spec_id \
+												WHERE users.user_id = $1 ORDER BY specialization.name', 
+												[req.body.user], function(err, result) {
+				  	//call `done()` to release the client back to the pool
+				    done();
+			    	if(err) {
+				      return console.error('error running query', err);
+				    } else {
+				    	res.json({users_specialization: result.rows});
+				    }
+				  });
 		   	}
 		  });
 	  });
@@ -1669,7 +1682,8 @@ router.get('/citas', function(req, res, next) {
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									ORDER BY date ASC, time ASC \
+									WHERE appointments.status = '1' \
+									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20"
 	 			}
 	 		} else {
@@ -1679,8 +1693,8 @@ router.get('/citas', function(req, res, next) {
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE appointments.maker_id = $1 \
-									ORDER BY date ASC, time ASC \
+									WHERE appointments.maker_id = $1 AND appointments.status = '1' \
+									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20",
 					values: [user_id]
 	 			}
@@ -1734,6 +1748,30 @@ router.put('/admin/citas/:id', function(req, res, next) {
 			});
 		});
  	}
+});
+
+/* DELETE Admin Manejar Citas 
+ * Delete cita matching :id in database
+ */
+router.delete('/admin/citas/:id', function(req, res, next) {
+ 	var cita_id = req.params.id;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// Edit cita in db
+		client.query("UPDATE appointments SET status = $1 WHERE appointment_id = $2", 
+									[-1, cita_id] , function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
 });
 
 /* GET Admin Manejar Dispositivos
@@ -1881,7 +1919,7 @@ router.put('/admin/dispositivos/:id', function(req, res, next) {
  	}
 });
 
-/* DEL Admin Manejar Dispositivos 
+/* DELETE Admin Manejar Dispositivos 
  * Delete dispositivo matching :id in database
  */
 router.delete('/admin/dispositivos/:id', function(req, res, next) {

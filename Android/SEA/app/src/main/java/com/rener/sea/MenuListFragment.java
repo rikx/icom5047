@@ -87,30 +87,26 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
 
         //Set the list and it's respective adapter
         DBHelper db = ((MainActivity) getActivity()).getDBHelper();
-        String empty = getResources().getString(R.string.no_data);
+        String empty = getString(R.string.no_data);
         if (type.equals(TYPE_PEOPLE)) {
-            empty = getResources().getString(R.string.no_people);
+            empty = getString(R.string.no_people);
             list = db.getAllPersons();
             adapter = new ArrayAdapter<Person>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_LOCATIONS)) {
-            empty = getResources().getString(R.string.no_locations);
+            empty = getString(R.string.no_locations);
             list = db.getAllLocations();
             adapter = new ArrayAdapter<Location>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_REPORTS)) {
-            empty = getResources().getString(R.string.no_reports);
+            empty = getString(R.string.no_reports);
             list = db.getAllReports();
             adapter = new ReportListAdapter(getActivity(), list);
+        } else if(type.equals(TYPE_APPOINTMENTS)) {
+            //TODO: get all appointments from DB
+            //TODO: set the list adapter
         }
 
-        //Set the empty view
-        //TODO: set empty view programmatically
-
-        //Sort the list
-        //Collections.sort(list);
-
-        //Set the list adapter
         setListAdapter(adapter);
     }
 

@@ -6,7 +6,7 @@
 
 	<LinearLayout android:orientation="vertical"
 				  android:layout_width="match_parent"
-				  android:layout_height="match_parent">
+				  android:layout_height="wrap_content">
 
 		<EditText
 			android:id="@+id/survey_edit_name"
@@ -55,7 +55,7 @@
 			android:id="@+id/survey_next_question_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginLeft="16dp"
+			android:layout_marginStart="16dp"
 			android:drawableStart="@drawable/ic_action_accept"
 			android:text="@string/next_question"
 			android:visibility="gone"
