@@ -1,61 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-				android:id="@+id/appointment_details_layout"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent">
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+			 android:id="@+id/appointment_flipper"
+			 android:layout_width="match_parent"
+			 android:layout_height="match_parent">
 
-	<ViewFlipper
-		android:id="@+id/appointment_flipper"
+	<!-- 0 No appointment layout -->
+	<LinearLayout
+		android:id="@+id/no_appointment_layout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_horizontal">
+
+		<Button
+			android:id="@+id/report_add_appointment_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawableStart="@drawable/ic_action_new"
+			android:text="@string/add_appointment"
+			/>
+
+	</LinearLayout>
+
+	<!-- 1 Show appointment layout-->
+	<LinearLayout
+		android:id="@+id/view_appointment_layout"
+		android:orientation="vertical"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<LinearLayout
-			android:id="@+id/no_appointment_layout"
+		<TextView
+			android:id="@+id/appointment_date_text"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:gravity="center_horizontal">
+			android:text="@string/no_data"
+			/>
 
-			<Button
-				android:id="@+id/report_add_appointment_button"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:drawableStart="@drawable/ic_action_new"
-				android:text="@string/add_appointment"
-				/>
+		<TextView
+			android:id="@+id/appointment_purpose_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/no_data"
+			android:singleLine="true"
+			android:paddingStart="8dp"
+			android:paddingEnd="8dp"
+			/>
 
-		</LinearLayout>
+		<TextView
+			android:id="@+id/appointment_creator_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/no_data"
+			android:paddingStart="8dp"
+			android:paddingEnd="8dp"
+			/>
 
-		<LinearLayout
-			android:id="@+id/view_appointment_layout"
-			android:orientation="vertical"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent">
+	</LinearLayout>
 
-			<TextView
-				android:id="@+id/appointment_date_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/no_data"
-				/>
-
-			<TextView
-				android:id="@+id/appointment_purpose_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/no_data"
-				android:singleLine="true"
-				android:paddingStart="8dp"/>
-
-			<TextView
-				android:id="@+id/appointment_creator_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/no_data"
-				android:paddingStart="8dp"/>
-
-		</LinearLayout>
-
-	</ViewFlipper>
-
-</RelativeLayout>
+</ViewFlipper>
