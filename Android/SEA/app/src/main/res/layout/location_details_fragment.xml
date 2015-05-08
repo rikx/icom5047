@@ -129,14 +129,16 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_margin="16dp"
-			android:orientation="vertical">
+			android:orientation="vertical"
+			android:paddingBottom="24dp">
 
 			<TextView
 				android:id="@+id/location_name_edit_label"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/name_label"
-				android:layout_marginTop="16dp"/>
+				android:layout_marginTop="0dp"
+				/>
 
 			<EditText
 				android:id="@+id/location_edit_name"
@@ -220,7 +222,8 @@
 			<Spinner
 				android:id="@+id/location_owner_spinner"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content">
+				android:layout_height="wrap_content"
+				android:spinnerMode="dialog">
 			</Spinner>
 
 			<TextView
@@ -233,7 +236,8 @@
 			<Spinner
 				android:id="@+id/location_manager_spinner"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content">
+				android:layout_height="wrap_content"
+				android:spinnerMode="dialog">
 			</Spinner>
 
 		</LinearLayout>
