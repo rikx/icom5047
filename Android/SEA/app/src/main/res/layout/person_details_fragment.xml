@@ -13,28 +13,59 @@
 			android:id="@+id/person_show_layout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
 			android:orientation="vertical">
 
 			<TextView
 				android:id="@+id/person_text_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:layout_marginBottom="24dp"
+				android:textSize="24sp"
+				android:textStyle="bold"
 				android:text="@string/no_data"
 				/>
 
 			<TextView
-				android:id="@+id/person_text_email"
+				android:id="@+id/person_text_phone_label"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/no_data"
+				android:textStyle="bold"
+				android:text="@string/phone_number_label"
 				/>
 
 			<TextView
 				android:id="@+id/person_text_phone"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
 				android:text="@string/no_data"
 				/>
+
+			<LinearLayout
+				android:id="@+id/person_email_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/person_text_email_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:textStyle="bold"
+					android:text="@string/email_label"
+					/>
+
+				<TextView
+					android:id="@+id/person_text_email"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_data"
+					/>
+			</LinearLayout>
+
 
 		</LinearLayout>
 	</ScrollView>
@@ -119,7 +150,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="@string/no_data"
+				android:text="@string/email_label"
 				/>
 
 			<EditText
