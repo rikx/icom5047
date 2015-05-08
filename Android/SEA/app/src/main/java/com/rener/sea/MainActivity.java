@@ -91,7 +91,14 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        FragmentManager manager = getFragmentManager();
+        int count = manager.getBackStackEntryCount();
+        if(count > 0) {
+            manager.popBackStack();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -249,13 +256,27 @@ public class MainActivity extends FragmentActivity {
     public void OnMenuItemSelectedListener(String type, ListView listView, int position) {
         if (type.equals(MenuListFragment.TYPE_PEOPLE)) {
             Person person = (Person) listView.getAdapter().getItem(position);
-            showPerson(person);
+            showPerson(person, "PERSON");
         } else if (type.equals(MenuListFragment.TYPE_LOCATIONS)) {
             Location location = (Location) listView.getAdapter().getItem(position);
             showLocation(location);
         } else if (type.equals(MenuListFragment.TYPE_REPORTS)) {
             Report report = (Report) listView.getAdapter().getItem(position);
             showReport(report);
+        }
+    }
+
+    /**
+     * Listener that handles fragment requests to possibly display other fragments
+     * @param type the type of DetailsFragment requested
+     * @param tag a tag that will be assigned to the new fragment
+     * @param id the details object's unique id
+     */
+    public void onDetailsRequest(String type, String tag, long id) {
+        if(type.equals("PERSON")) {
+            Person person = dbHelper.findPersonById(id);
+            if(person.getId() != -1)
+                showPerson(person, tag);
         }
     }
 
@@ -289,13 +310,16 @@ public class MainActivity extends FragmentActivity {
      *
      * @param person the Person object to be displayed
      */
-    private void showPerson(Person person) {
+    private void showPerson(Person person, String tag) {
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         PersonDetailsFragment details = new PersonDetailsFragment();
         details.setPerson(person);
         rightFragment = details;
-        transaction.replace(R.id.main_right_container, rightFragment, "PERSON");
+        transaction.replace(R.id.main_right_container, rightFragment, tag);
+        if(!tag.equals("PERSON")) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 

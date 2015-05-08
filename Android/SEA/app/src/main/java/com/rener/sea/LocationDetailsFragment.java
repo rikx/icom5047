@@ -24,7 +24,7 @@ import java.util.List;
  * An Android fragment that manages the display of details for a single Location object
  */
 public class LocationDetailsFragment extends Fragment implements DetailsFragment, AdapterView
-        .OnItemSelectedListener {
+        .OnItemSelectedListener, View.OnClickListener {
 
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
@@ -80,9 +80,11 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the owner text
         textOwner = (TextView) view.findViewById(R.id.location_text_owner);
+        textOwner.setOnClickListener(this);
 
         //Set the manager text
         textManager = (TextView) view.findViewById(R.id.location_text_manager);
+        textManager.setOnClickListener(this);
 
         //Set the agent text
         textAgent = (TextView) view.findViewById(R.id.location_text_agent);
@@ -98,7 +100,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         populateSpinners();
 
         //Determine if the new location view should be displayed
-        //TODO: check this
         if(location != null) {
             setDataViews();
             flipper.setDisplayedChild(SHOW_LAYOUT);
@@ -163,6 +164,32 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 //        Drawable dEdit = edit.getIcon();
 //        dEdit.setColorFilter(filter);
 //        edit.setIcon(dEdit);
+    }
+
+    @Override
+    public boolean onDetailsChanged() {
+        int displayed = flipper.getDisplayedChild();
+        if(viewCreated) {
+            if(displayed == SHOW_LAYOUT) {
+                setDataViews();
+            }
+            else if(displayed == EDIT_LAYOUT) {
+                populateSpinners();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.location_text_owner:
+                goToLocationOwner();
+                break;
+            case R.id.location_text_manager:
+                goToLocationManager();
+                break;
+        }
     }
 
     /**
@@ -300,20 +327,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             setDataViews();
     }
 
-    @Override
-    public boolean onDetailsChanged() {
-        int displayed = flipper.getDisplayedChild();
-        if(viewCreated) {
-            if(displayed == SHOW_LAYOUT) {
-                setDataViews();
-            }
-            else if(displayed == EDIT_LAYOUT) {
-                populateSpinners();
-            }
-        }
-        return false;
-    }
-
     private void populateSpinners() {
         //Populate the spinner lists
         DBHelper dbHelper = ((MainActivity) getActivity()).getDBHelper();
@@ -354,5 +367,17 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             String message = getResources().getString(R.string.no_flowcharts);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void goToLocationOwner() {
+        //TODO: test this
+        long id = location.getOwner().getId();
+        ((MainActivity)getActivity()).onDetailsRequest("PERSON", "OWNER", id);
+    }
+
+    private void goToLocationManager() {
+        //TODO: test this
+        long id = location.getOwner().getId();
+        ((MainActivity)getActivity()).onDetailsRequest("PERSON", "MANAGER", id);
     }
 }
