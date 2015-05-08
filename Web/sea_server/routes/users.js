@@ -793,7 +793,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 
 /* PUT/DELETE categories
  */
- router.put('/admin/delete_category/:id', function(req, res, next) {
+ router.delete('/admin/delete_category/:id', function(req, res, next) {
  	console.log("delete category");
  		var db = req.db;
  		db.connect(req.conString, function(err, client, done) {
@@ -801,8 +801,8 @@ router.put('/admin/user_specialties', function(req, res, next) {
  				return console.error('error fetching client from pool', err);
  			}
 			// Edit category
-			client.query("UPDATE category SET status = $1 WHERE category_id = $2", 
-				[-1, req.params.id] , function(err, result) {
+			client.query("DELETE FROM category WHERE category_id = $1", 
+				[req.params.id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {

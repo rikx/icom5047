@@ -203,7 +203,7 @@ $('#btn_delete_category').on('click', function(){
    var category_id = $('#btn_edit_categories').attr("data-id");
   $.ajax({
     url: "http://localhost:3000/users/admin/delete_category/" + category_id,
-    method: "PUT",
+    method: "DELETE",
     contentType: "application/json",
     dataType: "json",
     success: function(data) {
