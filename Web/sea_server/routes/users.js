@@ -1821,6 +1821,7 @@ router.post('/admin/dispositivos', function(req, res, next) {
 							if(err) {
 								return console.error('error running query', err);
 							} else {
+								console.log(result.rows);
 								res.json(true);
 							}
 						});
@@ -1847,23 +1848,60 @@ router.put('/admin/dispositivos/:id', function(req, res, next) {
  			if(err) {
  				return console.error('error fetching client from pool', err);
  			}
-			// Edit dispositivo in db
-			client.query("UPDATE devices SET name = $1, id_number = $2, user_id = $3 WHERE device_id = $4", 
-										[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario, dispositivo_id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					if(false){
+	  	// Verify dispositivo does not already exist in db
+	  	client.query("SELECT device_id, id_number FROM devices WHERE id_number = $1", 
+	  								[req.body.dispositivo_id_num], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+	  			if(result.rowCount > 0 && result.rows[0].device_id != dispositivo_id){
+	  				res.send({exists: true});
+	  			} else {
+						// Edit dispositivo in db
+						client.query("UPDATE devices SET name = $1, id_number = $2, user_id = $3 WHERE device_id = $4", 
+													[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario, dispositivo_id] , function(err, result) {
+							//call `done()` to release the client back to the pool
+							done();
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+								console.log(result.rows);
+								res.json(true);
+			/*					if(false){
 
-					} else {
-						res.json(true);
+								} else {
+									res.json(true);
+								}*/
+							}
+						});
 					}
 				}
 			});
 		});
  	}
+});
+
+/* DEL Admin Manejar Dispositivos 
+ * Delete dispositivo matching :id in database
+ */
+router.delete('/admin/dispositivos/:id', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+	 	if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// delete
+		client.query('DELETE FROM devices WHERE device_id = $1', 
+									[req.params.id],function(err, result){
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
 });
 
 module.exports = router;

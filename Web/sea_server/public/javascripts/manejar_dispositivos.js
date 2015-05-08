@@ -140,6 +140,7 @@ $(document).ready(function(){
     // set id values of info panel buttons
     $('#btn_edit_dispositivo').attr('data-id', dispositivo_id);
     $('#btn_delete').attr('data-id', dispositivo_id);
+    $('#btn_delete').attr('data-device-name', this_dispositivo.device_name);
   });
 
   /* Add dispositivo */
@@ -235,10 +236,14 @@ $(document).ready(function(){
       dataType: "json",
 
       success: function(data) {
-        alert("Informacion de ganadero ha sido editada en el sistema.");
-        // update ganadero list after posting 
-        populate_dispositivos();
-        $('#edit_panel').hide();
+        if(data.exists){
+          alert("Dispositivo con este numero de identificacion ya existe");
+        } else {
+          alert("Informacion de dispositivo ha sido editada en el sistema.");
+          // update dispositivo list after posting 
+          populate_dispositivos();
+          $('#edit_panel').hide();
+        }
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -301,9 +306,10 @@ $(document).ready(function(){
     // set id values of info panel buttons
     $('#btn_edit_dispositivo').attr('data-id', $this_dispositivo.device_id);
     $('#btn_delete').attr('data-id', $this_dispositivo.device_id);
+    $('#btn_delete').attr('data-device-name', $this_dispositivo.device_name);
   }
 
-  /* Populate list with first 20 ganaderos, ordered by assigned user */
+  /* Populate list with first 20 dispositivos, ordered by assigned user */
   function populate_dispositivos() {
   	$.getJSON('http://localhost:3000/list_dispositivos', function(data) {
   		dispositivos_array = data.dispositivos;
