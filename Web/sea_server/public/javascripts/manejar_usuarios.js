@@ -360,6 +360,9 @@ $.ajax({
   success: function(data) {
 
     alert("Especialidades han sido modificadas.");
+    console.log("the specialties are");
+    console.log(data.users_specialization);
+    repopulate_specialties(data.users_specialization);
 
   },
   error: function( xhr, status, errorThrown ) {
@@ -493,7 +496,7 @@ function populate_info_panel($this_usuario){
 
     //Categoria de Localizacion
 
-    $('#especializacion_title').text("Tipo de Especializacion" + " - " + $this_usuario.email)
+    //$('#especializacion_title').text("Tipo de Especializacion" + " - " + $this_usuario.email)
 
   }
 
@@ -619,8 +622,30 @@ function populate_specialties_info(usuario){
     found = false;
   });
 
-  $('#specialist_categories_list').html(content);
+if(content == '')
+  content = "<p> Usuario no tiene especialidades asignadas. </p>"
+ $('#specialist_categories_list').html(content);
+  
 
 }
+
+
+function repopulate_specialties(specs)
+{
+var content = '';
+$.each(specs, function(i){
+      content += '<li> ';
+      content += "" + specs[i].spec_name + "</li>";
+  });
+
+
+if(content == '')
+  content = "<p> Usuario no tiene especialidades asignadas. </p>"
+ $('#specialist_categories_list').html(content);
+
+
+}
+
+
 
 });
