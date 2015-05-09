@@ -394,12 +394,36 @@ $.ajax({
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
       console.log( "Error: " + errorThrown );
-      console.log( "Status: " + status );
+      console.log( "Status:active " + status );
       console.dir( xhr );
     }
   });
 
 
+});
+
+//Delete Localizacion
+$('#btn_delete').on('click', function(){
+  var flowchart_id = $('#btn_delete').attr("data-id");
+  //url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+  $.ajax({
+    url: "http://localhost:3000/users/admin/delete_flowchart/" + flowchart_id,
+    method: "PUT",
+    contentType: "application/json",
+    dataType: "json",
+    success: function(data) {
+      alert("Cuestionario fue eliminado");
+        // $the_form[0].reset();
+        // populate_categories();
+        // $('#edit_category_panel').hide();
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
 });
 
 /* Open info panel */
@@ -418,6 +442,7 @@ $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     $('#info_panel').show();
     $('#add_categoria_panel').hide();
     $('#categoria_panel').show();
+    $('#btn_delete').attr("data-id", location_id);
     // remove active from previous list item 
     remove_active_class($localizaciones_list);
     // add active to current clicked list item

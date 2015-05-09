@@ -214,8 +214,9 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	 		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 										FROM flowchart \
 										INNER JOIN users ON user_id = creator_id \
+										WHERE flowchart.status != $1 \
 							 			ORDER BY flowchart_name \
-	 									LIMIT 20', function(err, result) {
+	 									LIMIT 20', [-1], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		  	done();
 
@@ -1173,8 +1174,8 @@ router.get('/admin/usuarios', function(req, res, next) {
 	 		}
 			// TODO: modify query to also give you account type
 			client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, username, type \
-										FROM users natural join person \
-										ORDER BY username ASC \
+										FROM person INNER JOIN users ON users.person_id=person.person_id \
+										ORDER BY username \
 										LIMIT 20', function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
@@ -1222,6 +1223,11 @@ router.get('/admin/usuarios', function(req, res, next) {
 		  		return console.error('error running query', err);
 		  	} else {
 		  		locations_list = result.rows;
+
+		  		console.log(usuarios_list)
+		  		console.log(specialties_list)
+		  		console.log(locations_list)
+		  		console.log(all_specialties)
 		  		res.render('manejar_usuarios', {
 		  		 title: 'Manejar Usuarios', 
 		  		 usuarios : usuarios_list, 
@@ -1954,6 +1960,30 @@ router.delete('/admin/citas/:id', function(req, res, next) {
 		// Edit cita in db
 		client.query("UPDATE appointments SET status = $1 WHERE appointment_id = $2", 
 									[-1, cita_id] , function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
+});
+
+/* Delete Flow chart
+ * 
+ */
+router.put('/admin/delete_flowchart/:id', function(req, res, next) {
+ 	console.log("delete flowchart");
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+				return console.error('error fetching client from pool', err);
+			}
+		// Edit ganadero
+		client.query("UPDATE flowchart SET status = $1 where flowchart_id = $2", 
+									[-1,req.params.id] , function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {

@@ -2,7 +2,7 @@ $(document).ready(function(){
   // dispositivos list
   $dispositivos_list = $('#dispositivos_list');
   // store data for initial 20 dispositivos
-  var dispositivos_array;
+  var dispositivos_array = [];
   
   var data_dispositivos = $dispositivos_list.attr('data-dispositivos');
   if(data_dispositivos.length >2){

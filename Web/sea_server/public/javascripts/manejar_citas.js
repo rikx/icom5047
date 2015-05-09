@@ -3,7 +3,7 @@ $(document).ready(function(){
   $citas_list = $('#citas_list');
 
   // store data for initial 20 citas
-  var citas_array; 
+  var citas_array = []; 
   var user_info = JSON.parse($citas_list.attr('data-user'));
 
   var data_citas = $citas_list.attr('data-citas');

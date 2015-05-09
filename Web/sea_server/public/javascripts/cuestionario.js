@@ -1,21 +1,24 @@
 jsPlumb.ready(function() {
   $preguntas_list = $('#preguntas_list');
   // stores current elements in the jsPlumb container
-  var elements_array = [];
-  var connections_array = [];
-  var states_array = [];
-  var lines_array = [];
+  var elements_array;
+  var connections_array;
+
   var state_count = 0;
 
   // store data for flowchart
   var user_info = JSON.parse($('#flowchart_jumbotron').attr('data-user'));
   var data_items = $preguntas_list.attr('data-items');
   var data_connections = $preguntas_list.attr('data-connections');
-  if(data_items.length >2 && data_connections.length >2){
+  if(data_items.length >2){
     elements_array = JSON.parse($preguntas_list.attr('data-items'));
-    connections_array = JSON.parse($preguntas_list.attr('data-connections'));
+    if(data_connections.length >2){
+      connections_array = JSON.parse($preguntas_list.attr('data-connections'));
+    }
+    
     // initial info panel population
     populate_info_panel(elements_array[0]);
+    recreate_graph(elements_array, connections_array)
   } else {
     $('#info_panel').hide();
   }
@@ -557,9 +560,7 @@ jsPlumb.ready(function() {
   });
 
   $('#container_plumbjs').scroll(function(){
-    jsPlumb.ready(function() {
       jsPlumb.repaintEverything();
-    });
   });
 
   function containsObject(obj, list) {
@@ -584,7 +585,7 @@ jsPlumb.ready(function() {
 
   // test recreation
   $('#btn_recreate').on('click', function(){
-    recreate_graph(states_array, lines_array);
+    recreate_graph(elements_array, connections_array);
   });
   // recreate graph
   function recreate_graph(elements, connections){
@@ -604,7 +605,7 @@ jsPlumb.ready(function() {
         $('#' + elements[i].state_id).removeClass('ui-draggable ui-draggable-dragging'); //
 
         jsPlumb.draggable('' + elements[i].state_id, {
-          containment: 'parent'
+          //containment: 'parent'
         });
 
 /*        jsPlumb.makeTarget('' + elements[i].state_id, {
