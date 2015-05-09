@@ -127,11 +127,6 @@ public class DBSchema {
             OPTION_NEXT_ID + " INTEGER," +
             OPTION_LABEL + " TEXT," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
-    public static final String TABLE_PATH = "path";
-    public static final String PATH_REPORT_ID = "report_id";
-    public static final String PATH_OPTION_ID = "option_id";
-    public static final String PATH_DATA = "data";
-    public static final String PATH_SEQUENCE = "sequence";
     public static final String TABLE_PERSON = "person";
     public static final String PERSON_ID = "person_id";
     public static final String PERSON_LAST_NAME1 = "last_name1";
@@ -172,6 +167,11 @@ public class DBSchema {
             REPORT_DATE_FILED + " TEXT," +
             REPORT_STATUS + " INTEGER DEFAULT 0," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
+    public static final String TABLE_PATH = "path";
+    public static final String PATH_REPORT_ID = "report_id";
+    public static final String PATH_OPTION_ID = "option_id";
+    public static final String PATH_DATA = "data";
+    public static final String PATH_SEQUENCE = "sequence";
     public static final String CREATE_PATH_TABLE = "CREATE TABLE " + TABLE_PATH + "(" +
             PATH_REPORT_ID + " INTEGER," +
             PATH_OPTION_ID + " INTEGER," +
@@ -230,10 +230,13 @@ public class DBSchema {
     public static final String USER_AGENT = "agent";
     public static final String POST_LOCAL_DATA = "data";
     // from server
-    public static final String POST_SERVER_DATA = "new_data";// // return in JSON response object  {sync_status: 1, new_data: {db_data}}
+    public static final String POST_SERVER_DATA_NEW = "new_data";// // return in JSON response object  {sync_status: 1, new_data: {db_data}}
+    public static final String POST_SERVER_DATA_DELETED = "deleted_data";
     public static final String POST_SYNC_INF = "sync_info";
 
 //    public static final String SYNC_URL = "http://136.145.116.231:3000/synchronization";
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test1.php";
     public static final String SYNC_URL = "http://136.145.116.231/mobile/test2.php";
+//    public static final String SYNC_URL = "http://136.145.116.231/mobile/test3.php";
+
 }
