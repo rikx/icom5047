@@ -1,6 +1,6 @@
 <resources>
 
-	<style name="AppStyle"
+	<style name="SEA_Style"
 		   parent="android:Theme.Holo.Light">
 		<item name="android:buttonStyle">@style/SEA_Button</item>
 		<item name="android:editTextStyle">@style/SEA_EditText</item>

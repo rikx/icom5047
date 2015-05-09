@@ -12,14 +12,9 @@ $(document).ready(function(){
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
   var all_categorias_array = JSON.parse($('#categoria_panel').attr('data-all-categorias'));
   var user_info = JSON.parse($localizaciones_list.attr('data-user'));
-
-
-  console.log(user_info);
-
+ 
   $('#currently_signed_in').text("Usuario actual: " + user_info.username);
   $('#current_type').text("Tipo de cuenta: " + user_info.user_type);
-
-
 
   // initial info panel population
   if(localizaciones_array.length > 0)
@@ -117,7 +112,7 @@ $(document).ready(function(){
   });
 
   /* Edit associates */
-  $localizaciones_list.on('click', 'tr td button.btn_add_associates', function(e){
+  $('#btn_add_associates').on('click', function(){
     $('#edit_panel').hide();
     $('#info_panel').hide();
     $('#add_associates_panel').show();
@@ -410,7 +405,8 @@ $.ajax({
 /* Open info panel */
 $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     // prevents link from firing
-
+    //table_content += "<td><button class='btn_add_associates btn btn-sm btn-success btn-block' type='button', data-id='"+this.location_id+"'>Editar Personas Asociadas</button></td>";
+   //table_content += "<td><button class='btn_edit_localizacion btn btn-sm btn-success btn-block' type='button' data-id='"+this.location_id+"'>Editar</button></td>";
     e.preventDefault();
     $('#btn_add_categories').show();
     $('#btn_edit_categories').hide();
@@ -422,8 +418,6 @@ $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     $('#info_panel').show();
     $('#add_categoria_panel').hide();
     $('#categoria_panel').show();
-
-
     // remove active from previous list item 
     remove_active_class($localizaciones_list);
     // add active to current clicked list item
@@ -436,7 +430,10 @@ $localizaciones_list.on('click', 'tr td a.show_info_localizacion', function(e){
     var location_id = $this.attr('data-id');
     var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(location_id);
     var this_location = localizaciones_array[arrayPosition];
-
+    console.log("location is is: ");
+    console.log(location_id);
+    $('#btn_edit_localizacion').attr("data-id", location_id);
+    $('#btn_add_associates').attr("data-id", location_id);
     // Populate info panel with selected item's information
     populate_info_panel(this_location);
   });
@@ -536,7 +533,7 @@ $('#btn_post_new_category').on('click', function(){
 });
 
 /* Open edit location panel */
-$localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(){
+$('#btn_edit_localizacion').on('click', function(){
   //$('#btn_add_categories').hide();
   $('#btn_edit_categories').show();
   $('#btn_edit, #heading_edit').show();
@@ -546,14 +543,10 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
   $('#add_associates_panel').hide();
   $('#add_categoria_panel').hide();
   $('#categoria_panel').show();
-
-
-
   // contains location id
   var location_id = $(this).attr('data-id');
   var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(location_id);
   var this_location = localizaciones_array[arrayPosition];
-
   $('#btn_edit').attr('data-id', location_id);
   $('#localizacion_name').val(this_location.location_name);
   $('#localizacion_license').val(this_location.license);
@@ -572,6 +565,8 @@ $localizaciones_list.on('click', 'tr td button.btn_edit_localizacion', function(
 
 /* PUTs edited location information */
 $('#btn_edit').on('click', function(){
+
+  //EDIT LOCATIONS
   var location_id = $(this).attr('data-id');
   // get form data and conver to json format
   var $the_form = $('#form_manage_location');
@@ -594,7 +589,7 @@ $('#btn_edit').on('click', function(){
     dataType: "json",
 
     success: function(data) {
-      alert("Localización ha sido editada en el sistema.");
+      //alert("Localización ha sido editada en el sistema.");
       // update locations list after posting 
       populate_localizaciones();
     },
@@ -606,6 +601,49 @@ $('#btn_edit').on('click', function(){
     }
   });
 }
+
+
+//EDIT CATEGORIES
+var location_id =  $('#btn_edit').attr('data-id');
+var checkedCategories = [];
+var unCheckedCategories = [];
+$(':checkbox:checked').each(function(i){
+  checkedCategories[i] = $(this).val();
+});
+
+$("input:checkbox:not(:checked)").each(function(i){
+  unCheckedCategories[i] = $(this).val();
+});
+ //json object for category_location
+ var category_location = {
+  location: location_id,
+  categories: checkedCategories,
+  unchecked_categories: unCheckedCategories
+};
+
+$.ajax({
+  url: "http://localhost:3000/users/admin/category_location",
+  method: "PUT",
+  data: JSON.stringify(category_location),
+  contentType: "application/json",
+  dataType: "json",
+
+  success: function(data) {
+    repopulate_categories(data.location_categories);
+
+  },
+  error: function( xhr, status, errorThrown ) {
+    alert( "Sorry, there was a problem!" );
+    console.log( "Error: " + errorThrown );
+    console.log( "Status: " + status );
+    console.dir( xhr );
+  }
+});
+
+
+  $('#edit_panel').hide();
+  $('#info_panel').show();
+
 });
 
 /* Populates info panel with $this_location's information */
@@ -663,7 +701,7 @@ function populate_info_panel($this_location){
 
   console.log("Categorias Panel Title");
   //var currentText = $('#categoria_panel_title').text();
-  $('#categoria_panel_title').text("Categoria de Localizacion" + " - " + $this_location.location_name)
+  //$('#categoria_panel_title').text("Categoria de Localizacion")
   //$('#categoria_panel_title').text('');
 };
 
@@ -677,6 +715,7 @@ function populate_localizaciones(){
     ganaderos_array = data.ganaderos;
     categorias_array = data.location_categories;
     populate_list(data.localizaciones);
+    populate_info_panel(data.localizaciones[0]);
   });
 };
 
@@ -696,9 +735,9 @@ function populate_list(locations_set){
       table_content +=  'active ';
     }
     table_content += "show_info_localizacion' href='#', data-id='"+this.location_id+"'>"+this.location_name+"</a></td>";
-    table_content += "<td><button class='btn_add_associates btn btn-sm btn-success btn-block' type='button', data-id='"+this.location_id+"'>Editar Personas Asociadas</button></td>";
-    table_content += "<td><button class='btn_edit_localizacion btn btn-sm btn-success btn-block' type='button' data-id='"+this.location_id+"'>Editar</button></td>";
-   // table_content += "<td><a class='btn_delete_localizacion btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.location_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
+   //table_content += "<td><button class='btn_add_associates btn btn-sm btn-success btn-block' type='button', data-id='"+this.location_id+"'>Editar Personas Asociadas</button></td>";
+   //table_content += "<td><button class='btn_edit_localizacion btn btn-sm btn-success btn-block' type='button' data-id='"+this.location_id+"'>Editar</button></td>";
+   //table_content += "<td><a class='btn_delete_localizacion btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.location_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
     table_content += '</tr>';
   });  
   }
@@ -725,23 +764,36 @@ function populate_list(locations_set){
 
   function populate_categories_info(variable){
 
+    var the_categories = [];
+/*    $.ajax({
+      url: "http://localhost:3000/location/" + variable + "/categories/",
+      method: "GET",
+      contentType: "application/json",
+      dataType: "json",
+
+      success: function(data) {
+
+       the_categories = data.location_categories;
+       console.log("updated categories");
+       console.log(the_categories);
+
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });*/
+
     var location_id =  variable;
     var matches = [];
   //find matches
-  console.log("locations is ");
-  console.log(categorias_array);
-  console.log("location id is ");
-  console.log(location_id);
-  console.log("all categories is ");
-  console.log(all_categorias_array);
   $.each(categorias_array, function(i){
     if(location_id == categorias_array[i].location_id){      
      matches.push(categorias_array[i]);
    }
  }); 
-
-  console.log("matches is ");
-  console.log(matches);
 
   var content = '';
   var found = false;
@@ -773,7 +825,9 @@ function populate_list(locations_set){
     found = false;
   });
 
-  
+
+   if(content == '')
+    content = "<p> Localización no tiene categorías asignadas. </p>";  
   $('#categories_list').html(content);
 
 }
@@ -818,20 +872,44 @@ function populate_categories_edit(){
         });
     if(found)
     {
+      console.log("1");
      content += '<input ';
      content += "type='checkbox' checked='true' value='" + all_categorias_array[i].category_id + "'> " + all_categorias_array[i].category_name + " <br>";
    }
    else
    {
+    console.log("2");
      content += '<input ';
      content += "type='checkbox' value='" + all_categorias_array[i].category_id + "'> " + all_categorias_array[i].category_name + " <br>";
    }
    found = false;
  });
 
-  
-  $('#categories_list').html(content);
+  console.log(content);
+
+
+
+  $('#categories_list_edit').html(content);
 
 }
+
+function repopulate_categories(categories)
+{
+
+  var content = ''
+  $.each(categories, function(i){
+    content += '<li> ';
+    content += "" + categories[i].category_name + "</li>";
+  });
+
+
+  if(content == '')
+  content = "<p> Localización no tiene categorías asignadas. </p>";
+
+
+ $('#categories_list').html(content);
+
+}
+
 
 });

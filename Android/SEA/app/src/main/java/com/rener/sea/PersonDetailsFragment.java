@@ -1,6 +1,7 @@
 package com.rener.sea;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -20,7 +22,7 @@ import android.widget.ViewFlipper;
 /**
  * An Android fragment class used to display data pertaining to a person.
  */
-public class PersonDetailsFragment extends Fragment implements DetailsFragment {
+public class PersonDetailsFragment extends Fragment implements DetailsFragment, View.OnClickListener {
 
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
@@ -54,6 +56,8 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment {
         editLastName2 = (EditText) view.findViewById(R.id.person_edit_last_name2);
 
         //Set the email views
+        LinearLayout emailLayout = (LinearLayout) view.findViewById(R.id.person_email_layout);
+        emailLayout.setOnClickListener(this);
         textEmail = (TextView) view.findViewById(R.id.person_text_email);
         editEmail = (EditText) view.findViewById(R.id.person_edit_email);
 
@@ -121,6 +125,25 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onDetailsChanged() {
+        int displayed = flipper.getDisplayedChild();
+        if(viewCreated && displayed == SHOW_LAYOUT) {
+            setDataViews();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.person_email_layout:
+                sendEmail();
+                break;
+        }
+    }
+
     private void setDataViews() {
 
         //Set the name fields
@@ -167,21 +190,25 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment {
     private boolean getFields() {
 
         //Get the text from the fields
-        String strFirstName = editFirstName.getText().toString();
-        String strMiddleName = editMiddleName.getText().toString();
-        String strLastName1 = editLastName1.getText().toString();
-        String strLastName2 = editLastName2.getText().toString();
-        String strEmail = editEmail.getText().toString();
-        String strPhone = editPhoneNumber.getText().toString();
+        String strFirstName = editFirstName.getText().toString().trim();
+        String strMiddleName = editMiddleName.getText().toString().trim();
+        String strLastName1 = editLastName1.getText().toString().trim();
+        String strLastName2 = editLastName2.getText().toString().trim();
+        String strEmail = editEmail.getText().toString().trim();
+        String strPhone = editPhoneNumber.getText().toString().trim();
 
 
         boolean allow = (!strFirstName.equals("") && !strLastName1.equals(""));
         if(!allow) {
             String message = "";
-            if (strFirstName.equals(""))
+            if (strFirstName.equals("")) {
+                editFirstName.setText("");
                 message = getString(R.string.empty_first_name);
-            else if (strLastName1.equals(""))
+            }
+            else if (strLastName1.equals("")) {
+                editLastName1.setText("");
                 message = getString(R.string.empty_last_name);
+            }
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -233,13 +260,18 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment {
         }
     }
 
-    @Override
-    public boolean onDetailsChanged() {
-        int displayed = flipper.getDisplayedChild();
-        if(viewCreated && displayed == SHOW_LAYOUT) {
-            setDataViews();
-            return true;
+    private void sendEmail() {
+        String email = textEmail.getText().toString();
+        if(!email.equals("")) {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{email});
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                String error = getString(R.string.no_email_clients_installed);
+                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+            }
         }
-        return false;
     }
 }

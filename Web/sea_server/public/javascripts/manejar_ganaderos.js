@@ -215,6 +215,9 @@ $(document).ready(function(){
       // update ganadero list after posting 
       populate_ganaderos();
       $('#edit_panel').hide();
+      $('#info_panel').show();
+      
+
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
@@ -324,6 +327,6 @@ $(document).ready(function(){
     // inject content string into html
     $ganaderos_list.html(table_content);
     // close current info panel 
-    $('#btn_close_info_panel').trigger('click');
+    //$('#btn_close_info_panel').trigger('click');
   };
 });

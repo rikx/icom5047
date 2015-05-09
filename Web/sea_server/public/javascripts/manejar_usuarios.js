@@ -139,6 +139,7 @@ $(document).ready(function(){
     // prevents link from firing
     e.preventDefault();
 
+
     $('#edit_panel').hide();
     $('#info_panel').show();
     $('#add_specialty_panel').hide();
@@ -165,6 +166,7 @@ $(document).ready(function(){
     var usuario_id = $this.attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
+    $('#btn_edit_panel').attr('data-id', usuario_id);
     
     // populate info panel with this_usuario
     populate_info_panel(this_usuario);
@@ -238,9 +240,9 @@ $(document).ready(function(){
     });
   }
   });
-
+////////////////////////////////////////////////////////
 /* Open edit panel */
-$usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
+ $('#btn_edit_panel').on('click', function(){
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
@@ -263,7 +265,7 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
     $('#usuario_name').val(this_usuario.first_name);
     $('#usuario_lastname_paternal').val(this_usuario.last_name1);
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
-    $('#usuario_email').val(this_usuario.username);
+    $('#usuario_email').val(this_usuario.email);
     $('#usuario_telefono').val(this_usuario.phone_number);
     $('#usuario_middle_initial').val(this_usuario.middle_initial);
 
@@ -290,6 +292,8 @@ $usuarios_list.on('click', 'tr td button.btn_edit_usuario', function(){
       $('#specialty_panel').show();
     }
 
+    populate_specialties_edit();
+
   });
 
 /* PUTs edited ganadero information */
@@ -306,20 +310,20 @@ $('#btn_edit').on('click', function(){
   }
   else if(new_usuario.usuario_password != new_usuario.usuario_password_confirm)
   {
-      alert("Las contraseñas no son iguales.");
+    alert("Las contraseñas no son iguales.");
   }
   else
   {
      // ajax call to update ganadero
-  $.ajax({
-    url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
-    method: "PUT",
-    data: JSON.stringify(new_usuario),
-    contentType: "application/json",
-    dataType: "json",
+     $.ajax({
+      url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+      method: "PUT",
+      data: JSON.stringify(new_usuario),
+      contentType: "application/json",
+      dataType: "json",
 
-    success: function(data) {
-      alert("Informacion de usuario ha sido editada en el sistema.");
+      success: function(data) {
+        //alert("Informacion de usuario ha sido editada en el sistema.");
       // update ganadero list after posting 
       populate_usuarios();
     },
@@ -330,18 +334,15 @@ $('#btn_edit').on('click', function(){
       console.dir( xhr );
     }
   });
-  }
-});
 
-//updates specialties associated to current user
-$('#btn_edit_specialty').on('click', function(){
-  //get user id and specialty ids associated to said user id
-  var usuario_id =  $('#btn_edit').attr('data-id');
-  var checkedSpecialties = [];
-  $(':checkbox:checked').each(function(i){
+   //get user id and specialty ids associated to said user id
+   var usuario_id =  $('#btn_edit').attr('data-id');
+   var checkedSpecialties = [];
+   $(':checkbox:checked').each(function(i){
     checkedSpecialties[i] = $(this).val();
   });
 
+////////SECOND AJAX
 
  //json object for user_specialties
  var specialties = {
@@ -359,16 +360,62 @@ $.ajax({
   success: function(data) {
 
     alert("Especialidades han sido modificadas.");
+    console.log("the specialties are");
+    console.log(data.users_specialization);
+    repopulate_specialties(data.users_specialization);
 
-    },
-    error: function( xhr, status, errorThrown ) {
-      alert( "Sorry, there was a problem!" );
-      console.log( "Error: " + errorThrown );
-      console.log( "Status: " + status );
-      console.dir( xhr );
-    }
-  });
+  },
+  error: function( xhr, status, errorThrown ) {
+    alert( "Sorry, there was a problem!" );
+    console.log( "Error: " + errorThrown );
+    console.log( "Status: " + status );
+    console.dir( xhr );
+  }
 });
+
+ $('#edit_panel').hide();
+    $('#info_panel').show();
+    $('#specialty_panel').show();
+
+}
+});
+
+//updates specialties associated to current user
+// $('#btn_edit_specialty').on('click', function(){
+//   //get user id and specialty ids associated to said user id
+//   var usuario_id =  $('#btn_edit').attr('data-id');
+//   var checkedSpecialties = [];
+//   $(':checkbox:checked').each(function(i){
+//     checkedSpecialties[i] = $(this).val();
+//   });
+
+
+//  //json object for user_specialties
+//  var specialties = {
+//   user: usuario_id,
+//   specialties: checkedSpecialties
+// };
+
+// $.ajax({
+//   url: "http://localhost:3000/users/admin/user_specialties",
+//   method: "PUT",
+//   data: JSON.stringify(specialties),
+//   contentType: "application/json",
+//   dataType: "json",
+
+//   success: function(data) {
+
+//     alert("Especialidades han sido modificadas.");
+
+//     },
+//     error: function( xhr, status, errorThrown ) {
+//       alert( "Sorry, there was a problem!" );
+//       console.log( "Error: " + errorThrown );
+//       console.log( "Status: " + status );
+//       console.dir( xhr );
+//     }
+//   });
+// });
 
 
 $usuarios_list.on('click', 'tr td a.btn_delete_user', function(e){
@@ -415,7 +462,7 @@ function populate_info_panel($this_usuario){
     }
     $('#usuario_info_lastname_paternal').text($this_usuario.last_name1);
     $('#usuario_info_lastname_maternal').text($this_usuario.last_name2);
-    $('#usuario_info_contact').text($this_usuario.username + " " + $this_usuario.phone_number);
+    $('#usuario_info_contact').text($this_usuario.email + " " + $this_usuario.phone_number);
 
 
     if($this_usuario.type == 'agent')
@@ -449,7 +496,7 @@ function populate_info_panel($this_usuario){
 
     //Categoria de Localizacion
 
-    $('#especializacion_title').text("Tipo de Especializacion" + " - " + $this_usuario.email)
+    //$('#especializacion_title').text("Tipo de Especializacion" + " - " + $this_usuario.email)
 
   }
 
@@ -477,7 +524,7 @@ function populate_info_panel($this_usuario){
         table_content +=  'active ';
       }
       table_content += "show_info_usuario' href='#', data-id='"+this.user_id+"'>"+this.username+"</a></td>";
-      table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
+      //table_content += "<td><button class='btn_edit_usuario btn btn-sm btn-success btn-block' type='button' data-id='"+this.user_id+"'>Editar</button></td>";
       //table_content += "<td><a class='btn_delete_usuario btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.user_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     });
@@ -488,7 +535,7 @@ function populate_info_panel($this_usuario){
 
 function populate_specialties_edit(){
 
-  var user_id =  $('#btn_edit').attr('data-id');
+  var user_id =  $('#btn_edit_panel').attr('data-id');
   var matches = [];
   //find matches
   $.each(specialties_array, function(i){
@@ -527,7 +574,8 @@ function populate_specialties_edit(){
     found = false;
   });
 
-  $('#specialist_categories_list').html(content);
+  console.log();
+  $('#specialist_categories_list_edit').html(content);
 
 }
 
@@ -574,8 +622,30 @@ function populate_specialties_info(usuario){
     found = false;
   });
 
-  $('#specialist_categories_list').html(content);
+if(content == '')
+  content = "<p> Usuario no tiene especialidades asignadas. </p>"
+ $('#specialist_categories_list').html(content);
+  
 
 }
+
+
+function repopulate_specialties(specs)
+{
+var content = '';
+$.each(specs, function(i){
+      content += '<li> ';
+      content += "" + specs[i].spec_name + "</li>";
+  });
+
+
+if(content == '')
+  content = "<p> Usuario no tiene especialidades asignadas. </p>"
+ $('#specialist_categories_list').html(content);
+
+
+}
+
+
 
 });

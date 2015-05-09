@@ -24,7 +24,7 @@ import java.util.List;
  * An Android fragment that manages the display of details for a single Location object
  */
 public class LocationDetailsFragment extends Fragment implements DetailsFragment, AdapterView
-        .OnItemSelectedListener {
+        .OnItemSelectedListener, View.OnClickListener {
 
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
@@ -80,9 +80,11 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the owner text
         textOwner = (TextView) view.findViewById(R.id.location_text_owner);
+        textOwner.setOnClickListener(this);
 
         //Set the manager text
         textManager = (TextView) view.findViewById(R.id.location_text_manager);
+        textManager.setOnClickListener(this);
 
         //Set the agent text
         textAgent = (TextView) view.findViewById(R.id.location_text_agent);
@@ -98,7 +100,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         populateSpinners();
 
         //Determine if the new location view should be displayed
-        //TODO: check this
         if(location != null) {
             setDataViews();
             flipper.setDisplayedChild(SHOW_LAYOUT);
@@ -163,6 +164,32 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 //        Drawable dEdit = edit.getIcon();
 //        dEdit.setColorFilter(filter);
 //        edit.setIcon(dEdit);
+    }
+
+    @Override
+    public boolean onDetailsChanged() {
+        int displayed = flipper.getDisplayedChild();
+        if(viewCreated) {
+            if(displayed == SHOW_LAYOUT) {
+                setDataViews();
+            }
+            else if(displayed == EDIT_LAYOUT) {
+                populateSpinners();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.location_text_owner:
+                goToLocationOwner();
+                break;
+            case R.id.location_text_manager:
+                goToLocationManager();
+                break;
+        }
     }
 
     /**
@@ -257,14 +284,15 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     private boolean getFields() {
 
         //Get the text from the fields
-        String name = editName.getText().toString();
-        String license = editLicense.getText().toString();
-        String line1 = editAddressLine1.getText().toString();
-        String line2 = editAddressLine2.getText().toString();
-        String city = editCity.getText().toString();
-        String zip = editZipCode.getText().toString();
+        String name = editName.getText().toString().trim();
+        String licence = editLicense.getText().toString().trim();
+        String line1 = editAddressLine1.getText().toString().trim();
+        String line2 = editAddressLine2.getText().toString().trim();
+        String city = editCity.getText().toString().trim();
+        String zip = editZipCode.getText().toString().trim();
 
         if(name.equals("")) {
+            editName.setText("");
             String message = getString(R.string.empty_location_name);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
@@ -272,13 +300,14 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the instance fields
         location.setName(name);
-        boolean invalid = location.setLicense(license) != 0;
+        boolean valid = location.setLicense(licence) != 0;
         location.setAddressLine(1, line1);
         location.setAddressLine(2, line2);
         location.setCity(city);
         location.setZipCode(zip);
 
-        if (license.equals("") || invalid) {
+        if (licence.equals("") || !valid) {
+            if(licence.equals("")) editLicense.setText("");
             String message = getString(R.string.invalid_licence);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
@@ -296,20 +325,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         this.location = location;
         if (viewCreated)
             setDataViews();
-    }
-
-    @Override
-    public boolean onDetailsChanged() {
-        int displayed = flipper.getDisplayedChild();
-        if(viewCreated) {
-            if(displayed == SHOW_LAYOUT) {
-                setDataViews();
-            }
-            else if(displayed == EDIT_LAYOUT) {
-                populateSpinners();
-            }
-        }
-        return false;
     }
 
     private void populateSpinners() {
@@ -331,10 +346,10 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the adapters
         DummyAdapter adapter = new DummyAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, ownerList, 0);
+                android.R.layout.simple_spinner_dropdown_item, ownerList, 0);
         ownerSpinner.setAdapter(adapter);
         adapter = new DummyAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, managerList, 0);
+                android.R.layout.simple_spinner_dropdown_item, managerList, 0);
         managerSpinner.setAdapter(adapter);
     }
 
@@ -348,9 +363,20 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             startActivity(intent);
             getActivity().finish();
         }
-        else if(fcs ==0) {
+        else {
             String message = getResources().getString(R.string.no_flowcharts);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void goToLocationOwner() {
+        //TODO: test this
+        long id = location.getOwner().getId();
+        ((MainActivity)getActivity()).onDetailsRequest("PERSON", "OWNER", id);
+    }
+
+    private void goToLocationManager() {
+        long id = location.getOwner().getId();
+        ((MainActivity)getActivity()).onDetailsRequest("PERSON", "MANAGER", id);
     }
 }

@@ -24,6 +24,14 @@
 			  android:showAsAction="always"
 			  android:orderInCategory="0"
 			/>
+
+		<item android:id="@+id/appointments"
+			  android:title="@string/view_appointments"
+			  android:icon="@drawable/ic_action_go_to_today"
+			  android:showAsAction="ifRoom"
+			  android:orderInCategory="0"
+			  />
+
 	</group>
 
 	<item android:id="@+id/action_settings"
@@ -43,6 +51,7 @@
 		  android:title="@string/synchronize"
 		  android:showAsAction="never"
 		  android:orderInCategory="80"
+		  android:icon="@drawable/ic_action_refresh"
 		  />
 
 	<item android:id="@+id/sync_full"

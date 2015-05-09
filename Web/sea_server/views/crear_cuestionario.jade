@@ -15,20 +15,11 @@ block content
 			.col-md-2
 
 		.row
-			.col-md-9
+			.col-md-12
 				#container_plumbjs
+		br
+		.row
 			.col-md-3
-				form#form_create_flowchart(role='form')
-					.form-group
-						label(for='flowchart_creator') Creado por:
-						span#flowchart_creator(class='form-control', name='flowchart_creator', disabled, data-id=user.user_id)
-							= user.username
-					.form-group
-						label(for='flowchart_name') Nombre de Flujo:
-						input#flowchart_name(class='form-control', name='flowchart_name', type='text', placeholder='Nombre')
-					.form-group
-						label(for='flowchart_version') Versión:
-						input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
 				.form-group
 					label(for='btn_user_type') Tipo de Elemento:
 					.dropdown
@@ -53,13 +44,9 @@ block content
 							li
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
 				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
-				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
-				//button#btn_test(class='btn btn-lg btn-success btn-block', type='button') Test
-
-		br
-		.row
-			.col-md-1
-			.col-md-6
+				button#btn_recreate(class='btn btn-lg btn-success btn-block', type='button') Re-Create
+				button#btn_repopulate(class='btn btn-lg btn-success btn-block', type='button', data-id='32') Populate from db
+			.col-md-5
 				.panel.panel-success
 					.panel-heading
 						h3.panel-title Elementos creados
@@ -87,17 +74,39 @@ block content
 							.panel-body
 								ul#pregunta_info_responses(class='list-group')
 						//button#btn_close_info_panel(class='btn btn-default') Cerrar
-			.col-md-1
+				
+		br
 		.row
-			.col-md-2
 			.col-md-3
+				.panel.panel-warning
+					.panel-heading
+						h3.panel-title Información Básica
+					.panel-body
+						form#form_create_flowchart(role='form')
+							.form-group
+								label(for='flowchart_creator') Creado por:
+								span#flowchart_creator(class='form-control', name='flowchart_creator', disabled, data-id=user.user_id)
+									= user.username
+							.form-group
+								label(for='flowchart_name') Nombre de Flujo:
+								input#flowchart_name(class='form-control', name='flowchart_name', type='text', placeholder='Nombre')
+							.form-group
+								label(for='flowchart_version') Versión:
+								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
+						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
+			.col-md-5
 				// TODO: add home glyphicon
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+		.row
+			.col-md-3
+
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
 	script(src='http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js')
 	script(src='http://stage-preview.gage.com/Creative/Microsoft/EZCourseDemo/scripts/jquery.jsPlumb-1.3.16-all-min.js')
+	//script(src='/javascripts/jquery-ui.js')
+	//script(src='http://jsplumb.googlecode.com/files/jquery.jsPlumb-1.3.2-all-min.js')
 	script(src='/javascripts/crear_cuestionario.js')
 	script(src='/javascripts/helpers.js')

@@ -153,7 +153,7 @@ public class User {
             cursor.close();
         }
         //TODO: hashing algorithm
-        if (hash != null) auth = password.equals(hash) ? true : false;
+        if (hash != null) auth = password.equals(hash);
         return auth;
     }
 
@@ -170,9 +170,7 @@ public class User {
             cursor.close();
         }
 
-        Person person = new Person(personID, dbHelper);
-
-        return person;
+        return new Person(personID, dbHelper);
 
     }
 

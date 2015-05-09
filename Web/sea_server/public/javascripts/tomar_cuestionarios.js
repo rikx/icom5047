@@ -133,7 +133,7 @@ $(document).ready(function(){
       }
       table_content += "show_info_cuestionario' href='#', data-id='"+this.flowchart_id+"'>"+this.flowchart_name+"</a></td>";
       table_content += "<td><button class='btn_flujo_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"'>Método con Flujo</button></td>";
-      table_content += "<td><button class='btn_abierto_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"' disabled>Método Abierto</button></td>";
+      //table_content += "<td><button class='btn_abierto_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"' disabled>Método Abierto</button></td>";
       table_content += '</tr>';
     });  
 

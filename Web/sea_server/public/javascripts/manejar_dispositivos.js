@@ -5,7 +5,7 @@ $(document).ready(function(){
   var dispositivos_array;
   
   var data_dispositivos = $dispositivos_list.attr('data-dispositivos');
-  if(data_dispositivos != undefined){
+  if(data_dispositivos.length >2){
     dispositivos_array=  JSON.parse(data_dispositivos);
     
     // initial population of dispositivos list
@@ -17,7 +17,7 @@ $(document).ready(function(){
   }
 
   // hide input that contains user chosen from dropdown
-  $('#dispositivo_usuario').hide();
+  //$('#dispositivo_usuario').hide();
 
   /* Search Code start */
   // constructs the suggestion engine
@@ -129,6 +129,7 @@ $(document).ready(function(){
       $this.addClass('active');
     }
 
+ 
     // contains dispositivo id
     var dispositivo_id = $this.attr('data-id');
     var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(dispositivo_id);
@@ -136,10 +137,13 @@ $(document).ready(function(){
     
     // populate info panel with this_dispositivo
     populate_info_panel(this_dispositivo);
+    console.log(this_dispositivo);
 
     // set id values of info panel buttons
     $('#btn_edit_dispositivo').attr('data-id', dispositivo_id);
+    $('#btn_edit_dispositivo').attr('data-name', this_dispositivo.username);
     $('#btn_delete').attr('data-id', dispositivo_id);
+    $('#btn_delete').attr('data-device-name', this_dispositivo.device_name);
   });
 
   /* Add dispositivo */
@@ -181,9 +185,9 @@ $(document).ready(function(){
           // clear add form
           $the_form[0].reset();
         }
-         // update dispositivos list after posting 
-         populate_dispositivos();
-         $('#edit_panel').hide();
+        // update dispositivos list after posting 
+        populate_dispositivos();
+        //$('#edit_panel').hide();
        },
        error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -201,16 +205,20 @@ $(document).ready(function(){
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
     $('#info_panel').hide();
+    $('#btn_dropdown_agentes_text').text($('#btn_edit_dispositivo').attr('data-name'));
+
+
 
     // contains dispositivo id
     var dispositivo_id = $(this).attr('data-id');
     var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(dispositivo_id);
     var this_dispositivo = dispositivos_array[arrayPosition];
+    console.log();
 
     $('#btn_edit').attr('data-id', dispositivo_id);
     $('#dispositivo_name').val(this_dispositivo.device_name);
     $('#dispositivo_id_num').val(this_dispositivo.id_number);
-    $('#dispositivo_usuario').val(this_dispositivo.username);
+    $('#dispositivo_usuario').val(this_dispositivo.assigned_user);
   });
 
   /* PUTs edited dispositivo information */
@@ -235,10 +243,13 @@ $(document).ready(function(){
       dataType: "json",
 
       success: function(data) {
-        alert("Informacion de ganadero ha sido editada en el sistema.");
-        // update ganadero list after posting 
-        populate_dispositivos();
-        $('#edit_panel').hide();
+        if(data.exists){
+          alert("Dispositivo con este numero de identificacion ya existe");
+        } else {
+          alert("Informacion de dispositivo ha sido editada en el sistema.");
+          // update dispositivo list after posting 
+          populate_dispositivos();
+        }
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -298,15 +309,19 @@ $(document).ready(function(){
     {
       $('#dispositivo_info_last_sync').text($this_dispositivo.last_sync);
     }
-
+    // set id values of info panel buttons
+    $('#btn_edit_dispositivo').attr('data-id', $this_dispositivo.device_id);
+    $('#btn_delete').attr('data-id', $this_dispositivo.device_id);
+    $('#btn_delete').attr('data-device-name', $this_dispositivo.device_name);
   }
 
-  /* Populate list with first 20 ganaderos, ordered by assigned user */
+  /* Populate list with first 20 dispositivos, ordered by assigned user */
   function populate_dispositivos() {
   	$.getJSON('http://localhost:3000/list_dispositivos', function(data) {
   		dispositivos_array = data.dispositivos;
 
       populate_list(data.dispositivos);
+      populate_info_panel(data.citas[0]);
     });
   };
 

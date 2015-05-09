@@ -3,7 +3,6 @@ package com.rener.sea;
 
 import android.app.ListFragment;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -17,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -32,6 +31,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public static String TYPE_PEOPLE = "PEOPLE";
     public static String TYPE_REPORTS = "REPORTS";
     public static String TYPE_LOCATIONS = "LOCATIONS";
+    public static String TYPE_APPOINTMENTS = "APPOINTMENTS";
     private int curPos = -1;
     private String type;
     private ArrayAdapter adapter;
@@ -69,6 +69,8 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu_list_fragment, container, false);
+
+        //Initialize search views
         editSearch = (EditText) view.findViewById(R.id.inputSearch);
         editSearch.addTextChangedListener(this);
         clearSearchButton = (Button) view.findViewById(R.id.clearSearch);
@@ -87,30 +89,28 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
 
         //Set the list and it's respective adapter
         DBHelper db = ((MainActivity) getActivity()).getDBHelper();
-        String empty = getResources().getString(R.string.no_data);
+        String empty = getString(R.string.no_data);
         if (type.equals(TYPE_PEOPLE)) {
-            empty = getResources().getString(R.string.no_people);
+            empty = getString(R.string.no_people);
             list = db.getAllPersons();
             adapter = new ArrayAdapter<Person>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_LOCATIONS)) {
-            empty = getResources().getString(R.string.no_locations);
+            empty = getString(R.string.no_locations);
             list = db.getAllLocations();
             adapter = new ArrayAdapter<Location>(getActivity(),
                     android.R.layout.simple_list_item_1, list);
         } else if (type.equals(TYPE_REPORTS)) {
-            empty = getResources().getString(R.string.no_reports);
+            empty = getString(R.string.no_reports);
             list = db.getAllReports();
             adapter = new ReportListAdapter(getActivity(), list);
+        } else if(type.equals(TYPE_APPOINTMENTS)) {
+            //TODO: get all appointments from DB
+            //TODO: set the list adapter
+            list = initDummyAppointments();
+            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
         }
 
-        //Set the empty view
-        //TODO: set empty view programmatically
-
-        //Sort the list
-        //Collections.sort(list);
-
-        //Set the list adapter
         setListAdapter(adapter);
     }
 
@@ -152,6 +152,32 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE ;
+        clearSearchButton.setVisibility(visibility);
+        //adapter.getFilter().filter(charSequence);
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.clearSearch:
+                editSearch.setText("");
+                break;
+        }
+    }
+
     /**
      * Notifies the list adapter that data has changed and it should update it's views
      */
@@ -168,47 +194,27 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     }
 
     private void newReport() {
-        DBHelper dbHelper = ((MainActivity)getActivity()).getDBHelper();
+        DBHelper dbHelper = ((MainActivity) getActivity()).getDBHelper();
         int fcs = dbHelper.getAllFlowcharts().size();
         int ls = dbHelper.getAllLocations().size();
         boolean allow = (fcs != 0 && ls != 0);
-        if(allow) {
+        if (allow) {
             startActivity(new Intent(getActivity(), SurveyActivity.class));
             getActivity().finish();
-        }
-        else if(fcs ==0) {
+        } else if (fcs == 0) {
             String message = getResources().getString(R.string.no_flowcharts);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             String message = getResources().getString(R.string.no_locations);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+    private List<Calendar> initDummyAppointments() {
+        List<Calendar> dates = new ArrayList<>();
+        for(int i=0; i<4; i++)
+            dates.add(Calendar.getInstance());
+        return dates;
     }
 
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE ;
-        clearSearchButton.setVisibility(visibility);
-            //adapter.getFilter().filter(charSequence);
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.clearSearch:
-                editSearch.setText("");
-                break;
-        }
-    }
 }

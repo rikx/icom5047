@@ -3,6 +3,8 @@ jsPlumb.ready(function() {
 	// stores current elements in the jsPlumb container
 	var elements_array = [];
 	var connections_array = [];
+	var states_array = [];
+	var lines_array = [];
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
@@ -42,7 +44,7 @@ jsPlumb.ready(function() {
   	$('#pregunta_info_name').html(this_element.name);
   	$('#pregunta_info_type').html(this_element.type);
   	
-  	if(this_element.type != 'START' && this_element.type != 'END'){
+  	if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
 	  	var answers_content = '';
 	  	$.each(connections_array, function(i){
 	  		if(this_element.id == this.source){
@@ -68,7 +70,7 @@ jsPlumb.ready(function() {
 	    	table_content +=  'active ';
 	    	populate_info_panel(this);
 	    }
-	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.id+': '+this.name+"</a></td></tr>";
+	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>Elemento "+this.id.substring(5)+': '+this.name+"</a></td></tr>";
 		});
 
 		$('#preguntas_list').html(table_content);
@@ -96,15 +98,16 @@ jsPlumb.ready(function() {
  			if(elements_array[i].type == 'START'){
  				for(var x=0; x<connections_array.length; x++){
  					if(elements_array[i].id == connections_array[x].source){
- 						first_item = connections_array[x].target;
+ 						first_item = connections_array[x].target; // 'START' item's target
  					}	
  				}
  			} else if(elements_array[i].type == 'END'){
- 				for(var x=0; x<connections_array.length; x++){
+/* 				for(var x=0; x<connections_array.length; x++){
  					if(elements_array[i].id == connections_array[x].target){
  						end_item = connections_array[x].source;
  					}	
- 				}
+ 				}*/
+ 				end_item = elements_array[i].id; // 'END' item
  			}
  		}
  		return {first_id: first_item, end_id: end_item};
@@ -119,10 +122,12 @@ jsPlumb.ready(function() {
   	var start_count = 0;
   	var end_count = 0;
   	var valid_item_count = 0;
+  	var multi_count = 0;
   	var this_element;
   	
   	for(var i = 0; i < elements_array.length; i++){
   		this_element = elements_array[i];
+  		multi_count = 0;
   		for(var j = 0; j < connections_array.length; j++){
   			if(this_element.type == 'START'){
   				if(this_element.id == connections_array[j].source){
@@ -134,7 +139,14 @@ jsPlumb.ready(function() {
   				}
   			} else {
   				if(this_element.id == connections_array[j].source){
-	  				valid_item_count++;
+  					if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
+  						if(multi_count < 1){
+								valid_item_count++;
+								multi_count++;
+  						}
+  					} else {
+  						valid_item_count++;
+  					}
 	  			}
   			}
   		}
@@ -162,7 +174,7 @@ jsPlumb.ready(function() {
   	// checks created flowchart has a first item
   	if(!empty_field_check(form_data)){
   		// check 
-	    if(end_points.first_id != -1){
+	    if(end_points.first_id != -1 && end_points.end_id != -1){
 	    	if(check_item_connections()){
 					// add missing flowchart fields
 					new_flowchart.first_id = end_points.first_id;
@@ -209,7 +221,7 @@ jsPlumb.ready(function() {
 
 
  	var j =0; // item id
- 	var trigger = "yes";
+ 	var trigger = true;
  	jsPlumb.Defaults.Container = $('#container_plumbjs');
 
  	$('#list_question_type').on('click', 'li a', function(e){
@@ -293,7 +305,7 @@ jsPlumb.ready(function() {
 
 			//add new state item to container
 			$('#container_plumbjs').append(newState);
-			
+
 			if(itemType != 'START'){
 				jsPlumb.makeTarget(newState, {
 					anchor: 'Continuous',
@@ -324,15 +336,22 @@ jsPlumb.ready(function() {
 							id: newState.attr('id'),
 							name: this_name,
 							type: itemType,
-							left: newState.position().left,
-							top: newState.position().top
+							state: $('#'+newState.attr('id')).prop('outerHTML')
 						};
+
+						var state_item = {
+							id: newState.attr('id'),
+							type: itemType,
+							state: $('#'+newState.attr('id')).prop('outerHTML')
+						}
 
 						// check if item is already in array and updates it
 					  if(containsObject(this_item, elements_array)) {
 					   	replace(this_item, elements_array);
+					   	replace(state_item, states_array);
 					  } else {
 					   	elements_array.push(this_item);
+					   	states_array.push(state_item);
 						}
 						// populate elements list with new item
 						populate_elements_list();
@@ -392,15 +411,22 @@ jsPlumb.ready(function() {
 							id: newState.attr('id'),
 							name: $('#'+newState.attr('id')).attr('data-state-name'),
 							type: itemType,
-							left: newState.position().left,
-							top: newState.position().top
+							state: $('#'+newState.attr('id')).prop('outerHTML')
 						};
+
+						var state_item = {
+							id: newState.attr('id'),
+							type: itemType,
+							state: $('#'+newState.attr('id')).prop('outerHTML')
+						}
 
 						// check if item is already in array and updates it
 					  if(containsObject(this_item, elements_array)) {
 					   	replace(this_item, elements_array);
+					   	replace(state_item, states_array);
 					  } else {
 					   	elements_array.push(this_item);
+					   	states_array.push(state_item);
 						}
 			      // populate elements list with new element
 			      populate_elements_list();
@@ -420,48 +446,64 @@ jsPlumb.ready(function() {
 		e.stopPropagation();
 	}); 
 
-	jsPlumb.bind("beforeDrop", function(connection) {
-		var source_id = connection.sourceId;
-		var target_id = connection.targetId;
 
-		// get source item type
-		for(var y = 0; y<elements_array.length; y++){
-			this_item = elements_array[y];
-			if(this_item.id == source_id){
-				source_type = this_item.type;
-			} else if(this_item.id == target_id){
-				target_type = this_item.type;
-			}
-		}
-		var start_count = 0;
-		// if source_type == 'START' check its not connected to an 'END' type
-		if(source_type == 'START'){
-			// dont allow start element to connect to end
-			if(target_type == 'END'){
+	jsPlumb.bind("beforeDrop", function(connection) {
+		if(trigger){
+			var source_id = connection.sourceId;
+			var target_id = connection.targetId;
+
+			//check if source and target are the same
+			if(source_id == target_id){
 				return false;
-			} 
+			}
+
+			// get source item type
+			for(var y = 0; y<elements_array.length; y++){
+				this_item = elements_array[y];
+				if(this_item.id == source_id){
+					source_type = this_item.type;
+				} else if(this_item.id == target_id){
+					target_type = this_item.type;
+				}
+			}
+
+			// check source and target pair does not exist
 			for(var z = 0; z<connections_array.length; z++){
-				if(source_id == connections_array[z].source){
-					start_count++;
-				} 
+				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
+					return false;
+				}
 			}
-			// dont allow 'START' to have more than 1 connection;
-			if(start_count >= 1){
-				return false;
+
+			var start_count = 0;
+			// if source_type == 'START' check its not connected to an 'END' type
+			if(source_type == 'START'){
+				// dont allow start element to connect to end
+				if(target_type == 'END'){
+					return false;
+				}
+				for(var z = 0; z<connections_array.length; z++){
+					if(source_id == connections_array[z].source){
+						start_count++;
+					} 
+				}
+				// dont allow 'START' to have more than 1 connection;
+				if(start_count >= 1){
+					return false;
+				} else {
+					return true;
+				}
 			} else {
 				return true;
 			}
-		} else {
-			return true;
 		}
 	});
 
 	jsPlumb.bind("connection", function(info, originalEvent) {
-		jsPlumb.ready(function() {
+		//jsPlumb.ready(function() {
 			info.connection.addOverlay( [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]);
 			info.connection.setPaintStyle( {lineWidth:10,strokeStyle:'rgb(204,255,204)'});
 			
-			if(trigger == "yes"){
+			if(trigger){
 				var this_connection, source_type, target_type, mylabel;
 				var source_id = info.sourceId;
 				var target_id = info.targetId;
@@ -480,7 +522,7 @@ jsPlumb.ready(function() {
 					mylabel = 'con-start';
 				} else if(source_type == 'OPEN'){
 					mylabel = 'con-open';
-				} else if(target_type == 'END' && source_type == 'OPEN'){
+				} else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
 					mylabel = 'con-end';
 				} else {
 					mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
@@ -494,8 +536,22 @@ jsPlumb.ready(function() {
 				};
 
 				connections_array.push(this_connection);
+				lines_array.push(this_connection);
+			} else if(!trigger){
+				//var this_connection, mylabel;
+				var source_id = info.sourceId;
+				var target_id = info.targetId;
+				console.log('Creating connection: '+source_id+ ' to '+target_id);
+/*
+				for(z = 0; z<lines_array.length; z++){
+					this_connection = lines_array[z];
+					if(this_connection.source == source_id && this_connection.target == target_id){
+						mylabel = this_connection.label;
+						info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: "connLabel"} ]);
+					}
+				}	*/
 			}
-		});
+		//});
 	});
 
 	$('#container_plumbjs').scroll(function(){
@@ -515,6 +571,7 @@ jsPlumb.ready(function() {
 
 		return false;
 	}
+
 	function replace(obj, list) {
 		var i;
 		for (i = 0; i < list.length; i++) {

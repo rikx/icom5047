@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent">
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+			 android:id="@+id/location_flipper"
+			 android:layout_width="match_parent"
+			 android:layout_height="match_parent">
 
-	<ViewFlipper
-		android:id="@+id/location_flipper"
+	<!-- 0 Show view -->
+	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:padding="16dp">
+		android:layout_height="match_parent">
 
 		<LinearLayout
 			android:id="@+id/location_show_layout"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
 			android:orientation="vertical">
-
-			<TextView
-				android:id="@+id/location_text_name_label"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/name_label"
-				/>
 
 			<TextView
 				android:id="@+id/location_text_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="16dp"
+				android:textSize="24sp"
+				android:textStyle="bold"
 				android:text="@string/no_data"
 				/>
 
@@ -35,6 +30,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
+				android:textStyle="bold"
 				android:text="@string/licence_label"
 				/>
 
@@ -42,7 +38,7 @@
 				android:id="@+id/location_text_license"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="16dp"
+				android:layout_marginStart="16dp"
 				android:text="@string/no_data"
 				/>
 
@@ -51,6 +47,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
+				android:textStyle="bold"
 				android:text="@string/address_label"
 				/>
 
@@ -59,7 +56,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:layout_marginLeft="16dp">
+				android:layout_marginStart="16dp">
 
 				<TextView
 					android:id="@+id/address_text_line1"
@@ -90,44 +87,104 @@
 					/>
 			</LinearLayout>
 
-			<TextView
-				android:id="@+id/location_text_owner"
-				android:layout_width="wrap_content"
+			<LinearLayout
+				android:id="@+id/location_owner_layout"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="@string/no_data"
-				/>
+				android:orientation="vertical">
 
-			<TextView
-				android:id="@+id/location_text_manager"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="@string/no_data"
-				/>
+				<TextView
+					android:id="@+id/location_text_owner_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:text="@string/owner_label"
+					/>
 
-			<TextView
-				android:id="@+id/location_text_agent"
-				android:layout_width="wrap_content"
+				<TextView
+					android:id="@+id/location_text_owner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_owner"
+					/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/location_manager_layout"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="@string/no_data"
-				/>
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/location_text_manager_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:textStyle="bold"
+					android:text="@string/manager_label"
+					/>
+
+				<TextView
+					android:id="@+id/location_text_manager"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_manager"
+					/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/location_agent_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/location_text_agent_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:textStyle="bold"
+					android:text="@string/agent_label"
+					/>
+
+				<TextView
+					android:id="@+id/location_text_agent"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_agent"
+					/>
+			</LinearLayout>
 
 		</LinearLayout>
+
+	</ScrollView>
+
+	<!-- 1 Edit view -->
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
 		<LinearLayout
 			android:id="@+id/location_edit_layout"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:orientation="vertical">
+			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
+			android:orientation="vertical"
+			android:paddingBottom="24dp">
 
 			<TextView
 				android:id="@+id/location_name_edit_label"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@string/name_label"
-				android:layout_marginTop="16dp"/>
+				android:layout_marginTop="0dp"
+				/>
 
 			<EditText
 				android:id="@+id/location_edit_name"
@@ -165,7 +222,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:layout_marginLeft="16dp">
+				android:layout_marginStart="16dp">
 
 				<EditText
 					android:id="@+id/address_edit_line1"
@@ -197,21 +254,9 @@
 					android:layout_height="wrap_content"
 					android:hint="@string/address_zip_code"
 					android:inputType="number"
+					android:maxLength="10"
 					/>
 			</LinearLayout>
-
-			<TextView
-				android:id="@+id/location_manager_edit_label"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="@string/manager_label"/>
-
-			<Spinner
-				android:id="@+id/location_owner_spinner"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content">
-			</Spinner>
 
 			<TextView
 				android:id="@+id/location_owner_edit_label"
@@ -221,13 +266,28 @@
 				android:text="@string/owner_label"/>
 
 			<Spinner
+				android:id="@+id/location_owner_spinner"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:spinnerMode="dialog">
+			</Spinner>
+
+			<TextView
+				android:id="@+id/location_manager_edit_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/manager_label"/>
+
+			<Spinner
 				android:id="@+id/location_manager_spinner"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content">
+				android:layout_height="wrap_content"
+				android:spinnerMode="dialog">
 			</Spinner>
 
 		</LinearLayout>
 
-	</ViewFlipper>
+	</ScrollView>
 
-</ScrollView>
+</ViewFlipper>

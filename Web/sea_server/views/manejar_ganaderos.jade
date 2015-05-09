@@ -40,11 +40,11 @@ block content
 												else 
 													a(class='list-group-item active show_info_ganadero', href='#', data-id=ganadero.person_id)
 														= ganadero.person_name
-											if  user.user_type != 'agent'
-												td
-													button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id=ganadero.person_id) Editar
-											if  user.user_type != 'agent'
-												td
+											//if  user.user_type != 'agent'
+												//td
+													//button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id=ganadero.person_id) Editar
+											//if  user.user_type != 'agent'
+												//td
 													//a(class='btn_delete_ganadero btn btn-sm btn-success', data-toggle='tooltip', data-id=ganadero.person_id)
 														//i(class='glyphicon glyphicon-trash')
 
@@ -80,20 +80,23 @@ block content
 					.panel-heading
 						h3#info_panel_heading(class='panel-title') 
 					.panel-body
-						table#ganadero_info(class='table')
-							tr
-								td Nombre:
-								td#ganadero_info_name 
-							tr
-								td Apellidos:
-								td#ganadero_info_apellidos 
-							tr
-								td Información de Contacto:
-								td#ganadero_info_contact
+						table#ganadero_info(class='table table-nowrap')
+							thead
+							tbody#body_info(data-ganaderos=ganaderos, data-localizaciones=locations, data-user=user)
+								tr
+									td Nombre:
+									td#ganadero_info_name 
+								tr
+									td Apellidos:
+									td#ganadero_info_apellidos 
+								tr
+									td Información de Contacto:
+									td#ganadero_info_contact
 						.panel.panel-info
 										.panel-heading Localizaciones Asignadas
 										.panel-body
 											table#ganadero_locations(class='table')
+						button(class='btn_edit_ganadero btn btn-sm btn-success btn-block', type='button', data-id=ganadero.person_id) Editar
 						button#btn_close_info_panel(class='btn btn-default') Cerrar
 			.col-md-1
 		

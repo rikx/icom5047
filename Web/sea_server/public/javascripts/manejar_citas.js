@@ -7,7 +7,7 @@ $(document).ready(function(){
   var user_info = JSON.parse($citas_list.attr('data-user'));
 
   var data_citas = $citas_list.attr('data-citas');
-  if(data_citas != undefined){
+  if(data_citas.length >2){
     citas_array = JSON.parse($citas_list.attr('data-citas'));
 
     // initial info panel population
@@ -138,6 +138,7 @@ $(document).ready(function(){
     $('#btn_view_report').attr('data-id', cita_id);
     $('#btn_edit_cita').attr('data-id', cita_id);
     $('#btn_delete').attr('data-id', cita_id);
+    $('#btn_delete').attr('data-location-name', this_cita.location_name);
   });
 
   /* View report (redirect to report page) */
@@ -184,35 +185,63 @@ $(document).ready(function(){
     $('#cita_time').val(cita_time);
   });
 
-/* PUTs edited cita information */
-$('#btn_edit').on('click', function(){
-  var appointment_id = $(this).attr('data-id');
-  // get form data and conver to json format
-  var $the_form = $('#form_manage_cita');
-  var form_data = $the_form.serializeArray();
-  var new_cita = ConverToJSON(form_data);
+  /* PUTs edited cita information */
+  $('#btn_edit').on('click', function(){
+    var appointment_id = $(this).attr('data-id');
+    // get form data and conver to json format
+    var $the_form = $('#form_manage_cita');
+    var form_data = $the_form.serializeArray();
+    var new_cita = ConverToJSON(form_data);
 
-  // ajax call to update ganadero
-  $.ajax({
-    url: "http://localhost:3000/users/admin/citas/" + appointment_id,
-    method: "PUT",
-    data: JSON.stringify(new_cita),
-    contentType: "application/json",
-    dataType: "json",
+    // ajax call to update ganadero
+    $.ajax({
+      url: "http://localhost:3000/users/admin/citas/" + appointment_id,
+      method: "PUT",
+      data: JSON.stringify(new_cita),
+      contentType: "application/json",
+      dataType: "json",
 
-    success: function(data) {
-      alert("Informacion de cita ha sido editada en el sistema.");
-      // update cita list
-      populate_citas();
-    },
-    error: function( xhr, status, errorThrown ) {
-      alert( "Sorry, there was a problem!" );
-      console.log( "Error: " + errorThrown );
-      console.log( "Status: " + status );
-      console.dir( xhr );
+      success: function(data) {
+        if(data.exists){
+          alert("Cita a esta fecha y hora ya existe para esta localización");
+        } else {
+          alert("Informacion de cita ha sido editada en el sistema.");
+          // update cita list
+          populate_citas();
+        }
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
+  });
+
+  /* Delete appointment */
+  $('#btn_delete').on('click', function(){
+    var confirm_delete = confirm('Desea borrar la cita en "'+$(this).attr('data-location-name')+'"?');
+    if(confirm_delete){
+      // ajax call to delete device
+      $.ajax({
+        url: "http://localhost:3000/users/admin/citas/"+$(this).attr('data-id'),
+        method: "DELETE",
+        success: function(data) {
+          alert("Cita ha sido borrado del sistema.");
+  
+          // update citas list after posting 
+          populate_citas();
+        },
+        error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+        }
+      });
     }
   });
-});
 
 /* Close location panel */
 $('#btn_close_location_panel').on('click', function(){
@@ -301,6 +330,12 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
       $('#cita_info_report').html($this_cita.report_name);
     }
     $('#cita_info_hour').text($this_cita.time);
+
+    // set id values of info panel buttons
+    $('#btn_view_report').attr('data-id', $this_cita.appointment_id);
+    $('#btn_edit_cita').attr('data-id', $this_cita.appointment_id);
+    $('#btn_delete').attr('data-id', $this_cita.appointment_id);
+    $('#btn_delete').attr('data-location-name', $this_cita.location_name); 
   }
 
   /* Populate list with first 20 reportes, organized alphabetically by location */
@@ -309,6 +344,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
       citas_array = data.citas;
 
       populate_list(data.citas);
+      populate_info_panel(data.citas[0]);
     });
   };
 

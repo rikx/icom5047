@@ -23,7 +23,11 @@ var router = express.Router();
  * Responds with categorias, 
  * alphabetically ordered by name
  */
-router.get('/categorias', function(req, res, next) {
+
+	// WHERE flowchart.flowchart_id = $1', 
+	// 						  	[cuestionario_id], function(err, result) {
+
+router.get('/admin/categorias', function(req, res, next) {
 	var categories_list;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
@@ -250,6 +254,61 @@ router.get('/admin/cuestionarios/crear', function(req, res, next) {
 		}
 });
 
+/* Get flowchart items and options
+ *
+ */
+router.get('/admin/cuestionarios/ver/:id', function(req, res, next){
+	var flowchart_id = req.params.id;
+
+	var items_list, connections_list;
+
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+ 		// get items
+ 		client.query("SELECT flowchart_id, item_id, state_id, state \
+									FROM item \
+									WHERE flowchart_id = $1", 
+ 									[flowchart_id], function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} 
+			items_list = result.rows;
+ 		});
+ 		// get connections
+  	client.query("WITH path_targets AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																CASE \
+																WHEN item_id = next_id THEN state_id \
+																END AS target \
+															FROM option \
+															INNER JOIN item ON item.item_id = option.next_id \
+															WHERE flowchart_id = $1), \
+												path_sources AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																CASE \
+																WHEN item_id = parent_id THEN state_id \
+																END AS source \
+															FROM option \
+															INNER JOIN item ON item.item_id = option.parent_id \
+															WHERE flowchart_id = $1) \
+												SELECT * \
+												FROM path_sources natural join path_targets", 
+  											[flowchart_id], function(err, result) {
+  		// call done to release client to pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			}
+			connections_list = result.rows
+			res.json({
+				items: items_list,
+				connections: connections_list
+			});
+		});
+ 	});
+});
+
 /* POST Admin crear cuestionario
  * post new survey
  */
@@ -291,9 +350,9 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  			for(var i=0; i < flowchart_items.length; i++){
 		  				this_item = flowchart_items[i];
 		  				// insert this_item
-							client.query('INSERT into item (flowchart_id, label, pos_top, pos_left, type, state_id) VALUES ($1, $2, $3, $4, $5, $6) \
+							client.query('INSERT into item (flowchart_id, state_id, label, type, state) VALUES ($1, $2, $3, $4, $5) \
 														RETURNING item_id, state_id', 
-														[flowchart_id, this_item.name, this_item.top, this_item.left, this_item.type, this_item.id], function(err, result) {
+														[flowchart_id, this_item.id, this_item.name, this_item.type, this_item.state], function(err, result) {
 								if(err) {
 									return console.error('error running query', err);
 								} else {
@@ -387,8 +446,62 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 	} else if (user_type != 'admin') {
 		res.redirect('/');
 	} else {
-	 	var cuestionario_id = req.params.id;
-	 	res.render('cuestionario', { title: 'Cuestionario'});
+		var flowchart_id = req.params.id;
+
+		var items_list, connections_list;
+
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		// get items
+	 		client.query("SELECT flowchart_id, item_id, state_id, state \
+										FROM item \
+										WHERE flowchart_id = $1", 
+	 									[flowchart_id], function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} 
+				items_list = result.rows;
+	 		});
+	 		// get connections
+	  	client.query("WITH path_targets AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																	CASE \
+																	WHEN item_id = next_id THEN state_id \
+																	END AS target \
+																FROM option \
+																INNER JOIN item ON item.item_id = option.next_id \
+																WHERE flowchart_id = $1), \
+													path_sources AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																	CASE \
+																	WHEN item_id = parent_id THEN state_id \
+																	END AS source \
+																FROM option \
+																INNER JOIN item ON item.item_id = option.parent_id \
+																WHERE flowchart_id = $1) \
+													SELECT * \
+													FROM path_sources natural join path_targets", 
+	  											[flowchart_id], function(err, result) {
+	  		// call done to release client to pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				}
+				connections_list = result.rows;
+				var current_user = {
+	  			user_id: user_id,
+	  			username: username
+	  		}
+
+				res.render('cuestionario', { 
+					title: 'Cuestionario',
+					items: items_list,
+					connections: connections_list,
+					user: current_user
+				});
+			});
+	 	});
 	}
 });
 
@@ -598,7 +711,20 @@ router.put('/admin/user_specialties', function(req, res, next) {
 						}
 		      }
 		    	// user_specialties associations were succesfully updated
-					res.json(true);
+		    	client.query('SELECT specialization.spec_id, specialization.name AS spec_name \
+												FROM users \
+												INNER JOIN users_specialization ON users.user_id = users_specialization.user_id \
+												INNER JOIN specialization ON users_specialization.spec_id = specialization.spec_id \
+												WHERE users.user_id = $1 ORDER BY specialization.name', 
+												[req.body.user], function(err, result) {
+				  	//call `done()` to release the client back to the pool
+				    done();
+			    	if(err) {
+				      return console.error('error running query', err);
+				    } else {
+				    	res.json({users_specialization: result.rows});
+				    }
+				  });
 		   	}
 		  });
 	  });
@@ -664,6 +790,38 @@ router.put('/admin/user_specialties', function(req, res, next) {
 		});
 	}
 });
+
+/* PUT/DELETE categories
+ */
+ router.delete('/admin/delete_category/:id', function(req, res, next) {
+ 	console.log("delete category");
+ 		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+ 			if(err) {
+ 				return console.error('error fetching client from pool', err);
+ 			}
+			// Edit category
+			client.query("DELETE FROM category WHERE category_id = $1", 
+				[req.params.id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					//console.log(result.rows);
+					//res.json({"categories": result.rows});
+					res.json(true);
+
+			
+
+				}
+			});
+		});
+ 	
+ });
+
+
+
 
  /* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
@@ -980,8 +1138,7 @@ router.get('/admin/usuarios', function(req, res, next) {
 				});
 
 			// get all specialties
-			client.query('SELECT spec_id, name as spec_name \
-										FROM specialization', function(err, result) {
+			client.query('SELECT spec_id, name as spec_name FROM specialization ORDER BY name', function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -1246,7 +1403,7 @@ router.get('/localizaciones', function(req, res, next) {
 					}
 				});
 			// get all categories
-			client.query('SELECT category_id, name as category_name FROM category', function(err, result) {
+			client.query('SELECT category_id, name as category_name FROM category ORDER BY name', function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -1270,7 +1427,7 @@ router.get('/localizaciones', function(req, res, next) {
 			});
 
 		  // query for associated agentes
-		  client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+		  client.query('WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
 		  	FROM location \
 		  	ORDER BY location_name \
 		  	LIMIT 20) \
@@ -1285,11 +1442,11 @@ router.get('/localizaciones', function(req, res, next) {
 		  });
 
 		  // query for associated ganaderos
-		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
+		  client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
 		  	FROM location natural join address \
 		  	ORDER BY location_name \
 		  	LIMIT 20) \
-		  SELECT person_id, location_id,\
+		  SELECT person_id, locations.location_id,\
 		  CASE WHEN person_id = owner_id THEN 'owner' \
 		  WHEN person_id = manager_id THEN 'manager' \
 		  END AS relation_type, \
@@ -1596,7 +1753,7 @@ router.put('/admin/category_location', function(req, res, next) {
 								client.query("DELETE FROM location_category WHERE location_id =$1 AND category_id = $2", 
 															[req.body.location,location_category_array[j].category_id] , function(err, result) {
 									//call `done()` to release the client back to the pool
-									done();
+									//done();
 									if(err) {
 										return console.error('error running query', err);
 									} else {
@@ -1613,7 +1770,7 @@ router.put('/admin/category_location', function(req, res, next) {
 							client.query("INSERT into location_category (location_id, category_id) VALUES ($1, $2)", 
 														[req.body.location,req.body.categories[i]] , function(err, result) {
 								//call `done()` to release the client back to the pool
-								done();
+								//done();
 								if(err) {
 									return console.error('error running query', err);
 								} else {
@@ -1623,7 +1780,20 @@ router.put('/admin/category_location', function(req, res, next) {
 						}
 		      }
 		    	// location_category associations were succesfully updated
-					res.json(true);
+		    	client.query('SELECT category.category_id, category.name AS category_name \
+												FROM location \
+												INNER JOIN location_category ON location.location_id = location_category.location_id \
+												INNER JOIN category ON location_category.category_id = category.category_id \
+												WHERE location.location_id = $1 ORDER BY category.name', 
+												[req.body.location], function(err, result) {
+				  	//call `done()` to release the client back to the pool
+				    done();
+			    	if(err) {
+				      return console.error('error running query', err);
+				    } else {
+				    	res.json({location_categories: result.rows});
+				    }
+				  });
 		   	}
 		  });
 	  });
@@ -1657,7 +1827,8 @@ router.get('/citas', function(req, res, next) {
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									ORDER BY date ASC, time ASC \
+									WHERE appointments.status = '1' \
+									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20"
 	 			}
 	 		} else {
@@ -1667,8 +1838,8 @@ router.get('/citas', function(req, res, next) {
 									FROM appointments natural join report \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE appointments.maker_id = $1 \
-									ORDER BY date ASC, time ASC \
+									WHERE appointments.maker_id = $1 AND appointments.status = '1' \
+									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20",
 					values: [user_id]
 	 			}
@@ -1722,6 +1893,30 @@ router.put('/admin/citas/:id', function(req, res, next) {
 			});
 		});
  	}
+});
+
+/* DELETE Admin Manejar Citas 
+ * Delete cita matching :id in database
+ */
+router.delete('/admin/citas/:id', function(req, res, next) {
+ 	var cita_id = req.params.id;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// Edit cita in db
+		client.query("UPDATE appointments SET status = $1 WHERE appointment_id = $2", 
+									[-1, cita_id] , function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
 });
 
 /* GET Admin Manejar Dispositivos
@@ -1801,9 +1996,22 @@ router.post('/admin/dispositivos', function(req, res, next) {
 	  			if(result.rowCount > 0){
 	  				res.send({exists: true});
 	  			} else {
+
+	  				var query_config = {};
+	  				if(req.body.dispositivo_id_usuario.length > 0){
+	  					query_config = {
+	  						text: "INSERT into devices (name, id_number, user_id) VALUES ($1, $2, $3)",
+	  						values: [req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario]
+	  					}
+	  				} else {
+	  					query_config = {
+	  						text: "INSERT into devices (name, id_number) VALUES ($1, $2)",
+	  						values: [req.body.dispositivo_name, req.body.dispositivo_id_num]
+	  					}
+	  				}
+
 		  			// Insert new dispositivo into db
-		  			client.query("INSERT into devices (name, id_number, user_id) VALUES ($1, $2, $3)", 
-		  										[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario] , function(err, result) {
+		  			client.query(query_config, function(err, result) {
 							//call `done()` to release the client back to the pool
 							done();
 							if(err) {
@@ -1835,19 +2043,60 @@ router.put('/admin/dispositivos/:id', function(req, res, next) {
  			if(err) {
  				return console.error('error fetching client from pool', err);
  			}
-			// Edit dispositivo in db
-			client.query("UPDATE devices SET name = $1, id_number = $2, user_id = $3 WHERE device_id = $4", 
-										[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario, dispositivo_id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					res.json(true);
+	  	// Verify dispositivo does not already exist in db
+	  	client.query("SELECT device_id, id_number FROM devices WHERE id_number = $1", 
+	  								[req.body.dispositivo_id_num], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+	  			if(result.rowCount > 0 && result.rows[0].device_id != dispositivo_id){
+	  				res.send({exists: true});
+	  			} else {
+						// Edit dispositivo in db
+						client.query("UPDATE devices SET name = $1, id_number = $2, user_id = $3 WHERE device_id = $4", 
+													[req.body.dispositivo_name, req.body.dispositivo_id_num, req.body.dispositivo_id_usuario, dispositivo_id] , function(err, result) {
+							//call `done()` to release the client back to the pool
+							done();
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+								console.log(result.rows);
+								res.json(true);
+			/*					if(false){
+
+								} else {
+									res.json(true);
+								}*/
+							}
+						});
+					}
 				}
 			});
 		});
  	}
+});
+
+/* DELETE Admin Manejar Dispositivos 
+ * Delete dispositivo matching :id in database
+ */
+router.delete('/admin/dispositivos/:id', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+	 	if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// delete
+		client.query('DELETE FROM devices WHERE device_id = $1', 
+									[req.params.id],function(err, result){
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
 });
 
 module.exports = router;
