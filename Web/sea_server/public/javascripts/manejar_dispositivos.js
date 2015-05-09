@@ -187,7 +187,7 @@ $(document).ready(function(){
         }
         // update dispositivos list after posting 
         populate_dispositivos();
-        //$('#edit_panel').hide();
+        $('#edit_panel').hide();
        },
        error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );

@@ -125,7 +125,7 @@ $(document).ready(function(){
   });
 
   // take survey with flow method click event
-  $('#button.btn_flujo_cuestionario').on('click', function(){
+  $('#btn_flujo_cuestionario').on('click', function(){
     // contains cuestionario id
     var this_cuestionario_id = $(this).attr('data-id');
     window.location.href = '/users/cuestionarios/flow/'+this_cuestionario_id;
@@ -152,7 +152,7 @@ $(document).ready(function(){
 
     /* Populate list with first 20 cuestionarios, organized alphabetically */
   function populate_cuestionarios(){
-    $.getJSON('http://localhost:3000/list_cuestionarios', function(data) {
+    $.getJSON('http://localhost:3000/list_tomar_cuestionarios', function(data) {
       cuestionarios_array = data.cuestionarios;
 
       populate_list(data.cuestionarios);

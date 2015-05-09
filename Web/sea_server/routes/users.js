@@ -70,8 +70,9 @@ router.get('/cuestionarios', function(req, res, next) {
  		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
+									WHERE flowchart.status = $1 \
 						 			ORDER BY flowchart_name \
-						 			LIMIT 20', function(err, result) {
+						 			LIMIT 20', [1], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
 
@@ -1883,22 +1884,22 @@ router.get('/citas', function(req, res, next) {
 	 		if(user_type == 'admin' || user_type == 'specialist') {
 	 			// get first 20 citas regardless of creator
 	 			query_config = {
-	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
-									FROM appointments natural join report \
+	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, appointments.report_id, report.name AS report_name, appointments.maker_id, username \
+									FROM appointments INNER JOIN report ON appointments.report_id = report.report_id \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE appointments.status = '1' \
 									ORDER BY location.name ASC, date ASC, time ASC \
-									LIMIT 20"
+									LIMIT 20",
 	 			}
 	 		} else {
 	 			//get first 20 citas created by this user
+	 			// TODO add in where conditional check with current date
 	 			query_config = {
-	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, report_id, report.name AS report_name, appointments.maker_id, username \
-									FROM appointments natural join report \
+	 				text: "SELECT appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(appointments.time, 'HH12:MI AM') AS time, purpose, location.location_id, location.name AS location_name, appointments.report_id, report.name AS report_name, appointments.maker_id, username \
+									FROM appointments INNER JOIN report ON appointments.report_id = report.report_id \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE appointments.maker_id = $1 AND appointments.status = '1' \
+									WHERE appointments.maker_id = $1 \
 									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20",
 					values: [user_id]
@@ -1966,8 +1967,8 @@ router.delete('/admin/citas/:id', function(req, res, next) {
 			return console.error('error fetching client from pool', err);
 		}
 		// Edit cita in db
-		client.query("UPDATE appointments SET status = $1 WHERE appointment_id = $2", 
-									[-1, cita_id] , function(err, result) {
+		client.query("DELETE FROM appointments WHERE appointment_id = $1", 
+									[cita_id] , function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
@@ -2147,6 +2148,7 @@ router.post('/admin/dispositivos', function(req, res, next) {
 	  		if(err) {
 	  			return console.error('error running query', err);
 	  		} else {
+	  			console.log(result.rowCount);
 	  			if(result.rowCount > 0){
 	  				res.send({exists: true});
 	  			} else {

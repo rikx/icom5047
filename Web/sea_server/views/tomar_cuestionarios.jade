@@ -17,10 +17,12 @@ block content
 		.row
 			.col-md-1
 			.col-md-6
-				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar cuestionario por nombre')
+				small
+					*Buscar cuestionario por nombre
+				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
-
+		br
 		.row
 			.col-md-1
 			.col-md-6
@@ -62,8 +64,8 @@ block content
 								tr
 									td Creado por:
 									td#cuestionario_info_creator
-						button(class='btn_flujo_cuestionario btn btn-sm btn-success btn-block', type='button') Método con Flujo
-						//button(class='btn_abierto_cuestionario btn btn-sm btn-success btn-block', type='button', disabled) Método Abierto
+						button#btn_flujo_cuestionario(class='btn btn-sm btn-success btn-block', type='button') Método con Flujo
+						//button#btn_abierto_cuestionario(class='btn btn-success btn-block', type='button', disabled) Método Abierto
 		.row
 			.col-md-2
 			.col-md-4

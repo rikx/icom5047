@@ -44,6 +44,9 @@ block content
 							li
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
 				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
+				br
+				br
+				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 				//button#btn_recreate(class='btn btn-lg btn-success btn-block', type='button') Re-Create
 				//button#btn_repopulate(class='btn btn-lg btn-success btn-block', type='button', data-id='32') Populate from db
 			.col-md-5
@@ -78,7 +81,7 @@ block content
 		br
 		.row
 			.col-md-3
-				.panel.panel-warning
+				.panel.panel-warning(style="display:none")
 					.panel-heading
 						h3.panel-title Información Básica
 					.panel-body
@@ -93,7 +96,6 @@ block content
 							.form-group
 								label(for='flowchart_version') Versión:
 								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
-						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 			.col-md-5
 				// TODO: add home glyphicon
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal

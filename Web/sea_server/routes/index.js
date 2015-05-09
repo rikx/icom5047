@@ -296,8 +296,33 @@ router.get('/cuestionarios/:user_input', function(req, res, next){
 		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
-									WHERE LOWER(name) LIKE LOWER('%"+user_input+"%') \
-									ORDER BY flowchart_name", function(err, result){
+									WHERE LOWER(name) LIKE LOWER('%"+user_input+"%') AND flowchart.status != $1 \
+									ORDER BY flowchart_name", [-1], function(err, result){
+		if(err) {
+      return console.error('error running query', err);
+    } else {
+    	res.json({cuestionarios: result.rows});
+    }
+		});
+	})
+});
+
+/* GET search take survey flowcharts
+ * returns flowcharts matching :user_input and their basic information
+ */
+router.get('/cuestionarios/take/:user_input', function(req, res, next){
+	var user_input = req.params.user_input;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done){
+		if(err) {
+		return console.error('error fetching client from pool', err);
+		}
+		// get all matching flowcharts and their basic data
+		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+									FROM flowchart \
+									INNER JOIN users ON user_id = creator_id \
+									WHERE LOWER(name) LIKE LOWER('%"+user_input+"%') AND flowchart.status = $1\
+									ORDER BY flowchart_name", [1], function(err, result){
 		if(err) {
       return console.error('error running query', err);
     } else {
@@ -717,8 +742,39 @@ router.get('/list_cuestionarios', function(req, res, next) {
 	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
+									WHERE flowchart.status != $1 \
 						 			ORDER BY flowchart_name \
-						 			LIMIT 20', function(err, result) {
+						 			LIMIT 20', [-1], function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	    done();
+
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	cuestionarios_list = result.rows;
+	    	res.json({cuestionarios: cuestionarios_list});
+	    }
+	  });
+	});
+});
+
+/* GET Cuestionarios List data 
+ * Responds with 10 cuestionarios, 
+ * alphabetically ordered by name
+ */
+router.get('/list_tomar_cuestionarios', function(req, res, next) {
+	var cuestionarios_list;
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+									FROM flowchart \
+									INNER JOIN users ON user_id = creator_id \
+									WHERE flowchart.status = $1 \
+						 			ORDER BY flowchart_name \
+						 			LIMIT 20', [1], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
