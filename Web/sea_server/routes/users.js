@@ -34,12 +34,12 @@ router.get('/admin/categorias', function(req, res, next) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
- 		client.query('SELECT * FROM category ORDER BY name COLLATE Latin1_General_bin', function(err, result) {
+ 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
 				categories_list = result.rows;
-		  	client.query('SELECT * FROM specialization ORDER BY name COLLATE Latin1_General_bin', function(err, result){
+		  	client.query('SELECT * FROM specialization ORDER BY name', function(err, result){
 			  	//call `done()` to release the client back to the pool
 			  	done();
 			  	if(err) {
