@@ -237,6 +237,8 @@ $(document).ready(function(){
     $('#btn_submit, #heading_create').show();
     $('#edit_panel').show();
     $('#info_panel').hide();
+    $('#specialty_panel_edit').hide();
+
 
     // clear add form
     $('#form_manage_usuario')[0].reset();
@@ -300,6 +302,7 @@ $(document).ready(function(){
   $('#btn_edit_specialty').show()
   $('#btn_add_specialty').show();
   $('#add_specialty_panel').hide();
+  $('#specialty_panel_edit').show();
 
 
 
@@ -536,6 +539,11 @@ function populate_info_panel($this_usuario){
           table_content += '<tr><td>'+this.location_name+'</td></tr>';
         }
       });  
+
+      if(table_content == '')
+      {
+        table_content = "Usuario no tiene localizaciones asignadas.";
+      }
       $('#usuario_locations').html(table_content);
     }
 

@@ -1606,18 +1606,18 @@ router.post('/admin/localizaciones', function(req, res, next) {
   				if(result.rowCount > 0){
   					var location_id = result.rows[0].location_id;
   					var license = result.rows[0].license;
-			client.query("UPDATE location SET name = $1, license = $2 \
+			client.query("UPDATE location SET name = $1, license = $2, status = $4 \
 				WHERE location_id = $3", 
-				[req.body.localizacion_name, req.body.localizacion_license, location_id], function(err, result) {
+				[req.body.localizacion_name, req.body.localizacion_license, location_id, 1], function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {
 						client.query("UPDATE address \
-							SET address_line1 = $1, address_line2 = $2, city = $3, zipcode = $4, status = $6 \
+							SET address_line1 = $1, address_line2 = $2, city = $3, zipcode = $4 \
 							FROM location \
 							WHERE location_id = $5 and location.address_id = address.address_id",
 							[req.body.localizacion_address_line1, req.body.localizacion_address_line2, req.body.localizacion_address_city, 
-							req.body.localizacion_address_zipcode, location_id, 1], function(err, result) {
+							req.body.localizacion_address_zipcode, location_id], function(err, result) {
 						//call `done()` to release the client back to the pool
 						done();
 						if(err) {
