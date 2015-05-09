@@ -165,6 +165,7 @@ $(document).ready(function(){
 
   // Populates info panel with list element's information
   function populate_info_panel(element){
+    $('#info_panel_heading').html(element.flowchart_name);
     $('#cuestionario_info_name').html(element.flowchart_name);
     $('#cuestionario_info_version').text(element.version);
     $('#cuestionario_info_creator').text(element.username);
