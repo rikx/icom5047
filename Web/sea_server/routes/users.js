@@ -1173,8 +1173,8 @@ router.get('/admin/usuarios', function(req, res, next) {
 	 		}
 			// TODO: modify query to also give you account type
 			client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, username, type \
-										FROM users natural join person \
-										ORDER BY username ASC \
+										FROM person INNER JOIN users ON users.person_id=person.person_id \
+										ORDER BY username \
 										LIMIT 20', function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
