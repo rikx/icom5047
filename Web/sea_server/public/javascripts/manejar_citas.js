@@ -33,7 +33,7 @@ $(document).ready(function(){
         // populate global arrays with matching results
         citas_array = list.citas;
         // populate list with matching results
-        populate_list(citas_array);
+        populate_list(list.citas);
         return $.map(list.citas, function(cita) { 
           return cita;
         });
@@ -88,6 +88,10 @@ $(document).ready(function(){
         }
       }
     }
+  });
+  
+  $('#search_bar').on('input', function() { 
+    populate_list(citas_array);
   });
   /* Search Code End */
 

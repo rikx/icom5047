@@ -93,6 +93,10 @@ $(document).ready(function(){
       }
     }
   });
+
+  $('#search_bar').on('input', function() { 
+    populate_list(dispositivos_array);
+  });
   /* Search Code End */
 
   /* Return home */

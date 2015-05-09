@@ -34,7 +34,7 @@ $(document).ready(function(){
         reportes_array = list.reports;
 
         // populate list with matching results
-        populate_list(reportes_array);
+        populate_list(list.reports);
         return $.map(list.reports, function(reporte) { 
           return reporte;
         });
@@ -96,6 +96,10 @@ $(document).ready(function(){
         }
       }
     }
+  });
+
+  $('#search_bar').on('input', function() { 
+    populate_list(reportes_array);
   });
   /* Search Code End */
 
