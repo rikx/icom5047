@@ -261,7 +261,6 @@ $(document).ready(function(){
     }
     else
     {
-    // ajax call to post new ganadero
     $.ajax({
       url: "http://localhost:3000/users/admin/usuarios",
       method: "POST",

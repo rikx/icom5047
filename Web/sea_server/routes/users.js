@@ -1267,14 +1267,55 @@ router.post('/admin/usuarios', function(req, res, next) {
 	 		if(err) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
+	 		var new_username = req.body.usuario_email;
+	  		var at_index = new_username.indexOf('@');
+	  		new_username = new_username.substring(0, at_index);
 	  	// Verify user does not already exist
-	  	client.query("SELECT username FROM users WHERE username = $1", 
-	  								[req.body.usuario_name], function(err, result) {
+	  	client.query("SELECT user_id, username FROM users WHERE username = $1", 
+	  								[new_username], function(err, result) {
 	  		if(err) {
 	  			return console.error('error running query', err);
 	  		} else {
 	  			if(result.rowCount > 0){
-	  				res.send({exists: true});
+	  						  var user_id = result.rows[0].user_id;
+	  						  var username = result.rows[0].username;
+	  						  // use as username string content before '@' in usuario_email
+/*	  						  var new_username = req.body.usuario_email;
+	  						  var at_index = new_username.indexOf('@');
+	  						  new_username = new_username.substring(0, at_index);*/
+	  						  client.query("UPDATE users SET type = $1, username = $2, status = $3 \
+	  						  	WHERE user_id = $4", 
+	  						  	[req.body.usuario_type, new_username, 1,  user_id], function(err, result) {
+	  						  		if(err) {
+	  						  			return console.error('error running query', err);
+	  						  		} else {
+					// edit password 
+					client.query("UPDATE users \
+						SET passhash = crypt($1, gen_salt('bf'::text)) \
+						WHERE user_id = $2", 
+						[req.body.usuario_password, user_id] , function(err, result) {
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+							// do nothing
+						}
+					});
+					// edit person table
+					client.query("UPDATE person \
+						SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6, middle_initial = $7 \
+						FROM users \
+						WHERE user_id = $3 and users.person_id = person.person_id",
+						[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono, req.body.usuario_middle_initial], function(err, result) {
+					//call `done()` to release the client back to the pool
+					done();
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						res.json(true);
+					}
+				});   
+				}
+			});
 	  			} else {
 		  			// Insert new person row
 		  			client.query("INSERT into person (first_name, last_name1, last_name2, email, phone_number, middle_initial) VALUES ($1, $2, $3, $4, $5, $6) \
