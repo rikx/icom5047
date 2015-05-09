@@ -470,7 +470,11 @@ jsPlumb.ready(function() {
         }
       }
 
-      
+      //checks if source and target are recommendations
+      if(source_type == 'RECOM' && target_type == 'RECOM'){
+        return false;
+      }
+
       for(var z = 0; z<connections_array.length; z++){
         // check source and target pair does not exist
         if(source_id == connections_array[z].source && target_id == connections_array[z].target){
