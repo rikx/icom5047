@@ -547,9 +547,9 @@ router.get('/ganaderos', function(req, res, next) {
 	 		// get ganaderos
 	 		client.query("SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 							 			FROM person \
-							 			WHERE person_id NOT IN (SELECT person_id FROM users) \
+							 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 							 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-							 			LIMIT 20", function(err, result) {
+							 			LIMIT 20", [-1], function(err, result) {
 	 				if(err) {
 	 					return console.error('error running query', err);
 	 				} else {
@@ -559,11 +559,11 @@ router.get('/ganaderos', function(req, res, next) {
 	 		// get associated locations
 	 		client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
 								 			FROM person \
-								 			WHERE person_id NOT IN (SELECT person_id FROM users) \
+								 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 								 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 								 			LIMIT 20) \
 								 		SELECT person_id, location_id, location.name AS location_name \
-								 		FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', function(err, result){
+								 		FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', [-1], function(err, result){
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
@@ -604,14 +604,14 @@ router.post('/admin/ganaderos', function(req, res, next) {
  				return console.error('error fetching client from pool', err);
  			}
 	  	// Verify ganadero does not already exist in db
-	  	client.query("SELECT email FROM person WHERE email = $1 OR phone_number = $2", 
-	  								[req.body.ganadero_email, req.body.ganadero_telefono], function(err, result) {
-	  		if(err) {
-	  			return console.error('error running query', err);
-	  		} else {
-	  			if(result.rowCount > 0){
-	  				res.send({exists: true});
-	  			} else {
+	  	//client.query("SELECT email FROM person WHERE email = $1 OR phone_number = $2", 
+	  								//[req.body.ganadero_email, req.body.ganadero_telefono], function(err, result) {
+	  		// if(err) {
+	  		// 	return console.error('error running query', err);
+	  		// } else //{
+	  			//if(result.rowCount > 0){
+	  				//res.send({exists: true});
+	  			//} //else {
 		  			// Insert new ganadero row
 		  			client.query("INSERT into person (first_name, middle_initial, last_name1, last_name2, email, phone_number) VALUES ($1, $2, $3, $4, $5, $6)", 
 		  										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono] , function(err, result) {
@@ -623,9 +623,9 @@ router.post('/admin/ganaderos', function(req, res, next) {
 								res.json(true);
 							}
 						});
-		  		}
-		  	}
-		  });
+		  		//}
+		  	//}
+		 // });
 	  });
 	}
 });
@@ -2067,6 +2067,29 @@ router.put('/admin/delete_flowchart/:id', function(req, res, next) {
 		});
 	});
 });
+
+
+/* Delete Ganadero
+ * 
+ */
+ router.put('/admin/delete_ganadero/:id', function(req, res, next) {
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+		// Edit ganadero
+		client.query("UPDATE person SET status = $1 where person_id = $2", 
+			[-1,req.params.id] , function(err, result) {
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
+ });
 
 
 /* Delete Report

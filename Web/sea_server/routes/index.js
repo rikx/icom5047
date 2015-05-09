@@ -698,9 +698,9 @@ router.get('/list_ganaderos', function(req, res, next) {
 		// ganaderos
 	  client.query("SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 									FROM person \
-									WHERE person_id NOT IN (SELECT person_id FROM users) \
+									WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 									ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-									LIMIT 20", function(err, result) {
+									LIMIT 20", [-1], function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -711,11 +711,11 @@ router.get('/list_ganaderos', function(req, res, next) {
 	  // locations ganadero is associated with
 	  client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
 										FROM person \
-										WHERE person_id NOT IN (SELECT person_id FROM users) \
+										WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 										LIMIT 20) \
 									SELECT person_id, location_id, location.name AS location_name \
-									FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', function(err, result){
+									FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', [-1], function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {

@@ -149,8 +149,8 @@ $(document).ready(function(){
     populate_info_panel(this_ganadero);
 
     // set id values of info panel buttons
-    $('#btn_edit_ganadero').attr('data-id', this_ganadero.user_id);
-    $('#btn_delete').attr('data-id', this_ganadero.user_id);
+    $('#btn_edit_ganadero').attr('data-id', this_ganadero.person_id);
+    $('#btn_delete').attr('data-id', this_ganadero.person_id);
     $('#btn_delete').attr('data-name', this_ganadero.person_name); 
   });
 
@@ -207,7 +207,7 @@ $(document).ready(function(){
   });
 
   /* Open edit panel */
-  $ganaderos_list.on('click', 'tr td button.btn_edit_ganadero', function(){
+ $('#btn_edit_ganadero').on('click', function(){
     $('#btn_edit, #heading_edit').show();
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
@@ -267,38 +267,27 @@ $(document).ready(function(){
 }
 });
 
-  /* DELETEs ganadero information */
-  $ganaderos_list.on('click', 'tr td a.btn_delete_ganadero', function(e){
-    // prevents link from firing
-    e.preventDefault();
-
-    // contains ganadero id
-    $(this).attr('data-id');
-
-    $.ajax({
-      url: "http://localhost:3000/users/admin/ganadero",
-      method: "DELETE",
-
-      success: function( data ) {
-
-      },
-
-      // Code to run if the request fails; the raw request and
-      // status codes are passed to the function
-      error: function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        console.dir( xhr );
-      },
-
-      // Code to run regardless of success or failure
-      complete: function( xhr, status ) {
-        alert( "The request is complete!" );
-      }
+    //Delete Ganadero
+    $('#btn_delete').on('click', function(){
+      var ganadero_id = $('#btn_delete').attr("data-id");
+      $.ajax({
+        url: "http://localhost:3000/users/admin/delete_ganadero/" + ganadero_id,
+        method: "PUT",
+        contentType: "application/json",
+        dataType: "json",
+        success: function(data) {
+          alert("Ganadero fue eliminado fue eliminado");
+          //populate_usuarios();
+          populate_ganaderos();
+        },
+        error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+        }
+      });
     });
-
-  });
 
   /* Populates info panel with $this_ganadero information */
   function populate_info_panel($this_ganadero){
@@ -322,8 +311,8 @@ $(document).ready(function(){
     $('#ganadero_locations').html(table_content);
 
     // set id values of info panel buttons
-    $('#btn_edit_ganadero').attr('data-id', $this_ganadero.user_id);
-    $('#btn_delete').attr('data-id', $this_ganadero.user_id);
+    $('#btn_edit_ganadero').attr('data-id', $this_ganadero.person_id);
+    $('#btn_delete').attr('data-id', $this_ganadero.person_id);
     $('#btn_delete').attr('data-name', $this_ganadero.person_name); 
   }
 
