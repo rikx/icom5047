@@ -905,7 +905,7 @@ router.get('/list_localizaciones', function(req, res, next) {
 	  });
 	  // query for associated ganaderos
 	  client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
-										FROM location natural join address \
+										FROM location INNER JOIN address ON location.address_id = address.address_id \
 										WHERE status != $1 \
 										ORDER BY location_name \
 										LIMIT 20) \
