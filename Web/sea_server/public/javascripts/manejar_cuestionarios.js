@@ -104,7 +104,7 @@ $(document).ready(function(){
     success: function(data) {
       alert("Cuestionario fue eliminado");
         // $the_form[0].reset();
-        // populate_categories();
+        populate_cuestionarios();
         // $('#edit_category_panel').hide();
       },
       error: function( xhr, status, errorThrown ) {

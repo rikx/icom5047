@@ -83,6 +83,7 @@ $(document).ready(function(){
   // search bar input select event listener
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
+    usuarios_array = [datum];
     populate_list([datum]);
   });
 
@@ -90,7 +91,7 @@ $(document).ready(function(){
     if (event.which == 13) {
       var user_input = $('#search_bar').val();
       if(user_input == ''){
-        populate_cuestionarios();
+        populate_usuarios();
         return;
       } else {
         search_source.get(user_input, sync, async);

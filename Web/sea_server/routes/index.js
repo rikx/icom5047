@@ -502,7 +502,7 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 
 		  // query for associated ganaderos
 		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
-									  	FROM location natural join address \
+									  	FROM location \
 									  	WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
 									  	ORDER BY location_name) \
 									  SELECT person_id, locations.location_id,\
@@ -695,7 +695,7 @@ router.get('/list_ganaderos', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	
+		// ganaderos
 	  client.query("SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 									FROM person \
 									WHERE person_id NOT IN (SELECT person_id FROM users) \
@@ -708,6 +708,7 @@ router.get('/list_ganaderos', function(req, res, next) {
 	    }
 	  });
 
+	  // locations ganadero is associated with
 	  client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
 										FROM person \
 										WHERE person_id NOT IN (SELECT person_id FROM users) \
