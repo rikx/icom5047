@@ -3,17 +3,33 @@ $(document).ready(function(){
   $usuarios_list = $('#usuarios_list');
 
   // initial population of usuarios list
-  populate_usuarios();
+  //populate_usuarios();
   
   // store data for 20 initial usuarios
-  var usuarios_array =  JSON.parse($usuarios_list.attr('data-usuarios'));
-  var specialties_array = JSON.parse($usuarios_list.attr('data-specialties'));
-  var locations_array = JSON.parse($usuarios_list.attr('data-locations'));
-  var all_specialties_array = JSON.parse($('#specialty_panel').attr('data-all-specialties'));
+  var usuarios_array, specialties_array, locations_array, all_specialties_array;
 
-  // initial info panel population
-  if(usuarios_array.length > 0){
-      populate_info_panel(usuarios_array[0]);
+  var data_usuarios = $usuarios_list.attr('data-usuarios');
+  var data_locations = $usuarios_list.attr('data-locations');
+  var data_specialties = $usuarios_list.attr('data-specialties');
+  var data_all_specialties = $('#specialty_panel').attr('data-all-specialties');
+
+  if(data_usuarios.length >2){
+    usuarios_array = JSON.parse($usuarios_list.attr('data-usuarios'));
+
+    if(data_locations.length >2){
+      locations_array = JSON.parse($usuarios_list.attr('data-locations'));
+    }
+    if(data_specialties.length >2){
+      specialties_array = JSON.parse($usuarios_list.attr('data-specialties'));
+    }
+    if(data_all_specialties.length >2){
+      all_specialties_array = JSON.parse($('#specialty_panel').attr('data-all-specialties'));
+    }
+
+    // initial info panel population
+    populate_info_panel(usuarios_array[0]);
+  } else {
+    $('#info_panel').hide();
   }
 
    /* Search Code start */
@@ -64,7 +80,32 @@ $(document).ready(function(){
   // search bar input select event listener
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
-    populate_list({datum});
+    populate_list([datum]);
+  });
+
+  $("#search_bar").keypress(function (event) {
+    if (event.which == 13) {
+      var user_input = $('#search_bar').val();
+      if(user_input == ''){
+        populate_cuestionarios();
+        return;
+      } else {
+        search_source.get(user_input, sync, async);
+        $(this).typeahead('close');
+        function sync(datums) {
+          //console.log('datums from `local`, `prefetch`, and `#add`');
+          //console.log(datums);
+          populate_list(datums);
+
+        }
+
+        function async(datums) {
+          //console.log('datums from `remote`');
+          //console.log(datums);
+          populate_list(datums);
+        }
+      }
+    }
   });
   /* Search Code End */
 
@@ -170,6 +211,11 @@ $(document).ready(function(){
     
     // populate info panel with this_usuario
     populate_info_panel(this_usuario);
+
+    // set id values of info panel buttons
+    $('#btn_edit_panel').attr('data-id', this_usuario.user_id);
+    $('#btn_delete').attr('data-id', this_usuario.user_id);
+    $('#btn_delete').attr('data-username', this_usuario.username); 
   });
 
   /* Change user type dropdown selected value */
@@ -497,7 +543,11 @@ function populate_info_panel($this_usuario){
     //Categoria de Localizacion
 
     //$('#especializacion_title').text("Tipo de Especializacion" + " - " + $this_usuario.email)
-
+    
+    // set id values of info panel buttons
+    $('#btn_edit_panel').attr('data-id', $this_usuario.user_id);
+    $('#btn_delete').attr('data-id', $this_usuario.user_id);
+    $('#btn_delete').attr('data-username', $this_usuario.username); 
   }
 
   /* Populate list with first 20 usuarios, organized alphabetically */
@@ -507,6 +557,8 @@ function populate_info_panel($this_usuario){
       locations_array = data.locations;
       specialties_array = data.user_specialties;
       populate_list(data.usuarios);
+
+      populate_info_panel(data.usuarios[0]);
     });
   };
 

@@ -17,20 +17,29 @@ block content
 		.row
 			.col-md-1
 			.col-md-6
-				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar usuario por correo electrónico')
+				small
+					*Buscar usuario por correo electrónico
+				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
-		
+		br
 		.row
 			.col-md-1
 			.col-md-6
 				.panel.panel-success
 					.panel-heading Usuarios
 					.panel-body
-						.list-group(style='overflow:auto; height:300px;')
+						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
 								tbody#usuarios_list(data-usuarios=usuarios, data-locations=locations, data-specialties=user_specialties)
+									each usuario, i in usuarios
+										tr
+											td
+												if i!=0
+													a(class='list-group-item show_info_usuario', href='#', data-id=usuario.user_id)= usuario.username
+												else 
+													a(class='list-group-item active show_info_usuario', href='#', data-id=usuario.user_id)= usuario.username
 				#add_specialty_panel.form-group
 								.panel.panel-success
 									.panel-heading Especialidades
@@ -129,7 +138,7 @@ block content
 									.panel-body
 											form#specialist_categories_list(role='form')
 											//button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
-								button#btn_edit_panel(class='btn btn-sm btn-success btn-block' type='button', data-id=usuarios[0].user_id) Editar
+								button#btn_edit_panel(class='btn btn-sm btn-success btn-block' type='button') Editar
 						.panel.panel-info
 							.panel-heading Localizaciones Asignadas
 							.panel-body
