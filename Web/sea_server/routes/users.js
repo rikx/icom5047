@@ -1598,13 +1598,37 @@ router.post('/admin/localizaciones', function(req, res, next) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
 	  	// Verify location does not already exist in db
-	  	client.query("SELECT license FROM location WHERE license = $1", 
+	  	client.query("SELECT location_id, license FROM location WHERE license = $1", 
 	  								[req.body.localizacion_license], function(err, result) {
   			if(err) {
   				return console.error('error running query', err);
   			} else {
   				if(result.rowCount > 0){
-  					res.send({exists: true}); 
+  					var location_id = result.rows[0].location_id;
+  					var license = result.rows[0].license;
+			client.query("UPDATE location SET name = $1, license = $2 \
+				WHERE location_id = $3", 
+				[req.body.localizacion_name, req.body.localizacion_license, location_id], function(err, result) {
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						client.query("UPDATE address \
+							SET address_line1 = $1, address_line2 = $2, city = $3, zipcode = $4, status = $6 \
+							FROM location \
+							WHERE location_id = $5 and location.address_id = address.address_id",
+							[req.body.localizacion_address_line1, req.body.localizacion_address_line2, req.body.localizacion_address_city, 
+							req.body.localizacion_address_zipcode, location_id, 1], function(err, result) {
+						//call `done()` to release the client back to the pool
+						done();
+						if(err) {
+							return console.error('error running query', err);
+						} else {
+							res.json(true);
+						}
+					});   
+					}
+				});
+  					//res.send({exists: true}); 
   				} else {
 		  			// Insert new location 
 		  			client.query("INSERT into address (address_line1, address_line2, city, zipcode) VALUES ($1, $2, $3, $4) RETURNING address_id", 

@@ -413,6 +413,7 @@ $('#btn_delete').on('click', function(){
     dataType: "json",
     success: function(data) {
       alert("Localización fue eliminada");
+      populate_localizaciones();
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
