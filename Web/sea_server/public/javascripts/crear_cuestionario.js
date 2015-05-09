@@ -323,7 +323,7 @@ jsPlumb.ready(function() {
 			}
    
 			jsPlumb.draggable(newState, {
-				containment: 'parent',
+				//containment: 'parent',
 				stop: function(event) {
 					if ($(event.target).find('select').length == 0) {
 
@@ -555,9 +555,9 @@ jsPlumb.ready(function() {
 	});
 
 	$('#container_plumbjs').scroll(function(){
-		jsPlumb.ready(function() {
+		//jsPlumb.ready(function() {
 			jsPlumb.repaintEverything();
-		});
+		//});
 	});
 
 	function containsObject(obj, list) {

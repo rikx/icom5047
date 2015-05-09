@@ -32,7 +32,7 @@ $(document).ready(function(){
       filter: function(list) {
         // populate global arrays with matching results
         reportes_array = list.reports;
-  
+
         // populate list with matching results
         populate_list(reportes_array);
         return $.map(list.reports, function(reporte) { 
