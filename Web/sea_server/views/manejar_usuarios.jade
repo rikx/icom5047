@@ -16,13 +16,17 @@ block content
 
 		.row
 			.col-md-1
-			.col-md-6
-				small
-					*Buscar usuario por correo electrónico
+			.col-md-1
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				#btn_home(class='btn-group', role='group', aria-label='')
+					a(class='btn btn-success btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-home')
+			.col-md-5
+				//small
+					//*Buscar usuario por correo electrónico
 				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
-		br
 		.row
 			.col-md-1
 			.col-md-6
@@ -41,7 +45,7 @@ block content
 												else 
 													a(class='list-group-item active show_info_usuario', href='#', data-id=usuario.user_id)= usuario.username
 							//button#btn_add_usuario(class='btn btn-default btn-success', type='button') Agregar Categorías
-							button#btn_add_usuario(class='btn btn-default btn-success', type='button') Añadir Usuario
+						button#btn_add_usuario(class='btn btn-default btn-success', type='button') Añadir Usuario
 
 				#add_specialty_panel.form-group
 								.panel.panel-success
@@ -167,7 +171,7 @@ block content
 			.col-md-4
 				// TODO: add home glyphicon
 				br
-				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
