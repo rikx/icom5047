@@ -16,13 +16,18 @@ block content
 
 		.row
 			.col-md-1
-			.col-md-6
-				small
-					| *Buscar ganadero por nombre o correo electrónico
+			.col-md-1
+				#btn_home(class='btn-group', role='group', aria-label='')
+					a(class='btn btn-success btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-home')
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+			.col-md-5
+				//small
+				//	| *Buscar ganadero por nombre o correo electrónico
 				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
-		br
+		//br
 		.row
 			.col-md-1
 			.col-md-6
@@ -49,6 +54,8 @@ block content
 												//td
 													//a(class='btn_delete_ganadero btn btn-sm btn-success', data-toggle='tooltip', data-id=ganadero.person_id)
 														//i(class='glyphicon glyphicon-trash')
+						button#btn_add_ganadero(class='btn btn-default btn-success', type='button') Agregar Ganadero
+						//button#btn_add_usuario(class='btn btn-default btn-success', type='button') Añadir Usuario
 
 			#edit_panel.col-md-4(style="display:none")
 				.jumbotron
@@ -108,10 +115,10 @@ block content
 		.row
 			.col-md-1
 			.col-md-3
-				button#btn_add_ganadero(class='btn btn-sm btn-default btn-block', type='button') Agregar Ganadero
+				//button#btn_add_ganadero(class='btn btn-sm btn-default btn-block', type='button') Agregar Ganadero
 			.col-md-3
 				// TODO: add home glyphicon
-				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

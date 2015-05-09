@@ -302,13 +302,19 @@ $(document).ready(function(){
     $('#ganadero_info_contact').html('<p>'+$this_ganadero.email+'</p><p>'+$this_ganadero.phone_number+'</p>');
       
     // populate associated locations panel
-    var table_content = '';
+    var content = '';
     $.each(localizaciones_array, function(i){
       if($this_ganadero.person_id == this.person_id){
         table_content += '<tr><td>'+this.location_name+'</td></tr>';
       }
-    });  
-    $('#ganadero_locations').html(table_content);
+    }); 
+    console.log(content);
+
+    if(content == '')
+    {
+      content == 'Ganadero no tiene localizaciones asignadas.';
+    }
+    $('#ganadero_locations').html(content);
 
     // set id values of info panel buttons
     $('#btn_edit_ganadero').attr('data-id', $this_ganadero.person_id);
