@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
  */
 public class DBSchema {
     //
+    public static final String ENABLE_FOREIGN_KEY = "PRAGMA foreign_keys = ON";
+    public static final String DISABLE_FOREIGN_KEY = "PRAGMA foreign_keys = OFF";
     public static final String MODIFIED = "modified";
     public static final String MODIFIED_YES = "yes";
     public static final String MODIFIED_NO = "no";
@@ -112,7 +114,8 @@ public class DBSchema {
     public static final String CREATE_LOCATION_CATEGORY_TABLE = "CREATE TABLE " + TABLE_LOCATION_CATEGORY + "(" +
             LOCATION_CATEGORY_LOCATION_ID + " INTEGER," +
             LOCATION_CATEGORY_CATEGORY_ID + " INTEGER," +
-            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
+            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "', " +
+            "PRIMARY KEY (location_id, category_id) "+")";
     public static final String TABLE_OPTION = "option";
     public static final String OPTION_ID = "option_id";
     public static final String OPTION_PARENT_ID = "parent_id";
@@ -129,13 +132,6 @@ public class DBSchema {
     public static final String PATH_OPTION_ID = "option_id";
     public static final String PATH_DATA = "data";
     public static final String PATH_SEQUENCE = "sequence";
-    public static final String CREATE_PATH_TABLE = "CREATE TABLE " + TABLE_PATH + "(" +
-            PATH_REPORT_ID + " INTEGER," +
-            PATH_OPTION_ID + " INTEGER," +
-            PATH_SEQUENCE + " INTEGER," +
-            PATH_DATA + " TEXT," +
-            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "', " +
-            "UNIQUE ("+PATH_REPORT_ID+", "+PATH_OPTION_ID+", "+PATH_SEQUENCE+"))";
     public static final String TABLE_PERSON = "person";
     public static final String PERSON_ID = "person_id";
     public static final String PERSON_LAST_NAME1 = "last_name1";
@@ -176,12 +172,20 @@ public class DBSchema {
             REPORT_DATE_FILED + " TEXT," +
             REPORT_STATUS + " INTEGER DEFAULT 0," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
+    public static final String CREATE_PATH_TABLE = "CREATE TABLE " + TABLE_PATH + "(" +
+            PATH_REPORT_ID + " INTEGER," +
+            PATH_OPTION_ID + " INTEGER," +
+            PATH_SEQUENCE + " INTEGER," +
+            PATH_DATA + " TEXT," +
+            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "', " +
+            "UNIQUE ("+PATH_REPORT_ID+", "+PATH_OPTION_ID+", "+PATH_SEQUENCE+"), " +
+            "FOREIGN KEY("+PATH_REPORT_ID+") REFERENCES "+TABLE_REPORT+"("+REPORT_ID+"))";
     public static final String TABLE_SPECIALIZATION = "specialization";
     public static final String SPECIALIZATION_ID = "spec_id";
     public static final String SPECIALIZATION_NAME = "name";
     public static final String CREATE_SPECIALIZATION_TABLE = "CREATE TABLE " + TABLE_SPECIALIZATION + "(" +
             SPECIALIZATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            SPECIALIZATION_NAME + " TEXT," +
+            SPECIALIZATION_NAME + " TEXT UNIQUE," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_USERS = "users";
     public static final String USER_ID = "user_id";
@@ -204,7 +208,8 @@ public class DBSchema {
     public static final String CREATE_USERS_SPECIALIZATION_TABLE = "CREATE TABLE " + TABLE_USERS_SPECIALIZATION + "(" +
             USERS_SPECIALIZATION_USER_ID + " INTEGER," +
             USERS_SPECIALIZATION_SPECIALIZATION_ID + " INTEGER," +
-            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "' )";
+            MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "'," +
+            "PRIMARY KEY ("+USERS_SPECIALIZATION_USER_ID+", "+USERS_SPECIALIZATION_SPECIALIZATION_ID+"))";
 
 
     public static final DateFormat FORMATDATE = new SimpleDateFormat("yyyy-MM-dd");

@@ -48,6 +48,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        db.execSQL(DBSchema.ENABLE_FOREIGN_KEY);
         db.execSQL(DBSchema.CREATE_ADDRESS_TABLE);
         db.execSQL(DBSchema.CREATE_APPOINTMENTS_TABLE);
         db.execSQL(DBSchema.CREATE_CATEGORY_TABLE);
@@ -57,9 +58,9 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DBSchema.CREATE_LOCATION_TABLE);
         db.execSQL(DBSchema.CREATE_LOCATION_CATEGORY_TABLE);
         db.execSQL(DBSchema.CREATE_OPTION_TABLE);
-        db.execSQL(DBSchema.CREATE_PATH_TABLE);
         db.execSQL(DBSchema.CREATE_PERSON_TABLE);
         db.execSQL(DBSchema.CREATE_REPORT_TABLE);
+        db.execSQL(DBSchema.CREATE_PATH_TABLE);
         db.execSQL(DBSchema.CREATE_SPECIALIZATION_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_SPECIALIZATION_TABLE);
