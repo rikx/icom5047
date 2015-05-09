@@ -3,146 +3,163 @@
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent">
 
-	<LinearLayout
-		android:id="@+id/report_details_layout"
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="16dp"
-		android:orientation="vertical">
+		android:layout_height="wrap_content">
+
+		<Button
+			android:id="@+id/temp_appointment"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentEnd="true"
+			android:drawableStart="@drawable/ic_action_new_event"
+			/>
 
 		<TextView
 			android:id="@+id/report_text_name"
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:layout_margin="8dp"
+			android:layout_toLeftOf="@id/temp_appointment"
 			android:textSize="24sp"
 			android:textStyle="bold"
 			android:text="@string/no_data"
 			/>
 
-		<TextView
-			android:id="@+id/report_date_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-			android:textStyle="bold"
-			android:text="@string/date_label"
-			/>
-
-		<TextView
-			android:id="@+id/report_text_date"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:text="@string/no_data"
-			/>
-
 		<LinearLayout
-			android:id="@+id/report_location_layout"
+			android:id="@+id/report_details_layout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
+			android:layout_alignParentStart="true"
+			android:layout_below="@id/report_text_name"
+			android:layout_margin="16dp"
 			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/report_location_label"
+				android:id="@+id/report_date_label"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textStyle="bold"
-				android:text="@string/location_label"
+				android:text="@string/date_label"
 				/>
 
 			<TextView
-				android:id="@+id/report_text_location"
+				android:id="@+id/report_text_date"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:text="@string/no_data"
+				/>
+
+			<LinearLayout
+				android:id="@+id/report_location_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/report_location_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:text="@string/location_label"
+					/>
+
+				<TextView
+					android:id="@+id/report_text_location"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:text="@string/no_data"
+					/>
+			</LinearLayout>
+
+
+			<TextView
+				android:id="@+id/report_creator_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:textStyle="bold"
+				android:text="@string/creator_label"
+				/>
+
+			<TextView
+				android:id="@+id/report_text_creator"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="16dp"
 				android:text="@string/no_data"
 				/>
-		</LinearLayout>
 
+			<TextView
+				android:id="@+id/report_flowchart_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:textStyle="bold"
+				android:text="@string/flowchart_label"
+				/>
 
-		<TextView
-			android:id="@+id/report_creator_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-			android:textStyle="bold"
-			android:text="@string/creator_label"
-			/>
+			<TextView
+				android:id="@+id/report_text_flowchart"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:text="@string/no_data"
+				/>
 
-		<TextView
-			android:id="@+id/report_text_creator"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:text="@string/no_data"
-			/>
+			<LinearLayout
+				android:id="@+id/report_interview_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:orientation="vertical"
+				android:padding="1dp">
 
-		<TextView
-			android:id="@+id/report_flowchart_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-			android:textStyle="bold"
-			android:text="@string/flowchart_label"
-			/>
-
-		<TextView
-			android:id="@+id/report_text_flowchart"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:text="@string/no_data"
-			/>
-
-		<LinearLayout
-			android:id="@+id/report_interview_layout"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:orientation="vertical"
-			android:padding="1dp">
-
-			<!-- THE ANSWERED INTERVIEW GOES HERE BY DYNAMICALLY ADDING CHILDREN -->
+				<!-- THE ANSWERED INTERVIEW GOES HERE BY DYNAMICALLY ADDING CHILDREN -->
 
 			</LinearLayout>
 
-		<Button
-			android:id="@+id/report_continue_survey_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:drawableStart="@drawable/ic_action_directions"
-			android:text="@string/continue_report"
-			android:visibility="gone"
-			/>
+			<Button
+				android:id="@+id/report_continue_survey_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:drawableStart="@drawable/ic_action_directions"
+				android:text="@string/continue_report"
+				android:visibility="gone"
+				/>
 
-		<TextView
-			android:id="@+id/report_notes_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-			android:textStyle="bold"
-			android:text="@string/notes_label"
-			/>
+			<TextView
+				android:id="@+id/report_notes_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:textStyle="bold"
+				android:text="@string/notes_label"
+				/>
 
-		<EditText
-			android:id="@+id/report_text_notes"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:minLines="5"
-			android:hint="@string/notes"
-			/>
+			<EditText
+				android:id="@+id/report_text_notes"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:minLines="5"
+				android:hint="@string/notes"
+				/>
 
-		<FrameLayout
-			android:id="@+id/report_appointment_container"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_margin="16dp"
-			android:padding="1dp"
-			/>
+			<FrameLayout
+				android:id="@+id/report_appointment_container"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_margin="16dp"
+				android:padding="1dp"
+				/>
 
-	</LinearLayout>
+		</LinearLayout>
+	</RelativeLayout>
+
 
 </ScrollView>

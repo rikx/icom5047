@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +39,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     private List list;
     private EditText editSearch;
     private Button clearSearchButton;
+    private Toolbar toolbar;
 
     /**
      * Create a MenuListFragment instance with a given type
@@ -69,6 +71,10 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu_list_fragment, container, false);
+
+        //Set the toolbar
+        toolbar = (Toolbar) view.findViewById(R.id.menu_list_toolbar);
+        //TODO: do something with the toolbar?
 
         //Initialize search views
         editSearch = (EditText) view.findViewById(R.id.inputSearch);
@@ -105,10 +111,9 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
             list = db.getAllReports();
             adapter = new ReportListAdapter(getActivity(), list);
         } else if(type.equals(TYPE_APPOINTMENTS)) {
-            //TODO: get all appointments from DB
-            //TODO: set the list adapter
-            list = initDummyAppointments();
-            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
+            //TODO: finish this
+//            list = db.getAllAppointments();
+//            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
         }
 
         setListAdapter(adapter);

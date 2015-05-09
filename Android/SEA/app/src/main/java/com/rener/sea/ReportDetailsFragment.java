@@ -257,7 +257,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         String dateFormat = getResources().getString(R.string.date_format_long);
         String timeFormat = getResources().getString(R.string.time_format);
         String format = dateFormat + " " + timeFormat;
-        String date = appointment.getDateString(format);
+        String date = appointment.getDateString(format, Locale.getDefault());
         TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
         dateText.setText(date);
 

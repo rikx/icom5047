@@ -151,11 +151,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showAppointmentsList() {
-        //Set the action bar title
-        String app = getResources().getString(R.string.app_name);
-        String label = getResources().getString(R.string.appointments);
-        String title = app+" > "+label;
-        getActionBar().setTitle(title);
 
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -175,11 +170,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showReportsList() {
-        //Set the action bar title
-        String app = getResources().getString(R.string.app_name);
-        String label = getResources().getString(R.string.reports);
-        String title = app+" > "+label;
-        getActionBar().setTitle(title);
 
         //Perform the fragment transaction
         FragmentManager manager = getFragmentManager();
@@ -199,12 +189,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showPeopleList() {
-        //Set the action bar title
-        String app = getResources().getString(R.string.app_name);
-        String label = getResources().getString(R.string.people);
-        String title = app+" > "+label;
-        getActionBar().setTitle(title);
-
         //Perform the fragment transaction
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -223,11 +207,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showLocationsList() {
-        //Set the action bar title
-        String app = getResources().getString(R.string.app_name);
-        String label = getResources().getString(R.string.locations);
-        String title = app+" > "+label;
-        getActionBar().setTitle(title);
 
         //Perform the fragment transaction
         FragmentManager manager = getFragmentManager();
@@ -307,7 +286,7 @@ public class MainActivity extends FragmentActivity {
             }
             details.onDetailsChanged();
         }
-        hideKeyboard();
+        //hideKeyboard();
     }
 
     /**

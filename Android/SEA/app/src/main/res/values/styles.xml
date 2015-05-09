@@ -12,6 +12,11 @@
 		<item name="android:padding">4dp</item>
 	</style>
 
+	<style name="SEA_Toolbar_Button"
+		parent="android:style/Widget.Button">
+		<!-- toolbar style -->
+	</style>
+
 	<style name="SEA_EditText"
 		   parent="android:style/Widget.EditText">
 	</style>
