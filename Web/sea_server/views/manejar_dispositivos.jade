@@ -45,10 +45,10 @@ block content
 								label(for='dispositivo_name') Dispositivo:
 								input#dispositivo_name(class='form-control', name='dispositivo_name', type='text', placeholder='Nombre')
 							.form-group
-								label(for='dispositivo_id_num') Numero de Identificación:
+								label(for='dispositivo_id_num') Número de Id:
 								input#dispositivo_id_num(class='form-control', name='dispositivo_id_num', type='text', placeholder='# de identificación')
 							.form-group
-								input#dispositivo_usuario(class='form-control', name='dispositivo_id_usuario', type='text')
+								input#dispositivo_usuario(class='form-control', name='dispositivo_id_usuario', type='text', style='display:none')
 							.form-group
 								label(for='btn_dropdown_agentes') Usuarios:
 								.dropdown
@@ -78,7 +78,7 @@ block content
 									td#dispositivo_info_name 
 								tr
 									td 
-										| Numero de Identificación:
+										| Número de Id:
 									td#dispositivo_info_id_num
 								tr
 									td 

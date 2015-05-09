@@ -14,6 +14,11 @@ $(document).ready(function(){
 	populate_list_categories(all_categories);
 	populate_list_specialties(all_specialties);
 
+  /* Return home */
+  $('#btn_home').on('click', function(){
+    window.location.href = '/users'
+  });
+  
 	/* Change Selected Category */
 	$categories_list.on('click', 'tr td a.the_category', function(e){
 		e.preventDefault();

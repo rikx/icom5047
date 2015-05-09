@@ -473,7 +473,7 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 				flowchart_info = result.rows[0];
 	 		});
 	 		// get items
-	 		client.query("SELECT flowchart_id, item_id, state_id, state \
+	 		client.query("SELECT flowchart_id, item_id, label AS name, type, state_id AS id, state \
 										FROM item \
 										WHERE flowchart_id = $1", 
 	 									[flowchart_id], function(err, result){
@@ -496,10 +496,10 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 																	END AS source \
 																FROM option \
 																INNER JOIN item ON item.item_id = option.parent_id \
-																WHERE flowchart_id = $1) \
+																WHERE flowchart_id = $2) \
 													SELECT * \
 													FROM path_sources natural join path_targets", 
-	  											[flowchart_id], function(err, result) {
+	  											[flowchart_id, flowchart_id], function(err, result) {
 	  		// call done to release client to pool
 				done();
 				if(err) {

@@ -472,6 +472,12 @@ jsPlumb.ready(function() {
 				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
 					return false;
 				}
+				// check if target item already is a target in another connection
+				if(target_id == connections_array[z].target){
+					if(target_type != 'END'){
+						return false;
+					}
+				}
 			}
 
 			var start_count = 0;
