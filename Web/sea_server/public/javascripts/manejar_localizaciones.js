@@ -72,7 +72,7 @@ $(document).ready(function(){
   // search bar input select event listener
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
-    cuestionarios_array = [datum]
+    localizaciones_array = [datum]
     populate_list([datum]);
   });
 
