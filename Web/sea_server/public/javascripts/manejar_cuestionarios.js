@@ -32,7 +32,7 @@ $(document).ready(function(){
         // populate global arrays with matching results
         cuestionarios_array = list.cuestionarios;
         // populate list with matching results
-        populate_list(ist.cuestionarios);
+        populate_list(list.cuestionarios);
         return $.map(list.cuestionarios, function(cuestionario) { 
           return cuestionario;
         });

@@ -32,7 +32,7 @@ $(document).ready(function(){
         // populate global arrays with matching results
         cuestionarios_array = list.cuestionarios;
         // populate list with matching results
-        populate_list(cuestionarios_array);
+        populate_list(list.cuestionarios);
         return $.map(list.cuestionarios, function(cuestionario) { 
           return cuestionario;
         });
@@ -89,6 +89,10 @@ $(document).ready(function(){
         }
       }
     }
+  });
+
+  $('#search_bar').on('input', function() { 
+    populate_list(cuestionarios_array);
   });
   /* Search Code End */
 

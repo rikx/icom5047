@@ -100,9 +100,9 @@ $(document).ready(function(){
       }
     }
   });
-  
+
   $('#search_bar').on('input', function() { 
-    populate_list(usuarios_array);
+    populate_list(localizaciones_array);
   });
   /* Search Code End */
 
