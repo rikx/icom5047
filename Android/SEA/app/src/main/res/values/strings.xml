@@ -122,4 +122,6 @@
 	<string name="email_label">Email Address</string>
 	<string name="phone_number_label">Phone Number</string>
 	<string name="no_email_clients_installed">There are no email apps installed.</string>
+	<string name="key_saved_passhash" translatable="false">PASSHASH</string>
+	<string name="long_password_error">Password is too long</string>
 </resources>

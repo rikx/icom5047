@@ -37,7 +37,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         // TODO: fill db with dummy data eliminar despues
 //        dbHelper.deleteDB();
         if (dbHelper.getDummy())
-            dbHelper.syncDB();
+            dbHelper.syncDBFull();
+        else dbHelper.syncDB();
 
         //Perform the login procedure
         loadLogin();
@@ -96,8 +97,11 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         EditText editPassword = (EditText) findViewById(R.id.field_password);
         username = editUsername.getText().toString();
         password = editPassword.getText().toString();
-        if (!attemptLogin()) {
-            //editUsername.setText("");
+        if(password.length() >= 72) {
+            String message = getString(R.string.long_password_error);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
+        else if(!attemptLogin()) {
             editPassword.setText("");
         }
     }
@@ -142,6 +146,9 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         //Check login credentials
         Context context = getApplicationContext();
         dbHelper.syncDB();
+        String salt = "$2a$06$DkLy6BIWUalW66HzwYF48e";
+        String hash = BCrypt.hashpw(password, salt);
+        Boolean match = BCrypt.checkpw(password, salt);
         if (dbHelper.authLogin(username, password)) {
             //Successful login
             saveLogin();
