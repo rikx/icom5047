@@ -3,7 +3,7 @@ $(document).ready(function(){
 	$reportes_list = $('#reportes_list');
 	
   // store data for initial 20 dispositivos
-  var reportes_array;
+  var reportes_array = [];
   var user_info = JSON.parse($reportes_list.attr('data-user'));
   
   var data_reportes = $reportes_list.attr('data-reports');

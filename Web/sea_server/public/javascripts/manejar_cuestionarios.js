@@ -3,7 +3,7 @@ $(document).ready(function(){
   $cuestionarios_list = $('#cuestionarios_list');
 
   // store data for initial 20 cuestionarios
-  var cuestionarios_array; 
+  var cuestionarios_array = []; 
 
   var data_cuestionarios = $cuestionarios_list.attr('data-cuestionarios');
   if(data_cuestionarios.length >2){
