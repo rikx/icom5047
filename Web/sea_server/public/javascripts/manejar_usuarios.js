@@ -590,6 +590,8 @@ function populate_info_panel($this_usuario){
 
     // inject content string into html
     $usuarios_list.html(table_content);
+
+    populate_info_panel(usuarios_set[0]);
   };
 
 function populate_specialties_edit(){

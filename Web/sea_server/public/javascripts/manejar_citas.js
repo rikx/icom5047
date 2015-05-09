@@ -374,5 +374,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     if(user_info.user_type != 'admin'){
       $('#btn_delete').hide();
     }
+
+    populate_info_panel(cita_set[0]);
   }
 });

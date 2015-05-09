@@ -35,7 +35,7 @@ app.use(function(req,res,next){
     user: 'postgres',
     password: 'RENeR2015DB',
     database: 'SEA',
-    host: 'localhost',
+    host: '136.145.116.231',
     port: 5432
   }
   req.db = pg;
@@ -55,7 +55,7 @@ app.use(function(req,res,next){
 app.use(session({
   store: new pgSession({
     pg : pg,
-    conString : 'postgres://postgres:RENeR2015DB@localhost:5432/SEA'
+    conString : 'postgres://postgres:RENeR2015DB@136.145.116.231:5432/SEA'
   }),
   secret: 'Ramon2Enrique0Nelson1Ricardo5icom5047',
   resave: false,

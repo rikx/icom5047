@@ -18,7 +18,7 @@ $(document).ready(function(){
    /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({
-    // user input is tokenized and compared with flochart name
+    // user input is tokenized and compared with flowchart name
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('flowchart_name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 10,
@@ -208,7 +208,8 @@ $(document).ready(function(){
     // inject content string into html
     $cuestionarios_list.html(table_content);
 
+    populate_info_panel(cuestionarios_set[0]);
     // close current info panel 
-    $('#info_panel').hide();
+   // $('#info_panel').hide();
   };
 });

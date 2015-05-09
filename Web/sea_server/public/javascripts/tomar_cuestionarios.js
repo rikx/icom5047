@@ -1,12 +1,19 @@
 $(document).ready(function(){
   // cuestionarios list
   $cuestionarios_list = $('#cuestionarios_list');
+  
   // store data for initial 20 cuestionarios
-  var cuestionarios_array = JSON.parse($cuestionarios_list.attr('data-cuestionarios'));
+  var cuestionarios_array = []; 
 
-  //initial population of info panel
-  if(cuestionarios_array.length > 0)
-  populate_info_panel(cuestionarios_array[0]);
+  var data_cuestionarios = $cuestionarios_list.attr('data-cuestionarios');
+  if(data_cuestionarios.length >2){
+    cuestionarios_array = JSON.parse($cuestionarios_list.attr('data-cuestionarios'));
+
+    // initial info panel population
+    populate_info_panel(cuestionarios_array[0]);
+  } else {
+    $('#info_panel').hide();
+  }
 
   /* Search Code start */
   // constructs the suggestion engine
@@ -55,7 +62,32 @@ $(document).ready(function(){
   // search bar input select event listener
   $('#search_bar').bind('typeahead:selected', function(obj, datum, name) {
     // populate list with selected search result
-    populate_list({datum});
+    populate_list([datum]);
+  });
+
+  $("#search_bar").keypress(function (event) {
+    if (event.which == 13) {
+      var user_input = $('#search_bar').val();
+      if(user_input == ''){
+        populate_cuestionarios();
+        return;
+      } else {
+        search_source.get(user_input, sync, async);
+        $(this).typeahead('close');
+        function sync(datums) {
+          //console.log('datums from `local`, `prefetch`, and `#add`');
+          //console.log(datums);
+          populate_list(datums);
+
+        }
+
+        function async(datums) {
+          //console.log('datums from `remote`');
+          //console.log(datums);
+          populate_list(datums);
+        }
+      }
+    }
   });
   /* Search Code End */
 
@@ -86,17 +118,21 @@ $(document).ready(function(){
 
     // populate info panel with this_cuestionario info
     populate_info_panel(this_cuestionario);
+
+    // set id values of info panel buttons
+    $('#btn_flujo_cuestionario').attr('data-id', this_cuestionario.flowchart_id);
+    $('#btn_abierto_cuestionario').attr('data-id', this_cuestionario.flowchart_id);
   });
 
   // take survey with flow method click event
-  $cuestionarios_list.on('click', 'tr td button.btn_flujo_cuestionario', function(){
+  $('#button.btn_flujo_cuestionario').on('click', function(){
     // contains cuestionario id
     var this_cuestionario_id = $(this).attr('data-id');
     window.location.href = '/users/cuestionarios/flow/'+this_cuestionario_id;
   });
 
   // take survey with open method click event
-  $cuestionarios_list.on('click', 'tr td button.btn_abierto_cuestionario', function(){
+  $('#btn_abierto_cuestionario').on('click', function(){
     // contains cuestionario id
     var this_cuestionario_id = $(this).attr('data-id');
     window.location.href = '/users/cuestionarios/open/'+this_cuestionario_id;
@@ -104,9 +140,14 @@ $(document).ready(function(){
 
  	// Populates info panel with list element's information
   function populate_info_panel(element){
-    $('#cuestionario_info_name').html("<a href='/users/admin/cuestionarios/" + element.flowchart_id + "'>" +element.flowchart_name+ "</a>");
+    $('#info_panel_heading').html(element.flowchart_name);
+    $('#cuestionario_info_name').html(element.flowchart_name);
     $('#cuestionario_info_version').text(element.version);
     $('#cuestionario_info_creator').text(element.username);
+
+    // set id values of info panel buttons
+    $('#btn_flujo_cuestionario').attr('data-id', element.flowchart_id);
+    $('#btn_abierto_cuestionario').attr('data-id', element.flowchart_id);
   };
 
     /* Populate list with first 20 cuestionarios, organized alphabetically */
@@ -115,6 +156,7 @@ $(document).ready(function(){
       cuestionarios_array = data.cuestionarios;
 
       populate_list(data.cuestionarios);
+      populate_info_panel(data.cuestionarios[0]);
     });
   };
 
@@ -132,7 +174,7 @@ $(document).ready(function(){
         table_content +=  'active ';
       }
       table_content += "show_info_cuestionario' href='#', data-id='"+this.flowchart_id+"'>"+this.flowchart_name+"</a></td>";
-      table_content += "<td><button class='btn_flujo_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"'>Método con Flujo</button></td>";
+      //table_content += "<td><button class='btn_flujo_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"'>Método con Flujo</button></td>";
       //table_content += "<td><button class='btn_abierto_cuestionario btn btn-sm btn-success btn-block' type='button' data-id='"+this.flowchart_id+"' disabled>Método Abierto</button></td>";
       table_content += '</tr>';
     });  
@@ -140,7 +182,8 @@ $(document).ready(function(){
     // inject content string into html
     $cuestionarios_list.html(table_content);
 
+    populate_info_panel(cuestionarios_set[0]);
     // close current info panel 
-    $('#info_panel').hide();
+    //$('#info_panel').hide();
   };
 });
