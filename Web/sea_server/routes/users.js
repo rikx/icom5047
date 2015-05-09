@@ -1968,25 +1968,24 @@ router.delete('/admin/citas/:id', function(req, res, next) {
 /* Delete Flow chart
  * 
  */
- router.put('/admin/ganaderos/:id', function(req, res, next) {
-	 	var db = req.db;
-	 	db.connect(req.conString, function(err, client, done) {
-	 		if(err) {
-	 			return console.error('error fetching client from pool', err);
-	 		}
-			// Edit ganadero
-			client.query("UPDATE person SET first_name = $1, middle_initial = $2, last_name1 = $3, last_name2 = $4, email = $5, phone_number = $6 WHERE person_id = $7", 
-										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono, ganadero_id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					res.json(true);
-				}
-			});
+router.put('/admin/ganaderos/:id', function(req, res, next) {
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+			return console.error('error fetching client from pool', err);
+		}
+		// Edit ganadero
+		client.query("UPDATE person SET first_name = $1, middle_initial = $2, last_name1 = $3, last_name2 = $4, email = $5, phone_number = $6 WHERE person_id = $7", 
+									[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono, ganadero_id] , function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
 		});
-	}
+	});
 });
 
 /* GET Admin Manejar Dispositivos
