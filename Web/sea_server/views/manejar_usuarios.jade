@@ -139,6 +139,9 @@ block content
 											form#specialist_categories_list(role='form')
 											//button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
 								button#btn_edit_panel(class='btn btn-sm btn-success btn-block' type='button') Editar
+								a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-trash')
+
 						.panel.panel-info
 							.panel-heading Localizaciones Asignadas
 							.panel-body
@@ -150,10 +153,10 @@ block content
 			.col-md-2
 
 			.col-md-4
-				button#btn_add_specialty(class='btn btn-sm btn-default btn-block', type='button') Agregar Especialidades
+				//button#btn_add_specialty(class='btn btn-sm btn-default btn-block', type='button') Agregar Especialidades
 			.col-md-2
 				// TODO: add home glyphicon
-				//button#btn_add_usuario(class='btn btn-sm btn-default btn-block', type='button') Añadir Usuario
+				button#btn_add_usuario(class='btn btn-sm btn-default btn-block', type='button') Añadir Usuario
 
 		.row
 

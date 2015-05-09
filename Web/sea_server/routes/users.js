@@ -927,6 +927,7 @@ router.get('/reportes', function(req, res, next) {
 									FROM report INNER JOIN location ON report.location_id = location.location_id \
 									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 									INNER JOIN users ON report.creator_id = user_id \
+									WHERE report.status != $1 \
 						 			ORDER BY report_name ASC \
 									LIMIT 20"
 				}
@@ -937,14 +938,14 @@ router.get('/reportes', function(req, res, next) {
 									FROM report INNER JOIN location ON report.location_id = location.location_id \
 									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 									INNER JOIN users ON report.creator_id = user_id \
-									WHERE report.creator_id = $1 \
+									WHERE report.creator_id = $1 AND report.status != $1 \
 						 			ORDER BY report_name ASC \
 									LIMIT 20",
 					values: [user_id]
 				};
 		 	}
 	 		// get reports 
-	 		client.query(query_config, function(err, result) {
+	 		client.query(query_config, [-1], function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
@@ -1175,8 +1176,9 @@ router.get('/admin/usuarios', function(req, res, next) {
 			// TODO: modify query to also give you account type
 			client.query('SELECT user_id, email, first_name, middle_initial, last_name1, last_name2, phone_number, username, type \
 										FROM person INNER JOIN users ON users.person_id=person.person_id \
+										WHERE users.status != $1 \
 										ORDER BY username \
-										LIMIT 20', function(err, result) {
+										LIMIT 20', [-1],  function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {
@@ -1196,12 +1198,13 @@ router.get('/admin/usuarios', function(req, res, next) {
 			// get specialties associated with users
 			client.query('WITH usuarios AS (SELECT user_id, username \
 									  	FROM users \
+									  	WHERE users.status != $1 \
 									  	ORDER BY username ASC \
 									  	LIMIT 20) \
 										SELECT usuarios.user_id, us.spec_id, spec.name \
 										FROM usuarios \
 										LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
-										LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id', function(err, result) {
+										LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id', [-1], function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -1212,11 +1215,12 @@ router.get('/admin/usuarios', function(req, res, next) {
 		  // get locations associated with users
 		  client.query('WITH usuarios AS (SELECT user_id, username \
 									  	FROM users \
+									  	WHERE users.status != $1 \
 									  	ORDER BY username ASC \
 									  	LIMIT 20) \
 									  SELECT user_id, location_id, location.name AS location_name \
 									  FROM usuarios \
-									  INNER JOIN location ON user_id = agent_id', function(err, result){
+									  INNER JOIN location ON user_id = agent_id', [-1],  function(err, result){
 		  	//call `done()` to release the client back to the pool
 		  	done();
 		  	if(err) {
@@ -1998,7 +2002,55 @@ router.put('/admin/delete_flowchart/:id', function(req, res, next) {
 	});
 });
 
-/* Delete Flow chart
+
+/* Delete Report
+ * 
+ */
+router.put('/admin/delete_report/:id', function(req, res, next) {
+		console.log("deleting report");
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+				return console.error('error fetching client from pool', err);
+			}
+		// Edit ganadero
+		client.query("UPDATE report SET status = $1 where report_id = $2", 
+									[-1,req.params.id] , function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
+});
+
+/* Delete Report
+ * 
+ */
+ router.put('/admin/delete_user/:id', function(req, res, next) {
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+		// Edit ganadero
+		client.query("UPDATE users SET status = $1 where user_id = $2", 
+			[-1,req.params.id] , function(err, result) {
+			//call `done()` to release the client back to the pool
+			done();
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json(true);
+			}
+		});
+	});
+ });
+
+/* Delete Location
  * 
  */
  router.put('/admin/delete_location/:id', function(req, res, next) {

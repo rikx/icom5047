@@ -569,6 +569,27 @@ function populate_info_panel($this_usuario){
     });
   };
 
+    //Delete User
+    $('#btn_delete').on('click', function(){
+      var user_id = $('#btn_delete').attr("data-id");
+      $.ajax({
+        url: "http://localhost:3000/users/admin/delete_user/" + user_id,
+        method: "PUT",
+        contentType: "application/json",
+        dataType: "json",
+        success: function(data) {
+          alert("Usuario fue eliminado");
+          populate_usuarios();
+        },
+        error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+        }
+      });
+    });
+
   /* Populate list with usuarios_set information */
   function populate_list(usuarios_set){
     // contents of usuarios list

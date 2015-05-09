@@ -99,6 +99,27 @@ $(document).ready(function(){
   });
   /* Search Code End */
 
+  //Delete Localizacion
+  $('#btn_delete').on('click', function(){
+    var report_id = $('#btn_delete').attr("data-id");
+  $.ajax({
+    url: "http://localhost:3000/users/admin/delete_report/" + report_id,
+    method: "PUT",
+    contentType: "application/json",
+    dataType: "json",
+    success: function(data) {
+      alert("Reporte fue eliminado");
+      populate_reportes();
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    }
+  });
+});
+
   /* Button: Return home */
   $('#btn_home').on('click', function(){
     window.location.href = '/users';
@@ -147,29 +168,29 @@ $(document).ready(function(){
     window.location.href = '/users/reportes/'+this_reporte_id;
   });
 
-  /* Delete report */
-  $('#btn_delete').on('click', function(){
-    var confirm_delete = confirm('Desea borrar el reporte "'+$(this).attr('data-report-name')+'"?');
-    if(confirm_delete){
-      // ajax call to delete report
-      $.ajax({
-        url: "http://localhost:3000/users/admin/reportes/"+$(this).attr('data-id'),
-        method: "DELETE",
-        success: function(data) {
-          alert("Reporte ha sido borrado del sistema.");
+  // /* Delete report */
+  // $('#btn_delete').on('click', function(){
+  //   var confirm_delete = confirm('Desea borrar el reporte "'+$(this).attr('data-report-name')+'"?');
+  //   if(confirm_delete){
+  //     // ajax call to delete report
+  //     $.ajax({
+  //       url: "http://localhost:3000/users/admin/reportes/"+$(this).attr('data-id'),
+  //       method: "DELETE",
+  //       success: function(data) {
+  //         alert("Reporte ha sido borrado del sistema.");
   
-          // update reportes list after posting 
-          populate_reportes();
-        },
-        error: function( xhr, status, errorThrown ) {
-          alert( "Sorry, there was a problem!" );
-          console.log( "Error: " + errorThrown );
-          console.log( "Status: " + status );
-          console.dir( xhr );
-        }
-      });
-    }
-  });
+  //         // update reportes list after posting 
+  //         populate_reportes();
+  //       },
+  //       error: function( xhr, status, errorThrown ) {
+  //         alert( "Sorry, there was a problem!" );
+  //         console.log( "Error: " + errorThrown );
+  //         console.log( "Status: " + status );
+  //         console.dir( xhr );
+  //       }
+  //     });
+  //   }
+  // });
 
   /* Populates info panel with $this_report information */
   function populate_info_panel($this_report){
