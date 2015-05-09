@@ -1005,9 +1005,10 @@ router.get('/reportes/:id', function(req, res, next) {
 		  });
 		  // get appointment details
 		  client.query("SELECT appointment_id, to_char(appointments.date, 'DD/MM/YYYY' ) AS date, to_char(appointments.time, 'HH12:MI AM') AS time, appointments.purpose, username AS maker \
-										FROM appointments natural join report \
+										FROM appointments \
+										INNER JOIN report ON report.report_id = appointments.report_id \
 										INNER JOIN users ON appointments.maker_id = user_id \
-										WHERE report_id = $1", [report_id], function(err, result){
+										WHERE report.report_id = $1 AND appointments.status != $2", [report_id, -1], function(err, result){
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
@@ -1953,8 +1954,10 @@ router.get('/citas', function(req, res, next) {
 									FROM appointments INNER JOIN report ON appointments.report_id = report.report_id \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
+									WHERE appointments.status != $1 \
 									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20",
+					values: [-1]
 	 			}
 	 		} else {
 	 			//get first 20 citas created by this user
@@ -1964,10 +1967,10 @@ router.get('/citas', function(req, res, next) {
 									FROM appointments INNER JOIN report ON appointments.report_id = report.report_id \
 									LEFT JOIN users ON user_id = maker_id \
 									INNER JOIN location ON report.location_id = location.location_id \
-									WHERE appointments.maker_id = $1 \
+									WHERE appointments.maker_id = $1 AND appointments.status != $2 \
 									ORDER BY location.name ASC, date ASC, time ASC \
 									LIMIT 20",
-					values: [user_id]
+					values: [user_id, -1]
 	 			}
 	 		}
 	 		client.query(query_config, function(err, result) {
@@ -2032,8 +2035,8 @@ router.delete('/admin/citas/:id', function(req, res, next) {
 			return console.error('error fetching client from pool', err);
 		}
 		// Edit cita in db
-		client.query("DELETE FROM appointments WHERE appointment_id = $1", 
-									[cita_id] , function(err, result) {
+		client.query("UPDATE appointments SET status = $1 WHERE appointment_id = $2", 
+									[-1, cita_id] , function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {

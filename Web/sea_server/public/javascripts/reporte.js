@@ -28,7 +28,12 @@ $(document).ready(function(){
 
   /* Button: Return to Reportes */
   $('#btn_reportes').on('click', function(){
-    window.location.href = '/users/reportes'; //TODO CHANGE manejar reportes so this works
+    window.location.href = '/users/reportes'; 
+  });
+
+  /* Button: Return to Citas */
+  $('#btn_citas').on('click', function(){
+    window.location.href = '/users/citas'; 
   });
 
   /* Close edit panel */
