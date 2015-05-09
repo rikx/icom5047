@@ -6,7 +6,10 @@ $(document).ready(function(){
   //populate_usuarios();
   
   // store data for 20 initial usuarios
-  var usuarios_array, specialties_array, locations_array, all_specialties_array;
+  var usuarios_array = [];
+  var specialties_array = [];
+  var locations_array = [];
+  var all_specialties_array =[];
 
   var data_usuarios = $usuarios_list.attr('data-usuarios');
   var data_locations = $usuarios_list.attr('data-locations');
@@ -207,7 +210,6 @@ $(document).ready(function(){
     var usuario_id = $this.attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
-    $('#btn_edit_panel').attr('data-id', usuario_id);
     
     // populate info panel with this_usuario
     populate_info_panel(this_usuario);
@@ -526,19 +528,24 @@ function populate_info_panel($this_usuario){
 
     $('#usuario_info_type').text(type);
 
-    // populate associated locations panel
-    var table_content = '';
-    $.each(locations_array, function(i){
-      if($this_usuario.user_id == this.user_id){
-        table_content += '<tr><td>'+this.location_name+'</td></tr>';
-      }
-    });  
-    $('#usuario_locations').html(table_content);
+    if(locations_array.length>0){
+      // populate associated locations panel
+      var table_content = '';
+      $.each(locations_array, function(i){
+        if($this_usuario.user_id == this.user_id){
+          table_content += '<tr><td>'+this.location_name+'</td></tr>';
+        }
+      });  
+      $('#usuario_locations').html(table_content);
+    }
+
 
     $('#specialty_panel').show();
-    populate_specialties_info($this_usuario);
 
-
+    if(specialties_array.length>0){
+      populate_specialties_info($this_usuario);
+    }
+    
 
     //Categoria de Localizacion
 

@@ -1223,6 +1223,11 @@ router.get('/admin/usuarios', function(req, res, next) {
 		  		return console.error('error running query', err);
 		  	} else {
 		  		locations_list = result.rows;
+
+		  		console.log(usuarios_list)
+		  		console.log(specialties_list)
+		  		console.log(locations_list)
+		  		console.log(all_specialties)
 		  		res.render('manejar_usuarios', {
 		  		 title: 'Manejar Usuarios', 
 		  		 usuarios : usuarios_list, 
