@@ -42,7 +42,7 @@ $(document).ready(function(){
         ganaderos_array = list.ganaderos;
 
         // populate list with matching results
-        populate_list(localizaciones_array);
+        populate_list(list.locations);
         return $.map(list.locations, function(location) { 
           return location;
         });
@@ -99,6 +99,10 @@ $(document).ready(function(){
         }
       }
     }
+  });
+  
+  $('#search_bar').on('input', function() { 
+    populate_list(usuarios_array);
   });
   /* Search Code End */
 

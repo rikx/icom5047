@@ -3,22 +3,25 @@ $(document).ready(function(){
   $ganaderos_list = $('#ganaderos_list');
 
   // store data for initial 20 ganaderos
-  var ganaderos_array = JSON.parse($ganaderos_list.attr('data-ganaderos'));
-  var localizaciones_array = JSON.parse($ganaderos_list.attr('data-localizaciones'));
+  var ganaderos_array = [];
+  var localizaciones_array = []; 
   var user_info = JSON.parse($ganaderos_list.attr('data-user'));
 
+  var data_ganaderos = $ganaderos_list.attr('data-ganaderos')
+  var data_locations = $ganaderos_list.attr('data-localizaciones');
 
+  if(data_ganaderos.length >2){
+    ganaderos_array = JSON.parse($ganaderos_list.attr('data-ganaderos'));
 
-  // if(user_info.user_type)
-  // {
-  //   console.log("LOLFEG");
-  //   $('#btn_delete_ganadero').hide();
+    if(data_locations.length >2){
+      localizaciones_array = JSON.parse($ganaderos_list.attr('data-localizaciones'));
+    }
 
-  // }
-
-  // initial info panel population
-  if(ganaderos_array.length > 0)
-  populate_info_panel(ganaderos_array[0]);
+    // initial info panel population
+    populate_info_panel(ganaderos_array[0]);
+  } else {
+    $('#info_panel').hide();
+  }
 
 
   /* Search Code start */
@@ -40,7 +43,7 @@ $(document).ready(function(){
         localizaciones_array = list.locations;
         // populate list with matching results
 
-        populate_list(ganaderos_array);
+        populate_list(list.ganaderos);
         return $.map(list.ganaderos, function(ganadero) { 
           return ganadero;
         });
@@ -98,6 +101,10 @@ $(document).ready(function(){
       }
     }
   });
+  
+  $('#search_bar').on('input', function() { 
+    populate_list(ganaderos_array);
+  });
   /* Search Code End */
 
   /* Return home */
@@ -140,6 +147,11 @@ $(document).ready(function(){
 
     // populate info panel with this_ganadero info
     populate_info_panel(this_ganadero);
+
+    // set id values of info panel buttons
+    $('#btn_edit_ganadero').attr('data-id', this_ganadero.user_id);
+    $('#btn_delete').attr('data-id', this_ganadero.user_id);
+    $('#btn_delete').attr('data-name', this_ganadero.person_name); 
   });
 
   /* Add ganadero */
@@ -292,31 +304,36 @@ $(document).ready(function(){
   function populate_info_panel($this_ganadero){
     // populate basic information panel
     $('#info_panel_heading').text($this_ganadero.first_name + " " + $this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
-    if($this_ganadero.middle_initial == null) {
-      $('#ganadero_info_name').text($this_ganadero.first_name);
-    } else {
-      $('#ganadero_info_name').text($this_ganadero.first_name + " " + $this_ganadero.middle_initial);
-    }
+      if($this_ganadero.middle_initial == null) {
+        $('#ganadero_info_name').text($this_ganadero.first_name);
+      } else {
+        $('#ganadero_info_name').text($this_ganadero.first_name + " " + $this_ganadero.middle_initial);
+      }
     $('#ganadero_info_apellidos').text($this_ganadero.last_name1 + " " + $this_ganadero.last_name2);
     $('#ganadero_info_contact').html('<p>'+$this_ganadero.email+'</p><p>'+$this_ganadero.phone_number+'</p>');
-    
-   // populate associated locations panel
-   var table_content = '';
-   $.each(localizaciones_array, function(i){
-    if($this_ganadero.person_id == this.person_id){
-      table_content += '<tr><td>'+this.location_name+'</td></tr>';
-    }
-  });  
-   $('#ganadero_locations').html(table_content);
- }
+      
+    // populate associated locations panel
+    var table_content = '';
+    $.each(localizaciones_array, function(i){
+      if($this_ganadero.person_id == this.person_id){
+        table_content += '<tr><td>'+this.location_name+'</td></tr>';
+      }
+    });  
+    $('#ganadero_locations').html(table_content);
+
+    // set id values of info panel buttons
+    $('#btn_edit_ganadero').attr('data-id', $this_ganadero.user_id);
+    $('#btn_delete').attr('data-id', $this_ganadero.user_id);
+    $('#btn_delete').attr('data-name', $this_ganadero.person_name); 
+  }
 
   /* Populate list with first 20 ganaderos, organized alphabetically */
   function populate_ganaderos(){
     $.getJSON('http://localhost:3000/list_ganaderos', function(data) {
       ganaderos_array = data.ganaderos;
       localizaciones_array = data.locations;
+      
       populate_list(data.ganaderos);
-
     });
   };
   
@@ -326,33 +343,20 @@ $(document).ready(function(){
     var table_content = '';
     // for each item in JSON, add table row and cells
 
-    if(user_info.user_type == "admin")
-    {
-
-      $.each(ganaderos_set, function(i){
+    $.each(ganaderos_set, function(i){
       table_content += '<tr>';
       table_content += "<td><a class='list-group-item ";
       table_content += "show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.person_name+"</a></td>";
-      table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
+      //table_content += "<td><button class='btn_edit_ganadero btn btn-sm btn-success btn-block' type='button' data-id='"+this.person_id+"'>Editar</button></td>";
       //table_content += "<td><a class='btn_delete_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.person_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
       table_content += '</tr>';
     }); 
-    }
-    else
-    {
-        $.each(ganaderos_set, function(i){
-      table_content += '<tr>';
-      table_content += "<td><a class='list-group-item ";
-      table_content += "show_info_ganadero' href='#', data-id='"+this.person_id+"'>"+this.person_name+"</a></td>";
-      table_content += '</tr>';
-    }); 
-    }
-
-
-   
+       
     // inject content string into html
     $ganaderos_list.html(table_content);
     // close current info panel 
     //$('#btn_close_info_panel').trigger('click');
+    
+    populate_info_panel(ganaderos_set[0]);
   };
 });

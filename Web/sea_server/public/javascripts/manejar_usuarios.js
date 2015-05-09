@@ -53,7 +53,7 @@ $(document).ready(function(){
         usuarios_array = list.usuarios;
   
         // populate list with matching results
-        populate_list(usuarios_array);
+        populate_list(list.usuarios);
         return $.map(list.usuarios, function(usuario) { 
           return usuario;
         });
@@ -110,6 +110,10 @@ $(document).ready(function(){
         }
       }
     }
+  });
+
+  $('#search_bar').on('input', function() { 
+    populate_list(usuarios_array);
   });
   /* Search Code End */
 
