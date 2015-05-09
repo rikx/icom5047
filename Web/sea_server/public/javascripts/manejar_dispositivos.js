@@ -321,7 +321,7 @@ $(document).ready(function(){
   		dispositivos_array = data.dispositivos;
 
       populate_list(data.dispositivos);
-      populate_info_panel(data.citas[0]);
+      populate_info_panel(data.dispositivos[0]);
     });
   };
 

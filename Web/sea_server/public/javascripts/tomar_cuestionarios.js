@@ -27,7 +27,7 @@ $(document).ready(function(){
     },
     local: cuestionarios_array,
     remote: {
-      url: 'http://localhost:3000/cuestionarios/%QUERY',
+      url: 'http://localhost:3000/cuestionarios/take/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         cuestionarios_array = list.cuestionarios;
