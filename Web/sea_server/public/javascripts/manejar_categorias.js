@@ -9,6 +9,7 @@ $(document).ready(function(){
 	$('#add_category_panel').hide();
 	$('#edit_specialty_panel').hide();
 	$('#add_specialty_panel').hide();
+  $('#specialty_row').hide();
 
 	populate_list_categories(all_categories);
 	populate_list_specialties(all_specialties);
@@ -23,10 +24,9 @@ $(document).ready(function(){
     $('#btn_delete_category').attr("data-id", category_id);
 		$('#category_name').val(category_name);
     $('#category_info_name').text(category_name);
-
-
-    
-
+    $('#info_panel_category').show();
+    //$('#info_category_name').text("Categoria: " + category_name);
+    //$('#info_panel_heading_category').text("Categoria: " + category_name);
     // remove active from previous list item 
     remove_active_class($categories_list);
     // add active to current clicked list item
@@ -39,12 +39,16 @@ $(document).ready(function(){
 	/* Change Selected Specialty */
 	$specialties_list.on('click', 'tr td a.the_specialty', function(e){
 		e.preventDefault();
+    $('#specialty_info_panel').show();
+    $('#edit_specialty_panel').hide();
+    $('#add_specialty_panel').hide();
 		var specialty_id = $(this).attr('data-id');
 		$('#btn_edit_specialties').attr("data-id", specialty_id);
 		var specialty_name = $(this).attr('data-specialty-name');
 		$('#btn_edit_specialties').attr("data-specialty-name", specialty_name);
 		//alert(specialty_name);
 		$('#specialty_name').val(specialty_name);
+    $('#specialty_info_name').text(specialty_name);
 
     // remove active from previous list item 
     remove_active_class($specialties_list);
@@ -54,6 +58,18 @@ $(document).ready(function(){
     	$this.addClass('active');
     }
 });
+
+
+  $('#categories_tab').on('click', function(){
+     $('#specialty_row').hide();
+     $('#category_row').show();
+  });
+
+  $('#specialties_tab').on('click', function(){
+    $('#specialty_row').show();
+     $('#category_row').hide();
+  });
+
 
 	$('#btn_edit_categories').on('click', function(){
 		$('#add_category_panel').hide();
@@ -77,12 +93,14 @@ $(document).ready(function(){
 		$('#edit_specialty_panel').show();
 		var specialty_name = $('#btn_edit_specialties').attr("data-specialty-name");
 		$('#specialty_name').val(specialty_name);
+    $('#specialty_info_panel').hide();
 
 	});
 
 	$('#btn_add_specialties').on('click', function(){
 		$('#add_specialty_panel').show();
 		$('#edit_specialty_panel').hide();
+    $('#specialty_info_panel').hide();
 
 	});
 
@@ -209,6 +227,7 @@ $('#btn_delete_category').on('click', function(){
     success: function(data) {
       alert("Categoría fue eliminada exitosamente");
         //var the_categories = data.categories;
+      $('specialty_info_panel').hide();
       populate_categories();
       },
       error: function( xhr, status, errorThrown ) {
@@ -222,10 +241,10 @@ $('#btn_delete_category').on('click', function(){
 
 /* DELETEs new category information */
 $('#btn_delete_specialty').on('click', function(){
- var specialty_id = $('#btn_edit_categories').attr("data-id");
+ var specialty_id = $('#btn_edit_specialties').attr("data-id");
  $.ajax({
   url: "http://localhost:3000/users/admin/delete_specialty/" + specialty_id,
-  method: "PUT",
+  method: "DELETE",
   contentType: "application/json",
   dataType: "json",
   success: function(data) {

@@ -17,11 +17,14 @@ block content
 		.row
 			.col-md-1
 			.col-md-6
+				#carl(class='btn-group', role='group', aria-label='')
+					btn(class='btn btn-default', type='button', id='categories_tab') Categorias 
+					btn(class='btn btn-default', type='button', id='specialties_tab') Especialidades
 				//input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar categoria por nombre')
 			.col-md-4
 			.col-md-1
 
-		.row
+		#category_row.row
 			.col-md-1
 			.col-md-6
 				#categoria_panel.form-group(data-all-categorias=categories)
@@ -35,13 +38,12 @@ block content
 			.col-md-4
 				#info_panel_category.panel.panel-success
 					.panel-heading
-						h3#info_panel_heading(class='panel-title') 
+						h3#info_panel_heading_category(class='panel-title') Categoría
 					.panel-body(data-all-categorias=categories)
 						table#ganadero_info(class='table table-nowrap')
 							thead
 							tbody
 								tr
-									td#info_category_name Nombre de Categoría:
 									td#category_info_name 
 										=categories[0].name
 						button#btn_edit_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
@@ -71,8 +73,7 @@ block content
 										.btn-group(role='group', aria-label='edit panel buttons')
 											button#btn_put_new_category(class='btn btn-default') Someter
 
-		br
-		.row
+		#specialty_row.row
 				.col-md-1
 				.col-md-6
 					#specialty_panel.form-group(data-all-specialties=specialties)
@@ -86,15 +87,14 @@ block content
 				.col-md-4
 
 
-					.panel.panel-success
+					#specialty_info_panel.panel.panel-success
 						.panel-heading
-							h3#info_panel_heading(class='panel-title') 
+							h3#info_panel_heading(class='panel-title') Especialidad
 						.panel-body(data-all-specialties=specialties)
 							table#ganadero_info(class='table table-nowrap')
 								thead
 								tbody
 									tr
-										td#info_specialty_name Nombre de Especialidad:
 										td#specialty_info_name 
 											=specialties[0].name
 							button#btn_edit_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id, data-category-name=specialties[0].name) Editar

@@ -820,6 +820,35 @@ router.put('/admin/user_specialties', function(req, res, next) {
  	
  });
 
+ /* PUT/DELETE specialties
+ */
+ router.delete('/admin/delete_specialty/:id', function(req, res, next) {
+ 	console.log("delete specialty");
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+			// Edit category
+			client.query("DELETE FROM specialization WHERE spec_id = $1", 
+				[req.params.id] , function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					//console.log(result.rows);
+					//res.json({"categories": result.rows});
+					res.json(true);
+
+
+
+				}
+			});
+		});
+ 	
+ });
+
 
 
 
