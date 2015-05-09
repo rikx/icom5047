@@ -214,8 +214,9 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	 		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 										FROM flowchart \
 										INNER JOIN users ON user_id = creator_id \
+										WHERE flowchart.status != $1 \
 							 			ORDER BY flowchart_name \
-	 									LIMIT 20', function(err, result) {
+	 									LIMIT 20', [-1], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		  	done();
 
@@ -1968,15 +1969,16 @@ router.delete('/admin/citas/:id', function(req, res, next) {
 /* Delete Flow chart
  * 
  */
- router.put('/admin/ganaderos/:id', function(req, res, next) {
+ router.put('/admin/delete_flowchart/:id', function(req, res, next) {
+ 	console.log("delete flowchart");
 	 	var db = req.db;
 	 	db.connect(req.conString, function(err, client, done) {
 	 		if(err) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
 			// Edit ganadero
-			client.query("UPDATE person SET first_name = $1, middle_initial = $2, last_name1 = $3, last_name2 = $4, email = $5, phone_number = $6 WHERE person_id = $7", 
-										[req.body.ganadero_name, req.body.ganadero_m_initial, req.body.ganadero_apellido1, req.body.ganadero_apellido2, req.body.ganadero_email, req.body.ganadero_telefono, ganadero_id] , function(err, result) {
+			client.query("UPDATE flowchart SET status = $1 where flowchart_id = $2", 
+										[-1,req.params.id] , function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
@@ -1986,7 +1988,6 @@ router.delete('/admin/citas/:id', function(req, res, next) {
 				}
 			});
 		});
-	}
 });
 
 /* GET Admin Manejar Dispositivos
