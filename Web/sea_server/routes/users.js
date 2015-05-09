@@ -183,7 +183,7 @@ router.get('/specialist', function(req, res, next) {
 	var user_type = req.session.user_type;
 
   if (username != null && user_type == 'specialist') {
-  	res.render('specialist', { title: 'Especialista Home', username: username});
+  	res.render('agente', { title: 'Especialista Home', username: username});
   } else {
   	res.redirect('/users');
   }
@@ -260,13 +260,21 @@ router.get('/admin/cuestionarios/crear', function(req, res, next) {
 router.get('/admin/cuestionarios/ver/:id', function(req, res, next){
 	var flowchart_id = req.params.id;
 
-	var items_list, connections_list;
+	var flowchart_info, items_list, connections_list;
 
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
  		}
+ 		// get flowchart
+ 		client.query('SELECT * from flowchart WHERE flowchart_id = $1', [flowchart_id], function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} 
+			flowchart_info = result.rows[0];
+ 		});
+
  		// get items
  		client.query("SELECT flowchart_id, item_id, state_id, state \
 									FROM item \
@@ -302,6 +310,7 @@ router.get('/admin/cuestionarios/ver/:id', function(req, res, next){
 			}
 			connections_list = result.rows
 			res.json({
+				flowchart: flowchart_info,
 				items: items_list,
 				connections: connections_list
 			});
@@ -430,7 +439,7 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
   });
 });
 
-/* TODO: GET Admin View Cuestionario 
+/* GET Admin View/Edit Cuestionario 
  *
  */
 router.get('/admin/cuestionarios/:id', function(req, res, next) {
@@ -448,13 +457,20 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 	} else {
 		var flowchart_id = req.params.id;
 
-		var items_list, connections_list;
+		var flowchart_info, items_list, connections_list;
 
 	 	var db = req.db;
 	 	db.connect(req.conString, function(err, client, done) {
 	 		if(err) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
+	 		// get flowchart
+	 		client.query('SELECT * from flowchart WHERE flowchart_id = $1', [flowchart_id], function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} 
+				flowchart_info = result.rows[0];
+	 		});
 	 		// get items
 	 		client.query("SELECT flowchart_id, item_id, state_id, state \
 										FROM item \
@@ -496,6 +512,7 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 
 				res.render('cuestionario', { 
 					title: 'Cuestionario',
+					flowchart: flowchart_info,
 					items: items_list,
 					connections: connections_list,
 					user: current_user

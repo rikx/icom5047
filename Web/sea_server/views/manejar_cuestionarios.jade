@@ -27,7 +27,7 @@ block content
 				.panel.panel-success
 					.panel-heading Cuestionarios
 					.panel-body
-						.list-group(style='overflow:auto; height:300px;')
+						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
 								tbody#cuestionarios_list(data-cuestionarios=cuestionarios)
@@ -61,9 +61,10 @@ block content
 								tr
 									td Creado por:
 									td#cuestionario_info_creator
-						button(class='btn_edit_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionarios.flowchart_id) Editar
-											
-		.row
+						button#btn_edit_cuestionario(class='btn btn-sm btn-success btn-block', type='button') Editar
+						a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
+							i(class='glyphicon glyphicon-trash')
+			.row
 			.col-md-2
 			.col-md-4
 				// TODO: add home glyphicon

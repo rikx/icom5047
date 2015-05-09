@@ -197,7 +197,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
      */
     private void setDataViews() {
 
-        //Set the name fields
+        //Set the name views
         String name = location.getName();
         textName.setText(name);
         editName.setText(name);
@@ -209,16 +209,36 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the address fields
         String al1 = location.getAddressLine(1);
-        textAddressLine1.setText(al1);
+        if(al1.equals("")) {
+            textAddressLine1.setVisibility(View.GONE);
+        }
+        else {
+            textAddressLine1.setText(al1);
+        }
         editAddressLine1.setText(al1);
         String al2 = location.getAddressLine(2);
-        textAddressLine2.setText(al2);
+        if(al2.equals("")) {
+            textAddressLine2.setVisibility(View.GONE);
+        }
+        else {
+            textAddressLine2.setText(al2);
+        }
         editAddressLine2.setText(al2);
         String city = location.getCity();
-        textCity.setText(city);
+        if(city.equals("")) {
+            textCity.setVisibility(View.GONE);
+        }
+        else {
+            textCity.setText(city);
+        }
         editCity.setText(city);
         String zip = location.getZipCode();
-        textZipCode.setText(zip);
+        if(zip.equals("")) {
+            textZipCode.setVisibility(View.GONE);
+        }
+        else {
+            textZipCode.setText(zip);
+        }
         editZipCode.setText(zip);
 
         if (location.hasOwner()) {

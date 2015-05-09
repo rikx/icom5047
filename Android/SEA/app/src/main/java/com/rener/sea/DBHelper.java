@@ -48,6 +48,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        db.execSQL(DBSchema.ENABLE_FOREIGN_KEY);
         db.execSQL(DBSchema.CREATE_ADDRESS_TABLE);
         db.execSQL(DBSchema.CREATE_APPOINTMENTS_TABLE);
         db.execSQL(DBSchema.CREATE_CATEGORY_TABLE);
@@ -57,9 +58,9 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DBSchema.CREATE_LOCATION_TABLE);
         db.execSQL(DBSchema.CREATE_LOCATION_CATEGORY_TABLE);
         db.execSQL(DBSchema.CREATE_OPTION_TABLE);
-        db.execSQL(DBSchema.CREATE_PATH_TABLE);
         db.execSQL(DBSchema.CREATE_PERSON_TABLE);
         db.execSQL(DBSchema.CREATE_REPORT_TABLE);
+        db.execSQL(DBSchema.CREATE_PATH_TABLE);
         db.execSQL(DBSchema.CREATE_SPECIALIZATION_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_SPECIALIZATION_TABLE);
@@ -110,6 +111,24 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_USERS_SPECIALIZATION);
         onCreate(db);
     }
+    private void setSequence(long sequence){
+        SQLiteDatabase db = getReadableDatabase();
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_DEVICES+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_FLOWCHART+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_ITEM+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_LOCATION+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_LOCATION_CATEGORY+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_OPTION+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_PERSON+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_REPORT+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_PATH+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_SPECIALIZATION+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_USERS+"'");
+        db.execSQL("UPDATE SQLITE_SEQUENCE SET seg = "+sequence+" WHERE name = '"+DBSchema.TABLE_USERS_SPECIALIZATION+"'");
+    }
 
     public List<User> getAllUsers() {
         SQLiteDatabase db = getReadableDatabase();
@@ -129,6 +148,26 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         return users;
 
+
+    }
+
+    public List<Appointment> getAllAppointments() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_ID},
+                null, null, null, null, DBSchema.APPOINTMENT_DATE + " DESC", null);
+        ArrayList<Appointment> Appointments;
+        Appointments = new ArrayList<>();
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                Appointments.add(new Appointment(cursor.getLong(0), this));
+            }
+
+            db.close();
+            cursor.close();
+
+        }
+        return Appointments;
 
     }
 
@@ -321,6 +360,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         }
         return new Location(-1, this);
     }
+
 
     public boolean fillDB() {
         Person person = new Person(1, "Temporal", null, "User", null, "temporal.user@rener.com", null,
@@ -1933,6 +1973,202 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
+    private long deleteItem(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_ITEM, DBSchema.ITEM_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.ITEM_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deletePath(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_PATH, DBSchema.PATH_REPORT_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.PATH_REPORT_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteUsers_specialization(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                db.delete(DBSchema.TABLE_USERS_SPECIALIZATION,DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID + " =? AND " + DBSchema.USERS_SPECIALIZATION_USER_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID)),String.valueOf(item.getLong(DBSchema.USERS_SPECIALIZATION_USER_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteOption(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                db.delete(DBSchema.TABLE_OPTION, DBSchema.OPTION_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.OPTION_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteSpecialization(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_SPECIALIZATION, DBSchema.SPECIALIZATION_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.SPECIALIZATION_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deletePerson(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_PERSON, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.PERSON_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteAppointments(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_APPOINTMENTS, DBSchema.APPOINTMENT_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.APPOINTMENT_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteAddress(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_ADDRESS, DBSchema.ADDRESS_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.ADDRESS_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteCategory(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_CATEGORY, DBSchema.CATEGORY_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.CATEGORY_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteLocation_category(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_LOCATION_CATEGORY, DBSchema.LOCATION_CATEGORY_LOCATION_ID + " =? AND " + DBSchema.LOCATION_CATEGORY_CATEGORY_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_LOCATION_ID)),String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_CATEGORY_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteLocation(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_LOCATION, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.LOCATION_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteReport(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_REPORT, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.REPORT_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteUsers(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_USERS, DBSchema.USER_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.USER_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
+    private long deleteFlowchart(JSONArray data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = -1;
+        try {
+            for (i = 0; i < data.length(); i++) {
+                JSONObject item = data.getJSONObject(i);
+                long id = db.delete(DBSchema.TABLE_FLOWCHART, DBSchema.FLOWCHART_ID + "=?", new String[]{String.valueOf(item.getLong(DBSchema.FLOWCHART_ID))});
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        db.close();
+        return i;
+    }
 
     public boolean isEmpty() {
         SQLiteDatabase db = getReadableDatabase();
@@ -1951,94 +2187,239 @@ public final class DBHelper extends SQLiteOpenHelper {
     public void setSyncDone() {
 
         try {
-            setSyncItem(dataSync.getJSONArray("item"));
+            setSyncItem(dataSync.getJSONArray(DBSchema.TABLE_ITEM));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncPath(dataSync.getJSONArray("path"));
+            setSyncPath(dataSync.getJSONArray(DBSchema.TABLE_PATH));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncUsers_specialization(dataSync.getJSONArray("users_specialization"));
+            setSyncUsers_specialization(dataSync.getJSONArray(DBSchema.TABLE_USERS_SPECIALIZATION));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncOption(dataSync.getJSONArray("option"));
+            setSyncOption(dataSync.getJSONArray(DBSchema.TABLE_OPTION));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncSpecialization(dataSync.getJSONArray("specialization"));
+            setSyncSpecialization(dataSync.getJSONArray(DBSchema.TABLE_SPECIALIZATION));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncPerson(dataSync.getJSONArray("person"));
+            setSyncPerson(dataSync.getJSONArray(DBSchema.TABLE_PERSON));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncAppointments(dataSync.getJSONArray("appointments"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-//        try {
-//            setSyncDevices(dataSync.getJSONArray("devices"));
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-        try {
-            setSyncAddress(dataSync.getJSONArray("address"));
+            setSyncAppointments(dataSync.getJSONArray(DBSchema.TABLE_APPOINTMENTS));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncCategory(dataSync.getJSONArray("category"));
+            setSyncAddress(dataSync.getJSONArray(DBSchema.TABLE_ADDRESS));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncLocation_category(dataSync.getJSONArray("location_category"));
+            setSyncCategory(dataSync.getJSONArray(DBSchema.TABLE_CATEGORY));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncLocation(dataSync.getJSONArray("location"));
+            setSyncLocation_category(dataSync.getJSONArray(DBSchema.TABLE_LOCATION_CATEGORY));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncReport(dataSync.getJSONArray("report"));
+            setSyncLocation(dataSync.getJSONArray(DBSchema.TABLE_LOCATION));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncUsers(dataSync.getJSONArray("users"));
+            setSyncReport(dataSync.getJSONArray(DBSchema.TABLE_REPORT));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            setSyncFlowchart(dataSync.getJSONArray("flowchart"));
+            setSyncUsers(dataSync.getJSONArray(DBSchema.TABLE_USERS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSyncFlowchart(dataSync.getJSONArray(DBSchema.TABLE_FLOWCHART));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
     }
-//    $user_ID = $_POST["user_id"];
-//    $user_Type = $_POST["type"];
-//    $local_Data = $_POST["data"]
-//    $type_Of_Sync = $_POST["sync"];
+
+    private void setLocalData(JSONObject serverJSONObject){
+
+        try {
+            setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setPath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setUsers_specialization(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS_SPECIALIZATION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setOption(serverJSONObject.getJSONArray(DBSchema.TABLE_OPTION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setSpecialization(serverJSONObject.getJSONArray(DBSchema.TABLE_SPECIALIZATION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setPerson(serverJSONObject.getJSONArray(DBSchema.TABLE_PERSON));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setAppointments(serverJSONObject.getJSONArray(DBSchema.TABLE_APPOINTMENTS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setAddress(serverJSONObject.getJSONArray(DBSchema.TABLE_ADDRESS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setCategory(serverJSONObject.getJSONArray(DBSchema.TABLE_CATEGORY));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setLocation_category(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION_CATEGORY));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setLocation(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setReport(serverJSONObject.getJSONArray(DBSchema.TABLE_REPORT));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setUsers(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setFlowchart(serverJSONObject.getJSONArray(DBSchema.TABLE_FLOWCHART));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    private void deleteLocalData(JSONObject serverJSONObject){
+
+        try {
+            deleteItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deletePath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteUsers_specialization(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS_SPECIALIZATION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteOption(serverJSONObject.getJSONArray(DBSchema.TABLE_OPTION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteSpecialization(serverJSONObject.getJSONArray(DBSchema.TABLE_SPECIALIZATION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deletePerson(serverJSONObject.getJSONArray(DBSchema.TABLE_PERSON));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteAppointments(serverJSONObject.getJSONArray(DBSchema.TABLE_APPOINTMENTS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteAddress(serverJSONObject.getJSONArray(DBSchema.TABLE_ADDRESS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteCategory(serverJSONObject.getJSONArray(DBSchema.TABLE_CATEGORY));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteLocation_category(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION_CATEGORY));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteLocation(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteReport(serverJSONObject.getJSONArray(DBSchema.TABLE_REPORT));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteUsers(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            deleteFlowchart(serverJSONObject.getJSONArray(DBSchema.TABLE_FLOWCHART));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
     // TODO: set tuple as sync and set the path
     // puede devolver true todo el tiempo
 
     public void syncDB() {
         String device_id = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
 
-//        Log.i(this.toString(), "HTTP Sync called ");
+        Log.i(this.toString(), "HTTP Sync called ");
         //Create AsycHttpClient object
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -2050,28 +2431,17 @@ public final class DBHelper extends SQLiteOpenHelper {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                     SQLiteDatabase db = getWritableDatabase();
                     try {
-                        JSONObject serverJSONObject = response.getJSONObject(DBSchema.POST_SERVER_DATA);
-//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
 
-                        setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
-                        setPath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
-                        setUsers_specialization(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS_SPECIALIZATION));
-                        setOption(serverJSONObject.getJSONArray(DBSchema.TABLE_OPTION));
-                        setSpecialization(serverJSONObject.getJSONArray(DBSchema.TABLE_SPECIALIZATION));
-                        setPerson(serverJSONObject.getJSONArray(DBSchema.TABLE_PERSON));
-                        setAppointments(serverJSONObject.getJSONArray(DBSchema.TABLE_APPOINTMENTS));
-//                        setDevices(serverJSONObject.getJSONArray(DBSchema.TABLE_DEVICES));
-                        setAddress(serverJSONObject.getJSONArray(DBSchema.TABLE_ADDRESS));
-                        setCategory(serverJSONObject.getJSONArray(DBSchema.TABLE_CATEGORY));
-                        setLocation_category(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION_CATEGORY));
-                        setLocation(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION));
-                        setReport(serverJSONObject.getJSONArray(DBSchema.TABLE_REPORT));
-                        setUsers(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS));
-                        setFlowchart(serverJSONObject.getJSONArray(DBSchema.TABLE_FLOWCHART));
+                        JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                        if(status.getInt(DBSchema.SYNC_STATUS) == 1) {
+                            setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+                        }else {
 
+                            Log.i(this.toString(), "HTTP Sync success Transaction fail");
+                        }
 
                     } catch (JSONException e) {
 
@@ -2079,7 +2449,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     }
                     try {
                         JSONObject localJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
-//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -2093,13 +2463,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
 
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-//                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                     switch (statusCode) {
                         case 404:
                             Intent intent404 = new Intent();
@@ -2144,7 +2514,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             User currentUser = findUserByUsername(sUsername);
             long userID = currentUser.getId();
             String type = currentUser.getType();
-//            Log.i(this.toString(), "DEVICE ID = " + String.valueOf(device_id));
+            Log.i(this.toString(), "DEVICE ID = " + String.valueOf(device_id));
             params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_INC);
             params.put(DBSchema.POST_USER_ID, userID);
             params.put(DBSchema.POST_USER_TYPE, type);
@@ -2157,28 +2527,23 @@ public final class DBHelper extends SQLiteOpenHelper {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                     SQLiteDatabase db = getWritableDatabase();
 
                     try {
 
-                        JSONObject serverJSONObject = response.getJSONObject(DBSchema.POST_SERVER_DATA);
-//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
-                        setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
-                        setPath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
-                        setUsers_specialization(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS_SPECIALIZATION));
-                        setOption(serverJSONObject.getJSONArray(DBSchema.TABLE_OPTION));
-                        setSpecialization(serverJSONObject.getJSONArray(DBSchema.TABLE_SPECIALIZATION));
-                        setPerson(serverJSONObject.getJSONArray(DBSchema.TABLE_PERSON));
-                        setAppointments(serverJSONObject.getJSONArray(DBSchema.TABLE_APPOINTMENTS));
-//                        setDevices(serverJSONObject.getJSONArray(DBSchema.TABLE_DEVICES));
-                        setAddress(serverJSONObject.getJSONArray(DBSchema.TABLE_ADDRESS));
-                        setCategory(serverJSONObject.getJSONArray(DBSchema.TABLE_CATEGORY));
-                        setLocation_category(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION_CATEGORY));
-                        setLocation(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION));
-                        setReport(serverJSONObject.getJSONArray(DBSchema.TABLE_REPORT));
-                        setUsers(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS));
-                        setFlowchart(serverJSONObject.getJSONArray(DBSchema.TABLE_FLOWCHART));
+
+                        JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                        if(status.getInt(DBSchema.SYNC_STATUS) == 1) {
+
+                            setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+                            deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
+
+                        }else {
+
+                            Log.i(this.toString(), "HTTP Sync success Transaction fail");
+                        }
+
 
                     } catch (JSONException e) {
 
@@ -2193,34 +2558,34 @@ public final class DBHelper extends SQLiteOpenHelper {
                     try {
                         JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
                         long status = syncInf.getLong(DBSchema.SYNC_STATUS);
-//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
                         String  local_data = syncInf.getString("local_data");
-//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
                         if(status == DBSchema.STATUS_SUCCESS){
                             setSyncDone();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-//                    try {
-//                        JSONObject syncJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
-//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", sysncJSON = " + syncJSONObject.toString());
-//                    } catch (JSONException e) {
-//
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        JSONObject syncJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", sysncJSON = " + syncJSONObject.toString());
+                    } catch (JSONException e) {
+
+                        e.printStackTrace();
+                    }
 
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
 
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-//                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                     switch (statusCode) {
                         case 404:
                             Intent intent404 = new Intent();
@@ -2267,7 +2632,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(usernameKey, null);
         long userID = findUserByUsername(sUsername).getId();
-//        Log.i(this.toString(), "HTTP Sync called ");
+        Log.i(this.toString(), "HTTP Sync called ");
 
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -2279,51 +2644,36 @@ public final class DBHelper extends SQLiteOpenHelper {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                 SQLiteDatabase db = getWritableDatabase();
                 try {
-                    JSONObject serverJSONObject = response.getJSONObject(DBSchema.POST_SERVER_DATA);
-//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", serverJSON = " + serverJSONObject.toString());
+                    JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                    if(status.getInt(DBSchema.SYNC_STATUS) == 1) {
+                        if (status.getInt("flag") == 1) {
+                            setSequence(status.getLong("base_sequence"));
 
-                    setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
-                    setPath(serverJSONObject.getJSONArray(DBSchema.TABLE_PATH));
-                    setUsers_specialization(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS_SPECIALIZATION));
-                    setOption(serverJSONObject.getJSONArray(DBSchema.TABLE_OPTION));
-                    setSpecialization(serverJSONObject.getJSONArray(DBSchema.TABLE_SPECIALIZATION));
-                    setPerson(serverJSONObject.getJSONArray(DBSchema.TABLE_PERSON));
-                    setAppointments(serverJSONObject.getJSONArray(DBSchema.TABLE_APPOINTMENTS));
-//                        setDevices(serverJSONObject.getJSONArray(DBSchema.TABLE_DEVICES));
-                    setAddress(serverJSONObject.getJSONArray(DBSchema.TABLE_ADDRESS));
-                    setCategory(serverJSONObject.getJSONArray(DBSchema.TABLE_CATEGORY));
-                    setLocation_category(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION_CATEGORY));
-                    setLocation(serverJSONObject.getJSONArray(DBSchema.TABLE_LOCATION));
-                    setReport(serverJSONObject.getJSONArray(DBSchema.TABLE_REPORT));
-                    setUsers(serverJSONObject.getJSONArray(DBSchema.TABLE_USERS));
-                    setFlowchart(serverJSONObject.getJSONArray(DBSchema.TABLE_FLOWCHART));
+                        }
+                    }else {
+
+                        Log.i(this.toString(), "HTTP Sync success Transaction fail");
+                    }
 
                 } catch (JSONException e) {
 
                     e.printStackTrace();
                 }
-//                try {
-////                    JSONObject localJSONObject = response.getJSONObject("local");
-////                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
-//                } catch (JSONException e) {
-//
-//                    e.printStackTrace();
-//                }
+
                 Intent intent = new Intent();
                 intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                 intent.setAction("SYNC");
                 intent.putExtra("SYNC_RESULT", 200);
                 context.sendBroadcast(intent);
-//                    setSyncDone();
 
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
 
             }
 

@@ -108,10 +108,10 @@ block content
 								tr
 									td Más detalles:
 									td 
-										button#btn_view_report(class='btn btn-sm btn-success', type='button', data-id=citas[0].report_id) Ver Reporte
-						button#btn_edit_cita(class='btn btn-success btn-block', type='button', data-id=citas[0].appointment_id) Editar
+										button#btn_view_report(class='btn btn-sm btn-success', type='button') Ver Reporte
+						button#btn_edit_cita(class='btn btn-success btn-block', type='button') Editar
 						if(user.user_type == 'admin')
-							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip', data-id=citas[0].appointment_id, data-location-name=citas[0].location_name)
+							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
 								i(class='glyphicon glyphicon-trash')
 
 			#location_panel.col-md-4(style="display:none")
