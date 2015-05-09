@@ -875,7 +875,7 @@ router.get('/list_localizaciones', function(req, res, next) {
 		// query for location categories
 		client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 										FROM location \
-										WHERE status != $1 \
+										WHERE location.status != $1 \
 										ORDER BY location_name \
 										LIMIT 20) \
 									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
@@ -890,8 +890,8 @@ router.get('/list_localizaciones', function(req, res, next) {
 		});
 	  // query for associated agentes
 	  client.query('WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
-										FROM location natural join address \
-										WHERE status != $1 \
+										FROM location \
+										WHERE location.status != $1 \
 										ORDER BY location_name \
 										LIMIT 20) \
 									SELECT locations.location_id, agent_id, username \
@@ -905,8 +905,8 @@ router.get('/list_localizaciones', function(req, res, next) {
 	  });
 	  // query for associated ganaderos
 	  client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
-										FROM location INNER JOIN address ON location.address_id = address.address_id \
-										WHERE status != $1 \
+										FROM location \
+										WHERE location.status != $1 \
 										ORDER BY location_name \
 										LIMIT 20) \
 										SELECT person_id, locations.location_id,\
