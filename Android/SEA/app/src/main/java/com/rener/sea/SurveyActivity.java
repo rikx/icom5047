@@ -133,9 +133,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     @Override
     public void onBackPressed() {
-        report.destroy();
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        displayDiscardConfirmDialog();
     }
 
     @Override
@@ -472,7 +470,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     private void discardReport() {
         report.destroy();
-        onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void continueReport() {
