@@ -9,6 +9,7 @@ $(document).ready(function(){
   $question_panel_question = $('#next_question_question');
   $question_panel_answers = $('#next_question_answers');
 
+  var flowchart_end_id = $('#flowchart').attr('data-end-id');
   var locations_array = JSON.parse($('#scrollable-dropdown-menu').attr('data-locations'));
 
 	/* Return home */
@@ -167,7 +168,7 @@ $(document).ready(function(){
 		if(the_question.attr('data-question-type') != 'RECOM'){
 			answer_value = the_answer.val();
 		} else {
-			answer_value = 'RECOM';
+			answer_value = $('#answer_recommendation_text').text();
 		}
 
 		if(answer_value === null || answer_value === undefined || answer_value === '') {
@@ -178,7 +179,8 @@ $(document).ready(function(){
 				flowchart_id: $('#flowchart').attr('data-flowchart-id'),
 				item_id: the_question.attr('data-question-id'),
 				question: the_question.text(),
-				option_id: the_answer.attr('data-answer-id')
+				option_id: the_answer.attr('data-answer-id'),
+				answer: answer_value
 			};
 
 			// ajax post object
@@ -193,7 +195,6 @@ $(document).ready(function(){
 			if(has_user_input){
 				new_path.has_data = true;
 				new_path.user_input = answer_value;
-				question_answer_pair.answer = answer_value;
 			} else {
 				new_path.has_data = false;
 			}
@@ -340,7 +341,7 @@ $(document).ready(function(){
 		var end_path = {
 			report_id: $question_panel_answers.attr('data-report-id'),
 			option_id: $question_panel_answers.attr('data-answer-id'),
-			//user_input: 'RECOM',
+			has_data: false,
 			sequence: sequence_number
 		};
     $.ajax({
@@ -386,6 +387,7 @@ $(document).ready(function(){
 			$question_panel_question.html(this_item.question);
 			$question_panel_question.attr('data-question-id', this_item.item_id);
 			$question_panel_question.attr('data-question-type', this_item.item_type);
+			$question_panel_question.show();
 			$('#panel_title_next').html('<h3>Proxima Pregunta</h3>');
 			//
 			var next_content_answers = '';
@@ -406,11 +408,10 @@ $(document).ready(function(){
 					break;
 				}
 				case 'RECOM':{
-
-				}
-				case 'END': {
-					$('#btn_save_progress, #btn_next_question').hide();
-					$('#btn_end_survey').show();
+					if(this_item.next_id == flowchart_end_id){
+						$('#btn_save_progress, #btn_next_question').hide();
+						$('#btn_end_survey').show();
+					} 
 					$('#panel_title_next').html('Recommendaciones:');
 
 					$question_panel_question.hide();
