@@ -501,11 +501,11 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		  // query for associated agentes
 		  client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
 									  	FROM location \
-									  	WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
+									  	WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
 									  	ORDER BY location_name) \
 									  SELECT locations.location_id, agent_id, username \
 									  FROM locations,users \
-									  WHERE user_id = agent_id", function(err, result) {
+									  WHERE user_id = agent_id", [-1], function(err, result) {
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
@@ -516,7 +516,7 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		  // query for associated ganaderos
 		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
 									  	FROM location \
-									  	WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
+									  	WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
 									  	ORDER BY location_name) \
 									  SELECT person_id, locations.location_id,\
 									  CASE WHEN person_id = owner_id THEN 'owner' \
@@ -524,7 +524,7 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 									  END AS relation_type, \
 									  (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
 									  FROM locations, person \
-									  WHERE person_id = owner_id or person_id = manager_id", function(err, result) {
+									  WHERE person_id = owner_id or person_id = manager_id", [-1], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		  	done();
 
@@ -592,6 +592,32 @@ router.get('/categories/:user_input', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	res.json({categories: result.rows});
+	    }
+	  });
+	});
+});
+
+/* GET search specialties
+ * returns specialties matching :user_input and their associated information 
+ */
+router.get('/specialties/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
+	
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// get categories
+	  client.query("SELECT * FROM specialization \
+	  							WHERE LOWER(name) LIKE '%"+user_input+"%' \
+	  							ORDER BY name", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({specialties: result.rows});
 	    }
 	  });
 	});
