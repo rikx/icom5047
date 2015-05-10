@@ -1127,10 +1127,10 @@ router.post('/reports/appointment/:id/:uid', function(req, res, next) {
 			   		res.send({exists: true});
 		  		} else {
 			   		// Insert new appointment into db
-				   	client.query("INSERT into appointments (date, time, purpose, report_id, maker_id) \
-				    							VALUES ($1, $2, $3, $4, $5) \
+				   	client.query("INSERT into appointments (date, time, purpose, report_id, maker_id, status) \
+				    							VALUES ($1, $2, $3, $4, $5, $6) \
 				    							RETURNING appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(time, 'HH12:MI AM') AS time, purpose", 
-				    							[req.body.cita_date, req.body.cita_time, req.body.cita_purpose, report_id, maker] , function(err, result) {
+				    							[req.body.cita_date, req.body.cita_time, req.body.cita_purpose, report_id, maker, 1] , function(err, result) {
 					   	//call `done()` to release the client back to the pool
 					  	done();
 					  	if(err) {

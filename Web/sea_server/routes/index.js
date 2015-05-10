@@ -98,10 +98,10 @@ router.post('/report', function(req, res, next) {
 		  	return console.error('error fetching client from pool', err);
 			}
 			// insert new report
-		  client.query('INSERT into report (creator_id, location_id, flowchart_id, date_filed, name) \
-										VALUES ($1, $2, $3, $4, $5) \
+		  client.query('INSERT into report (creator_id, location_id, flowchart_id, date_filed, name, status) \
+										VALUES ($1, $2, $3, $4, $5, $6) \
 										RETURNING report_id', 
-										[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date, req.body.report_name], function(err, result) {
+										[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date, req.body.report_name, 1], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		    done();
 	    	if(err) {
@@ -959,7 +959,8 @@ router.get('/list_reportes', function(req, res, next) {
 								INNER JOIN users ON report.creator_id = user_id \
 								WHERE report.status != $1 \
 					 			ORDER BY report_name ASC \
-								LIMIT 20"
+								LIMIT 20",
+				values: [-1]
 			}
  		} else {
  			// get first 20 reports created by this user
@@ -972,11 +973,11 @@ router.get('/list_reportes', function(req, res, next) {
 								WHERE report.status != $1 \
 					 			ORDER BY report_name ASC \
 								LIMIT 20",
-				values: [user_id]
+				values: [user_id, -1]
 			};
 	 	}
  		// get reports 
- 		client.query(query_config, [-1] , function(err, result) {
+ 		client.query(query_config, function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {

@@ -139,7 +139,7 @@ $(document).ready(function(){
     populate_info_panel(this_cita);
 
     // set id values of info panel buttons
-    $('#btn_view_report').attr('data-id', cita_id);
+    $('#btn_view_report').attr('data-id', report_id);
     $('#btn_edit_cita').attr('data-id', cita_id);
     $('#btn_delete').attr('data-id', cita_id);
     $('#btn_delete').attr('data-location-name', this_cita.location_name);
@@ -336,7 +336,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     $('#cita_info_hour').text($this_cita.time);
 
     // set id values of info panel buttons
-    $('#btn_view_report').attr('data-id', $this_cita.appointment_id);
+    $('#btn_view_report').attr('data-id', $this_cita.report_id);
     $('#btn_edit_cita').attr('data-id', $this_cita.appointment_id);
     $('#btn_delete').attr('data-id', $this_cita.appointment_id);
     $('#btn_delete').attr('data-location-name', $this_cita.location_name); 
