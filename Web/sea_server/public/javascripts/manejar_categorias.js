@@ -11,6 +11,7 @@ $(document).ready(function(){
 	$('#add_specialty_panel').hide();
   $('#specialty_row').hide();
 
+
 	populate_list_categories(all_categories);
 	populate_list_specialties(all_specialties);
 
@@ -68,11 +69,15 @@ $(document).ready(function(){
   $('#categories_tab').on('click', function(){
      $('#specialty_row').hide();
      $('#category_row').show();
+     $('#categories_tab').addClass('active');
+     $('#specialties_tab').removeClass('active');
   });
 
   $('#specialties_tab').on('click', function(){
     $('#specialty_row').show();
      $('#category_row').hide();
+     $('#specialties_tab').addClass('active');
+     $('#categories_tab').removeClass('active');
   });
 
 

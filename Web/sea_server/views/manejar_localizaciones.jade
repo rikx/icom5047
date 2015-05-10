@@ -18,7 +18,11 @@ block content
 
 		.row
 			.col-md-1
-			.col-md-6
+			.col-md-1
+				#btn_home(class='btn-group', role='group', aria-label='')
+					a(class='btn btn-success btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-home')
+			.col-md-5
 				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar localizacion por nombre o # de licencia')
 			.col-md-4
 			.col-md-1
@@ -183,7 +187,7 @@ block content
 			.col-md-2
 			.col-md-4
 				br
-				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 
 

@@ -18,6 +18,9 @@ block content
 			.col-md-1
 			.col-md-6
 				#nav(class='btn-group', role='group', aria-label='')
+					#btn_home(class='btn-group', role='group', aria-label='')
+						a(class='btn btn-success btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-home')
 					btn(class='btn btn-default', type='button', id='categories_tab') Categorias 
 					btn(class='btn btn-default', type='button', id='specialties_tab') Especialidades
 				//small
@@ -132,7 +135,7 @@ block content
 				.col-md-1
 				.col-md-6
 					// TODO: add home glyphicon
-					button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+					//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 	//Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')
 	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
