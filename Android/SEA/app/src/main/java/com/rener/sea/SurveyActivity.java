@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Toolbar;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import java.util.Locale;
  */
 public class SurveyActivity extends FragmentActivity implements AdapterView
         .OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
-        TextView.OnEditorActionListener, TextWatcher, View.OnClickListener {
+        TextView.OnEditorActionListener, TextWatcher, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
     private static final String GREATER_THAN_REGEX = "gt\\d+(\\.\\d+)?";
     private static final String LESS_THAN_REGEX = "lt\\d+(\\.\\d+)?";
@@ -64,6 +65,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private RadioGroup currentGroup;
     private int groupChecked = -1;
     private EditText currentText;
+    private Menu options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_survey);
 
+        getActionBar().hide();
         //Set the DBHelper
         dbHelper = new DBHelper(getApplicationContext());
 
@@ -142,9 +145,16 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.survey_activity_actions, menu);
-        submitItem = menu.findItem(R.id.save_report);
+        Toolbar tb = (Toolbar) findViewById(R.id.survey_toolbar);
+        tb.setOnMenuItemClickListener(this);
+        options = tb.getMenu();
+        inflater.inflate(R.menu.survey_activity_actions, options);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return onOptionsItemSelected(menuItem);
     }
 
     @Override
@@ -470,5 +480,4 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             }
         });
     }
-
 }

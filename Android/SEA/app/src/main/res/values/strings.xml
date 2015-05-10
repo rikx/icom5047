@@ -124,4 +124,5 @@
 	<string name="no_email_clients_installed">There are no email apps installed.</string>
 	<string name="key_saved_passhash" translatable="false">PASSHASH</string>
 	<string name="long_password_error">Password is too long</string>
+	<string name="app_name_long">Agricultural Extension Service</string>
 </resources>

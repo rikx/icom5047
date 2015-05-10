@@ -19,6 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,13 +28,15 @@ import java.util.TimerTask;
 /**
  * Represents an activity in which the primary navigation for the application is performed
  */
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItemClickListener {
 
     private DBHelper dbHelper;
     private NetworkHelper networkHelper;
     private Fragment leftFragment;
     private Fragment rightFragment;
     private BroadcastReceiver networkReceiver;
+    private Toolbar toolbar;
+    private Toolbar contextToolbar;
     private Menu options;
 
     @Override
@@ -40,6 +44,16 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
+
+        getActionBar().hide();
+        //Create the toolbars
+        MenuInflater inflater = getMenuInflater();
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.setOnMenuItemClickListener(this);
+        options = toolbar.getMenu();
+        inflater.inflate(R.menu.main_activity_actions, options);
+        inflater.inflate(R.menu.reports_actions, options);
+        contextToolbar = (Toolbar) findViewById(R.id.main_contextual_toolbar);
         dbHelper = new DBHelper(getApplicationContext());
 
         //Manage network connectivity
@@ -56,6 +70,7 @@ public class MainActivity extends FragmentActivity {
 
         //Show the default view
         showReportsList();
+
     }
 
     @Override
@@ -103,26 +118,24 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity_actions, menu);
-        this.options = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return onOptionsItemSelected(menuItem);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //Determine which Action Bar option was selected
         switch (item.getItemId()) {
             case R.id.reports:
-                toggleTab(item);
                 showReportsList();
                 break;
             case R.id.people:
-                toggleTab(item);
                 showPeopleList();
                 break;
             case R.id.locations:
-                toggleTab(item);
                 showLocationsList();
                 break;
             case R.id.appointments:
@@ -131,14 +144,14 @@ public class MainActivity extends FragmentActivity {
             case R.id.action_logout:
                 logout();
                 break;
-            case R.id.action_settings:
-                showSettings();
-                break;
             case R.id.sync:
                 sync(false);
                 break;
             case R.id.sync_full:
                 sync(true);
+                break;
+            case R.id.new_report_action:
+                newReport();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -151,7 +164,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showAppointmentsList() {
-
+        toolbar.setSubtitle(getString(R.string.appointments));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         leftFragment = manager.findFragmentByTag("APPOINTMENTS");
@@ -161,17 +174,16 @@ public class MainActivity extends FragmentActivity {
         }
         rightFragment = manager.findFragmentByTag("APPOINTMENT");
         if (rightFragment == null) {
-            transaction.replace(R.id.main_right_container, new Fragment());
+            transaction.replace(R.id.main_details_container, new Fragment());
         } else {
-            transaction.replace(R.id.main_right_container, rightFragment);
+            transaction.replace(R.id.main_details_container, rightFragment);
         }
         transaction.commit();
 
     }
 
     private void showReportsList() {
-
-        //Perform the fragment transaction
+        toolbar.setSubtitle(getString(R.string.reports));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         leftFragment = manager.findFragmentByTag("REPORTS");
@@ -181,15 +193,15 @@ public class MainActivity extends FragmentActivity {
         }
         rightFragment = manager.findFragmentByTag("REPORT");
         if (rightFragment == null) {
-            transaction.replace(R.id.main_right_container, new Fragment());
+            transaction.replace(R.id.main_details_container, new Fragment());
         } else {
-            transaction.replace(R.id.main_right_container, rightFragment);
+            transaction.replace(R.id.main_details_container, rightFragment);
         }
         transaction.commit();
     }
 
     private void showPeopleList() {
-        //Perform the fragment transaction
+        toolbar.setSubtitle(getString(R.string.people));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         leftFragment = manager.findFragmentByTag("PEOPLE");
@@ -199,16 +211,15 @@ public class MainActivity extends FragmentActivity {
         }
         rightFragment = manager.findFragmentByTag("PERSON");
         if (rightFragment == null) {
-            transaction.replace(R.id.main_right_container, new Fragment());
+            transaction.replace(R.id.main_details_container, new Fragment());
         } else {
-            transaction.replace(R.id.main_right_container, rightFragment);
+            transaction.replace(R.id.main_details_container, rightFragment);
         }
         transaction.commit();
     }
 
     private void showLocationsList() {
-
-        //Perform the fragment transaction
+        toolbar.setSubtitle(getString(R.string.locations));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         leftFragment = manager.findFragmentByTag("LOCATIONS");
@@ -218,9 +229,9 @@ public class MainActivity extends FragmentActivity {
         }
         rightFragment = manager.findFragmentByTag("LOCATION");
         if (rightFragment == null) {
-            transaction.replace(R.id.main_right_container, new Fragment());
+            transaction.replace(R.id.main_details_container, new Fragment());
         } else {
-            transaction.replace(R.id.main_right_container, rightFragment);
+            transaction.replace(R.id.main_details_container, rightFragment);
         }
         transaction.commit();
     }
@@ -252,16 +263,17 @@ public class MainActivity extends FragmentActivity {
      * @param id the details object's unique id
      */
     public void onDetailsRequest(String type, String tag, long id) {
-        if(type.equals("PERSON")) {
-            Person person = dbHelper.findPersonById(id);
-            if(person.getId() != -1)
-                showPerson(person, tag);
-        }
-        else if(type.equals("LOCATION")) {
-            Location location = dbHelper.findLocationById(id);
-            if(location.getId() != -1)
-                showLocation(location, tag);
-        }
+        //TODO: rethink this
+//        if(type.equals("PERSON")) {
+//            Person person = dbHelper.findPersonById(id);
+//            if(person.getId() != -1)
+//                showPerson(person, tag);
+//        }
+//        else if(type.equals("LOCATION")) {
+//            Location location = dbHelper.findLocationById(id);
+//            if(location.getId() != -1)
+//                showLocation(location, tag);
+//        }
     }
 
     /**
@@ -270,23 +282,22 @@ public class MainActivity extends FragmentActivity {
     public void onDataChanged() {
         //Refresh the list view
         MenuListFragment list = (MenuListFragment) leftFragment;
-        list.onListDataChanged();
+        list.onListDataChanged(); //TODO: TEST THIS
 
         //Refresh the details view
-        String type =list.getType();
         if(rightFragment != null) {
             DetailsFragment details;
-            if (type.equals(MenuListFragment.TYPE_LOCATIONS)) {
+            String tag = rightFragment.getTag();
+            if (tag.equals("LOCATION")) {
                 details = (LocationDetailsFragment) rightFragment;
-            } else if (type.equals(MenuListFragment.TYPE_PEOPLE)) {
-                details = (PersonDetailsFragment) rightFragment;
+            } else if (tag.equals("REPORT")) {
+                details = (ReportDetailsFragment) rightFragment;
             }
             else {
-                details = (ReportDetailsFragment) rightFragment;
+                details = (PersonDetailsFragment) rightFragment;
             }
             details.onDetailsChanged();
         }
-        //hideKeyboard();
     }
 
     /**
@@ -300,7 +311,7 @@ public class MainActivity extends FragmentActivity {
         PersonDetailsFragment details = new PersonDetailsFragment();
         details.setPerson(person);
         rightFragment = details;
-        transaction.replace(R.id.main_right_container, rightFragment, tag);
+        transaction.replace(R.id.main_details_container, rightFragment, tag);
         if(!tag.equals("PERSON")) {
             transaction.addToBackStack(null);
         }
@@ -318,7 +329,7 @@ public class MainActivity extends FragmentActivity {
         LocationDetailsFragment details = new LocationDetailsFragment();
         details.setLocation(location);
         rightFragment = details;
-        transaction.replace(R.id.main_right_container, rightFragment, tag);
+        transaction.replace(R.id.main_details_container, rightFragment, tag);
         if(!tag.equals("LOCATION")) {
             transaction.addToBackStack(null);
         }
@@ -336,7 +347,7 @@ public class MainActivity extends FragmentActivity {
         ReportDetailsFragment details = new ReportDetailsFragment();
         details.setReport(report);
         rightFragment = details;
-        transaction.replace(R.id.main_right_container, rightFragment, "REPORT");
+        transaction.replace(R.id.main_details_container, rightFragment, "REPORT");
         transaction.commit();
     }
 
@@ -350,21 +361,9 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void logout() {
-        //Delete the saved login credentials
-        SharedPreferences sharedPref = this.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.remove(getString(R.string.key_saved_username));
-        editor.remove(getString(R.string.key_saved_password));
-        editor.apply();
-
-        //Start a new Login Activity
+        LoginActivity.deleteLogin(this);
         startActivity(new Intent(this, LoginActivity.class));
         finish();
-    }
-
-    private void showSettings() {
-        //TODO: settings
     }
 
     /**
@@ -428,4 +427,25 @@ public class MainActivity extends FragmentActivity {
         //scheduleSync(5000);
     }
 
+    public Toolbar getContextToolbar() {
+        return contextToolbar;
+    }
+
+    private void newReport() {
+
+        int fcs = dbHelper.getAllFlowcharts().size();
+        int ls = dbHelper.getAllLocations().size();
+        boolean allow = (fcs != 0 && ls != 0);
+        if (allow) {
+            Intent intent = new Intent(this, SurveyActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (fcs == 0) {
+            String message = getResources().getString(R.string.no_flowcharts);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        } else {
+            String message = getResources().getString(R.string.no_locations);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

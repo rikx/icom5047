@@ -1,8 +1,10 @@
 package com.rener.sea;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 /**
  * Represents the activity that performs all functions related to authenticating the user
@@ -48,10 +51,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         passView.setOnEditorActionListener(this);
 
         //Set the action bar title
-        String app = getResources().getString(R.string.app_name);
-        String label = getResources().getString(R.string.login);
-        String title = app+" > "+label;
-        getActionBar().setTitle(title);
+        getActionBar().hide();
     }
 
     @Override
@@ -132,37 +132,62 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         }
     }
 
-    private void deleteLogin() {
+    public static void deleteLogin(Context context) {
         //Delete the saved login credentials
-        SharedPreferences sharedPref = this.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.remove(getString(R.string.key_saved_username));
-        editor.remove(getString(R.string.key_saved_password));
+        editor.remove(context.getString(R.string.key_saved_username));
+        editor.remove(context.getString(R.string.key_saved_password));
         editor.apply();
     }
 
     private boolean attemptLogin() {
         //Check login credentials
-        Context context = getApplicationContext();
         dbHelper.syncDB();
         String salt = "$2a$06$DkLy6BIWUalW66HzwYF48e";
         String hash = BCrypt.hashpw(password, salt);
         Boolean match = BCrypt.checkpw(password, salt);
         if (dbHelper.authLogin(username, password)) {
-            //Successful login
-            saveLogin();
-            startActivity(new Intent(this, MainActivity.class));
-            Log.i(this.toString(), "login successful");
-            finish();
+            successfulLogin();
             return true;
         } else {
-            //Failed login
-            deleteLogin();
-            String s = getResources().getString(R.string.login_nak);
-            Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-            Log.i(this.toString(), "login failed");
+            failedLogin();
             return false;
         }
+    }
+
+    private void setLoginReceiver() {
+        final BroadcastReceiver loginReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                unregisterReceiver(this);
+                handleLoginResult(intent);
+            }
+        };
+        IntentFilter filter = new IntentFilter("AUTH");
+        registerReceiver(loginReceiver, filter);
+    }
+
+    private void handleLoginResult(Intent intent) {
+        String key = "";
+        String success = "";
+        String result = intent.getStringExtra(""); //TODO: set key
+        if(key.equals(success)) successfulLogin();
+        else failedLogin();
+    }
+
+    private void successfulLogin() {
+        saveLogin();
+        startActivity(new Intent(this, MainActivity.class));
+        Log.i(this.toString(), "login successful");
+        finish();
+    }
+
+    private void failedLogin() {
+        deleteLogin(this);
+        String s = getResources().getString(R.string.login_nak);
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+        Log.i(this.toString(), "login failed");
     }
 }

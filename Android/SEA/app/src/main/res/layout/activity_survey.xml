@@ -8,6 +8,18 @@
 				  android:layout_width="match_parent"
 				  android:layout_height="wrap_content">
 
+		<Toolbar
+			android:id="@+id/survey_toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingStart="12dp"
+			android:paddingEnd="12dp"
+			android:background="@color/rum_theme_color"
+			android:navigationIcon="@mipmap/ic_launcher"
+			android:title="@string/app_name_long"
+			android:subtitle="@string/creating_report">
+		</Toolbar>
+
 		<EditText
 			android:id="@+id/survey_edit_name"
 			android:layout_width="match_parent"

@@ -17,7 +17,7 @@
 			android:id="@+id/report_add_appointment_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:drawableStart="@drawable/ic_action_new"
+			android:drawableStart="@drawable/ic_action_event"
 			android:text="@string/add_appointment"
 			/>
 
@@ -28,6 +28,7 @@
 		android:id="@+id/view_appointment_layout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginBottom="16dp"
 		android:orientation="vertical">
 
 		<TextView

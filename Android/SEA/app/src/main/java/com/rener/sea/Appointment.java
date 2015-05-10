@@ -14,7 +14,7 @@ public class Appointment {
 
     private long id = -1;
     private DBHelper dbHelper;
-    private SimpleDateFormat dateFormat;
+    String dateFormat;
     private User creator; //TODO: integrate this to DB
 
     public Appointment(long id, DBHelper dbHelper) {
@@ -23,8 +23,10 @@ public class Appointment {
 
     }
 
-    public Appointment(long id, long report_id, long creator_id, Calendar date, String purpose, DBHelper dbHelper) {
+    public Appointment(long id, long report_id, long creator_id, Calendar date, String purpose,
+                       DBHelper dbHelper, String dateFormat) {
         this.dbHelper = dbHelper;
+        this.dateFormat = dateFormat;
         //verify if exit
         if (exist(id)) { // can also verify if id == -1
             invoke(id);
@@ -204,13 +206,13 @@ public class Appointment {
         return id;// if -1 error during update
     }
 
-    public String getDateString(String format, Locale locale) {
-        dateFormat = new SimpleDateFormat(format, locale);
-        return this.dateFormat.format(getDate().getTime());
+    public String getDateString(String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+        return sdf.format(getDate().getTime());
     }
 
     public String toString() {
-        return super.toString();
+        return getDateString(dateFormat);
     }
 
 }

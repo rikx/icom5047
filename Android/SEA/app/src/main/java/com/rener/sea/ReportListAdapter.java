@@ -83,6 +83,11 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
         return filter;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
     private static class ReportHolder {
         TextView nameText;
         TextView locationText;

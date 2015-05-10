@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Toolbar;
 import android.widget.ViewFlipper;
 
 import java.util.Calendar;
@@ -30,7 +32,7 @@ import java.util.Locale;
 /**
  * An Android fragment class used to manage the display of data pertaining to a report.
  */
-public class ReportDetailsFragment extends Fragment implements View.OnClickListener, DetailsFragment {
+public class ReportDetailsFragment extends Fragment implements View.OnClickListener, DetailsFragment, Toolbar.OnMenuItemClickListener {
 
     public static final int NO_APPOINTMENT_LAYOUT = 0;
     private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
@@ -43,6 +45,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     private View appointmentView;
     private boolean viewCreated;
     private AlertDialog appointmentDialog;
+    private Toolbar toolbar;
+    private Menu options;
+    private MenuItem addAppointmentAction;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,16 +98,30 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        toolbar = ((MainActivity)getActivity()).getContextToolbar();
+        toolbar.setOnMenuItemClickListener(this);
+        options = toolbar.getMenu();
+        getActivity().getMenuInflater().inflate(R.menu.report_actions, options);
+        boolean visible = (appointmentLayout == NO_APPOINTMENT_LAYOUT);
+        options.findItem(R.id.add_appointment_action).setVisible(visible);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        options.clear();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        options.clear();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        displayAppointmentDialog();
+        return super.onOptionsItemSelected(menuItem);
     }
 
     @Override
@@ -257,28 +276,26 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         String dateFormat = getResources().getString(R.string.date_format_long);
         String timeFormat = getResources().getString(R.string.time_format);
         String format = dateFormat + " " + timeFormat;
-        String date = appointment.getDateString(format, Locale.getDefault());
+        String date = appointment.getDateString(format);
         TextView dateText = (TextView) view.findViewById(R.id.appointment_date_text);
         dateText.setText(date);
 
         //Set appointment purpose view
-        String purposeLabel = getResources().getString(R.string.purpose_label);
         String purpose = appointment.getPurpose();
         TextView purposeText = (TextView) view.findViewById(R.id.appointment_purpose_text);
-        purposeText.setText(purposeLabel + ": " + purpose);
+        purposeText.setText(purpose);
 
         //Set appointment creator view
-        String creatorLabel = getResources().getString(R.string.appointment_set_by_label);
+        String creatorLabel = getString(R.string.creator_label);
         String creator = appointment.getCreator().getPerson().toString();
         TextView creatorText = (TextView) view.findViewById(R.id.appointment_creator_text);
         creatorText.setText(creatorLabel + ": " + creator);
 
         //Display the layout
         appointmentLayout = VIEW_APPOINTMENT_LAYOUT;
-        appointmentView.setVisibility(View.GONE);
+        appointmentFlipper.setVisibility(View.GONE);
         appointmentFlipper.setDisplayedChild(VIEW_APPOINTMENT_LAYOUT);
-        appointmentView = appointmentFlipper.findViewById(R.id.view_appointment_layout);
-        appointmentView.setVisibility(View.VISIBLE);
+        appointmentFlipper.setVisibility(View.VISIBLE);
     }
 
     private boolean saveAppointment() {
@@ -309,7 +326,8 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             User creator = dbHelper.findUserByUsername(sUsername);
 
             //Create the appointment and set the views for it
-            new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper);
+            String dateFormat = getString(R.string.date_format_medium);
+            new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper, dateFormat);
             inflateAppointmentLayout();
             ((MainActivity) getActivity()).onDataChanged();
         }
@@ -332,6 +350,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             Button cancel = (Button) view.findViewById(R.id.report_cancel_appointment_button);
             cancel.setOnClickListener(this);
             builder.setView(view);
+            appointmentView = view;
 
             appointmentDialog = builder.create();
             appointmentDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
@@ -342,6 +361,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     private void goToReportLocation() {
         long id = report.getLocation().getId();
-        ((MainActivity)getActivity()).onDetailsRequest("LOCATION", "REPORT_LOCATION", id);
+        ((MainActivity)getActivity()).onDetailsRequest("LOCATION", "LOCATION", id);
+    }
+
+    public String getType() {
+        return "REPORT";
     }
 }

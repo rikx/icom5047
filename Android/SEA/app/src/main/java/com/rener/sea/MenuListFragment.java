@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * A fragment class used to display a list of objects in the application.
  */
-public class MenuListFragment extends ListFragment implements TextWatcher, View.OnClickListener {
+public class MenuListFragment extends ListFragment implements TextWatcher, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
     public static String TYPE_PEOPLE = "PEOPLE";
     public static String TYPE_REPORTS = "REPORTS";
@@ -89,6 +89,9 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        getActivity().getMenuInflater().inflate(R.menu.navigation_menu, toolbar.getMenu());
+        toolbar.setOnMenuItemClickListener(this);
+
         //Restore arguments if they exist
         curPos = getArguments().getInt("index", -1);
         type = getArguments().getString("type");
@@ -143,8 +146,11 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
             inflater.inflate(R.menu.people_actions, menu);
         else if (type.equals(TYPE_LOCATIONS))
             inflater.inflate(R.menu.locations_actions, menu);
+    }
 
-        super.onCreateOptionsMenu(menu, inflater);
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return getActivity().onOptionsItemSelected(menuItem);
     }
 
     @Override
@@ -221,5 +227,4 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
             dates.add(Calendar.getInstance());
         return dates;
     }
-
 }

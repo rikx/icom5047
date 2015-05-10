@@ -17,12 +17,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 import android.widget.ViewFlipper;
 
 /**
  * An Android fragment class used to display data pertaining to a person.
  */
-public class PersonDetailsFragment extends Fragment implements DetailsFragment, View.OnClickListener {
+public class PersonDetailsFragment extends Fragment implements DetailsFragment, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
@@ -85,25 +86,21 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        options.clear();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
-        this.options = menu;
-        inflater.inflate(R.menu.person_actions, menu);
+        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        options = tb.getMenu();
+        options.clear();
+        inflater.inflate(R.menu.person_actions, options);
+        tb.setOnMenuItemClickListener(this);
+    }
 
-        //Highlight the save and edit buttons
-        int color = getResources().getColor(android.R.color.holo_green_light);
-        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.DARKEN);
-        MenuItem save = menu.findItem(R.id.save_person_action);
-        MenuItem edit = menu.findItem(R.id.edit_person_action);
-        Drawable d = save.getIcon();
-        d.setColorFilter(filter);
-        save.setIcon(d);
-        d = edit.getIcon();
-        d.setColorFilter(filter);
-        edit.setIcon(d);
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return onOptionsItemSelected(menuItem);
     }
 
     @Override
@@ -121,7 +118,6 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
                 }
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -181,7 +177,6 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
     }
 
     private void flipToShowLayout() {
-        ((MainActivity)getActivity()).hideKeyboard();
         flipper.setDisplayedChild(SHOW_LAYOUT);
         options.findItem(R.id.save_person_action).setVisible(false);
         options.findItem(R.id.edit_person_action).setVisible(true);
@@ -273,5 +268,9 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
                 Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public String getType() {
+        return "PERSON";
     }
 }

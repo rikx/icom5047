@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.List;
  * An Android fragment that manages the display of details for a single Location object
  */
 public class LocationDetailsFragment extends Fragment implements DetailsFragment, AdapterView
-        .OnItemSelectedListener, View.OnClickListener {
+        .OnItemSelectedListener, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
@@ -117,6 +118,17 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        options.clear();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return onOptionsItemSelected(menuItem);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_location_action:
@@ -149,21 +161,11 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
-        this.options = menu;
-        inflater.inflate(R.menu.location_actions, menu);
-
-        //Highlight the save and edit buttons
-//        int color = getResources().getColor(android.R.color.holo_green_light);
-//        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.DARKEN);
-//        MenuItem save = menu.findItem(R.id.save_person_action);
-//        MenuItem edit = menu.findItem(R.id.edit_person_action);
-//        Drawable dSave = save.getIcon();
-//        dSave.setColorFilter(filter);
-//        save.setIcon(dSave);
-//        Drawable dEdit = edit.getIcon();
-//        dEdit.setColorFilter(filter);
-//        edit.setIcon(dEdit);
+        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        options = tb.getMenu();
+        options.clear();
+        inflater.inflate(R.menu.location_actions, options);
+        tb.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -283,7 +285,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     }
 
     private void flipToShowLayout() {
-        ((MainActivity)getActivity()).hideKeyboard();
         options.findItem(R.id.save_location_action).setVisible(false);
         flipper.setDisplayedChild(SHOW_LAYOUT);
         options.findItem(R.id.edit_location_action).setVisible(true);
@@ -398,5 +399,13 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     private void goToLocationManager() {
         long id = location.getOwner().getId();
         ((MainActivity)getActivity()).onDetailsRequest("PERSON", "MANAGER", id);
+    }
+
+    public String getType() {
+        return "LOCATION";
+    }
+
+    public long getLocationId() {
+        return location.getId();
     }
 }
