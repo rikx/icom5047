@@ -117,11 +117,9 @@ $(document).ready(function(){
   $citas_list.on('click', 'tr td a.show_info_cita', function(e){
     // preveLnts link from firing
     e.preventDefault();
-
     $('#location_panel').hide();
     $('#edit_panel').hide();
     $('#info_panel').show();
-
     // remove active from previous list item 
     remove_active_class($citas_list);
     // add active to current clicked list item
@@ -129,17 +127,14 @@ $(document).ready(function(){
     if (!$this.hasClass('active')) {
       $this.addClass('active');
     }
-
     // contains cita id
     var cita_id = $this.attr('data-id');
     var arrayPosition = citas_array.map(function(arrayItem) { return arrayItem.appointment_id; }).indexOf(cita_id);
     var this_cita = citas_array[arrayPosition];
-
     // populate info panel with this_cita
     populate_info_panel(this_cita);
-
     // set id values of info panel buttons
-    $('#btn_view_report').attr('data-id', report_id);
+    $('#btn_view_report').attr('data-id', cita_id);
     $('#btn_edit_cita').attr('data-id', cita_id);
     $('#btn_delete').attr('data-id', cita_id);
     $('#btn_delete').attr('data-location-name', this_cita.location_name);
@@ -196,7 +191,16 @@ $(document).ready(function(){
     var $the_form = $('#form_manage_cita');
     var form_data = $the_form.serializeArray();
     var new_cita = ConverToJSON(form_data);
-
+    if(!new_cita.cita_date.length > 0)
+    { 
+      alert("Por favor ingrese una fecha.");
+    }
+    else if(!new_cita.cita_time.length > 0)
+    {
+      alert("Por favor ingrese una hora.");
+    }
+    else
+    {
     // ajax call to update ganadero
     $.ajax({
       url: "http://localhost:3000/users/admin/citas/" + appointment_id,
@@ -221,6 +225,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+  }
   });
 
   /* Delete appointment */
