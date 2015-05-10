@@ -234,9 +234,15 @@ public class DBSchema {
     public static final String POST_SERVER_DATA_DELETED = "deleted_data";
     public static final String POST_SYNC_INF = "sync_info";
 
-//    public static final String SYNC_URL = "http://136.145.116.231:3000/synchronization";
+
+    public static final String AUTH_USER = "username";
+    public static final String AUTH_PASS = "username";
+    public static final String AUTH_DEVICE = "username";
+    public static final String AUTH_URL = "http://136.145.116.231/mobile/test10.php";
+
+    //    public static final String SYNC_URL = "http://136.145.116.231:3000/synchronization";
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test1.php";
-    public static final String SYNC_URL = "http://136.145.116.231/mobile/test2.php";
-//    public static final String SYNC_URL = "http://136.145.116.231/mobile/test3.php";
+//    public static final String SYNC_URL = "http://136.145.116.231/mobile/test2.php";
+    public static final String SYNC_URL = "http://136.145.116.231/mobile/test3.php";
 
 }
