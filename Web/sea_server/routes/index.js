@@ -22,9 +22,9 @@ router.get('/', function(req, res, next) {
 /* 
  * Page does not exist
  */
-router.get('/:id', function(req, res, next) {
+/*router.get('/:id', function(req, res, next) {
 	res.redirect('/users');
-});
+});*/
 /* 
  * POST login 
  */
@@ -81,7 +81,7 @@ router.get('/logout', function(req, res, next) {
 			console.log(err);
 		}
 		else {
-			res.json(true);
+			res.redirect('/');
 		}
 	});
 });

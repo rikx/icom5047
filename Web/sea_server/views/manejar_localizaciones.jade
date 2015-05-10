@@ -104,9 +104,10 @@ block content
 									.panel-body
 											#categories_list(role='form')
 											//button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar Categorias
-								button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button', data-id=localizaciones[0].location_id) Editar
-								a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
-									i(class='glyphicon glyphicon-trash')
+								if(user.user_type == 'admin')
+									button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button', data-id=localizaciones[0].location_id) Editar
+									a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
+										i(class='glyphicon glyphicon-trash')
 						br
 						.panel.panel-info
 							.panel-heading Ganaderos Asociados
@@ -126,7 +127,7 @@ block content
 								table#localizacion_agentes(class='table')
 						button#btn_add_associates(class='btn btn-sm btn-info btn-block' type='button', data-id=localizaciones[0].location_id) Editar Personas Asociadas
 						br
-						button#btn_close_info_panel(class='btn btn-default') Cerrar
+						//button#btn_close_info_panel(class='btn btn-default') Cerrar
 
 
 
