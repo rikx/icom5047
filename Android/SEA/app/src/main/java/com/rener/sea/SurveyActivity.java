@@ -66,6 +66,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private int groupChecked = -1;
     private EditText currentText;
     private Menu options;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,14 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_survey);
 
+        //Toolbar
         getActionBar().hide();
+        toolbar = (Toolbar) findViewById(R.id.survey_toolbar);
+        options = toolbar.getMenu();
+        getMenuInflater().inflate(R.menu.survey_activity_actions, options);
+        toolbar.setOnMenuItemClickListener(this);
+        submitItem = options.findItem(R.id.save_report);
+
         //Set the DBHelper
         dbHelper = new DBHelper(getApplicationContext());
 
@@ -99,12 +107,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         nextButton.setOnClickListener(this);
 
         setSpinnerData();
-
-        //Set the action bar title
-        String app = getResources().getString(R.string.app_name);
-        String label = getResources().getString(R.string.creating_report);
-        String title = app+" > "+label;
-        getActionBar().setTitle(title);
     }
 
     @Override
@@ -143,13 +145,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        Toolbar tb = (Toolbar) findViewById(R.id.survey_toolbar);
-        tb.setOnMenuItemClickListener(this);
-        options = tb.getMenu();
-        inflater.inflate(R.menu.survey_activity_actions, options);
-        return super.onCreateOptionsMenu(menu);
+    public boolean onCreateOptionsMenu(Menu menu) {return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -304,9 +300,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 highlightTextView(textQuestion);
                 progressLayout.addView(textQuestion);
                 Option only = question.getOptions().get(0);
-                path.addEntry(only);
-                Item next = only.getNext();
-                newQuestion(next);
+                questionAnswered(only);
                 break;
             default:
                 endSurvey();
@@ -326,15 +320,15 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void questionAnswered(Option answer) {
-        path.addEntry(answer);
         Item next = answer.getNext();
+        path.addEntry(answer);
         newQuestion(next);
         scrollToBottom();
     }
 
     private void questionAnswered(Option answer, String data) {
-        path.addEntry(answer, data);
         Item next = answer.getNext();
+        path.addEntry(answer, data);
         newQuestion(next);
         scrollToBottom();
     }
