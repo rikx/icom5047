@@ -112,6 +112,8 @@ $(document).ready(function(){
     }
   });
 
+
+
   $('#search_bar').on('input', function() { 
     populate_list(usuarios_array);
   });
@@ -255,16 +257,34 @@ $(document).ready(function(){
     var form_data = $the_form.serializeArray();
     var new_usuario = ConverToJSON(form_data);
     var user_type = $('#btn_user_type_text').text();
-    console.log("User is ");
-    console.log($the_form);
-    console.log(form_data);
-    if(empty_field_check(form_data))
+    //form validation
+    if(!new_usuario.usuario_name.trim().length > 0)
     {
-      alert("Uno o mas campos estan vacios");
+      alert("Por favor ingrese un nombre.");
+    }
+    else if(!new_usuario.usuario_lastname_paternal.trim().length > 0)
+    {
+      alert("Por favor ingrese su primer apellido.")
+    }
+    else if(new_usuario.usuario_middle_initial.length > 1)
+    {
+      alert("Inicial no debe ser mas largo de un caracter.");
+    }
+    else if(!/(.+(@upr\.edu))/.test(new_usuario.usuario_email))
+    {
+      alert('Correo electrónico debe terminar con "@upr.edu"');
+    }
+    else if(new_usuario.usuario_password.length < 7)
+    {
+      alert("Contraseña debe tener 7 o más caracteres.");
     }
     else if(new_usuario.usuario_password != new_usuario.usuario_password_confirm)
     {
-      alert("Las contraseñas no son iguales.");
+      alert("Segunda contraseña no es igual a la primera.");
+    }
+    else if(!new_usuario.usuario_type.trim().length > 0)
+    {
+      alert("Por favor escoja tipo de usuario.");
     }
     else
     {
@@ -294,9 +314,9 @@ $(document).ready(function(){
     });
   }
   });
-////////////////////////////////////////////////////////
+//
 /* Open edit panel */
- $('#btn_edit_panel').on('click', function(){
+$('#btn_edit_panel').on('click', function(){
   $('#btn_edit, #heading_edit').show();
   $('#btn_submit, #heading_create').hide();
   $('#edit_panel').show();
@@ -307,15 +327,11 @@ $(document).ready(function(){
   $('#btn_add_specialty').show();
   $('#add_specialty_panel').hide();
   $('#specialty_panel_edit').show();
-
-
-
-    var type = "Test";
+  var type = "Test";
     // contains usuario id
     var usuario_id = $(this).attr('data-id');
     var arrayPosition = usuarios_array.map(function(arrayItem) { return arrayItem.user_id; }).indexOf(usuario_id);
     var this_usuario = usuarios_array[arrayPosition];
-
     $('#btn_edit').attr('data-id', usuario_id);
     $('#usuario_name').val(this_usuario.first_name);
     $('#usuario_lastname_paternal').val(this_usuario.last_name1);
@@ -323,8 +339,6 @@ $(document).ready(function(){
     $('#usuario_email').val(this_usuario.email);
     $('#usuario_telefono').val(this_usuario.phone_number);
     $('#usuario_middle_initial').val(this_usuario.middle_initial);
-
-
     if(this_usuario.type == 'agent')
     {
       type = 'Agente';
@@ -337,35 +351,49 @@ $(document).ready(function(){
     {
       type = 'Admin';
     }
-
     $('#btn_user_type_text').text(type);
     $('#usuario_type').val(this_usuario.type);
-
     if(type == 'Especialista')
     {
       populate_specialties_edit();
       $('#specialty_panel').show();
     }
-
     populate_specialties_edit();
-
   });
 
 /* PUTs edited ganadero information */
 $('#btn_edit').on('click', function(){
   var usuario_id = $(this).attr('data-id');
-  // get form data and conver to json format
   var $the_form = $('#form_manage_usuario');
   var form_data = $the_form.serializeArray();
   var new_usuario = ConverToJSON(form_data);
-
-  if(empty_field_check(form_data))
+  if(!new_usuario.usuario_name.trim().length > 0)
   {
-    alert("Uno o mas campos estan vacios");
+    alert("Por favor ingrese un nombre.");
+  }
+  else if(!new_usuario.usuario_lastname_paternal.trim().length > 0)
+  {
+    alert("Por favor ingrese su primer apellido.")
+  }
+  else if(new_usuario.usuario_middle_initial.length > 1)
+  {
+    alert("Inicial no debe ser mas largo de un caracter.");
+  }
+  else if(!/(.+(@upr\.edu))/.test(new_usuario.usuario_email))
+  {
+    alert('Correo electrónico debe terminar con "@upr.edu"');
+  }
+  else if(new_usuario.usuario_password.length < 7)
+  {
+    alert("Contraseña debe tener 7 o más caracteres.");
   }
   else if(new_usuario.usuario_password != new_usuario.usuario_password_confirm)
   {
-    alert("Las contraseñas no son iguales.");
+    alert("Segunda contraseña no es igual a la primera.");
+  }
+  else if(!new_usuario.usuario_type.trim().length > 0)
+  {
+    alert("Por favor escoja tipo de usuario.");
   }
   else
   {

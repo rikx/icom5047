@@ -511,15 +511,20 @@ $('#btn_submit').on('click', function(){
   var $the_form = $('#form_manage_location');
   var form_data = $the_form.serializeArray();
   var new_location = ConverToJSON(form_data);
-
-   if(empty_field_check(form_data))
+  if(!new_location.localizacion_name.trim().length > 0)
   {
-    alert("Uno o mas campos estan vacios");
+    alert("Por favor ingrese un nombre.");
+  }
+  else if(!new_location.localizacion_license.trim().length > 0)
+  {
+    alert("Por favor ingrese número de licencia.");
+  }
+  else if(!/^\d{1,10}$/.test(new_location.localizacion_address_zipcode))
+  {
+    alert('Código postal no puede ser más largo de diez caracteres.');
   }
   else
   {
-
-  // ajax call to post new location
   $.ajax({
     url: "http://localhost:3000/users/admin/localizaciones",
     method: "POST",
@@ -554,11 +559,6 @@ $('#btn_post_new_category').on('click', function(){
   var $the_form = $('#form_new_category');
   var form_data = $the_form.serializeArray();
   var new_category = ConverToJSON(form_data);
-
-  console.log("Posting New Category.New category is ");
-  console.log(new_category);
-
-
   // ajax call to post new category
   $.ajax({
     url: "http://localhost:3000/users/admin/new_category",
@@ -629,9 +629,17 @@ $('#btn_edit').on('click', function(){
   var form_data = $the_form.serializeArray();
   var new_location = ConverToJSON(form_data);
 
-   if(empty_field_check(form_data))
+   if(!new_location.localizacion_name.trim().length > 0)
   {
-    alert("Uno o mas campos estan vacios");
+    alert("Por favor ingrese un nombre.");
+  }
+  else if(!new_location.localizacion_license.trim().length > 0)
+  {
+    alert("Por favor ingrese número de licencia.");
+  }
+  else if(!/^\d{1,10}$/.test(new_location.localizacion_address_zipcode))
+  {
+    alert('Código postal no puede ser más largo de diez caracteres.');
   }
   else
   {

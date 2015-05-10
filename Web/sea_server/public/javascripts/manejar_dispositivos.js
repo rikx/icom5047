@@ -167,14 +167,13 @@ $(document).ready(function(){
     var $the_form = $('#form_manage_dispositivo');
     var form_data = $the_form.serializeArray();
     var new_dispositivo = ConverToJSON(form_data);
-
-    if(empty_field_check(form_data))
+    if(!new_dispositivo.dispositivo_name.trim().length > 0)
     {
-      alert("Uno o mas campos estan vacios");
-    }
+      alert("Por favor escriba nombre de dispositivo.");
+    }  
     else
     {
-    // ajax call to post new device
+    //ajax call to post new device
     $.ajax({
       url: "http://localhost:3000/users/admin/dispositivos",
       method: "POST",
@@ -231,10 +230,10 @@ $(document).ready(function(){
     var $the_form = $('#form_manage_dispositivo');
     var form_data = $the_form.serializeArray();
     var new_dispositivo = ConverToJSON(form_data);
-    if(empty_field_check(form_data))
+     if(!new_dispositivo.dispositivo_name.trim().length > 0)
     {
-      alert("Uno o mas campos estan vacios");
-    }
+      alert("Por favor escriba nombre de dispositivo.");
+    }  
     else
     {
     // ajax call to update device
