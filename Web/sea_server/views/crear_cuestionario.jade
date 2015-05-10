@@ -15,10 +15,6 @@ block content
 			.col-md-2
 
 		.row
-			.col-md-12
-				#container_plumbjs
-		br
-		.row
 			.col-md-3
 				.form-group
 					label(for='btn_user_type') Tipo de Elemento:
@@ -45,12 +41,32 @@ block content
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
 				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
 				br
-				br
-				button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
+		.row
+			.col-md-12
+				#container_plumbjs
+		br
+		.row
+			.col-md-3
+				#flowchart_info.panel.panel-warning(style='display:none')
+					.panel-heading
+						h3.panel-title Información Básica
+					.panel-body
+						form#form_create_flowchart(role='form')
+							.form-group
+								label(for='flowchart_creator') Creado por:
+								span#flowchart_creator(class='form-control', name='flowchart_creator', disabled, data-id=user.user_id)
+									= user.username
+							.form-group
+								label(for='flowchart_name') Nombre de Flujo:
+								input#flowchart_name(class='form-control', name='flowchart_name', type='text', placeholder='Nombre')
+							.form-group
+								label(for='flowchart_version') Versión:
+								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
+						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 				//button#btn_recreate(class='btn btn-lg btn-success btn-block', type='button') Re-Create
 				//button#btn_repopulate(class='btn btn-lg btn-success btn-block', type='button', data-id='32') Populate from db
 			.col-md-5
-				.panel.panel-success
+				#item_list.panel.panel-success(style='display:none')
 					.panel-heading
 						h3.panel-title Elementos creados
 					.panel-body
@@ -59,7 +75,7 @@ block content
 								thead
 								tbody#preguntas_list
 			
-			#info_panel.col-md-4
+			#info_panel.col-md-4(style='display:none')
 				.panel.panel-success
 					.panel-heading
 						h3#info_panel_heading(class='panel-title') Pregunta 1
@@ -80,8 +96,8 @@ block content
 				
 		br
 		.row
-			.col-md-3
-				.panel.panel-warning(style="display:none")
+			.col-md-3(style='display:none')
+				.panel.panel-warning
 					.panel-heading
 						h3.panel-title Información Básica
 					.panel-body
@@ -96,9 +112,10 @@ block content
 							.form-group
 								label(for='flowchart_version') Versión:
 								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
+						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 			.col-md-5
 				// TODO: add home glyphicon
-				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 		.row
 			.col-md-3
 

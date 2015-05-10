@@ -209,19 +209,18 @@ $(document).ready(function(){
     $('#btn_submit, #heading_create').hide();
     $('#edit_panel').show();
     $('#info_panel').hide();
-    $('#btn_dropdown_agentes_text').text($('#btn_edit_dispositivo').attr('data-name'));
-
-
 
     // contains dispositivo id
     var dispositivo_id = $(this).attr('data-id');
     var arrayPosition = dispositivos_array.map(function(arrayItem) { return arrayItem.device_id; }).indexOf(dispositivo_id);
     var this_dispositivo = dispositivos_array[arrayPosition];
-    console.log();
 
     $('#btn_edit').attr('data-id', dispositivo_id);
     $('#dispositivo_name').val(this_dispositivo.device_name);
     $('#dispositivo_id_num').val(this_dispositivo.id_number);
+
+    // modify dropdown value with selected user
+    $('#btn_dropdown_agentes_text').text(this_dispositivo.username);
     $('#dispositivo_usuario').val(this_dispositivo.assigned_user);
   });
 

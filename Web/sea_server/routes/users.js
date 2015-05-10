@@ -348,9 +348,9 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 				res.send({exists: true});
 			} else {
   			// Insert new flowchart into db
-  			client.query("INSERT into flowchart (name, creator_id, version) VALUES ($1, $2, $3) \
+  			client.query("INSERT into flowchart (name, creator_id, version, status) VALUES ($1, $2, $3, $4) \
 											RETURNING flowchart_id", 
-											[flowchart_info.flowchart_name, creator_id, flowchart_info.flowchart_version], function(err, result) {
+											[flowchart_info.flowchart_name, creator_id, flowchart_info.flowchart_version, 1], function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {

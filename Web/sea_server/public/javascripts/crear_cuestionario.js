@@ -79,6 +79,9 @@ jsPlumb.ready(function() {
  	// JS PLUMB create code
 
  	$('#btn_add_question').on('click', function(){
+ 		$('#flowchart_info').show();
+ 		$('#item_list').show();
+ 		$('#info_panel').show();
  		var item_type = $('#btn_item_type').attr('data-item-type');
 		// does not execute when selecting a start or an end element if it already exists
 		if((item_type == 'START' && $('#start_item').hasClass('disabled')) 
@@ -566,9 +569,9 @@ jsPlumb.ready(function() {
 	});
 
 	$('#container_plumbjs').scroll(function(){
-		//jsPlumb.ready(function() {
+		jsPlumb.ready(function() {
 			jsPlumb.repaintEverything();
-		//});
+		});
 	});
 
 	function containsObject(obj, list) {

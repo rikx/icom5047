@@ -569,7 +569,9 @@ jsPlumb.ready(function() {
   });
 
   $('#container_plumbjs').scroll(function(){
+    jsPlumb.ready(function() {
       jsPlumb.repaintEverything();
+    });
   });
 
   function containsObject(obj, list) {
