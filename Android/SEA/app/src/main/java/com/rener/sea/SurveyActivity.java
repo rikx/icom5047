@@ -418,6 +418,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         String notes = editNotes.getText().toString().trim();
         report.setNotes(notes);
 
+        report.setCompleted();
+
         //Finish the activity
         startActivity(new Intent(this, MainActivity.class));
         finish();
