@@ -101,6 +101,11 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
             String message = getString(R.string.long_password_error);
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
+        else if(password.length() == 0) {
+
+            String message = getString(R.string.empty_password_error);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
         else if(!attemptLogin()) {
             editPassword.setText("");
         }

@@ -125,4 +125,5 @@
 	<string name="no_email_clients_installed">No hay aplicaciones de correo electrónico instaladas.</string>
 	<string name="long_password_error">La contraseña es muy larga</string>
 	<string name="app_name_long">Servicio de Extensión Agrícola</string>
+	<string name="empty_password_error">Provea una contraseña</string>
 </resources>
