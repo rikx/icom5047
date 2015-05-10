@@ -536,6 +536,8 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
  * returns devices matching :user_input and their associated information 
  */
 router.get('/dispositivos/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
+
 	var dispositivos_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -557,6 +559,31 @@ router.get('/dispositivos/:user_input', function(req, res, next) {
 	});
 });
 
+/* GET search categorias
+ * returns categories matching :user_input and their associated information 
+ */
+router.get('/categories/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
+	
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// get categories
+	  client.query("SELECT * FROM category \
+	  							WHERE LOWER(name) LIKE '%"+user_input+"%' \
+	  							ORDER BY name", function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({categories: result.rows});
+	    }
+	  });
+	});
+});
 // SEARCH FUNCTIONS END
 
 /* GET flowchart element family 
