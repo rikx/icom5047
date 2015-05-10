@@ -57,35 +57,20 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private RadioGroup currentGroup;
     private int groupChecked = -1;
     private EditText currentText;
-    private Menu options;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Toolbar
+        getActionBar().hide();
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_survey);
 
-        //Toolbar
-        getActionBar().hide();
-        toolbar = (Toolbar) findViewById(R.id.survey_toolbar);
-        options = toolbar.getMenu();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.survey_toolbar);
+        Menu options = toolbar.getMenu();
         getMenuInflater().inflate(R.menu.survey_activity_actions, options);
         toolbar.setOnMenuItemClickListener(this);
         submitItem = options.findItem(R.id.save_report);
-
-        //Set the DBHelper
-        dbHelper = new DBHelper(getApplicationContext());
-
-        //Check if a new report must be created
-        Intent intent = getIntent();
-        long id = intent.getLongExtra("REPORT_ID", -1);
-        if(id == -1) {
-            report = new Report(dbHelper, setCreator());
-        }
-        else {
-            report = new Report(id, dbHelper);
-        }
 
         //Set the static views
         editName = (EditText) findViewById(R.id.survey_edit_name);
@@ -99,6 +84,20 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         nextButton.setOnClickListener(this);
 
         setSpinnerData();
+
+        //Set the DBHelper
+        dbHelper = new DBHelper(getApplicationContext());
+
+        //Check if a new report must be created
+        Intent intent = getIntent();
+        long id = intent.getLongExtra("REPORT_ID", -1);
+        if(id == -1) { //report is new
+            report = new Report(dbHelper, setCreator());
+        }
+        else { //exists
+            report = new Report(id, dbHelper);
+            continueReport();
+        }
     }
 
     @Override
@@ -467,5 +466,16 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 scroll.fullScroll(View.FOCUS_DOWN);
             }
         });
+    }
+
+    private void continueReport() {
+
+        //Set the EditText views
+        String name = report.getName();
+        editName.setText(name);
+        String notes = report.getNotes();
+        editNotes.setText(notes);
+        //TODO: finish continue report
+
     }
 }

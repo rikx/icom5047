@@ -17,7 +17,7 @@
 			android:layout_margin="8dp"
 			android:textSize="24sp"
 			android:textStyle="bold"
-			android:text="@string/no_data"
+			android:hint="@string/default_report_name"
 			/>
 
 		<TextView

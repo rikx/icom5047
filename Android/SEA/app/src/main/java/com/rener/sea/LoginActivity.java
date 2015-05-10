@@ -30,6 +30,10 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Hide the legacy action bar
+        getActionBar().hide();
+
         setContentView(R.layout.activity_login);
         Log.i(this.toString(), "created");
         // the db is created when accessed for first time
@@ -49,9 +53,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         login.setOnClickListener(this);
         EditText passView = (EditText) findViewById(R.id.field_password);
         passView.setOnEditorActionListener(this);
-
-        //Set the action bar title
-        getActionBar().hide();
     }
 
     @Override
