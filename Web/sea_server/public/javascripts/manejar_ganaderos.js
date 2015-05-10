@@ -171,9 +171,22 @@ $(document).ready(function(){
     var $the_form = $('#form_manage_ganadero');
     var form_data = $the_form.serializeArray();
     var new_ganadero = ConverToJSON(form_data);
-    if(empty_field_check(form_data))
+    console.log(new_ganadero);
+    if(!new_ganadero.ganadero_name.trim().length > 0)
     {
-      alert("Uno o mas campos estan vacios");
+      alert("Por favor ingrese nombre de ganadero.");
+    }
+    else if(!new_ganadero.ganadero_apellido1.trim().length > 0)
+    {
+      alert("Por favor ingrese su primer apellido.");
+    }
+    else if(!new_ganadero.ganadero_email.trim().length > 0)
+    {
+      alert("Por favor ingrese su correo electrónico");
+    }
+    else if(new_ganadero.ganadero_email.trim().length > 255)
+    {
+      alert("Correo electrónico no puede tener más de 255 cáracteres.");
     }
     else
     {
@@ -234,9 +247,21 @@ $(document).ready(function(){
   var $the_form = $('#form_manage_ganadero');
   var form_data = $the_form.serializeArray();
   var new_ganadero = ConverToJSON(form_data);
-  if(empty_field_check(form_data))
+  if(!new_ganadero.ganadero_name.trim().length > 0)
   {
-    alert("Uno o mas campos estan vacios");
+    alert("Por favor ingrese nombre de ganadero.");
+  }
+  else if(!new_ganadero.ganadero_apellido1.trim().length > 0)
+  {
+    alert("Por favor ingrese su primer apellido.");
+  }
+  else if(!new_ganadero.ganadero_email.trim().length > 0)
+  {
+    alert("Por favor ingrese su correo electrónico");
+  }
+  else if(new_ganadero.ganadero_email.trim().length > 255)
+  {
+    alert("Correo electrónico no puede tener más de 255 cáracteres.");
   }
   else
   {
