@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActionBar().hide();
+        //getActionBar().hide();
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_main);
         //Create the toolbars
