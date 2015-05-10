@@ -41,7 +41,7 @@ block content
 								each item in survey
 									if item.type == 'RECOM'
 										li
-											strong RECOMENDACION: 
+											strong RECOMENDACIÓN: 
 												br
 												= item.question
 									else if (item.type == 'OPEN' || item.type == 'CONDITIONAL')
@@ -118,11 +118,11 @@ block content
 				center
 					.panel.panel-success
 						.panel-heading(class='title')
-							h4 Recomendaciones
+							h4 Recomendación Final
 						.panel-body
-							each item in survey 
+							each item,i in survey 
 								p
-									if item.type == 'RECOM'
+									if ( i == survey.length-1 && item.type == 'RECOM')
 										= item.question
 			.col-md-6
 				center

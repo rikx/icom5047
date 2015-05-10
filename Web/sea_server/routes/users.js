@@ -147,7 +147,7 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 	  		return console.error('error running query', err);
 	  	} else {
 	  		if(result.rowCount < 1){
-					res.status(404).redirect('/404'); // HTTP status 404: NotFound
+					res.status(404).redirect('/users'); // HTTP status 404: NotFound
 				} else{
 		  		var current_user = {
 		  			user_id: req.session.user_id,
@@ -502,7 +502,7 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 					return console.error('error running query', err);
 				}
 				if(result.rowCount < 1){
-					res.status(404).redirect('/404'); // HTTP status 404: NotFound
+					res.status(404).redirect('/users'); // HTTP status 404: NotFound
 				} else { 
 					flowchart_info = result.rows[0];
 				}
@@ -1036,12 +1036,12 @@ router.get('/reportes/:id', function(req, res, next) {
 		  		return console.error('error running query', err);
 		  	} else {
 		  		if(result.rowCount < 1){
-						res.status(404).redirect('/404'); // HTTP status 404: NotFound
+						res.status(404).redirect('/users'); // HTTP status 404: NotFound
 					} else {
 						if((user_type == 'agent' && result.rows[0].creator_id == user_id) || user_type == 'admin' || user_type == 'specialist'){
 							report_details = result.rows[0];
 						} else {
-							res.status(404).redirect('/404'); // HTTP status 404: NotFound
+							res.status(404).redirect('/users'); // HTTP status 404: NotFound
 						}
 		  		}
 		  	}

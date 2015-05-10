@@ -129,8 +129,6 @@ router.post('/cuestionario/path', function(req, res, next) {
 		  	return console.error('error fetching client from pool', err);
 			}
 			var query_config;
-			console.log(req.body.has_data);
-			console.log(typeof req.body.has_data)
 			if(req.body.has_data == true){
 				query_config = {
 					text: "INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)",
