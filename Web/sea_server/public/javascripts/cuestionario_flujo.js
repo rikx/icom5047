@@ -143,24 +143,33 @@ $(document).ready(function(){
 		// get question and answer input information
 		var the_question = $('#next_question_question');
 		var the_answer;
+		var has_user_input = false;
 		switch(the_question.attr('data-question-type')){
 			case 'BOOLEAN':
 			case 'MULTI':
 				the_answer = $("input[name='answer_radios']:checked");
 				break;
-			case 'OPEN':
+			case 'OPEN': {
 				the_answer = $('#answer_open_text');
+				has_user_input = true;
 				break;
+			}
 			case 'CONDITIONAL': {
-				// TODO finish how conditionals work
 				the_answer = $('#answer_conditional_text');
+				has_user_input = true;
 				regex_conditional(the_answer.val(), the_answer);
 				break;
 			}
 		}
 
 		// check if user selected or wrote an answer
-		var answer_value = the_answer.val();
+		var answer_value;
+		if(the_question.attr('data-question-type') != 'RECOM'){
+			answer_value = the_answer.val();
+		} else {
+			answer_value = 'RECOM';
+		}
+
 		if(answer_value === null || answer_value === undefined || answer_value === '') {
 			alert("Por favor seleccione una contestacion o escriba en el espacio proveido.");
 		} else {
@@ -169,17 +178,23 @@ $(document).ready(function(){
 				flowchart_id: $('#flowchart').attr('data-flowchart-id'),
 				item_id: the_question.attr('data-question-id'),
 				question: the_question.text(),
-				option_id: the_answer.attr('data-answer-id'),
-				answer: answer_value
+				option_id: the_answer.attr('data-answer-id')
 			};
 
-			// ajax post
-			var new_path = {
+			// ajax post object
+			var	new_path = {
 				report_id: $question_panel_answers.attr('data-report-id'),
 				option_id: the_answer.attr('data-answer-id'),
-				user_input: answer_value,
 				sequence: sequence_number
-			};
+			}
+
+			// if answered cuestion is of type 'OPEN' or 'CONDITIONAL' 
+			// include user input to insert as path data
+			if(has_user_input){
+				new_path.user_input = answer_value;
+				question_answer_pair.answer = answer_value;
+			}
+
 	    $.ajax({
 	      url: "http://localhost:3000/cuestionario/path",
 	      method: "POST",
@@ -322,7 +337,7 @@ $(document).ready(function(){
 		var end_path = {
 			report_id: $question_panel_answers.attr('data-report-id'),
 			option_id: $question_panel_answers.attr('data-answer-id'),
-			user_input: 'RECOM',
+			//user_input: 'RECOM',
 			sequence: sequence_number
 		};
     $.ajax({
@@ -368,6 +383,7 @@ $(document).ready(function(){
 			$question_panel_question.html(this_item.question);
 			$question_panel_question.attr('data-question-id', this_item.item_id);
 			$question_panel_question.attr('data-question-type', this_item.item_type);
+			$('#panel_title_next').html('<h3>Proxima Pregunta</h3>');
 			//
 			var next_content_answers = '';
 			switch(this_item.item_type){
@@ -386,7 +402,10 @@ $(document).ready(function(){
 					next_content_answers += "<input id='answer_conditional_text' name='answer_conditional_text' type='number' min='1.0' pattern='\d+(\.\d+)?' data-answer-id='' data-next-id=''></input>";
 					break;
 				}
-				case 'RECOM': {
+				case 'RECOM':{
+
+				}
+				case 'END': {
 					$('#btn_save_progress, #btn_next_question').hide();
 					$('#btn_end_survey').show();
 					$('#panel_title_next').html('Recommendaciones:');

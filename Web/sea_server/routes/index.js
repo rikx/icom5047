@@ -128,9 +128,20 @@ router.post('/cuestionario/path', function(req, res, next) {
 			if(err) {
 		  	return console.error('error fetching client from pool', err);
 			}
+			var query_config;
+			if(req.body.isOpen == true){
+				query_config = {
+					text: "INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)",
+					values: [req.body.report_id, req.body.option_id, req.body.user_input, req.body.sequence]
+				}
+			} else {
+				query_config = {
+					text: "INSERT into path (report_id, option_id, sequence) VALUES ($1, $2, $3)",
+					values: [req.body.report_id, req.body.option_id, req.body.sequence]
+				}
+			}
 			// insert new report
-		  client.query('INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)', 
-										[req.body.report_id, req.body.option_id, req.body.user_input, req.body.sequence], function(err, result) {
+		  client.query(query_config, function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		    done();
 	    	if(err) {

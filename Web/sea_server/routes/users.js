@@ -123,7 +123,7 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 				}
 			});
 	  // query for flowchart info and first question
-	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, first_id \
+	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, first_id, end_id \
 									FROM flowchart \
 							  	WHERE flowchart.flowchart_id = $1', 
 							  	[cuestionario_id], function(err, result) {

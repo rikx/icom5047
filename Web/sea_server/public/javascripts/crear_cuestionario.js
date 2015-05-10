@@ -74,6 +74,8 @@ jsPlumb.ready(function() {
 		});
 
 		$('#preguntas_list').html(table_content);
+
+		populate_info_panel(elements_array[0]);
 	}
 
  	// JS PLUMB create code
@@ -153,6 +155,12 @@ jsPlumb.ready(function() {
 	  			}
   			}
   		}
+  		console.log('Item type and multi count');
+  		console.log(this_element.type);
+  		console.log(multi_count);
+  		if((this_element.type == 'CONDITIONAL' && multi_count !=2) || (this_element.type == 'MULTI' && multi_count <2) ){
+  			return false;
+  		}
   	}
   	console.log(valid_item_count + ' - '+elements_array.length);
 	  if(start_count == 1 && end_count > 0 && (valid_item_count==elements_array.length-2)){
@@ -183,7 +191,7 @@ jsPlumb.ready(function() {
 					new_flowchart.first_id = end_points.first_id;
 					new_flowchart.end_id = end_points.end_id;
 					// ajax call to post new ganadero
-					$.ajax({
+/*					$.ajax({
 					  url: "http://localhost:3000/users/admin/cuestionarios/crear",
 					  method: "POST",
 					  data: JSON.stringify({
@@ -210,12 +218,12 @@ jsPlumb.ready(function() {
 					    console.log( "Status: " + status );
 					    console.dir( xhr );
 					  }
-					});	
+					});	*/
 	    	} else {
-	    		alert('Verifique que todas preguntas y recomendaciones tienen una conección hacia otro elemento');
+	    		alert('Verifique que todas preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
 	    	}
 	    } else {
-	    	alert('Cuestionario no tiene preguntas o recomendaciones');
+	    	alert('Cuestionario no tiene elemento inicial o final, o estos tienen conecciones existentes.');
 	    }
 	  } else {
 	  	alert('Ingrese nombre y version de cuestionario');
@@ -327,6 +335,9 @@ jsPlumb.ready(function() {
    
 			jsPlumb.draggable(newState, {
 				//containment: 'parent',
+				drag: function(){
+					jsPlumb.repaintEverything();
+				},
 				stop: function(event) {
 					if ($(event.target).find('select').length == 0) {
 
@@ -359,6 +370,7 @@ jsPlumb.ready(function() {
 						// populate elements list with new item
 						populate_elements_list();
 					}
+					jsPlumb.repaintEverything();
 				}
 			});
 
@@ -409,6 +421,8 @@ jsPlumb.ready(function() {
 			      var state_id = $(this).attr('data-id');
 			      $('#'+state_id).attr('data-state-name', this.value);
 
+			      // repaint it do to the resize
+			      jsPlumb.repaintEverything();
 						// create item object
 						var this_item = {
 							id: newState.attr('id'),
@@ -476,16 +490,40 @@ jsPlumb.ready(function() {
 			}
 
 			// check source and target pair does not exist
+			var source_is_source = 0;
+			var source_is_target = 0;
+			var target_is_source = 0;
+			var target_is_target = 0;
 			for(var z = 0; z<connections_array.length; z++){
 				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
 					return false;
 				}
-				// check if target item already is a target in another connection
+				if(source_id == connections_array[z].source){
+					source_is_source++;
+				}
+/*				if(source_id == connections_array[z].target){
+					source_is_target++;
+				}
+				if(target_id == connections_array[z].source){
+					target_is_source++;
+				}
 				if(target_id == connections_array[z].target){
-					if(target_type != 'END'){
+					target_is_target++;
+				}*/
+/*				// check if target item already is a target in another connection
+				if(target_id == connections_array[z].target){
+					if(target_type != 'END' && target_type != 'RECOM'){
 						return false;
 					}
-				}
+				}*/
+			}
+
+			if(source_type == 'OPEN' && source_is_source == 1){
+				return false;
+			}
+
+			if(source_type == 'RECOM' && source_is_source == 1){
+				return false;
 			}
 
 			var start_count = 0;
@@ -568,10 +606,8 @@ jsPlumb.ready(function() {
 		//});
 	});
 
-	$('#container_plumbjs').scroll(function(){
-		jsPlumb.ready(function() {
-			jsPlumb.repaintEverything();
-		});
+	$('#container_plumbjs').on("scroll", function(){
+		jsPlumb.repaintEverything();
 	});
 
 	function containsObject(obj, list) {
