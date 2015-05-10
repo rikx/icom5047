@@ -20,6 +20,12 @@ router.get('/', function(req, res, next) {
 });
 
 /* 
+ * Page does not exist
+ */
+router.get('/:id', function(req, res, next) {
+	res.redirect('/users');
+});
+/* 
  * POST login 
  */
 router.post('/login', function(req, res, next) {
