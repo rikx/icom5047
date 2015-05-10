@@ -1,6 +1,8 @@
 package com.rener.sea;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -57,12 +59,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private RadioGroup currentGroup;
     private int groupChecked = -1;
     private EditText currentText;
+    private AlertDialog confirmDiscardDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Toolbar
-        getActionBar().hide();
+        //getActionBar().hide();
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_survey);
 
@@ -151,8 +154,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 submit();
                 break;
             case R.id.discard_report:
-                report.destroy();
-                onBackPressed();
+                displayDiscardConfirmDialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -459,13 +461,18 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void scrollToBottom() {
-        final ScrollView scroll = (ScrollView) findViewById(R.id.survey_activity_view);
+        final ScrollView scroll = (ScrollView) findViewById(R.id.survey_activity_scrollview);
         scroll.post(new Runnable() {
             @Override
             public void run() {
                 scroll.fullScroll(View.FOCUS_DOWN);
             }
         });
+    }
+
+    private void discardReport() {
+        report.destroy();
+        onBackPressed();
     }
 
     private void continueReport() {
@@ -477,5 +484,34 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         editNotes.setText(notes);
         //TODO: finish continue report
 
+    }
+
+    private void displayDiscardConfirmDialog() {
+        if(confirmDiscardDialog == null) {
+            //Get the string
+            String title = getString(R.string.confirm_discard_report_title);
+            String message = getString(R.string.confirm_discard_report_message);
+            String cancel = getString(R.string.cancel);
+            String discard = getString(R.string.discard);
+
+            //Build the dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    confirmDiscardDialog.dismiss();
+                }
+            });
+            builder.setPositiveButton(discard, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    discardReport();
+                }
+            });
+            confirmDiscardDialog = builder.create();
+        }
+        confirmDiscardDialog.show();
     }
 }

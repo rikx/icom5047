@@ -32,7 +32,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         super.onCreate(savedInstanceState);
 
         //Hide the legacy action bar
-        getActionBar().hide();
+        //getActionBar().hide();
 
         setContentView(R.layout.activity_login);
         Log.i(this.toString(), "created");

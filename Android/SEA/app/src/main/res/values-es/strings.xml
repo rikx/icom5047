@@ -51,7 +51,7 @@
 	<string name="no_owner">No hay dueño asignado</string>
 	<string name="no_username">No hay usuario</string>
 	<string name="open_hint">Entre los datos aqui</string>
-	<string name="people">Personas</string>
+	<string name="people">Ganaderos</string>
 	<string name="reports">Reportes</string>
 	<string name="save_location">Guardar Localización</string>
 	<string name="save_person">Guardar Persona</string>
@@ -126,4 +126,9 @@
 	<string name="long_password_error">La contraseña es muy larga</string>
 	<string name="app_name_long">Servicio de Extensión Agrícola</string>
 	<string name="empty_password_error">Provea una contraseña</string>
+	<string name="no_phone">Número no asignado</string>
+	<string name="confirm_discard_report_message">¿Está seguro de que desea descartar este reporte?</string>
+	<string name="confirm_discard_report_title">Descartar reporte</string>
+	<string name="cancel">Cancelar</string>
+	<string name="discard">Descartar</string>
 </resources>
