@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,14 +38,16 @@ import java.util.Locale;
 /**
  * An Android fragment class used to manage the display of data pertaining to a report.
  */
-public class ReportDetailsFragment extends Fragment implements View.OnClickListener, DetailsFragment, Toolbar.OnMenuItemClickListener {
+public class ReportDetailsFragment extends Fragment implements View.OnClickListener,
+        DetailsFragment, Toolbar.OnMenuItemClickListener, TextWatcher {
 
     public static final int NO_APPOINTMENT_LAYOUT = 0;
     private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
     public static final int VIEW_APPOINTMENT_LAYOUT = 1;
     private Report report;
-    private TextView textName, textLocation, textDate,textCreator,
-            textFlowchart, textNotes;
+    private TextView textName, textLocation, textDate, textCreator,
+            textFlowchart;
+    private EditText editNotes;
     private LinearLayout interviewLayout;
     private ViewFlipper appointmentFlipper;
     private View appointmentView;
@@ -75,7 +80,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textDate = (TextView) view.findViewById(R.id.report_text_date);
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
-        textNotes = (TextView) view.findViewById(R.id.report_text_notes);
+
+        //Set the edit views
+        editNotes = (EditText) view.findViewById(R.id.report_text_notes);
+        editNotes.addTextChangedListener(this);
 
         //Set the location layout listener
         LinearLayout location = (LinearLayout) view.findViewById(R.id.report_location_layout);
@@ -102,7 +110,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        toolbar = ((MainActivity)getActivity()).getContextToolbar();
+        toolbar = ((MainActivity) getActivity()).getContextToolbar();
         toolbar.setOnMenuItemClickListener(this);
         options = toolbar.getMenu();
         getActivity().getMenuInflater().inflate(R.menu.report_actions, options);
@@ -113,17 +121,23 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     @Override
     public void onDestroy() {
         super.onDestroy();
-        options.clear();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        options = tb.getMenu();
         options.clear();
+        inflater.inflate(R.menu.report_actions, options);
+        tb.setOnMenuItemClickListener(this);
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
-        displayAppointmentDialog();
+        switch (menuItem.getItemId()) {
+            case R.id.save_report_details:
+                saveReport();
+        }
         return super.onOptionsItemSelected(menuItem);
     }
 
@@ -140,9 +154,30 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         inflateAppointmentLayout();
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        String previous = report.getNotes().trim();
+        String current = charSequence.toString().trim();
+        if(!previous.equals(current)) {
+            MenuItem save = options.findItem(R.id.save_report_details);
+            save.setEnabled(true);
+            save.setVisible(true);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+
     private void setInterviewLayout() {
         Path path = report.getPath();
-        Log.i(this.toString(), "path="+path.toString());
+        Log.i(this.toString(), "path=" + path.toString());
         int sequence = 1;
         for (PathEntry e : path) {
             //Get the interview element information
@@ -204,7 +239,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textFlowchart.setText(fc);
 
         //Set the notes
-        textNotes.setText(report.getNotes());
+        editNotes.setText(report.getNotes());
 
         //Set the creator
         String creator = report.getCreator().getPerson().toString();
@@ -233,7 +268,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     @Override
     public boolean onDetailsChanged() {
-        if(viewCreated) {
+        if (viewCreated) {
             setDataViews();
             return true;
         }
@@ -247,7 +282,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
                 displayAppointmentDialog();
                 break;
             case R.id.report_save_appointment_button:
-                if(saveAppointment()) appointmentDialog.dismiss();
+                if (saveAppointment()) appointmentDialog.dismiss();
                 break;
             case R.id.report_cancel_appointment_button:
                 appointmentDialog.dismiss();
@@ -323,7 +358,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
         boolean past = calendar.before(now);
 
-        if(!past) {
+        if (!past) {
             //Get the current user id
             MainActivity main = (MainActivity) getActivity();
             SharedPreferences sharedPref = main.getSharedPreferences(
@@ -337,8 +372,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper, dateFormat);
             inflateAppointmentLayout();
             ((MainActivity) getActivity()).onDataChanged();
-        }
-        else {
+        } else {
             String message = getString(R.string.past_date_message);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
@@ -347,7 +381,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     }
 
     private void displayAppointmentDialog() {
-        if(appointmentDialog == null) {
+        if (appointmentDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -368,7 +402,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     private void goToReportLocation() {
         long id = report.getLocation().getId();
-        ((MainActivity)getActivity()).onDetailsRequest("LOCATION", "LOCATION", id);
+        ((MainActivity) getActivity()).onDetailsRequest("LOCATION", "LOCATION", id);
     }
 
     public String getType() {
@@ -380,5 +414,18 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         SpannableString spanString = new SpannableString(text);
         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
         textView.setText(spanString);
+    }
+
+    private void saveReport() {
+        MenuItem save = options.findItem(R.id.save_report_details);
+        save.setEnabled(false);
+        String notes = editNotes.getText().toString().trim();
+        report.setNotes(notes);
+        save.setVisible(false);
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromInputMethod(editNotes.getWindowToken(), InputMethodManager
+                .HIDE_IMPLICIT_ONLY);
+        editNotes.clearFocus();
     }
 }

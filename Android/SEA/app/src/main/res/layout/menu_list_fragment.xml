@@ -18,7 +18,8 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="9dp"
-		android:padding="5dp">
+		android:padding="5dp"
+		android:visibility="visible">
 
 		<Button
 			android:id="@+id/clearSearch"

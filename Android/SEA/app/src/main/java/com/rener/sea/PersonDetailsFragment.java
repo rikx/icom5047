@@ -81,21 +81,21 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        options = tb.getMenu();
+        options.clear();
+        getActivity().getMenuInflater().inflate(R.menu.person_actions, options);
+        tb.setOnMenuItemClickListener(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        options.clear();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
-        options = tb.getMenu();
-        options.clear();
-        inflater.inflate(R.menu.person_actions, options);
-        tb.setOnMenuItemClickListener(this);
+
     }
 
     @Override

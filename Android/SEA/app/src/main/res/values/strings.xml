@@ -57,7 +57,7 @@
 	<string name="new_location">new Location</string>
 	<string name="new_report">New Report</string>
 	<string name="reports">Reports</string>
-	<string name="people">People</string>
+	<string name="people">Ranchers</string>
 	<string name="locations">Locations</string>
 	<string name="location">location</string>
 	<string name="subject">subject</string>
@@ -126,4 +126,10 @@
 	<string name="long_password_error">Password is too long</string>
 	<string name="app_name_long">Agricultural Extension Service</string>
 	<string name="empty_password_error">Please provide a password</string>
+	<string name="no_email">No email on file</string>
+	<string name="no_phone">No phone number on file</string>
+	<string name="confirm_discard_report_title">Discard Report</string>
+	<string name="confirm_discard_report_message">Are you sure you want to discard this report?</string>
+	<string name="cancel">Cancel</string>
+	<string name="discard">Discard</string>
 </resources>

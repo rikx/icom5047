@@ -115,12 +115,11 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        options = tb.getMenu();
         options.clear();
+        getActivity().getMenuInflater().inflate(R.menu.location_actions, options);
+        tb.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -161,11 +160,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
-        options = tb.getMenu();
-        options.clear();
-        inflater.inflate(R.menu.location_actions, options);
-        tb.setOnMenuItemClickListener(this);
+        return;
     }
 
     @Override
