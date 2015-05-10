@@ -489,6 +489,11 @@ jsPlumb.ready(function() {
 				return false;
 			}
 
+			//if target is 'END' sources must be 'RECOM'
+			if(target_type == 'END' && source_type != 'RECOM'){
+				return false;
+			}
+
 			// check source and target pair does not exist
 			var source_is_source = 0;
 			var source_is_target = 0;

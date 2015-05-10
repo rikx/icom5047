@@ -39,7 +39,12 @@ block content
 						if survey.length > 0
 							ol
 								each item in survey
-									if item.type != 'RECOM'
+									if item.type == 'RECOM'
+										li
+											strong RECOMENDACION: 
+												br
+												= item.question
+									else if (item.type == 'OPEN' || item.type == 'CONDITIONAL')
 										li
 											strong
 												= item.question
@@ -47,7 +52,12 @@ block content
 											em
 												= item.path_data
 									else
-										- has_recom=true;
+										li
+											strong
+												= item.question
+											br
+											em
+												= item.answer
 
 						//if !has_recom
 						//	center
