@@ -191,8 +191,11 @@ $(document).ready(function(){
 			// if answered cuestion is of type 'OPEN' or 'CONDITIONAL' 
 			// include user input to insert as path data
 			if(has_user_input){
+				new_path.has_data = true;
 				new_path.user_input = answer_value;
 				question_answer_pair.answer = answer_value;
+			} else {
+				new_path.has_data = false;
 			}
 
 	    $.ajax({

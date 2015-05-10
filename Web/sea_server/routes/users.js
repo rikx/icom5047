@@ -28,33 +28,46 @@ var router = express.Router();
 	// 						  	[cuestionario_id], function(err, result) {
 
 router.get('/admin/categorias', function(req, res, next) {
-	var categories_list;
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
- 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
-			if(err) {
-				return console.error('error running query', err);
-			} else {
-				categories_list = result.rows;
-		  	client.query('SELECT * FROM specialization ORDER BY name', function(err, result){
-			  	//call `done()` to release the client back to the pool
-			  	done();
-			  	if(err) {
-			  		return console.error('error running query', err);
-			  	} else {
-			  		res.render('manejar_categorias', { 
-			  			title: 'Manejar Categorias', 
-			  			categories: categories_list,
-			  			specialties: result.rows
-			  		});
-			  	}
-			  });
-		  }
-	  });
- 	});
+ 	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
+  if (!username) {
+  	user_id = req.session.user_id = '';
+    username = req.session.username = '';
+    user_type = req.session.user_type = '';
+    res.redirect('/');
+  } else if (user_type != 'admin') {
+		res.redirect('/');
+	} else {
+		var categories_list;
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		client.query('SELECT * FROM category ORDER BY name', function(err, result) {
+				if(err) {
+					return console.error('error running query', err);
+				} else {
+					categories_list = result.rows;
+			  	client.query('SELECT * FROM specialization ORDER BY name', function(err, result){
+				  	//call `done()` to release the client back to the pool
+				  	done();
+				  	if(err) {
+				  		return console.error('error running query', err);
+				  	} else {
+				  		res.render('manejar_categorias', { 
+				  			title: 'Manejar Categorias', 
+				  			categories: categories_list,
+				  			specialties: result.rows
+				  		});
+				  	}
+				  });
+			  }
+		  });
+	 	});
+	}
 });
 
 /* GET Tomar Cuestionario 
@@ -133,16 +146,20 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 	  	if(err) {
 	  		return console.error('error running query', err);
 	  	} else {
-	  		var current_user = {
-	  			user_id: req.session.user_id,
-	  			username: req.session.username
+	  		if(result.rowCount < 1){
+					res.status(404).redirect('/404'); // HTTP status 404: NotFound
+				} else{
+		  		var current_user = {
+		  			user_id: req.session.user_id,
+		  			username: req.session.username
+		  		}
+		  		res.render('cuestionario_flujo', { 
+		  			title: 'Cuestionario con Flujo', 
+		  			flowchart: result.rows[0], 
+		  			locations: locations_list, 
+		  			current_user: current_user 
+		  		});
 	  		}
-	  		res.render('cuestionario_flujo', { 
-	  			title: 'Cuestionario con Flujo', 
-	  			flowchart: result.rows[0], 
-	  			locations: locations_list, 
-	  			current_user: current_user 
-	  		});
 	  	}
 	  });
 	});
@@ -260,64 +277,77 @@ router.get('/admin/cuestionarios/crear', function(req, res, next) {
  *
  */
 router.get('/admin/cuestionarios/ver/:id', function(req, res, next){
-	var flowchart_id = req.params.id;
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 
-	var flowchart_info, items_list, connections_list;
+	if (!username) {
+		user_id = req.session.user_id = '';
+	  username = req.session.username = '';
+	  user_type = req.session.user_type = '';
+	  res.redirect('/');
+	} else if (user_type != 'admin') {
+		res.redirect('/');
+	} else {
+		var flowchart_id = req.params.id;
 
- 	var db = req.db;
- 	db.connect(req.conString, function(err, client, done) {
- 		if(err) {
- 			return console.error('error fetching client from pool', err);
- 		}
- 		// get flowchart
- 		client.query('SELECT * from flowchart WHERE flowchart_id = $1', [flowchart_id], function(err, result){
-			if(err) {
-				return console.error('error running query', err);
-			} 
-			flowchart_info = result.rows[0];
- 		});
+		var flowchart_info, items_list, connections_list;
 
- 		// get items
- 		client.query("SELECT flowchart_id, item_id, state_id, state \
-									FROM item \
-									WHERE flowchart_id = $1", 
- 									[flowchart_id], function(err, result){
-			if(err) {
-				return console.error('error running query', err);
-			} 
-			items_list = result.rows;
- 		});
- 		// get connections
-  	client.query("WITH path_targets AS (SELECT flowchart_id, option.label, parent_id, next_id, \
-																CASE \
-																WHEN item_id = next_id THEN state_id \
-																END AS target \
-															FROM option \
-															INNER JOIN item ON item.item_id = option.next_id \
-															WHERE flowchart_id = $1), \
-												path_sources AS (SELECT flowchart_id, option.label, parent_id, next_id, \
-																CASE \
-																WHEN item_id = parent_id THEN state_id \
-																END AS source \
-															FROM option \
-															INNER JOIN item ON item.item_id = option.parent_id \
-															WHERE flowchart_id = $1) \
-												SELECT * \
-												FROM path_sources natural join path_targets", 
-  											[flowchart_id], function(err, result) {
-  		// call done to release client to pool
-			done();
-			if(err) {
-				return console.error('error running query', err);
-			}
-			connections_list = result.rows
-			res.json({
-				flowchart: flowchart_info,
-				items: items_list,
-				connections: connections_list
+	 	var db = req.db;
+	 	db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		// get flowchart
+	 		client.query('SELECT * from flowchart WHERE flowchart_id = $1', [flowchart_id], function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} 
+				flowchart_info = result.rows[0];
+	 		});
+
+	 		// get items
+	 		client.query("SELECT flowchart_id, item_id, state_id, state \
+										FROM item \
+										WHERE flowchart_id = $1", 
+	 									[flowchart_id], function(err, result){
+				if(err) {
+					return console.error('error running query', err);
+				} 
+				items_list = result.rows;
+	 		});
+	 		// get connections
+	  	client.query("WITH path_targets AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																	CASE \
+																	WHEN item_id = next_id THEN state_id \
+																	END AS target \
+																FROM option \
+																INNER JOIN item ON item.item_id = option.next_id \
+																WHERE flowchart_id = $1), \
+													path_sources AS (SELECT flowchart_id, option.label, parent_id, next_id, \
+																	CASE \
+																	WHEN item_id = parent_id THEN state_id \
+																	END AS source \
+																FROM option \
+																INNER JOIN item ON item.item_id = option.parent_id \
+																WHERE flowchart_id = $1) \
+													SELECT * \
+													FROM path_sources natural join path_targets", 
+	  											[flowchart_id], function(err, result) {
+	  		// call done to release client to pool
+				done();
+				if(err) {
+					return console.error('error running query', err);
+				}
+				connections_list = result.rows
+				res.json({
+					flowchart: flowchart_info,
+					items: items_list,
+					connections: connections_list
+				});
 			});
-		});
- 	});
+	 	});
+	}
 });
 
 /* POST Admin crear cuestionario
@@ -470,8 +500,12 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 	 		client.query('SELECT * from flowchart WHERE flowchart_id = $1', [flowchart_id], function(err, result){
 				if(err) {
 					return console.error('error running query', err);
-				} 
-				flowchart_info = result.rows[0];
+				}
+				if(result.rowCount < 1){
+					res.status(404).redirect('/404'); // HTTP status 404: NotFound
+				} else { 
+					flowchart_info = result.rows[0];
+				}
 	 		});
 	 		// get items
 	 		client.query("SELECT flowchart_id, item_id, label AS name, type, state_id AS id, state \
@@ -1000,7 +1034,15 @@ router.get('/reportes/:id', function(req, res, next) {
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
-		  		report_details = result.rows[0];
+		  		if(result.rowCount < 1){
+						res.status(404).redirect('/404'); // HTTP status 404: NotFound
+					} else {
+						if((user_type == 'agent' && result.rows[0].creator_id == user_id) || user_type == 'admin' || user_type == 'specialist'){
+							report_details = result.rows[0];
+						} else {
+							res.status(404).redirect('/404'); // HTTP status 404: NotFound
+						}
+		  		}
 		  	}
 		  });
 		  // get appointment details
