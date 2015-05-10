@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -159,6 +162,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             TextView answerView = new TextView(getActivity());
             answerView.setText(answer);
             answerView.setPadding(16, 0, 0, 0);
+            if (item.getType().equals(Item.RECOMMENDATION)) {
+                highlightTextView(seqView);
+                highlightTextView(questionView);
+            }
 
             //Set the element layout
             interviewLayout.addView(questionView);
@@ -366,5 +373,12 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     public String getType() {
         return "REPORT";
+    }
+
+    private void highlightTextView(TextView textView) {
+        String text = textView.getText().toString();
+        SpannableString spanString = new SpannableString(text);
+        spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
+        textView.setText(spanString);
     }
 }
