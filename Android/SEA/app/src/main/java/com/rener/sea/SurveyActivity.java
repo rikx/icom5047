@@ -66,6 +66,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         Log.i(this.toString(), "created");
         setContentView(R.layout.activity_survey);
 
+        //Set the DBHelper
+        dbHelper = new DBHelper(getApplicationContext());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.survey_toolbar);
         Menu options = toolbar.getMenu();
         getMenuInflater().inflate(R.menu.survey_activity_actions, options);
@@ -84,9 +87,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         nextButton.setOnClickListener(this);
 
         setSpinnerData();
-
-        //Set the DBHelper
-        dbHelper = new DBHelper(getApplicationContext());
 
         //Check if a new report must be created
         Intent intent = getIntent();
