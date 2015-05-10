@@ -64,7 +64,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DBSchema.CREATE_SPECIALIZATION_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_TABLE);
         db.execSQL(DBSchema.CREATE_USERS_SPECIALIZATION_TABLE);
-//        Log.i(this.toString(), "created");
+        Log.i(this.toString(), "created");
         dummyDB = true;
 
 
@@ -111,9 +111,10 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_USERS_SPECIALIZATION);
         onCreate(db);
     }
+    // TODO: create table if not exist
     private void setSequence(long sequence){
         SQLiteDatabase db = getReadableDatabase();
-
+        Log.i(this.toString(), "SQLITE_SEQUENCE = "+sequence);
         db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
         db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
         db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
@@ -2732,6 +2733,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                 SQLiteDatabase db = getWritableDatabase();
+
+            try {
+                setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+                // initialize sequences
                 try {
                     JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
                     if(status.getInt(DBSchema.SYNC_STATUS) == 0) {
