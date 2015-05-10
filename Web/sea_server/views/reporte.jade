@@ -16,13 +16,16 @@ block content
 									form#form_title(role='form')
 										.form-group
 											label(for='report_title')
-											input#report_title(class='form-control', name='report_title', type='text', placeholder='Titulo')
+											input#report_title(class='form-control', name='report_title', type='text', placeholder='Titulo', value=reporte.report_name)
 									button#btn_submit_title(class='btn btn-default') Someter
-						h3#title
-							if reporte.report_name == null
-								| Reporte sin título (click para asignarle nombre)
-							else 
-								= reporte.report_name
+						h3
+							a(class='btn btn-sm btn-success', id='btn_edit_title' type='button', data-toggle='tooltip')
+								i(class='glyphicon glyphicon-edit')
+							span(id='title')
+								if reporte.report_name == null
+									| Reporte sin título (click para asignarle nombre)
+								else 
+									= reporte.report_name
 			.col-md-2
 
 		.row

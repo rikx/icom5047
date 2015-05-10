@@ -964,7 +964,8 @@ router.get('/reportes', function(req, res, next) {
 									INNER JOIN users ON report.creator_id = user_id \
 									WHERE report.status != $1 \
 						 			ORDER BY report_name ASC \
-									LIMIT 20"
+									LIMIT 20",
+					values: [-1]
 				}
 	 		} else {
 	 			// get first 20 reports created by this user
@@ -973,14 +974,14 @@ router.get('/reportes', function(req, res, next) {
 									FROM report INNER JOIN location ON report.location_id = location.location_id \
 									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 									INNER JOIN users ON report.creator_id = user_id \
-									WHERE report.creator_id = $1 AND report.status != $1 \
+									WHERE report.creator_id = $1 AND report.status != $2 \
 						 			ORDER BY report_name ASC \
 									LIMIT 20",
-					values: [user_id]
+					values: [user_id, -1]
 				};
 		 	}
 	 		// get reports 
-	 		client.query(query_config, [-1], function(err, result) {
+	 		client.query(query_config, function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {
@@ -1760,15 +1761,17 @@ router.put('/admin/associated/ganadero', function(req, res, next) {
 	 		if(req.body.relation_type == 'owner'){
 	 			query_config = {
 	 				text: 'UPDATE location SET owner_id = $1 \
-									WHERE location_id = $2'
+									WHERE location_id = $2',
+					values: [req.body.ganadero_id, req.body.location_id]
 	 			}
 	 		} else if(req.body.relation_type == 'manager'){
 	 			query_config = {
 	 				text: 'UPDATE location SET manager_id = $1 \
-									WHERE location_id = $2' 
+									WHERE location_id = $2',
+					values: [req.body.ganadero_id, req.body.location_id]
 	 			}
 	 		}
-	 		client.query(query_config, [req.body.ganadero_id, req.body.location_id], function(err, result) {
+	 		client.query(query_config, function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
  				if(err) {

@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
   	user_id = req.session.user_id = '';
     username = req.session.username = '';
     user_type = req.session.user_type = '';
-    res.render('index', { title: 'Servicio De Extension Agricola'});
+    res.render('index', { title: 'Servicio De Extensión Agrícola'});
   } else {
   	res.redirect('/users/'+user_type);
   }
@@ -32,9 +32,9 @@ router.post('/login', function(req, res, next) {
 	  	if(err) {
 	    	return console.error('error fetching client from pool', err);
 	  	}
-	  	// TODO: modify query to also give you account type
-		  client.query('SELECT user_id, username, passhash, type FROM users WHERE username=$1', 
-		  							[req.body.input_username], function(err, result) {
+			// get user 
+		  client.query('SELECT user_id, username, passhash, type FROM users WHERE username=$1 AND status != $2', 
+		  							[req.body.input_username, -1], function(err, result) {
 		    if(err) {
 		      return console.error('error running query', err);
 		    }
@@ -171,9 +171,9 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 	  client.query("SELECT * \
 									FROM (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 										FROM person \
-										WHERE person_id NOT IN (SELECT person_id FROM users) \
+										WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) as ganaderos \
-									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", function(err, result) {
+									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", [-1], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -186,11 +186,11 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 	  // get associated locations
 	  client.query("WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 										FROM person \
-										WHERE person_id NOT IN (SELECT person_id FROM users) \
+										WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 									SELECT person_id, location_id, location.name AS location_name \
 									FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id) \
-									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", function(err, result){
+									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", [-1], function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
@@ -221,8 +221,8 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 		// get users
 	  client.query("SELECT user_id, username \
 									FROM users \
-									WHERE username LIKE '%"+user_input+"%'\
-									ORDER BY username ASC", function(err, result) {
+									WHERE users.status != $1 AND username LIKE '%"+user_input+"%'\
+									ORDER BY username ASC", [-1], function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -233,12 +233,12 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 	  // get user associated specialties
 	  client.query("WITH usuarios AS (SELECT user_id, username \
 								  	FROM users \
-								  	WHERE username LIKE '%"+user_input+"%'\
+								  	WHERE users.status != $1 AND username LIKE '%"+user_input+"%'\
 								  	ORDER BY username ASC) \
 									SELECT usuarios.user_id, us.spec_id, spec.name \
 									FROM usuarios \
 									LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
-									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id", function(err, result){
+									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id", [-1], function(err, result){
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -249,11 +249,11 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 	  // get user associated locations
 	  client.query("WITH usuarios AS (SELECT user_id, username \
 								  	FROM users \
-								  	WHERE username LIKE '%"+user_input+"%' \
+								  	WHERE users.status != $1 AND username LIKE '%"+user_input+"%' \
 								  	ORDER BY username ASC \
 								  SELECT user_id, location_id, location.name AS location_name \
 								  FROM usuarios \
-								  INNER JOIN location ON user_id = agent_id", function(err, result){
+								  INNER JOIN location ON user_id = agent_id", [-1], function(err, result){
 	  	//call `done()` to release the client back to the pool
 	    done();
     	if(err) {
@@ -282,8 +282,8 @@ router.get('/agents/:user_input', function(req, res, next) {
 		// get all users 
 		client.query("SELECT user_id, username \
 									FROM users \
-									WHERE type = 'agent' AND username LIKE '%"+req.params.user_input+"%' \
-									ORDER BY username", function(err, result){
+									WHERE type = 'agent' AND users.status != $1 AND username LIKE '%"+req.params.user_input+"%' \
+									ORDER BY username", [-1], function(err, result){
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -367,8 +367,9 @@ router.get('/reportes/:user_input', function(req, res, next){
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
-								WHERE LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%' \
-					 			ORDER BY report_name ASC"
+								WHERE report.status != $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%') \
+					 			ORDER BY report_name ASC",
+				values: [-1]
 			}
  		} else {
  			// get first 20 reports created by this user
@@ -377,9 +378,9 @@ router.get('/reportes/:user_input', function(req, res, next){
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
-								WHERE report.creator_id = $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%') \
+								WHERE report.creator_id = $1 AND report.status != $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%') \
 					 			ORDER BY report_name ASC",
-				values: [user_id]
+				values: [user_id, -1]
 			};
 	 	}
  		// get reports matching user_type
@@ -472,8 +473,8 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 			// query for location data
 			client.query("SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 										FROM location INNER JOIN address ON location.address_id = address.address_id \
-										WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
-										ORDER BY location_name", function(err, result) {
+										WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
+										ORDER BY location_name", [-1], function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -484,12 +485,12 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 			// query for location categories
 			client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
 											FROM location \
-											WHERE LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%' \
+											WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
 											ORDER BY location_name) \
 										SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
 										FROM locations \
 										LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
-										LEFT JOIN category AS cat ON lc.category_id = cat.category_id", function(err, result){
+										LEFT JOIN category AS cat ON lc.category_id = cat.category_id", [-1], function(err, result){
 				if(err) {
 					return console.error('error running query', err);
 				} else {

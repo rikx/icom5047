@@ -5,9 +5,10 @@ $(document).ready(function(){
   $('#title_panel').hide();
 
   //double click title to display title edit form
-  $('#title').dblclick(function(e) {
+  $('#btn_edit_title').on('click', function(e) {
     $('#title_panel').show();
     $('#title').hide();
+    $('#btn_edit_title').hide();
   }); 
 
   // user_data is of the currently signed in user
@@ -220,6 +221,7 @@ $(document).ready(function(){
       $('#title_panel').hide();
       $('#title').html(title);
       $('#title').show();
+      $('#btn_edit_title').show();
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
