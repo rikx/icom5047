@@ -94,7 +94,17 @@ $(document).ready(function(){
     var $the_form = $('#form_post_appointment');
     var form_data = $the_form.serializeArray();
     var new_appointment = ConverToJSON(form_data);
-
+    console.log(new_appointment);
+    if(!new_appointment.cita_date.length > 0)
+    { 
+      alert("Por favor ingrese una fecha.");
+    }
+    else if(!new_appointment.cita_time.length > 0)
+    {
+      alert("Por favor ingrese una hora.");
+    }
+    else
+    {
     // ajax call to post new appointment
     $.ajax({
       url: "http://localhost:3000/users/reports/appointment/" + report_data.report_id + "/" + user_data.user_id,
@@ -134,6 +144,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+}
   });
 
   /* Edit appointment */

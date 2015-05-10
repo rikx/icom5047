@@ -31,6 +31,8 @@ $(document).ready(function(){
 		$('#category_name').val(category_name);
     $('#category_info_name').text(category_name);
     $('#info_panel_category').show();
+    $('#add_category_panel').hide();
+    $('#edit_category_panel').hide();
     //$('#info_category_name').text("Categoria: " + category_name);
     //$('#info_panel_heading_category').text("Categoria: " + category_name);
     // remove active from previous list item 
@@ -71,6 +73,9 @@ $(document).ready(function(){
      $('#category_row').show();
      $('#categories_tab').addClass('active');
      $('#specialties_tab').removeClass('active');
+     $('#info_panel_category').show();
+     $('#edit_category_panel').hide();
+     $('#add_category_panel').hide();
   });
 
   $('#specialties_tab').on('click', function(){
@@ -78,6 +83,9 @@ $(document).ready(function(){
      $('#category_row').hide();
      $('#specialties_tab').addClass('active');
      $('#categories_tab').removeClass('active');
+     $('#specialty_info_panel').show();
+     $('#edit_specialty_panel').hide();
+     $('#add_specialty_panel').hide();
   });
 
 
@@ -120,7 +128,12 @@ $(document).ready(function(){
   var $the_form = $('#form_new_category');
   var form_data = $the_form.serializeArray();
   var new_category = ConverToJSON(form_data);
-
+  console.log(new_category.new_category);
+  if(!new_category.new_category.trim().length > 0)
+  {
+    alert("Por favor escriba el nombre de una categoría.");
+  }
+  else{
   // ajax call to post new category
   $.ajax({
   	url: "http://localhost:3000/users/admin/new_category",
@@ -128,9 +141,7 @@ $(document).ready(function(){
   	data: JSON.stringify(new_category),
   	contentType: "application/json",
   	dataType: "json",
-
   	success: function(data) {
-
   		if(data.exists){
   			alert("Categoría con este nombre ya fue agregada");
   		} else {
@@ -149,6 +160,7 @@ $(document).ready(function(){
     	console.dir( xhr );
     }
 });
+}
 });
 
 	/* POSTs new specialty information */
@@ -157,7 +169,12 @@ $(document).ready(function(){
   var $the_form = $('#form_new_specialty');
   var form_data = $the_form.serializeArray();
   var new_specialty = ConverToJSON(form_data);
-
+  if(!new_specialty.new_specialty.trim().length > 0)
+  {
+    alert("Por favor escriba el nombre de una especialidad.");
+  }
+  else
+  {
   // ajax call to post new category
   $.ajax({
   	url: "http://localhost:3000/users/admin/new_specialty",
@@ -165,7 +182,6 @@ $(document).ready(function(){
   	data: JSON.stringify(new_specialty),
   	contentType: "application/json",
   	dataType: "json",
-
   	success: function(data) {
   		if(data.exists){
   			alert("Especialidad con este nombre ya fue agregada");
@@ -185,6 +201,7 @@ $(document).ready(function(){
     	console.dir( xhr );
     }
 });
+}
 });
 
 	/* POSTs new category information */
