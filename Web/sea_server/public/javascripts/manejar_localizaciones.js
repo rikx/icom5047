@@ -499,6 +499,7 @@ $('#btn_add_localizacion').on('click', function(){
   $('#edit_panel').show();
   $('#info_panel').hide();
   $('#add_associates_panel').hide();
+  $('#categoria_panel_edit').hide();
 
   // clear add form
   $('#form_manage_location')[0].reset();
@@ -597,6 +598,7 @@ $('#btn_edit_localizacion').on('click', function(){
   $('#add_associates_panel').hide();
   $('#add_categoria_panel').hide();
   $('#categoria_panel').show();
+  $('#categoria_panel_edit').show();
   // contains location id
   var location_id = $(this).attr('data-id');
   var arrayPosition = localizaciones_array.map(function(arrayItem) { return arrayItem.location_id; }).indexOf(location_id);
