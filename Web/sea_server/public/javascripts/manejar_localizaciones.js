@@ -698,7 +698,7 @@ $('#btn_edit').on('click', function(){
     dataType: "json",
 
     success: function(data) {
-      //alert("Localización ha sido editada en el sistema.");
+      alert("Localización ha sido modificada.");
       // update locations list after posting 
       populate_localizaciones();
     },
