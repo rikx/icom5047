@@ -12,6 +12,8 @@ $(document).ready(function(){
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
   var all_categorias_array = JSON.parse($('#categoria_panel').attr('data-all-categorias'));
   var user_info = JSON.parse($localizaciones_list.attr('data-user'));
+  var all_ganaderos = [];
+  var all_agentes = [];
  
   $('#currently_signed_in').text("Usuario actual: " + user_info.username);
   $('#current_type').text("Tipo de cuenta: " + user_info.user_type);
@@ -203,7 +205,6 @@ $(document).ready(function(){
     $('#associated_agentes').html(agent_content);
   });
 
-
   /* Add associated ganadero */
   $('#associated_ganaderos').on('click', 'tr td a.btn_add_associate_ganadero, tr td a.btn_change_ganadero', function(e){
     // prevents link from firing
@@ -227,6 +228,7 @@ $(document).ready(function(){
     remote: {
       url: 'http://localhost:3000/ganaderos/%QUERY',
       filter: function(list) {
+        all_ganaderos = list.ganaderos;
         return $.map(list.ganaderos, function(ganadero) { 
           return ganadero;
         });
@@ -258,8 +260,31 @@ $(document).ready(function(){
     $('#change_ganadero').attr('data-id', datum.person_id);
   });
 
-  /* Ajax PUT call to assign ganadero as owner or manager of location */
-  $('#btn_submit_ganadero').on('click', function(){
+// verifies input value is in array and returns boolean result
+function valid_input_ganaderos(user_input, array) {
+  for(var i=0; i < array.length; i++){
+    if(user_input == array[i].person_name){
+      return true;
+    }
+  }
+  return false;
+}
+
+// verifies input value is in array and returns boolean result
+function valid_input_agents(user_input, array) {
+  console.log(user_input);
+  for(var i=0; i < array.length; i++){
+    console.log(array[i].username);
+    if(user_input == array[i].username){
+      return true;
+    }
+  }
+  return false;
+}
+
+
+/* Ajax PUT call to assign ganadero as owner or manager of location */
+$('#btn_submit_ganadero').on('click', function(){
     // creat ganadero JSON to submit
     var this_input = $('#change_ganadero');
     var ganadero_association = {
@@ -268,15 +293,22 @@ $(document).ready(function(){
       relation_type: this_input.attr('data-relation-type')
     };
 
-    $.ajax({
-      url: "http://localhost:3000/users/admin/associated/ganadero",
-      method: "PUT",
-      data: JSON.stringify(ganadero_association),
-      contentType: "application/json",
-      dataType: "json",
+    if(!valid_input_ganaderos(this_input.val(), all_ganaderos))
+    {
+      alert("El ganadero que escribió no existe.");
+    }
+    else
+    {
+      $.ajax({
+        url: "http://localhost:3000/users/admin/associated/ganadero",
+        method: "PUT",
+        data: JSON.stringify(ganadero_association),
+        contentType: "application/json",
+        dataType: "json",
 
-      success: function() {
-        alert("Ganadero asociado ha sido editado en el sistema.");
+        success: function() {
+          alert("Ganadero asociado ha sido editado en el sistema.");
+          $('#info_panel').show();
         // update locations list after posting 
         populate_localizaciones();
         $('#add_associates_panel').hide();
@@ -293,6 +325,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+    }
   });
 
 
@@ -317,6 +350,7 @@ $(document).ready(function(){
     remote: {
       url: 'http://localhost:3000/agents/%QUERY',
       filter: function(list) {
+        all_agentes = list.agents;
         return $.map(list.agents, function(agent) { 
           return agent;
         });
@@ -352,11 +386,17 @@ $(document).ready(function(){
   $('#btn_submit_agent').on('click', function(){
     // creat agent JSON to submit
     var this_input = $('#change_agent');
+    console.log(all_agentes);
     var agent_association = {
       location_id: $('#add_associates_panel').attr('data-location-id'),
       agent_id: this_input.attr('data-id')
     };
-
+    if(!valid_input_agents(this_input.val(), all_agentes))
+    {
+      alert("El agente que escribió no existe.");
+    }
+    else
+    {
     $.ajax({
       url: "http://localhost:3000/users/admin/associated/agent",
       method: "PUT",
@@ -370,6 +410,7 @@ $(document).ready(function(){
         populate_localizaciones();
         $('#add_associates_panel').hide();
         $('#add_agent_dropdown_panel').hide();
+        $('#info_panel').show();
 
         // reset typeahead input
         this_input.val('');
@@ -382,6 +423,7 @@ $(document).ready(function(){
         console.dir( xhr );
       }
     });
+  }
   });
 
 //updates categories associated to current location
