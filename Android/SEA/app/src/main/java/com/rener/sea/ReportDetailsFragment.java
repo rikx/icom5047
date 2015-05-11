@@ -171,14 +171,14 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             TextView answerView = new TextView(getActivity());
             answerView.setText(answer);
             answerView.setPadding(16, 0, 0, 0);
+            //Set the element layout
+            interviewLayout.addView(questionView);
             if (item.getType().equals(Item.RECOMMENDATION)) {
                 highlightTextView(seqView);
                 highlightTextView(questionView);
+            } else {
+                interviewLayout.addView(answerView);
             }
-
-            //Set the element layout
-            interviewLayout.addView(questionView);
-            interviewLayout.addView(answerView);
         }
 //        long status = report.getStatus();
 //        if(status == 0) {
