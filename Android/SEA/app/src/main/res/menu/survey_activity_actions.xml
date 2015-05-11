@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item android:id="@+id/discard_report"
+		  android:title="@string/discard_report"
+		  android:icon="@drawable/ic_action_discard"
+		  android:showAsAction="always"
+		  android:visible="true"
+		  />
+
+	<item android:id="@+id/save_report"
+		  android:title="@string/save_report"
+		  android:icon="@drawable/ic_action_save"
+		  android:showAsAction="always"
+		  android:visible="false"
+		  />
+
+</menu>

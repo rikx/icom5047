@@ -1,0 +1,24 @@
+<resources>
+
+	<style name="SEA_Style"
+		   parent="android:Theme.Holo.Light">
+		<item name="android:buttonStyle">@style/SEA_Button</item>
+		<item name="android:editTextStyle">@style/SEA_EditText</item>
+	</style>
+
+	<style name="SEA_Button"
+		   parent="android:style/Widget.Button">
+		<item name="android:background">@color/rum_theme_color</item>
+		<item name="android:padding">4dp</item>
+	</style>
+
+	<style name="SEA_Toolbar_Button"
+		parent="android:style/Widget.Button">
+		<!-- toolbar style -->
+	</style>
+
+	<style name="SEA_EditText"
+		   parent="android:style/Widget.EditText">
+	</style>
+
+</resources>

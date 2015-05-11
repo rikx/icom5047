@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+			 android:id="@+id/person_flipper"
+			 android:layout_width="match_parent"
+			 android:layout_height="match_parent">
+
+	<!-- 0 Show view -->
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<LinearLayout
+			android:id="@+id/person_show_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/person_text_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="24dp"
+				android:textSize="24sp"
+				android:textStyle="bold"
+				android:text="@string/no_data"
+				/>
+
+			<TextView
+				android:id="@+id/person_text_phone_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textStyle="bold"
+				android:text="@string/phone_number_label"
+				/>
+
+			<TextView
+				android:id="@+id/person_text_phone"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:hint="@string/no_phone"
+				/>
+
+			<LinearLayout
+				android:id="@+id/person_email_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/person_text_email_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:textStyle="bold"
+					android:text="@string/email_label"
+					/>
+
+				<TextView
+					android:id="@+id/person_text_email"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:hint="@string/no_email"
+					/>
+			</LinearLayout>
+
+
+		</LinearLayout>
+	</ScrollView>
+
+	<!-- 1 Edit view -->
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+		<LinearLayout
+			android:id="@+id/person_edit_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="16dp">
+
+			<TextView
+				android:id="@+id/person_edit_first_name_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_first_name"
+				/>
+
+			<EditText
+				android:id="@+id/person_edit_first_name"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_first_name"
+				android:inputType="textPersonName"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_middle_name_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_middle_name"
+				/>
+
+			<EditText
+				android:id="@+id/person_edit_middle_name"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_middle_name"
+				android:inputType="textPersonName"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_last_name1_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_last_name1"
+				/>
+
+			<EditText
+				android:id="@+id/person_edit_last_name1"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_last_name1"
+				android:inputType="textPersonName"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_last_name2_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_last_name2"
+				/>
+
+			<EditText
+				android:id="@+id/person_edit_last_name2"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_last_name2"
+				android:inputType="textPersonName"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_email_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/email_label"
+				/>
+
+			<EditText
+				android:id="@+id/person_edit_email"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_email"
+				android:inputType="textEmailAddress"
+				/>
+
+			<TextView
+				android:id="@+id/person_edit_phone_number_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="@string/person_phone_number"
+				/>
+
+			<EditText
+				android:id="@+id/person_edit_phone_number"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/person_phone_number"
+				android:inputType="phone"
+				/>
+
+		</LinearLayout>
+
+	</ScrollView>
+
+</ViewFlipper>
