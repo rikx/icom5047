@@ -17,8 +17,9 @@ public class Appointment {
     String dateFormat;
     private User creator; //TODO: integrate this to DB
 
-    public Appointment(long id, DBHelper dbHelper) {
+    public Appointment(long id, DBHelper dbHelper,String dateFormat) {
         this.dbHelper = dbHelper;
+        this.dateFormat = dateFormat;
         invoke(id);
 
     }

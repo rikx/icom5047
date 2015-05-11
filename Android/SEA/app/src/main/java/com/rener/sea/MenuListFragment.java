@@ -116,8 +116,8 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
             adapter = new ReportListAdapter(getActivity(), list);
         } else if(type.equals(TYPE_APPOINTMENTS)) {
             //TODO: finish this
-//            list = db.getAllAppointments();
-//            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
+            list = db.getAllAppointments();
+            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
         }
 
         setListAdapter(adapter);

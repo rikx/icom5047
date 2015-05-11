@@ -153,6 +153,9 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 
     }
+    public Context getContext(){
+        return this.context;
+    }
 
     public List<Appointment> getAllAppointments() {
         SQLiteDatabase db = getReadableDatabase();
@@ -163,7 +166,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                Appointments.add(new Appointment(cursor.getLong(0), this));
+                Appointments.add(new Appointment(cursor.getLong(0), this,context.getResources().getString(R.string.date_format_medium)));
             }
 
             db.close();
@@ -2732,7 +2735,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
-                SQLiteDatabase db = getWritableDatabase();
+
 
             try {
                 setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
@@ -2745,7 +2748,40 @@ public final class DBHelper extends SQLiteOpenHelper {
                     if(status.getInt(DBSchema.SYNC_STATUS) == 0) {
                         if (status.getInt("flag") == 1) {
                             Log.i(this.toString(), "SETTING BASE SEQUENCE");
-                            setSequence(status.getLong("base_sequence"));
+                            long seq = status.getLong("base_sequence");
+                            SQLiteDatabase db = getWritableDatabase();
+                            Log.i(this.toString(), "SQLITE_SEQUENCE = "+seq);
+//                            db.execSQL("CREATE TABLE IF NOT EXISTS SQLITE_SEQUENCE(name,seq)");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_DEVICES+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_FLOWCHART+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ITEM+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION_CATEGORY+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_OPTION+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PERSON+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_REPORT+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PATH+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_SPECIALIZATION+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS+"'");
+//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS_SPECIALIZATION+"'");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_ADDRESS+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_APPOINTMENTS+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_CATEGORY+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_FLOWCHART+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_ITEM+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_LOCATION+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_OPTION+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_PERSON+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_REPORT+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_PATH+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_SPECIALIZATION+"')");
+                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_USERS+"')");
+//                            db.close();
+
+//                            setSequence(status.getLong("base_sequence"));
 
                         }
                     }else {

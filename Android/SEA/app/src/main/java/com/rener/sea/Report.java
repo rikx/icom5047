@@ -339,7 +339,7 @@ public class Report implements Comparable<Report> {
             db.close();
             cursor.close();
         }
-        return appointment != -1 ? new Appointment(appointment, dbHelper) : null;
+        return appointment != -1 ? new Appointment(appointment, dbHelper,dbHelper.getContext().getResources().getString(R.string.date_format_medium)) : null;
     }
 
     // this method is maybe out of area
