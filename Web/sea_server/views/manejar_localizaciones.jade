@@ -39,7 +39,8 @@ block content
 								thead
 								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories, data-user=user)
 						//button#btn_add_dispositivo(class='btn btn-default btn-success', type='button') Agregar Dispositivo
-						button#btn_add_localizacion(class='btn btn-default btn-success', type='button') Agregar Localización
+						if user.user_type = agent
+							button#btn_add_localizacion(class='btn btn-default btn-success', type='button') Agregar Localización
 
 				
 			#edit_panel.col-md-4(style="display:none")
@@ -122,9 +123,9 @@ block content
 											strong Gerente:
 										td#manager 
 						.panel.panel-info
-							.panel-heading Agentes Asignados
-							.panel-body
-								table#localizacion_agentes(class='table')
+								.panel-heading Agentes Asignados
+								.panel-body
+									table#localizacion_agentes(class='table')
 						button#btn_add_associates(class='btn btn-sm btn-info btn-block' type='button', data-id=localizaciones[0].location_id) Editar Personas Asociadas
 						br
 						//button#btn_close_info_panel(class='btn btn-default') Cerrar
@@ -158,12 +159,13 @@ block content
 								label(for='change_ganadero') Ganaderos:
 								input#change_ganadero(class='typeahead form-control', name='change_ganadero', type='text', placeholder='Buscar por nombre o correo electrónico')
 							button#btn_submit_ganadero(class='btn btn-default btn-success', type='button') Someter
-
-					.panel.panel-info
-						.panel-heading
-							h4.panel-title Agentes Asignados
-						.panel-body
-							table#associated_agentes(class='table')
+					#agentes_asginados_panel(data-user=user)
+						if user.user_type != agent
+							.panel.panel-info
+								.panel-heading
+									h4.panel-title Agentes Asignados AQUI
+								.panel-body
+									table#associated_agentes(class='table')
 					#add_agent_dropdown_panel(class='panel panel-info', style="display:none")
 						.panel-heading Añadir Agente Asociado
 						.panel-body
