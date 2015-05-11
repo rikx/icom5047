@@ -417,6 +417,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             Button save = (Button) reportEditView.findViewById(R.id.report_edit_save_button);
             save.setOnClickListener(this);
             View appEditView = inflater.inflate(R.layout.appointment_edit, null);
+            String purpose = report.getAppointment().getPurpose();
+            EditText purposeEdit = (EditText) appEditView.findViewById(R.id
+                    .appointment_purpose_edit);
+            purposeEdit.setText(purpose);
             appointmentView = appEditView;
             FrameLayout appFrame = (FrameLayout) reportEditView.findViewById(R.id
                     .report_edit_appointment_container);
