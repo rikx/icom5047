@@ -166,6 +166,9 @@ $(document).ready(function(){
     var owner_content = '';
     var manager_content = '';
     var assigned_ganaderos = ganaderos_array.filter(filter_by_id);
+    console.log("assigned ganaderos");
+    console.log(assigned_ganaderos);
+    console.log(ganaderos_array);
     $.each(assigned_ganaderos, function(i){
       var the_content = '';
       the_content += '<span>'+this.person_name+' </span>';

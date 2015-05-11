@@ -8,7 +8,19 @@ $(document).ready(function(){
   var user_info = JSON.parse($ganaderos_list.attr('data-user'));
 
   var data_ganaderos = $ganaderos_list.attr('data-ganaderos')
+
+  console.log("The Ganaderos");
+  console.log(data_ganaderos);
+
+
   var data_locations = $ganaderos_list.attr('data-localizaciones');
+
+   console.log("The Locations");
+   console.log(data_locations);
+
+   console.log("User Info is");
+   console.log(user_info);
+
 
   if(data_ganaderos.length >2){
     ganaderos_array = JSON.parse($ganaderos_list.attr('data-ganaderos'));
@@ -16,6 +28,8 @@ $(document).ready(function(){
     if(data_locations.length >2){
       localizaciones_array = JSON.parse($ganaderos_list.attr('data-localizaciones'));
     }
+
+
 
     // initial info panel population
     populate_info_panel(ganaderos_array[0]);

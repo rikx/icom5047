@@ -160,10 +160,10 @@ block content
 								input#change_ganadero(class='typeahead form-control', name='change_ganadero', type='text', placeholder='Buscar por nombre o correo electrónico')
 							button#btn_submit_ganadero(class='btn btn-default btn-success', type='button') Someter
 					#agentes_asginados_panel(data-user=user)
-						if user.user_type != agent
+						if user.user_type != 'agent'
 							.panel.panel-info
 								.panel-heading
-									h4.panel-title Agentes Asignados AQUI
+									h4.panel-title Agentes Asignados
 								.panel-body
 									table#associated_agentes(class='table')
 					#add_agent_dropdown_panel(class='panel panel-info', style="display:none")

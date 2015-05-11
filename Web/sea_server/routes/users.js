@@ -602,7 +602,7 @@ router.get('/ganaderos', function(req, res, next) {
 								 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 								 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
 								 			LIMIT 20) \
-								 		SELECT person_id, location_id, location.name AS location_name \
+								 		SELECT person_id, agent_id, location_id, location.name AS location_name \
 								 		FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', [-1], function(err, result){
 				//call `done()` to release the client back to the pool
 				done();
@@ -1765,12 +1765,14 @@ router.put('/admin/associated/ganadero', function(req, res, next) {
 	 		}
 	 		var query_config = {};
 	 		if(req.body.relation_type == 'owner'){
+	 			console.log("hello world");
 	 			query_config = {
 	 				text: 'UPDATE location SET owner_id = $1 \
 									WHERE location_id = $2',
 					values: [req.body.ganadero_id, req.body.location_id]
 	 			}
 	 		} else if(req.body.relation_type == 'manager'){
+	 			console.log("goodbye world");
 	 			query_config = {
 	 				text: 'UPDATE location SET manager_id = $1 \
 									WHERE location_id = $2',

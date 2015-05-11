@@ -30,6 +30,14 @@ block content
 
 		.row
 			.col-md-6
+				#nav(class='btn-group', role='group', aria-label='')
+					#btn_home(class='btn-group', role='group', aria-label='')
+						a(class='btn btn-success btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-home')
+					btn#btn_reportes(class='btn btn-success', type='button') Regresar a Reportes
+					//button#btn_reportes(class='btn btn-sm btn-default btn-block', type='button') Regresar a Reportes 
+					btn#btn_citas(class='btn btn-success', type='button') Regresar a Citas
+					//button#btn_citas(class='btn btn-sm btn-default btn-block', type='button') Regresar a Citas
 				.panel.panel-success
 					#answered_survey(class='panel-heading title', data-survey=survey)
 						center
@@ -175,11 +183,11 @@ block content
 			.col-md-1
 			.col-md-3
 				// TODO: add home glyphicon
-				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 			.col-md-3
-				button#btn_reportes(class='btn btn-sm btn-default btn-block', type='button') Regresar a Reportes
+				//button#btn_reportes(class='btn btn-sm btn-default btn-block', type='button') Regresar a Reportes
 			.col-md-3
-				button#btn_citas(class='btn btn-sm btn-default btn-block', type='button') Regresar a Citas
+				//button#btn_citas(class='btn btn-sm btn-default btn-block', type='button') Regresar a Citas
 			.col-md-1
 
 	//	Latest compiled and minified JavaScript
