@@ -2734,18 +2734,43 @@ public final class DBHelper extends SQLiteOpenHelper {
                 Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
                 SQLiteDatabase db = getWritableDatabase();
 
-            try {
-                setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                try {
+                    setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 // initialize sequences
                 try {
                     JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
                     if(status.getInt(DBSchema.SYNC_STATUS) == 0) {
                         if (status.getInt("flag") == 1) {
                             Log.i(this.toString(), "SETTING BASE SEQUENCE");
-                            setSequence(status.getLong("base_sequence"));
+                            long seq = status.getLong("base_sequence");
+
+                            db.execSQL("CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq)");
+
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_ADDRESS+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_APPOINTMENTS+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_CATEGORY+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_DEVICES+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_FLOWCHART+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_ITEM+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_LOCATION+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_LOCATION_CATEGORY+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_OPTION+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_PERSON+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_REPORT+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_PATH+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_SPECIALIZATION+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_USERS+"')");
+                            db.execSQL("INSERT SQLITE_SEQUENCE(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_USERS_SPECIALIZATION+"')");
+
+                            db.close();
+
+
+
+
+//                            setSequence(seq);
 
                         }
                     }else {
