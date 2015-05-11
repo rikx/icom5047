@@ -137,9 +137,33 @@ jsPlumb.ready(function() {
       var answers_content = '';
       $.each(connections_array, function(i){
         if(this_element.id == this.source){
-          answers_content += "<li class='list-group-item'>"+this.label+"</li>"; 
+          var label_text;
+          if(this_element.type == 'CONDITIONAL'){
+            console.log(this.label.substring(0,2))
+            switch(this.label.substring(0,2)){
+              case 'lt':
+                label_text = 'Menor que ' +this.label.substring(2);
+                break;
+              case 'gt':
+                label_text = 'Mayor que ' +this.label.substring(2);
+                break;
+              case 'eq':
+                label_text = 'Igual que ' +this.label.substring(2);
+                break;
+              case 'le':
+                label_text = 'Menor o igual que ' +this.label.substring(2);
+                break;
+              case 'ge':
+                label_text = 'Mayor o igual que ' +this.label.substring(2);
+                break;
+            }
+          } else {
+            label_text = this.label;
+          }
+          answers_content += "<li class='list-group-item'>"+label_text+"</li>"; 
         }
       });
+      $('#pregunta_info_responses').html(answers_content);
       $('#pregunta_info_responses').html(answers_content);
       $('#possible_answers').show();
     } else {
@@ -238,8 +262,10 @@ jsPlumb.ready(function() {
         } else {
           if(this_element.id == connections_array[j].source){
             if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
-              if(multi_count < 1){
-                valid_item_count++;
+              if(multi_count < 2){
+                if(multi_count < 1){
+                  valid_item_count++;
+                }
                 multi_count++;
               }
             } else {
@@ -752,7 +778,14 @@ jsPlumb.ready(function() {
       var thing;
       for(var i=0; i<elements.length; i++){
         var theState = $.parseHTML(elements[i].state);
-       
+        
+        if(elements[i].type == 'START'){
+          $('#start_item').addClass('disabled');
+        }
+        if(elements[i].type == 'END'){
+          $('#end_item').addClass('disabled');
+        }
+
         if(i == 0){
           temp = elements[i].id.substring(5);
         }

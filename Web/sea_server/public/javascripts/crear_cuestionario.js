@@ -124,8 +124,31 @@ jsPlumb.ready(function() {
 	  	var answers_content = '';
 	  	$.each(connections_array, function(i){
 	  		if(this_element.id == this.source){
-	  			answers_content += "<li class='list-group-item'>"+this.label+"</li>"; 
-	  		}
+	  			var label_text;
+	  			if(this_element.type == 'CONDITIONAL'){
+	  				console.log(this.label.substring(0,2))
+	  				switch(this.label.substring(0,2)){
+	  					case 'lt':
+	  						label_text = 'Menor que ' +this.label.substring(2);
+	  						break;
+	  					case 'gt':
+	  						label_text = 'Mayor que ' +this.label.substring(2);
+	  						break;
+	  					case 'eq':
+	  						label_text = 'Igual que ' +this.label.substring(2);
+	  						break;
+	  					case 'le':
+	  						label_text = 'Menor o igual que ' +this.label.substring(2);
+	  						break;
+	  					case 'ge':
+	  						label_text = 'Mayor o igual que ' +this.label.substring(2);
+	  						break;
+		  			}
+		  		} else {
+						label_text = this.label;
+					}
+					answers_content += "<li class='list-group-item'>"+label_text+"</li>"; 
+				}
 	  	});
 	  	$('#pregunta_info_responses').html(answers_content);
 	  	$('#possible_answers').show();
