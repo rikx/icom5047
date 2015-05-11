@@ -773,6 +773,45 @@ jsPlumb.ready(function() {
         jsPlumb.draggable('' + elements[i].id, {
           //containment: 'parent'
         });
+
+        $('#' + elements[i].id).dblclick(function(e) {
+          var this_id = $(this).attr('id');
+
+          jsPlumb.detachAllConnections($(this));
+          $(this).remove();
+          e.stopPropagation();  
+          
+          // find connections where this element is a source or target and 
+          // delete them
+          connections_array=connections_array.filter(isConnectionEndpoint);
+          function isConnectionEndpoint(connection){
+            if(connection.source == this_id){
+              return false; 
+            } else if(connection.target == this_id){
+              return false; 
+            } else {
+              return true;
+            }
+          }
+          // find element in array and delete it
+          var this_item;
+          for(var d=0; d<elements_array.length;d++){
+            this_item = elements_array[d];
+            if(this_item.id == this_id){
+              elements_array.splice(d,1);
+              if(this_item.type=='START'){
+                $('#start_item').removeClass('disabled');
+              } else if(this_item.type=='END'){
+                $('#end_item').removeClass('disabled');
+              }
+              //return;
+            }
+          }
+          // repopulate elements list
+          $('#info_panel').hide();
+          populate_elements_list();
+
+        }); 
       } // end of for loop for elements
       
       // any new stats will start indexing from this number
