@@ -57,7 +57,12 @@ $(document).ready(function(){
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(device){
-        return '<p><strong>Dispositivo: </strong>'+device.device_name+'</p><p><strong># de identificación: </strong>'+device.id_number+'</p>';
+        var name;
+        if(device.device_name != null)
+          name = device.device_name;
+        else
+          name =  'Sin nombre';
+        return '<p><strong>Dispositivo: </strong>'+name+'</p><p><strong># de identificación: </strong>'+device.id_number+'</p>';
       }
     }
   });
@@ -141,7 +146,6 @@ $(document).ready(function(){
     
     // populate info panel with this_dispositivo
     populate_info_panel(this_dispositivo);
-    console.log(this_dispositivo);
 
     // set id values of info panel buttons
     $('#btn_edit_dispositivo').attr('data-id', dispositivo_id);
@@ -299,8 +303,16 @@ $(document).ready(function(){
 
   /* Populate info panel with $this_dispositivo info */
   function populate_info_panel($this_dispositivo) {
-    $('#info_panel_heading').html($this_dispositivo.device_name);
-    $('#dispositivo_info_name').text($this_dispositivo.device_name);
+    var name;
+    console.log($this_dispositivo.device_name)
+    if($this_dispositivo.device_name != null){
+      name = $this_dispositivo.device_name;
+    } else {
+      name =  'Sin nombre';
+    }
+      
+    $('#info_panel_heading').html(name);
+    $('#dispositivo_info_name').text(name);
     $('#dispositivo_info_id_num').text($this_dispositivo.id_number);
     $('#dispositivo_info_usuario').text($this_dispositivo.username);
     if($this_dispositivo.last_sync == null)

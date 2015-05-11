@@ -92,7 +92,7 @@ block content
 								| Posibles Respuestas
 							.panel-body
 								ul#pregunta_info_responses(class='list-group')
-						//button#btn_edit_item(class='btn btn-success btn-block') Editar
+						button#btn_edit_item(class='btn btn-success btn-block') Editar
 
 			#edit_panel.col-md-4(style="display:none")
 				.panel.panel-success
@@ -101,8 +101,11 @@ block content
 					.panel-body
 						form#form_manage_cita(role='form')
 							.form-group
-								label(for='cita_location') Pregunta:
-								input#cita_location(class='form-control', name='cita_location', type='text')
+								label(for='item_label') Pregunta:
+								textarea#item_label(class='form-control', name='item_label', rows='6')
+							//.form-group#edit_possible_answers
+							//	label(for='item_label') Posibles respuestas:
+							//	#edit_answers_list
 						button#btn_edit(class='btn btn-default btn-success btn-block', type='button') Guardar
 						button#btn_close_edit_panel(class='btn btn-default btn-block') Cerrar
 				

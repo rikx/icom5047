@@ -19,10 +19,6 @@ block content
 			.col-md-2
 
 		.row
-			.col-md-12
-				#container_plumbjs
-		br
-		.row
 			.col-md-3
 				.form-group
 					label(for='btn_user_type') Tipo de Elemento:
@@ -48,8 +44,29 @@ block content
 							li
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
 				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
-				button#btn_recreate(class='btn btn-lg btn-success btn-block', type='button') Re-Create
-				button#btn_repopulate(class='btn btn-lg btn-success btn-block', type='button', data-id='32') Populate from db
+				br
+		.row
+			.col-md-12
+				#container_plumbjs
+		br
+		.row
+			.col-md-3
+				#flowchart_info.panel.panel-warning
+					.panel-heading
+						h3.panel-title Información Básica
+					.panel-body
+						form#form_create_flowchart(role='form')
+							.form-group
+								label(for='flowchart_creator') Creado por:
+								span#flowchart_creator(class='form-control', name='flowchart_creator', disabled, data-id=user.user_id)
+									= user.username
+							.form-group
+								label(for='flowchart_name') Nombre de Flujo:
+								input#flowchart_name(class='form-control', name='flowchart_name', type='text', placeholder='Nombre')
+							.form-group
+								label(for='flowchart_version') Versión:
+								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
+						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 			.col-md-5
 				.panel.panel-success
 					.panel-heading
@@ -84,27 +101,25 @@ block content
 								| Posibles Respuestas
 							.panel-body
 								ul#pregunta_info_responses(class='list-group')
-						//button#btn_close_info_panel(class='btn btn-default') Cerrar
-				
+						button#btn_edit_item(class='btn btn-success btn-block') Editar
+			
+			#edit_panel.col-md-4(style="display:none")
+				.panel.panel-success
+					.panel-heading(class='panel-title')
+						h4#heading_edit Editar Elemento
+					.panel-body
+						form#form_manage_cita(role='form')
+							.form-group
+								label(for='item_label') Pregunta:
+								textarea#item_label(class='form-control', name='item_label', rows='6')
+							//.form-group#edit_possible_answers
+							//	label(for='item_label') Posibles respuestas:
+							//	#edit_answers_list
+						button#btn_edit(class='btn btn-default btn-success btn-block', type='button') Guardar
+						button#btn_close_edit_panel(class='btn btn-default btn-block') Cerrar		
 		br
 		.row
 			.col-md-3
-				.panel.panel-warning
-					.panel-heading
-						h3.panel-title Información Básica
-					.panel-body
-						form#form_create_flowchart(role='form')
-							.form-group
-								label(for='flowchart_creator') Editado por:
-								span#flowchart_creator(class='form-control', name='flowchart_creator', disabled, data-id=user.user_id)
-									= user.username
-							.form-group
-								label(for='flowchart_name') Nombre de Flujo:
-								input#flowchart_name(class='form-control', name='flowchart_name', type='text', placeholder='Nombre')
-							.form-group
-								label(for='flowchart_version') Versión:
-								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
-						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 			.col-md-5
 				// TODO: add home glyphicon
 				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal

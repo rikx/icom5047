@@ -85,3 +85,11 @@
 		background-color: white;
 		cursor: pointer;
 	}
+	p.has_text{
+		max-height: 75px;
+		max-width: 175px;
+		overflow-y: auto;
+	}
+/*textarea {
+	resize: none;
+}*/

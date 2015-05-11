@@ -17,11 +17,83 @@ jsPlumb.ready(function() {
   	remove_active_class($preguntas_list);
   });
 
+  $('#btn_edit_item').on('click', function(){
+		$('#info_panel').hide();
+		$('#edit_panel').show();
+
+	  // contains element id
+  	var item_id = $(this).attr('data-id');
+  	var arrayPosition = elements_array.map(function(arrayItem) { return arrayItem.id; }).indexOf(item_id);
+    var this_element = elements_array[arrayPosition];
+		
+		$('#item_label').val(this_element.name);
+
+		//edit_answers_list
+/*		if(this_element.type == 'MULTI' || this_element.type == 'OPEN'){
+			$('#edit_possible_answers').show();
+			var answers_content = '';
+			$.each(connections_array, function(i){
+				if(this_element.id == this.source){
+					answers_content += "<input class='form-group' data-source-id='"+this.source+"' data-target-id='"+this.target+"' type='text' value='"+this.label+"'>"; 
+				}
+			});
+			$('#edit_answers_list').html(answers_content);
+		}*/
+  });
+
+	// Close info panel
+  $('#btn_close_edit_panel').on('click', function(){
+		//$('#info_panel').show();
+		$('#edit_panel').hide();
+		$('#edit_possible_answers').hide();
+
+		remove_active_class($preguntas_list);
+  });
+
+  $('#btn_edit').on('click', function(){
+	  // contains element id
+  	var item_id = $(this).attr('data-id');
+  	var arrayPosition = elements_array.map(function(arrayItem) { return arrayItem.id; }).indexOf(item_id);
+    var this_element = elements_array[arrayPosition];
+
+    var new_text = $('#item_label').val();
+    // update element in ui
+    $('#content_'+this_element.id).children('.has_text').html(new_text);
+		$('#'+this_element.id).attr('data-state-name', new_text);
+
+    // update element in array
+    this_element.name = new_text;
+    replace(this_element, elements_array);
+
+
+    //update connection in array and ui
+
+/*    $.each($('#edit_answers_list'), function(){
+	    var this_connection;
+	    for(var x = 0; x < connections_array.length; x++){
+	    	if(connections_array[x].source == this.attr('data-source-id') && connections_array[x].target == this.attr('data-target-id')){
+	    		this_connection = connections_array[x];
+	    		$('#'+this.attr('data-source-id')+'-'+this.attr('data-target-id')).text(new_answer_text);
+	    	}	
+	    }
+	    
+	    this_connection.label = new_answer_text;
+	    replace(this_connection, elements_array);
+    });*/
+
+    // refresh list
+    populate_elements_list()
+
+		$('#edit_panel').hide();
+  });
+
   /* Open info panel */
   $preguntas_list.on('click', 'tr td a.show_info_elemento', function(e){
     // prevents link from firing
     e.preventDefault();
 
+    $('#info_panel').show();
+    $('#edit_panel').hide();
     // remove active from previous clicked list item
     remove_active_class($preguntas_list);
     // add active to current clicked list item
@@ -37,12 +109,16 @@ jsPlumb.ready(function() {
 
     // populate info panel with this_ganadero info
     populate_info_panel(this_element);
+
+    // set id values of info panel buttons
+    $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_edit').attr('data-id', this_element.id);
 	});
 
   /* Populate's info panel with $this_element's information */
   function populate_info_panel(this_element){
   	$('#pregunta_info_name').html(this_element.name);
-  	$('#pregunta_info_type').html(this_element.type);
+  	$('#pregunta_info_type').html(convert_type(this_element.type));
   	
   	if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
 	  	var answers_content = '';
@@ -56,6 +132,10 @@ jsPlumb.ready(function() {
 	  } else {
 	  	$('#possible_answers').hide();
 	  }
+
+	  // set id values of info panel buttons
+    $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_edit').attr('data-id', this_element.id);
   }
 
   /* */
@@ -145,8 +225,10 @@ jsPlumb.ready(function() {
   			} else {
   				if(this_element.id == connections_array[j].source){
   					if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
-  						if(multi_count < 1){
-								valid_item_count++;
+  						if(multi_count < 2){
+  							if(multi_count < 1){
+									valid_item_count++;
+								}
 								multi_count++;
   						}
   					} else {
@@ -191,7 +273,7 @@ jsPlumb.ready(function() {
 					new_flowchart.first_id = end_points.first_id;
 					new_flowchart.end_id = end_points.end_id;
 					// ajax call to post new ganadero
-/*					$.ajax({
+					$.ajax({
 					  url: "http://localhost:3000/users/admin/cuestionarios/crear",
 					  method: "POST",
 					  data: JSON.stringify({
@@ -218,9 +300,9 @@ jsPlumb.ready(function() {
 					    console.log( "Status: " + status );
 					    console.dir( xhr );
 					  }
-					});	*/
+					});	
 	    	} else {
-	    		alert('Verifique que todas preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
+	    		alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
 	    	}
 	    } else {
 	    	alert('Cuestionario no tiene elemento inicial o final, o estos tienen conecciones existentes.');
@@ -251,6 +333,20 @@ jsPlumb.ready(function() {
 			$('#btn_add_question').prop('disabled', false);
 		}
 	});
+
+	// convert type text
+ 	function convert_type(type_text){
+ 		switch(type_text){
+ 			case 'OPEN':
+ 				return 'ABIERTA';
+  		case 'CONDITIONAL':
+ 				return 'COMPARACIÓN';
+   		case 'RECOM':
+ 				return 'RECOMENDACIÓN';
+   		case 'MULTI':
+ 				return 'MULTIPLE';
+ 		}
+ 	}
 
  	function add_item() {
  		jsPlumb.ready(function() {
@@ -287,11 +383,21 @@ jsPlumb.ready(function() {
 							break;
 					}
 	 				// Set item identifier text
-					title_id.text('Elemento ' + j);
+					title_id.html('<strong>Elemento ' + j+"</strong>");
+					title_id.append('<p><strong>['+convert_type(itemType)+']</strong></p>');
+
 					// add input for item text content
 					has_input = true;
 	 				var stateNameContainer = $('<div>').attr('data-state-id', 'state' + j);
-	 				var stateName = $('<input>').attr('type', 'text');
+	 				stateNameContainer.attr('id', 'content_state' + j);
+	 				
+	 				var stateName;
+	 				//if(itemType == 'RECOM' || itemType == 'OPEN'){
+	 					stateName = $('<textarea>').attr('type', 'text').attr('rows', '3');;
+	 				//} 
+/*	 				else {
+	 					stateName = $('<input>').attr('type', 'text');
+					}*/
 
 	 				// store element id as data attribute
 					stateName.attr('data-id', 'state' + j);
@@ -335,6 +441,7 @@ jsPlumb.ready(function() {
    
 			jsPlumb.draggable(newState, {
 				//containment: 'parent',
+				resizable: false,
 				drag: function(){
 					jsPlumb.repaintEverything();
 				},
@@ -408,8 +515,10 @@ jsPlumb.ready(function() {
 						//return;
 					}
 				}
-				// populate elements list with new element
+				// repopulate elements list
+				$('#info_panel').hide();
 				populate_elements_list();
+
 			}); 
 
 			if(itemType != 'START' && itemType != 'END'){
@@ -417,7 +526,8 @@ jsPlumb.ready(function() {
 					if (e.keyCode === 13) {
 			      //var state = $(this).closest('.item');
 			      //state.children('.title').text(this.value);
-			      $(this).parent().text(this.value);
+
+			      $(this).parent().html("<p class='has_text'>"+this.value+'</p>');
 			      var state_id = $(this).attr('data-id');
 			      $('#'+state_id).attr('data-state-name', this.value);
 
@@ -535,7 +645,7 @@ jsPlumb.ready(function() {
 			// if source_type == 'START' check its not connected to an 'END' type
 			if(source_type == 'START'){
 				// dont allow start element to connect to end
-				if(target_type == 'END'){
+				if(target_type == 'RECOM' || target_type == 'END'){
 					return false;
 				}
 				for(var z = 0; z<connections_array.length; z++){
@@ -583,7 +693,7 @@ jsPlumb.ready(function() {
 					mylabel = 'con-end';
 				} else {
 					mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
-					info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: "connLabel"} ]);
+					info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
 				}
 				
 				this_connection = {
@@ -608,6 +718,8 @@ jsPlumb.ready(function() {
 					}
 				}	*/
 			}
+
+			populate_elements_list();
 		//});
 	});
 

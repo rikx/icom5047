@@ -1040,8 +1040,7 @@ router.get('/list_reportes', function(req, res, next) {
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
-								WHERE report.creator_id = $1 \
-								WHERE report.status != $1 \
+								WHERE report.creator_id = $1 AND report.status != $1 \
 					 			ORDER BY report_name ASC \
 								LIMIT 20",
 				values: [user_id, -1]

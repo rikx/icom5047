@@ -231,7 +231,7 @@ $(document).ready(function(){
 	 */
 	function regex_conditional(user_input, input_field){
 		var possible_answers = JSON.parse($question_panel_answers.attr('data-answers'));
-		var reg_ex, comp_value;
+		var reg_ex, comp_value, temp;
 
 		$.each(possible_answers, function(){
 			// get number to compare with
@@ -240,69 +240,83 @@ $(document).ready(function(){
 			// less than
 			reg_ex = /lt\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
-				comp_value = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				console.log('regex lt:');
+				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				console.log('user input: '+user_input);
+				comp_value = parseInt(temp, '10');
+				console.log(comp_value)
 				if(user_input < comp_value){
+					console.log('entered if');
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
-					return;
+					return false;
 				}
 			}
 			// greater than
 			reg_ex = /gt\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
-				comp_value = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				comp_value = parseInt(temp, '10');
 				if(user_input > comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
-					return;
+					return false;
 				}
 			}
 			// equal
 			reg_ex = /eq\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
-				comp_value = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				comp_value = parseInt(temp, '10');
 				if(user_input == comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
-					return;
+					return false;
 				}
 			}
 			// not equal
 			reg_ex = /ne\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
-				comp_value = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				comp_value = parseInt(temp, '10');
 				if(user_input != comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
-					return;
+					return false;
 				}
 			}
 			// less or equal than
 			reg_ex = /le\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
-				comp_value = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				comp_value = parseInt(temp, '10');
 				if(user_input <= comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
-					return;
+					return false;
 				}
 			}
 			// greater or equal to
 			reg_ex = /ge\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
-				comp_value = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
+				comp_value = parseInt(temp, '10');
 				if(user_input >= comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
-					return;
+					return false;
 				}
 			}
 			// within range
 			reg_ex = /ra(\[|\()\-?\d+(\.\d+)?,\-?\d+(\.\d+)?(\]|\))/;
 			if(reg_ex.test(this.answer)){
 					var commma_index = this.answer.indexOf(',');
-					var left_value = this.answer.substring(3,commma_index);
-					var right_value = this.answer.substring(commma_index+1,this.answer.length-1);
+					var left_value;
+					temp = this.answer.substring(3,commma_index);
+					left_value = parseInt(temp, '10');
+					var right_value;
+					temp = this.answer.substring(commma_index+1,this.answer.length-1);
+					right_value = parseInt(temp, '10');
 
 				if(user_input >= left_value && user_input <= right_value){
 					input_field.attr('data-answer-id', this.option_id);
