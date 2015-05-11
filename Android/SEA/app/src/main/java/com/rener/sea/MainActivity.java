@@ -253,6 +253,9 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         } else if (type.equals(MenuListFragment.TYPE_REPORTS)) {
             Report report = (Report) listView.getAdapter().getItem(position);
             showReport(report);
+        } else if (type.equals(MenuListFragment.TYPE_APPOINTMENTS)) {
+            Appointment appointment = (Appointment) listView.getAdapter().getItem(position);
+            showReport(appointment.getReport());
         }
     }
 
