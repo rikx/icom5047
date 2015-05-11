@@ -1420,6 +1420,7 @@ router.post('/admin/usuarios', function(req, res, next) {
  */
 router.put('/admin/usuarios/:id', function(req, res, next) {
  	var user_id = req.params.id;
+ 	console.log(req.body.change_password);
  	if(!req.body.hasOwnProperty('usuario_email') 
  		|| !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
@@ -1447,7 +1448,10 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {
+
+				if(req.body.change_password){
 					// edit password 
+				console.log("changing password");
 	  			client.query("UPDATE users \
 												SET passhash = crypt($1, gen_salt('bf'::text)) \
 												WHERE user_id = $2", 
@@ -1458,6 +1462,7 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 							// do nothing
 						}
 					});
+	  		}
 					// edit person table
 					client.query("UPDATE person \
 												SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6, middle_initial = $7 \

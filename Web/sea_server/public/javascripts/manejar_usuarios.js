@@ -367,6 +367,17 @@ $('#btn_edit').on('click', function(){
   var $the_form = $('#form_manage_usuario');
   var form_data = $the_form.serializeArray();
   var new_usuario = ConverToJSON(form_data);
+
+  if(new_usuario.usuario_password.trim().length == 0)
+  {
+    new_usuario.change_password = false;
+  }
+  else
+  {
+    new_usuario.change_password = true;
+  }
+
+
   if(!new_usuario.usuario_name.trim().length > 0)
   {
     alert("Por favor ingrese un nombre.");
@@ -383,11 +394,15 @@ $('#btn_edit').on('click', function(){
   {
     alert('Correo electrónico debe terminar con "@upr.edu"');
   }
-  else if(new_usuario.usuario_password.length < 7)
+  else if(new_usuario.usuario_password.length < 7 && new_usuario.change_password)
   {
     alert("Contraseña debe tener 7 o más caracteres.");
   }
-  else if(new_usuario.usuario_password != new_usuario.usuario_password_confirm)
+  else if(new_usuario.usuario_password_confirm.trim().length > 0 && new_usuario.usuario_password.trim().length == 0)
+  {
+    alert("Si desea cambiar contraseña, debe llenar ambos campos 'contraseña' y 'confirmar contraseña'");
+  }
+  else if(new_usuario.usuario_password.trim() != new_usuario.usuario_password_confirm.trim())
   {
     alert("Segunda contraseña no es igual a la primera.");
   }
@@ -442,7 +457,7 @@ $.ajax({
 
   success: function(data) {
 
-    alert("Especialidades han sido modificadas.");
+    alert("Se ha modificado usuario.");
     console.log("the specialties are");
     console.log(data.users_specialization);
     repopulate_specialties(data.users_specialization);
