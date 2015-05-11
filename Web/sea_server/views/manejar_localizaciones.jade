@@ -38,8 +38,7 @@ block content
 							table(class='table')
 								thead
 								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories, data-user=user)
-						//button#btn_add_dispositivo(class='btn btn-default btn-success', type='button') Agregar Dispositivo
-						if user.user_type = agent
+						if user.user_type != 'agent'
 							button#btn_add_localizacion(class='btn btn-default btn-success', type='button') Agregar Localización
 
 				
@@ -105,7 +104,7 @@ block content
 									.panel-body
 											#categories_list(role='form')
 											//button#btn_edit_categories(class='btn btn-default btn-success', type='button') Editar Categorias
-								if(user.user_type == 'admin')
+								if(user.user_type != 'agent')
 									button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button', data-id=localizaciones[0].location_id) Editar
 									a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
 										i(class='glyphicon glyphicon-trash')
