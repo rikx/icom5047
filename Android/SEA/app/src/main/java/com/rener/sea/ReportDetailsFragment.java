@@ -310,9 +310,13 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         //Set appointment creator view
         String creatorLabel = getString(R.string.creator_label);
         String creator = appointment.getCreator().getPerson().toString();
-        TextView creatorText = (TextView) view.findViewById(R.id.appointment_creator_text);
-        creatorText.setText(creatorLabel + ": " + creator);
-
+        if(creator != null) {
+            TextView creatorText = (TextView) view.findViewById(R.id.appointment_creator_text);
+            creatorText.setText(creatorLabel + ": " + creator);
+        }else{
+            TextView creatorText = (TextView) view.findViewById(R.id.appointment_creator_text);
+            creatorText.setText(creatorLabel + ": " + "Admin");
+        }
         //Display the layout
         appointmentLayout = VIEW_APPOINTMENT_LAYOUT;
         appointmentFlipper.setVisibility(View.GONE);
