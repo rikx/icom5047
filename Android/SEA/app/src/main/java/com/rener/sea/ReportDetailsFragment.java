@@ -406,11 +406,18 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             builder.setTitle(title);
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View reportEditView = inflater.inflate(R.layout.report_edit_layout, null);
+            String name = report.getName();
+            String notes = report.getNotes();
+            EditText nameEdit = (EditText) reportEditView.findViewById(R.id.report_edit_name);
+            nameEdit.setText(name);
+            EditText notesEdit = (EditText) reportEditView.findViewById(R.id.report_edit_notes);
+            notesEdit.setText(notes);
             Button cancel = (Button) reportEditView.findViewById(R.id.report_edit_cancel_button);
             cancel.setOnClickListener(this);
             Button save = (Button) reportEditView.findViewById(R.id.report_edit_save_button);
             save.setOnClickListener(this);
             View appEditView = inflater.inflate(R.layout.appointment_edit, null);
+            appointmentView = appEditView;
             FrameLayout appFrame = (FrameLayout) reportEditView.findViewById(R.id
                     .report_edit_appointment_container);
             appFrame.addView(appEditView);
@@ -423,7 +430,21 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     }
 
     private void saveReport() {
-
-        //TODO
+        EditText nameEdit = (EditText) reportEditDialog.findViewById(R.id.report_edit_name);
+        EditText notesEdit = (EditText) reportEditDialog.findViewById(R.id.report_edit_notes);
+        String name = nameEdit.getText().toString().trim();
+        String notes = notesEdit.getText().toString().trim();
+        boolean validName = !name.equals("");
+        boolean validAppointment = saveAppointment();
+        if(validName && validAppointment) {
+            report.setName(name);
+            report.setNotes(notes);
+            this.onDetailsChanged();
+            reportEditDialog.dismiss();
+        }
+        else {
+            String message = getString(R.string.empty_name);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 }

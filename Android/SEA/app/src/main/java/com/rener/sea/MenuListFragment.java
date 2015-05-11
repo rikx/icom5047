@@ -91,6 +91,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
 
         getActivity().getMenuInflater().inflate(R.menu.navigation_menu, toolbar.getMenu());
         toolbar.setOnMenuItemClickListener(this);
+        ((MainActivity)getActivity()).getContextToolbar().getMenu().clear();
 
         //Restore arguments if they exist
         curPos = getArguments().getInt("index", -1);

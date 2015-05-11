@@ -132,4 +132,5 @@
 	<string name="confirm_discard_report_message">Are you sure you want to discard this report?</string>
 	<string name="cancel">Cancel</string>
 	<string name="discard">Discard</string>
+	<string name="empty_name">Name cannot be empty</string>
 </resources>

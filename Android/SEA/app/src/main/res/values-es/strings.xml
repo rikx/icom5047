@@ -131,4 +131,6 @@
 	<string name="confirm_discard_report_title">Descartar reporte</string>
 	<string name="cancel">Cancelar</string>
 	<string name="discard">Descartar</string>
+	<string name="no_email">Correo eletrónico no asignado</string>
+	<string name="empty_name">Nombre no puede estar vacio</string>
 </resources>
