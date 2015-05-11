@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">'
+
+	<item
+		android:id="@+id/add_appointment_action"
+		android:showAsAction="always"
+		android:icon="@drawable/ic_action_event"
+		android:title="@string/add_appointment"
+		android:visible="false">
+	</item>
+
+	<item
+		android:id="@+id/edit_report_details"
+		android:showAsAction="always"
+		android:icon="@drawable/ic_action_edit"
+		android:title="@string/edit_report"
+		android:visible="true">
+	</item>
+
+</menu>
