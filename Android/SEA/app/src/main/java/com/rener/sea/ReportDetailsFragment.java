@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -38,7 +39,7 @@ import java.util.Locale;
  * An Android fragment class used to manage the display of data pertaining to a report.
  */
 public class ReportDetailsFragment extends Fragment implements View.OnClickListener,
-        DetailsFragment, Toolbar.OnMenuItemClickListener {
+        DetailsFragment, Toolbar.OnMenuItemClickListener, TextWatcher {
 
     public static final int NO_APPOINTMENT_LAYOUT = 0;
     private int appointmentLayout = NO_APPOINTMENT_LAYOUT;
@@ -52,8 +53,9 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     private View appointmentView;
     private boolean viewCreated;
     private AlertDialog appointmentDialog;
-    private AlertDialog reportEditDialog;
+    private Toolbar toolbar;
     private Menu options;
+    private MenuItem addAppointmentAction;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
         //Set the edit views
         editNotes = (EditText) view.findViewById(R.id.report_text_notes);
-        editNotes.setEnabled(false); //TODO: review report notes
+        editNotes.addTextChangedListener(this);
 
         //Set the location layout listener
         LinearLayout location = (LinearLayout) view.findViewById(R.id.report_location_layout);
@@ -108,12 +110,12 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Toolbar toolbar = ((MainActivity) getActivity()).getContextToolbar();
+        toolbar = ((MainActivity) getActivity()).getContextToolbar();
         toolbar.setOnMenuItemClickListener(this);
         options = toolbar.getMenu();
-        options.clear();
         getActivity().getMenuInflater().inflate(R.menu.report_actions, options);
-        toolbar.setOnMenuItemClickListener(this);
+        boolean visible = (appointmentLayout == NO_APPOINTMENT_LAYOUT);
+        options.findItem(R.id.add_appointment_action).setVisible(visible);
     }
 
     @Override
@@ -123,15 +125,18 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
+        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        options = tb.getMenu();
+        options.clear();
+        inflater.inflate(R.menu.report_actions, options);
+        tb.setOnMenuItemClickListener(this);
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.edit_report_details:
-                displayReportEditDialog();
-                break;
+            case R.id.save_report_details:
+                saveReport();
         }
         return super.onOptionsItemSelected(menuItem);
     }
@@ -147,6 +152,27 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         inflateAppointmentLayout();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        String previous = report.getNotes().trim();
+        String current = charSequence.toString().trim();
+        if(!previous.equals(current)) {
+            MenuItem save = options.findItem(R.id.save_report_details);
+            save.setEnabled(true);
+            save.setVisible(true);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 
     private void setInterviewLayout() {
@@ -267,12 +293,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             case R.id.report_location_layout:
                 goToReportLocation();
                 break;
-            case R.id.report_edit_cancel_button:
-                reportEditDialog.dismiss();
-                break;
-            case R.id.report_edit_save_button:
-                saveReport();
-                break;
         }
     }
 
@@ -366,9 +386,6 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View view = inflater.inflate(R.layout.appointment_edit, null);
-            LinearLayout buttonsLayout = (LinearLayout) view.findViewById(R.id
-                    .appointment_edit_buttons);
-            buttonsLayout.setVisibility(View.VISIBLE);
             Button save = (Button) view.findViewById(R.id.report_save_appointment_button);
             save.setOnClickListener(this);
             Button cancel = (Button) view.findViewById(R.id.report_cancel_appointment_button);
@@ -399,31 +416,16 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textView.setText(spanString);
     }
 
-    private void displayReportEditDialog() {
-        if (reportEditDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            String title = getString(R.string.edit_report);
-            builder.setTitle(title);
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View reportEditView = inflater.inflate(R.layout.report_edit_layout, null);
-            Button cancel = (Button) reportEditView.findViewById(R.id.report_edit_cancel_button);
-            cancel.setOnClickListener(this);
-            Button save = (Button) reportEditView.findViewById(R.id.report_edit_save_button);
-            save.setOnClickListener(this);
-            View appEditView = inflater.inflate(R.layout.appointment_edit, null);
-            FrameLayout appFrame = (FrameLayout) reportEditView.findViewById(R.id
-                    .report_edit_appointment_container);
-            appFrame.addView(appEditView);
-            builder.setView(reportEditView);
-            reportEditDialog = builder.create();
-            reportEditDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
-                    .SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        }
-        reportEditDialog.show();
-    }
-
     private void saveReport() {
-
-        //TODO
+        MenuItem save = options.findItem(R.id.save_report_details);
+        save.setEnabled(false);
+        String notes = editNotes.getText().toString().trim();
+        report.setNotes(notes);
+        save.setVisible(false);
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromInputMethod(editNotes.getWindowToken(), InputMethodManager
+                .HIDE_IMPLICIT_ONLY);
+        editNotes.clearFocus();
     }
 }
