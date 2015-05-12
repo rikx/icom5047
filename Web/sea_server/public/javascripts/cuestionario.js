@@ -182,8 +182,8 @@ jsPlumb.ready(function() {
   });
 
   /* Focus on list element matching clicked element and show info panel */
-  $("[id^='state']").on('click', function(){
-    var this_id = $(this).attr('id');
+  $("#container_plumbjs").on('click', "div div p.item_title", function(){
+    var this_id = $(this).attr('data-id');
     var $list_element = $preguntas_list.find("[data-id='"+this_id+"']");
     
     $list_element.focus().trigger('click');
@@ -458,7 +458,7 @@ jsPlumb.ready(function() {
       var itemType = $('#btn_item_type').attr('data-item-type');
       var newState = $('<div>').attr('id', 'state' + state_count);
       var title = $('<div>').addClass('title_question');
-      var title_id = $('<p>');
+      var title_id = $("<p class='item_title' data-id='state"+state_count+"'>");
       var has_input = false;
 
       // store item type in state
