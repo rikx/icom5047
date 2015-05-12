@@ -32,13 +32,15 @@
 		position: absolute;
 		border: 1px solid black;
 		background-color: aqua;
+		height: 75px;
+		width: 175px;
 	}
 	
 	#container_plumbjs {
 		position:relative;
 		border: 1px solid gray;
 		width: max-content;
-		height: 700px;
+		min-height: 700px;
 		
 		overflow:auto;
 	}

@@ -6,6 +6,8 @@ jsPlumb.ready(function() {
 	var states_array = [];
 	var lines_array = [];
 
+	$('#container_plumbjs').resizable();
+
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
 		window.location.href = '/users';
@@ -87,6 +89,44 @@ jsPlumb.ready(function() {
 		$('#edit_panel').hide();
   });
 
+  $('#btn_delete_item').on('click', function(){
+    var this_id = $(this).attr('data-id');
+
+    var $this_element = $('#'+this_id);
+    jsPlumb.detachAllConnections($this_element);
+    $this_element.remove(); 
+    
+    // find connections where this element is a source or target and 
+    // delete them
+    connections_array=connections_array.filter(isConnectionEndpoint);
+    function isConnectionEndpoint(connection){
+      if(connection.source == this_id){
+        return false; 
+      } else if(connection.target == this_id){
+        return false; 
+      } else {
+        return true;
+      }
+    }
+    // find element in array and delete it
+    var this_item;
+    for(var d=0; d<elements_array.length;d++){
+      this_item = elements_array[d];
+      if(this_item.id == this_id){
+        elements_array.splice(d,1);
+        if(this_item.type=='START'){
+          $('#start_item').removeClass('disabled');
+        } else if(this_item.type=='END'){
+          $('#end_item').removeClass('disabled');
+        }
+        //return;
+      }
+    }
+    // repopulate elements list
+    $('#info_panel').hide();
+    populate_elements_list();
+  });
+
   /* Open info panel */
   $preguntas_list.on('click', 'tr td a.show_info_elemento', function(e){
     // prevents link from firing
@@ -112,8 +152,17 @@ jsPlumb.ready(function() {
 
     // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_delete_item').attr('data-id', this_element.id);
     $('#btn_edit').attr('data-id', this_element.id);
 	});
+
+  /* Focus on list element matching clicked element and show info panel */
+  $("#container_plumbjs").on('click', "div div p.item_title", function(){
+    var this_id = $(this).attr('data-id');
+    var $list_element = $preguntas_list.find("[data-id='"+this_id+"']");
+    
+    $list_element.focus().trigger('click');
+  });
 
   /* Populate's info panel with $this_element's information */
   function populate_info_panel(this_element){
@@ -158,6 +207,7 @@ jsPlumb.ready(function() {
 
 	  // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_delete_item').attr('data-id', this_element.id);
     $('#btn_edit').attr('data-id', this_element.id);
   }
 
@@ -176,9 +226,10 @@ jsPlumb.ready(function() {
 	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>Elemento "+this.id.substring(5)+': '+this.name+"</a></td></tr>";
 		});
 
-		$('#preguntas_list').html(table_content);
-
-		populate_info_panel(elements_array[0]);
+			$('#preguntas_list').html(table_content);
+		if(elements_array.length >0){
+			populate_info_panel(elements_array[0]);
+		}
 	}
 
  	// JS PLUMB create code
@@ -357,28 +408,34 @@ jsPlumb.ready(function() {
 		}
 	});
 
-	// convert type text
- 	function convert_type(type_text){
- 		switch(type_text){
- 			case 'OPEN':
- 				return 'ABIERTA';
-  		case 'CONDITIONAL':
- 				return 'COMPARACIÓN';
-   		case 'RECOM':
- 				return 'RECOMENDACIÓN';
-   		case 'MULTI':
- 				return 'MULTIPLE';
- 		}
- 	}
+  // convert type text
+  function convert_type(type_text){
+    switch(type_text){
+      case 'MULTI':
+        return 'MULTIPLE';
+      case 'RECOM':
+        return 'RECOMENDACIÓN';
+      case 'OPEN':
+        return 'ABIERTA';
+      case 'CONDITIONAL':
+        return 'COMPARACIÓN';
+      case 'START':
+        return 'INICIO';
+      case 'END':
+        return 'FIN';
+    }
+  }
 
  	function add_item() {
  		jsPlumb.ready(function() {
  			var itemType = $('#btn_item_type').attr('data-item-type');
  			var newState = $('<div>').attr('id', 'state' + j);
  			var title = $('<div>').addClass('title_question');
- 			var title_id = $('<p>');
+ 			var title_id = $("<p class='item_title' data-id='state"+j+"'>");
  			var has_input = false;
 
+ 			// store item type in state
+ 			newState.attr('data-state-type', itemType);
  			// add css and title fitting item type
  			if(itemType == 'START'){
 				newState.addClass('item_end_point');
@@ -505,7 +562,7 @@ jsPlumb.ready(function() {
 			});
 
 
-			newState.dblclick(function(e) {
+/*			newState.dblclick(function(e) {
 				var this_id = $(this).attr('id');
 
 				jsPlumb.detachAllConnections($(this));
@@ -542,7 +599,7 @@ jsPlumb.ready(function() {
 				$('#info_panel').hide();
 				populate_elements_list();
 
-			}); 
+			}); */
 
 			if(itemType != 'START' && itemType != 'END'){
 				stateName.keyup(function(e) {
@@ -629,9 +686,9 @@ jsPlumb.ready(function() {
 
 			// check source and target pair does not exist
 			var source_is_source = 0;
-			var source_is_target = 0;
-			var target_is_source = 0;
-			var target_is_target = 0;
+			//var source_is_target = 0;
+			//var target_is_source = 0;
+			//var target_is_target = 0;
 			for(var z = 0; z<connections_array.length; z++){
 				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
 					return false;
@@ -715,7 +772,7 @@ jsPlumb.ready(function() {
 				} else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
 					mylabel = 'con-end';
 				} else {
-					mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
+					mylabel = prompt("Escriba la posible respuesta a la pregunta.");
 					info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
 				}
 				
