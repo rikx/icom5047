@@ -11,6 +11,7 @@ public class DBSchema {
     public static final String ENABLE_FOREIGN_KEY = "PRAGMA foreign_keys = ON";
     public static final String DISABLE_FOREIGN_KEY = "PRAGMA foreign_keys = OFF";
     public static final String MODIFIED = "modified";
+    public static final String STATUS = "status";
     public static final String MODIFIED_YES = "yes";
     public static final String MODIFIED_NO = "no";
     public static final String TABLE_ADDRESS = "address";
@@ -40,6 +41,7 @@ public class DBSchema {
             APPOINTMENT_MAKER_ID + " INTEGER," +
             APPOINTMENT_REPORT_ID + " INTEGER," +
             APPOINTMENT_PURPOSE + " TEXT," +
+            STATUS + " INTEGER DEFAULT 1," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_CATEGORY = "category";
     public static final String CATEGORY_ID = "category_id";
@@ -75,6 +77,7 @@ public class DBSchema {
             FLOWCHART_END_ID + " INTEGER," +
             FLOWCHART_CREATOR_ID + " INTEGER," +
             FLOWCHART_VERSION + " TEXT," +
+            STATUS + " INTEGER DEFAULT 0," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_ITEM = "item";
     public static final String ITEM_ID = "item_id";
@@ -107,6 +110,7 @@ public class DBSchema {
             LOCATION_MANAGER_ID + " INTEGER," +
             LOCATION_LICENSE + " TEXT UNIQUE," +
             LOCATION_AGENT_ID + " INTEGER," +
+            STATUS + " INTEGER DEFAULT 0," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_LOCATION_CATEGORY = "location_category";
     public static final String LOCATION_CATEGORY_LOCATION_ID = "location_id";
@@ -145,6 +149,7 @@ public class DBSchema {
             PERSON_LAST_NAME2 + " TEXT," +
             PERSON_MIDDLE_INITIAL + " TEXT," +
             PERSON_PHONE_NUMBER + " TEXT," +
+            STATUS + " INTEGER DEFAULT 0," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_REPORT = "report";
     public static final String REPORT_ID = "report_id";
@@ -244,6 +249,6 @@ public class DBSchema {
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test1.php";
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test2.php";
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test3.php"; // working
-    public static final String SYNC_URL = "http://136.145.116.231/mobile/test5.php";
+    public static final String SYNC_URL = "http://136.145.116.231/mobile/test6.php";
 
 }

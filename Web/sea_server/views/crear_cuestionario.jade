@@ -16,31 +16,39 @@ block content
 			.col-md-2
 
 		.row
-			.col-md-3
-				.form-group
-					label(for='btn_user_type') Tipo de Elemento:
+			.col-md-1
+				#btn_home(class='btn-group btn-mid', role='group', aria-label='')
+					a(class='btn btn-success', data-toggle='tooltip')
+						i(class='glyphicon glyphicon-home')
+			.col-md-4
+					//label(for='btn_user_type') Tipo de Elemento:
 					.dropdown
-						button#btn_item_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
-							span#btn_item_type_text Tipo de Elemento 
-							span(class='caret')
-						ul#list_question_type(class='dropdown-menu', role='menu')
-							li#start_item(role='presentation')
-								a(role='menuitem', tabindex='-1', href='#', data-item-type='START') Elemento Inicial
-							li#end_item(role='presentation')
-								a(role='menuitem', tabindex='-1', href='#', data-item-type='END') Elemento Final
-							li
-								a(role='menuitem', tabindex='-1', href='#', data-item-type='RECOM') Recomendación
-							li.divider
-							li.dropdown-header Tipos de Pregunta
-							//li
-							//	a(role='menuitem', tabindex='-1', href='#', data-item-type='BOOLEAN') Booleana
-							li
-								a(role='menuitem', tabindex='-1', href='#', data-item-type='MULTI') Selección Multiple
-							li
-								a(role='menuitem', tabindex='-1', href='#', data-item-type='OPEN') Abierta
-							li
-								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
-				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
+							//#btn_home(class='btn-group btn-mid', role='group', aria-label='')
+							//	a(class='btn btn-success', data-toggle='tooltip')
+							//					i(class='glyphicon glyphicon-home')
+							button#btn_item_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
+								span#btn_item_type_text Tipo de Elemento 
+								span(class='caret')
+							ul#list_question_type(class='dropdown-menu', role='menu')
+								li#start_item(role='presentation')
+									a(role='menuitem', tabindex='-1', href='#', data-item-type='START') Elemento Inicial
+								li#end_item(role='presentation')
+									a(role='menuitem', tabindex='-1', href='#', data-item-type='END') Elemento Final
+								li
+									a(role='menuitem', tabindex='-1', href='#', data-item-type='RECOM') Recomendación
+								li.divider
+								li.dropdown-header Tipos de Pregunta
+								//li
+								//	a(role='menuitem', tabindex='-1', href='#', data-item-type='BOOLEAN') Booleana
+								li
+									a(role='menuitem', tabindex='-1', href='#', data-item-type='MULTI') Selección Multiple
+								li
+									a(role='menuitem', tabindex='-1', href='#', data-item-type='OPEN') Abierta
+								li
+									a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
+
+							button#btn_add_question(class='btn btn-md btn-success', type='button', disabled) Agregar Elemento
+
 				br
 		.row
 			.col-md-12
