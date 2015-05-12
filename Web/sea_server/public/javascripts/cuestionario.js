@@ -25,6 +25,9 @@ jsPlumb.ready(function() {
   } else {
     $('#info_panel').hide();
   }
+
+  $('#container_plumbjs').resizable();
+
   // Return to admin page button
   $('#btn_home').on('click', function(){
     window.location.href = '/users';

@@ -40,7 +40,7 @@
 		position:relative;
 		border: 1px solid gray;
 		width: max-content;
-		height: 700px;
+		min-height: 700px;
 		
 		overflow:auto;
 	}

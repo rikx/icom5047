@@ -6,6 +6,8 @@ jsPlumb.ready(function() {
 	var states_array = [];
 	var lines_array = [];
 
+	$('#container_plumbjs').resizable();
+	
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
 		window.location.href = '/users';
