@@ -133,4 +133,7 @@
 	<string name="discard">Descartar</string>
 	<string name="no_email">Correo eletrónico no asignado</string>
 	<string name="empty_name">Nombre no puede estar vacio</string>
+	<string name="flowchart_not_found">Fujograma no encontrado</string>
+	<string name="location_not_found">Localización no encontrada</string>
+	<string name="user_not_found">Usuario no encontrado</string>
 </resources>
