@@ -15,9 +15,13 @@ block content
 			.col-md-2
 
 		.row
+			.col-md-1
+				#btn_home(class='btn-group', role='group', aria-label='')
+					a(class='btn btn-success btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-home')
 			.col-md-3
 				.form-group
-					label(for='btn_user_type') Tipo de Elemento:
+					//label(for='btn_user_type') Tipo de Elemento:
 					.dropdown
 						button#btn_item_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
 							span#btn_item_type_text Tipo de Elemento 
@@ -39,8 +43,10 @@ block content
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='OPEN') Abierta
 							li
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
-				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
-				br
+				//button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
+				//sbr
+			.col-md-2
+				button#btn_add_question(class='btn btn-md btn-success btn-block', type='button', disabled) Agregar Elemento
 		.row
 			.col-md-12
 				#container_plumbjs
