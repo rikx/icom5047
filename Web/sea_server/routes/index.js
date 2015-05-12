@@ -982,19 +982,21 @@ router.get('/list_localizaciones', function(req, res, next) {
 											WHERE location.status != $1 \
 											ORDER BY location_name \
 											LIMIT 20), \
-							owners AS (SELECT person_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name, locations.location_id, \
-													CASE WHEN person_id = owner_id THEN 'owner' \
-													END AS relation_type \
-													FROM locations \
-													INNER JOIN person ON person_id = owner_id), \
-							managers AS (SELECT person_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name , locations.location_id, \
+								owners AS ( \
+														SELECT owner_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as owner_name, locations.location_id AS owner_location, \
+														CASE WHEN person_id = owner_id THEN 'owner' \
+														END AS relation_owner \
+														FROM locations \
+														INNER JOIN person ON person_id = owner_id), \
+								managers AS ( \
+														SELECT manager_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as manager_name , locations.location_id AS manager_location, \
 														CASE WHEN person_id = manager_id THEN 'manager' \
-														END AS relation_type \
+														END AS relation_manager \
 														FROM locations \
 														INNER JOIN person ON person_id = manager_id) \
-							SELECT * \
-							FROM owners \
-							INNER JOIN managers ON owners.location_id = managers.location_id", [-1], function(err, result) {
+								SELECT * \
+								FROM owners \
+								FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location", [-1], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 
@@ -1004,8 +1006,8 @@ router.get('/list_localizaciones', function(req, res, next) {
 	    	ganaderos_list = result.rows;
 	    	res.json({localizaciones : localizaciones_list, 
 	    		location_categories: categories_list, 
-	    		agentes : agentes_list, ganaderos :
-	    		ganaderos_list
+	    		agentes: agentes_list, 
+	    		ganaderos: ganaderos_list
 	    	});
 	    }
 	  });
