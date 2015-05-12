@@ -767,6 +767,8 @@ $.ajax({
 
 /* Populates info panel with $this_location's information */
 function populate_info_panel($this_location){
+  var missing_owner = false;
+  var missing_manager = false;
   populate_categories_info($this_location.location_id);
   $('#info_panel_heading').text($this_location.location_name);
   $('#localizacion_info_name').text($this_location.location_name);
@@ -786,7 +788,6 @@ function populate_info_panel($this_location){
       selectedGanaderos.push(ganaderos_array[i]);
     }
   });  
-
   // populate ganaderos table according to relation_type
   if(selectedGanaderos.length > 0){
     for (j = 0; j < selectedGanaderos.length; j++) { 
@@ -797,11 +798,35 @@ function populate_info_panel($this_location){
         $('#manager').html(selectedGanaderos[j].manager_name);
       }
     }
-  } else {
+  } 
+  //else if(selectedGanaderos.length == 1)
+ // {
+   // missing_manager = selectedGanaderos[0].manager_name;
+   // missing_owner = selectedGanaderos[0].owner_name;
+   // if(missing_manager == null)
+    //   $('#manager').html('Gerente no asignado');
+
+   // if(missing_owner == null)
+      // $('#owner').html('Dueño asignado');
+ // } 
+  else {
     // array is empty so ganaderos populate with placeholders
     $('#owner').html('Dueño no asignado');
     $('#manager').html('Gerente no asignado');
+    console.log();
   }
+
+  //if either has manager or owner (at least one of them)
+  if(!selectedGanaderos.length == 0)
+  {
+   missing_manager = selectedGanaderos[0].manager_name;
+   missing_owner = selectedGanaderos[0].owner_name;
+     if(missing_manager == null)
+       $('#manager').html('Gerente no asignado');
+    if(missing_owner == null)
+       $('#owner').html('Dueño asignado');
+   }
+
 
   // populate agentes table if there is one assigned
   var agent_found = false;
