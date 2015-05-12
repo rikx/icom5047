@@ -277,6 +277,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 break;
             }
             case Item.CONDITIONAL: {
+                progressLayout.addView(textQuestion);
                 currentText = new EditText(this);
                 //Set this field to allow signed decimals
                 currentText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL

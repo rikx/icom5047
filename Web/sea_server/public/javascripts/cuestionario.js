@@ -25,9 +25,21 @@ jsPlumb.ready(function() {
   } else {
     $('#info_panel').hide();
   }
+
+  $('#container_plumbjs').resizable();
+
   // Return to admin page button
   $('#btn_home').on('click', function(){
     window.location.href = '/users';
+  });
+
+  // Close info panel
+  $('#btn_close_edit_panel').on('click', function(){
+    //$('#info_panel').show();
+    $('#edit_panel').hide();
+    $('#edit_possible_answers').hide();
+
+    remove_active_class($preguntas_list);
   });
 
   $('#btn_edit_item').on('click', function(){
@@ -76,8 +88,9 @@ jsPlumb.ready(function() {
 
     // update element in array
     this_element.name = new_text;
+    this_element.state = $('#'+this_element.id).prop('outerHTML');
     replace(this_element, elements_array);
-
+    console.log(elements_array);
 
     //update connection in array and ui
 
@@ -99,7 +112,46 @@ jsPlumb.ready(function() {
 
     $('#edit_panel').hide();
   });
+  
+  $('#btn_delete_item').on('click', function(){
+    var this_id = $(this).attr('data-id');
 
+    var $this_element = $('#'+this_id);
+    jsPlumb.detachAllConnections($this_element);
+    $this_element.remove(); 
+    
+    // find connections where this element is a source or target and 
+    // delete them
+    connections_array=connections_array.filter(isConnectionEndpoint);
+    function isConnectionEndpoint(connection){
+      if(connection.source == this_id){
+        return false; 
+      } else if(connection.target == this_id){
+        return false; 
+      } else {
+        return true;
+      }
+    }
+    // find element in array and delete it
+    var this_item;
+    for(var d=0; d<elements_array.length;d++){
+      this_item = elements_array[d];
+      if(this_item.id == this_id){
+        elements_array.splice(d,1);
+        if(this_item.type=='START'){
+          $('#start_item').removeClass('disabled');
+        } else if(this_item.type=='END'){
+          $('#end_item').removeClass('disabled');
+        }
+        //return;
+      }
+    }
+    // repopulate elements list
+    $('#info_panel').hide();
+    populate_elements_list();
+  });
+
+  
   /* Open info panel */
   $preguntas_list.on('click', 'tr td a.show_info_elemento', function(e){
   // prevents link from firing
@@ -125,7 +177,16 @@ jsPlumb.ready(function() {
 
     // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_delete_item').attr('data-id', this_element.id);
     $('#btn_edit').attr('data-id', this_element.id);
+  });
+
+  /* Focus on list element matching clicked element and show info panel */
+  $("#container_plumbjs").on('click', "div div p.item_title", function(){
+    var this_id = $(this).attr('data-id');
+    var $list_element = $preguntas_list.find("[data-id='"+this_id+"']");
+    
+    $list_element.focus().trigger('click');
   });
 
   /* Populate's info panel with $this_element's information */
@@ -137,9 +198,33 @@ jsPlumb.ready(function() {
       var answers_content = '';
       $.each(connections_array, function(i){
         if(this_element.id == this.source){
-          answers_content += "<li class='list-group-item'>"+this.label+"</li>"; 
+          var label_text;
+          if(this_element.type == 'CONDITIONAL'){
+            console.log(this.label.substring(0,2))
+            switch(this.label.substring(0,2)){
+              case 'lt':
+                label_text = 'Menor que ' +this.label.substring(2);
+                break;
+              case 'gt':
+                label_text = 'Mayor que ' +this.label.substring(2);
+                break;
+              case 'eq':
+                label_text = 'Igual que ' +this.label.substring(2);
+                break;
+              case 'le':
+                label_text = 'Menor o igual que ' +this.label.substring(2);
+                break;
+              case 'ge':
+                label_text = 'Mayor o igual que ' +this.label.substring(2);
+                break;
+            }
+          } else {
+            label_text = this.label;
+          }
+          answers_content += "<li class='list-group-item'>"+label_text+"</li>"; 
         }
       });
+      $('#pregunta_info_responses').html(answers_content);
       $('#pregunta_info_responses').html(answers_content);
       $('#possible_answers').show();
     } else {
@@ -148,6 +233,7 @@ jsPlumb.ready(function() {
 
     // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_delete_item').attr('data-id', this_element.id);
     $('#btn_edit').attr('data-id', this_element.id);
   }
 
@@ -163,12 +249,14 @@ jsPlumb.ready(function() {
         table_content +=  'active ';
         populate_info_panel(this);
       }
-      table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.id+': '+this.name+"</a></td></tr>";
+      table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>Elemento "+this.id.substring(5)+': '+this.name+"</a></td></tr>";
     });
 
     $('#preguntas_list').html(table_content);
 
-    populate_info_panel(elements_array[0]);
+    if(elements_array.length >0){
+      populate_info_panel(elements_array[0]);
+    }
   }
 
   // JS PLUMB create code
@@ -238,8 +326,10 @@ jsPlumb.ready(function() {
         } else {
           if(this_element.id == connections_array[j].source){
             if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
-              if(multi_count < 1){
-                valid_item_count++;
+              if(multi_count < 2){
+                if(multi_count < 1){
+                  valid_item_count++;
+                }
                 multi_count++;
               }
             } else {
@@ -348,14 +438,18 @@ jsPlumb.ready(function() {
   // convert type text
   function convert_type(type_text){
     switch(type_text){
+      case 'MULTI':
+        return 'MULTIPLE';
+      case 'RECOM':
+        return 'RECOMENDACIÓN';
       case 'OPEN':
         return 'ABIERTA';
       case 'CONDITIONAL':
         return 'COMPARACIÓN';
-      case 'RECOM':
-        return 'RECOMENDACIÓN';
-      case 'MULTI':
-        return 'MULTIPLE';
+      case 'START':
+        return 'INICIO';
+      case 'END':
+        return 'FIN';
     }
   }
 
@@ -364,9 +458,11 @@ jsPlumb.ready(function() {
       var itemType = $('#btn_item_type').attr('data-item-type');
       var newState = $('<div>').attr('id', 'state' + state_count);
       var title = $('<div>').addClass('title_question');
-      var title_id = $('<p>');
+      var title_id = $("<p class='item_title' data-id='state"+state_count+"'>");
       var has_input = false;
 
+      // store item type in state
+      newState.attr('data-state-type', itemType);
       // add css and title fitting item type
       if(itemType == 'START'){
         newState.addClass('item_end_point');
@@ -485,7 +581,7 @@ jsPlumb.ready(function() {
       });
 
 
-      newState.dblclick(function(e) {
+/*      newState.dblclick(function(e) {
         var this_id = $(this).attr('id');
 
         jsPlumb.detachAllConnections($(this));
@@ -522,7 +618,7 @@ jsPlumb.ready(function() {
         $('#info_panel').hide();
         populate_elements_list();
 
-      }); 
+      }); */
 
       if(itemType != 'START' && itemType != 'END'){
         stateName.keyup(function(e) {
@@ -600,9 +696,9 @@ jsPlumb.ready(function() {
 
       // check source and target pair does not exist
       var source_is_source = 0;
-      var source_is_target = 0;
-      var target_is_source = 0;
-      var target_is_target = 0;
+      //var source_is_target = 0;
+      //var target_is_source = 0;
+      //var target_is_target = 0;
       for(var z = 0; z<connections_array.length; z++){
         if(source_id == connections_array[z].source && target_id == connections_array[z].target){
           return false;
@@ -686,8 +782,8 @@ jsPlumb.ready(function() {
         } else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
           mylabel = 'con-end';
         } else {
-          mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
-          info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: "connLabel"} ]);
+          mylabel = prompt("Escriba la posible respuesta a la pregunta.");
+          info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
         }
         
         this_connection = {
@@ -697,7 +793,6 @@ jsPlumb.ready(function() {
         };
 
         connections_array.push(this_connection);
-        //lines_array.push(this_connection);
       } else if(!trigger){
         //var this_connection, mylabel;
         var source_id = info.sourceId;
@@ -748,33 +843,65 @@ jsPlumb.ready(function() {
   function recreate_graph(elements, connections){
     jsPlumb.ready(function() {
       // loop through elements to create them in the DOM
-      var this_id, temp;
-      var thing;
+      var this_id, theState;
+      var connection_div;
       for(var i=0; i<elements.length; i++){
-        var theState = $.parseHTML(elements[i].state);
-       
-        if(i == 0){
-          temp = elements[i].id.substring(5);
-        }
-        if(temp < elements[i].id.substring(5)){
-          state_count = elements[i].id.substring(5);
-          temp = elements[i].id.substring(5);
-        } else {
-          state_count = temp;
-        }
+        theState = $.parseHTML(elements[i].state);
         
-        console.log(elements[i].id);
+        if(elements[i].type == 'START'){
+          $('#start_item').addClass('disabled');
+        }
+        if(elements[i].type == 'END'){
+          $('#end_item').addClass('disabled');
+        }
 
+        // set new state_count for use in new element creation
+        var temp_state_count = parseInt(elements[i].id.substring(5),10);
+        if(state_count < temp_state_count){
+          state_count = temp_state_count;
+        } 
+        
         $('#container_plumbjs').append(theState);
-        console.log($('#' + elements[i].id));
-        thing = $('#' + elements[i].id).children('.connect_question');
-        $('#' + elements[i].id).removeClass('ui-draggable ui-draggable-dragging'); //
 
-        jsPlumb.draggable('' + elements[i].id, {
+        var $added_element = $('#' + elements[i].id);
+        $added_element.removeClass('ui-draggable ui-draggable-dragging'); //
+
+        jsPlumb.draggable(theState, {
           //containment: 'parent'
-        });
+          resizable: false,
+          drag: function(){
+            jsPlumb.repaintEverything();
+          },
+          stop: function(event) {
+            if ($(event.target).find('select').length == 0) {
+              var dragged_element = event.target;
 
-        $('#' + elements[i].id).dblclick(function(e) {
+              // create item object
+              var this_name = dragged_element.getAttribute('data-state-name');
+              if(this_name == undefined){
+                this_name = 'Elemento sin título'
+              }
+              var this_item = {
+                id: dragged_element.getAttribute('id'),
+                name: this_name,
+                type: dragged_element.getAttribute('data-state-type'),
+                state: dragged_element.outerHTML
+              };
+
+              // check if item is already in array and updates it
+              if(containsObject(this_item, elements_array)) {
+                replace(this_item, elements_array);
+              } else {
+                elements_array.push(this_item);
+              }
+              // populate elements list with new item
+              populate_elements_list();
+            }
+            jsPlumb.repaintEverything();
+          }
+        });
+/*
+        $added_element.dblclick(function(e) {
           var this_id = $(this).attr('id');
 
           jsPlumb.detachAllConnections($(this));
@@ -810,10 +937,11 @@ jsPlumb.ready(function() {
           // repopulate elements list
           $('#info_panel').hide();
           populate_elements_list();
-
-        }); 
+        }); */
       } // end of for loop for elements
       
+      populate_elements_list();
+
       // any new stats will start indexing from this number
       state_count++
       console.log('state count: ');
@@ -832,13 +960,9 @@ jsPlumb.ready(function() {
         for(var x = 0; x < elements.length; x++){
           this_element = elements[x];
           if(this_element.id == this_connection.source){
-            //source_item = document.getElementById(this_element.id);
             source_item = this_element.id;
-            console.log('Calling connect on source: '+this_element.id);
           } else if(this_element.id   == this_connection.target){
-            //target_item = document.getElementById(this_element.id);
             target_item = this_element.id;
-            console.log('Calling connect on target: '+this_element.id);
           }
         }
         var common = {
@@ -852,27 +976,34 @@ jsPlumb.ready(function() {
           connector: 'Flowchart',
           endpoint:'Blank',
           overlays: [
-                      ["Label", { label: this_connection.label, location:0.5, id: "connLabel"+count} ], 
+                      ["Label", { label: this_connection.label, location:0.5, id: "connLabel"} ], 
                       [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]
                     ],
           paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
         });
       }
       trigger = true;
+
       // enable connecting
       for(var i=0; i<elements.length; i++){
-        thing = $('#' + elements[i].id).children('.connect_question');
-        jsPlumb.makeTarget(elements[i].id, {
-          anchor: 'Continuos',
-          connector: 'Flowchart'
-        });
+        this_element = elements[i];
+        connection_div = $('#' + this_element.id).children('.connect_question');
 
-        jsPlumb.makeSource(thing, {
-          parent: elements[i].id,
-          anchor: 'Continuos',
-          connector: 'Flowchart',
-          endpoint: 'Blank'
-        });
+        if(this_element.type != 'START'){
+          jsPlumb.makeTarget(this_element.id, {
+            anchor: 'Continuos',
+            connector: 'Flowchart'
+          });
+        }
+        
+        if(this_element.type != 'END'){
+          jsPlumb.makeSource(connection_div, {
+            parent: this_element.id,
+            anchor: 'Continuos',
+            connector: 'Flowchart',
+            endpoint: 'Blank'
+          });
+        }
       }
     });
   }

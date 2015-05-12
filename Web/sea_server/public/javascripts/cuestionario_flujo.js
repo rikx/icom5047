@@ -240,11 +240,8 @@ $(document).ready(function(){
 			// less than
 			reg_ex = /lt\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
-				console.log('regex lt:');
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
-				console.log('user input: '+user_input);
 				comp_value = parseInt(temp, '10');
-				console.log(comp_value)
 				if(user_input < comp_value){
 					console.log('entered if');
 					input_field.attr('data-answer-id', this.option_id);

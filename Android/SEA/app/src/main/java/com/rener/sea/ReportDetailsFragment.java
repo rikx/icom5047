@@ -150,35 +150,50 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     }
 
     private void setInterviewLayout() {
-        Path path = report.getPath();
-        Log.i(this.toString(), "path=" + path.toString());
-        int sequence = 1;
-        for (PathEntry e : path) {
-            //Get the interview element information
-            Option option = e.getOption();
-            Item item = option.getParent();
-            String data = e.getData();
-            String question = sequence + ". " + item.getLabel();
-            String answer = data.equals("") ? option.getLabel() : data;
-            sequence++;
 
-            //Set the interview element views
-            TextView seqView = new TextView(getActivity());
-            seqView.setText(sequence + ".");
-            TextView questionView = new TextView(getActivity());
-            questionView.setText(question);
-            questionView.setPadding(4, 0, 0, 0);
-            TextView answerView = new TextView(getActivity());
-            answerView.setText(answer);
-            answerView.setPadding(16, 0, 0, 0);
-            if (item.getType().equals(Item.RECOMMENDATION)) {
-                highlightTextView(seqView);
-                highlightTextView(questionView);
+        //Set the flowchart
+        Flowchart flowchart = report.getFlowchart();
+
+        if(flowchart.getId() != -1) {
+
+            String fcName = report.getFlowchart().getName();
+            textFlowchart.setText(fcName);
+
+            //Set the path through the flowchart
+            Path path = report.getPath();
+            Log.i(this.toString(), "path=" + path.toString());
+            int sequence = 1;
+            for (PathEntry e : path) {
+                //Get the interview element information
+                Option option = e.getOption();
+                Item item = option.getParent();
+                String data = e.getData();
+                String question = sequence + ". " + item.getLabel();
+                String answer = data.equals("") ? option.getLabel() : data;
+                sequence++;
+
+                //Set the interview element views
+                TextView seqView = new TextView(getActivity());
+                seqView.setText(sequence + ".");
+                TextView questionView = new TextView(getActivity());
+                questionView.setText(question);
+                questionView.setPadding(4, 0, 0, 0);
+                TextView answerView = new TextView(getActivity());
+                answerView.setText(answer);
+                answerView.setPadding(16, 0, 0, 0);
+                //Set the element layout
+                interviewLayout.addView(questionView);
+                if (item.getType().equals(Item.RECOMMENDATION)) {
+                    highlightTextView(seqView);
+                    highlightTextView(questionView);
+                } else {
+                    interviewLayout.addView(answerView);
+                }
             }
-
-            //Set the element layout
-            interviewLayout.addView(questionView);
-            interviewLayout.addView(answerView);
+        }
+        else {
+            String noFlowchart = getString(R.string.flowchart_not_found);
+            textFlowchart.setText(noFlowchart);
         }
 //        long status = report.getStatus();
 //        if(status == 0) {
@@ -205,19 +220,28 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textDate.setText(date);
 
         //Set the location
-        String location = report.getLocation().toString();
-        textLocation.setText(location);
-
-        //Set the flowchart
-        String fc = report.getFlowchart().getName();
-        textFlowchart.setText(fc);
+        Location location = report.getLocation();
+        if(location.getId() !=-1) {
+            String locName = location.getName();
+            textLocation.setText(locName);
+        }
+        else {
+            String noLocation = getString(R.string.location_not_found);
+            textLocation.setText(noLocation);
+        }
 
         //Set the notes
         editNotes.setText(report.getNotes());
 
         //Set the creator
-        String creator = report.getCreator().getPerson().toString();
-        textCreator.setText(creator);
+        User creator = report.getCreator();
+        if (creator.getId() != -1) {
+            String creatorName = creator.getPerson().toString();
+            textCreator.setText(creatorName);
+        } else {
+            String noCreator = getString(R.string.user_not_found);
+            textCreator.setText(noCreator);
+        }
 
         //Set the appointment if it exists
         inflateAppointmentLayout();

@@ -133,4 +133,7 @@
 	<string name="cancel">Cancel</string>
 	<string name="discard">Discard</string>
 	<string name="empty_name">Name cannot be empty</string>
+	<string name="flowchart_not_found">Flowchart_not_found</string>
+	<string name="location_not_found">Location not found</string>
+	<string name="user_not_found">User not found</string>
 </resources>

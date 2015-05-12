@@ -1,6 +1,7 @@
 extends layout
 block css
 	link(rel='stylesheet', href='/stylesheets/cuestionario_flowchart.css')
+	link(rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css")
 
 block content
 	.container
@@ -15,13 +16,9 @@ block content
 			.col-md-2
 
 		.row
-			.col-md-1
-				#btn_home(class='btn-group', role='group', aria-label='')
-					a(class='btn btn-success btn-block', data-toggle='tooltip')
-									i(class='glyphicon glyphicon-home')
 			.col-md-3
 				.form-group
-					//label(for='btn_user_type') Tipo de Elemento:
+					label(for='btn_user_type') Tipo de Elemento:
 					.dropdown
 						button#btn_item_type(class='btn btn-success dropdown-toggle', type='button', name='btn_user_type', data-toggle='dropdown', aria-expanded='false') 
 							span#btn_item_type_text Tipo de Elemento 
@@ -43,10 +40,8 @@ block content
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='OPEN') Abierta
 							li
 								a(role='menuitem', tabindex='-1', href='#', data-item-type='CONDITIONAL') Condicional
-				//button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
-				//sbr
-			.col-md-2
-				button#btn_add_question(class='btn btn-md btn-success btn-block', type='button', disabled) Agregar Elemento
+				button#btn_add_question(class='btn btn-lg btn-success btn-block', type='button', disabled) Agregar Elemento
+				br
 		.row
 			.col-md-12
 				#container_plumbjs
@@ -99,6 +94,8 @@ block content
 							.panel-body
 								ul#pregunta_info_responses(class='list-group')
 						button#btn_edit_item(class='btn btn-success btn-block') Editar
+						a#btn_delete_item(class='btn btn-danger btn-block', data-toggle='tooltip')
+							i(class='glyphicon glyphicon-trash')
 
 			#edit_panel.col-md-4(style="display:none")
 				.panel.panel-success
@@ -117,8 +114,8 @@ block content
 				
 		br
 		.row
-			.col-md-3(style='display:none')
-				.panel.panel-warning
+			.col-md-3
+				.panel.panel-warning(style='display:none')
 					.panel-heading
 						h3.panel-title Información Básica
 					.panel-body
@@ -136,7 +133,7 @@ block content
 						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 			.col-md-5
 				// TODO: add home glyphicon
-				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 		.row
 			.col-md-3
 
