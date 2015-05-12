@@ -34,7 +34,7 @@ block content
 				.panel.panel-success
 					.panel-heading Ganaderos
 					.panel-body
-						.list-group(style='overflow:auto; height:300px;')
+						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
 								tbody#ganaderos_list(data-ganaderos=ganaderos, data-localizaciones=locations, data-user=user)
@@ -104,7 +104,16 @@ block content
 						.panel.panel-info
 							.panel-heading Localizaciones Asignadas
 							.panel-body
-								table#ganadero_locations(class='table')
+								table(class='table')
+									thead
+										tr
+											th
+												center
+													| Localización
+											th 
+												center
+													| Ocupación
+									tbody#ganadero_locations
 							if user.user_type != 'agent'
 								button#btn_edit_ganadero(class='btn btn-success btn-block', type='button') Editar
 							if user.user_type == 'admin'

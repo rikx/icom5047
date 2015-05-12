@@ -601,9 +601,13 @@ router.get('/ganaderos', function(req, res, next) {
 								 			FROM person \
 								 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 								 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-								 			LIMIT 20) \
-								 		SELECT person_id, agent_id, location_id, location.name AS location_name \
-								 		FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', [-1], function(err, result){
+								 			LIMIT 20), \
+										owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
+											FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id), \
+										managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
+											FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id) \
+								 		SELECT * \
+								 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location', [-1], function(err, result){
 				//call `done()` to release the client back to the pool
 				done();
 				if(err) {

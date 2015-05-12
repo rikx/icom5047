@@ -520,17 +520,25 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		  });
 
 		  // query for associated ganaderos
-		  client.query("WITH locations AS (SELECT location_id, location.name AS location_name, owner_id, manager_id \
-									  	FROM location \
-									  	WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
-									  	ORDER BY location_name) \
-									  SELECT person_id, locations.location_id,\
-									  CASE WHEN person_id = owner_id THEN 'owner' \
-									  WHEN person_id = manager_id THEN 'manager' \
-									  END AS relation_type, \
-									  (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as person_name \
-									  FROM locations, person \
-									  WHERE person_id = owner_id or person_id = manager_id", [-1], function(err, result) {
+		  client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
+											FROM location \
+											WHERE location.status != $1 \
+											ORDER BY location_name), \
+								owners AS ( \
+														SELECT owner_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as owner_name, locations.location_id AS owner_location, \
+														CASE WHEN person_id = owner_id THEN 'owner' \
+														END AS relation_owner \
+														FROM locations \
+														INNER JOIN person ON person_id = owner_id), \
+								managers AS ( \
+														SELECT manager_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as manager_name , locations.location_id AS manager_location, \
+														CASE WHEN person_id = manager_id THEN 'manager' \
+														END AS relation_manager \
+														FROM locations \
+														INNER JOIN person ON person_id = manager_id) \
+								SELECT * \
+								FROM owners \
+								FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location", [-1], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		  	done();
 
@@ -782,12 +790,16 @@ router.get('/list_ganaderos', function(req, res, next) {
 
 	  // locations ganadero is associated with
 	  client.query('WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-										FROM person \
-										WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
-										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-										LIMIT 20) \
-									SELECT person_id, location_id, location.name AS location_name \
-									FROM ganaderos INNER JOIN location ON (person_id = owner_id OR person_id = manager_id)', [-1], function(err, result){
+								 			FROM person \
+								 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+								 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+								 			LIMIT 20), \
+										owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
+											FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id), \
+										managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
+											FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id) \
+								 		SELECT * \
+								 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location', [-1], function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {

@@ -343,14 +343,19 @@ $(document).ready(function(){
     // populate associated locations panel
     var table_content = '';
     $.each(localizaciones_array, function(i){
-      if($this_ganadero.person_id == this.person_id){
-        table_content += '<tr><td>'+this.location_name+'</td></tr>';
+      if($this_ganadero.person_id == this.owner_id){
+        table_content += '<tr><td><center>'+this.location_owner_name+'</center></td><td><center>Dueño</center></td></tr>';
+      }
+      if($this_ganadero.person_id == this.manager_id){
+        table_content += '<tr><td><center>'+this.location_manager_name+'</center></td><td><center>Gerente</center></td></tr>';
       }
     }); 
 
-    if(table_content == '')
+    console.log('table content')
+    console.log(table_content.length)
+    if(table_content.length == 0)
     {
-      table_content += 'Ganadero no tiene localizaciones asignadas.';
+      table_content = 'Ganadero no tiene localizaciones asignadas.';
     }
     $('#ganadero_locations').html(table_content);
 
