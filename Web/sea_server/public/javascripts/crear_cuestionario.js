@@ -150,6 +150,7 @@ jsPlumb.ready(function() {
 
     // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_delete_item').attr('data-id', this_element.id);
     $('#btn_edit').attr('data-id', this_element.id);
 	});
 
@@ -204,6 +205,7 @@ jsPlumb.ready(function() {
 
 	  // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
+    $('#btn_delete_item').attr('data-id', this_element.id);
     $('#btn_edit').attr('data-id', this_element.id);
   }
 
