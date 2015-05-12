@@ -357,19 +357,23 @@ jsPlumb.ready(function() {
 		}
 	});
 
-	// convert type text
- 	function convert_type(type_text){
- 		switch(type_text){
- 			case 'OPEN':
- 				return 'ABIERTA';
-  		case 'CONDITIONAL':
- 				return 'COMPARACIÓN';
-   		case 'RECOM':
- 				return 'RECOMENDACIÓN';
-   		case 'MULTI':
- 				return 'MULTIPLE';
- 		}
- 	}
+  // convert type text
+  function convert_type(type_text){
+    switch(type_text){
+      case 'MULTI':
+        return 'MULTIPLE';
+      case 'RECOM':
+        return 'RECOMENDACIÓN';
+      case 'OPEN':
+        return 'ABIERTA';
+      case 'CONDITIONAL':
+        return 'COMPARACIÓN';
+      case 'START':
+        return 'INICIO';
+      case 'END':
+        return 'FIN';
+    }
+  }
 
  	function add_item() {
  		jsPlumb.ready(function() {

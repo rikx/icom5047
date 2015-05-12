@@ -187,7 +187,7 @@ jsPlumb.ready(function() {
         table_content +=  'active ';
         populate_info_panel(this);
       }
-      table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>"+this.id+': '+this.name+"</a></td></tr>";
+      table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>Elemento "+this.id.substring(5)+': '+this.name+"</a></td></tr>";
     });
 
     $('#preguntas_list').html(table_content);
@@ -374,14 +374,18 @@ jsPlumb.ready(function() {
   // convert type text
   function convert_type(type_text){
     switch(type_text){
+      case 'MULTI':
+        return 'MULTIPLE';
+      case 'RECOM':
+        return 'RECOMENDACIÓN';
       case 'OPEN':
         return 'ABIERTA';
       case 'CONDITIONAL':
         return 'COMPARACIÓN';
-      case 'RECOM':
-        return 'RECOMENDACIÓN';
-      case 'MULTI':
-        return 'MULTIPLE';
+      case 'START':
+        return 'INICIO';
+      case 'END':
+        return 'FIN';
     }
   }
 
@@ -786,24 +790,19 @@ jsPlumb.ready(function() {
           $('#end_item').addClass('disabled');
         }
 
-        if(i == 0){
-          temp = elements[i].id.substring(5);
-        }
-        if(temp < elements[i].id.substring(5)){
-          state_count = elements[i].id.substring(5);
-          temp = elements[i].id.substring(5);
-        } else {
-          state_count = temp;
-        }
+        // set new state_count for use in new element creation
+        var temp_state_count = parseInt(elements[i].id.substring(5),10);
+        if(state_count < temp_state_count){
+          state_count = temp_state_count;
+        } 
         
-        console.log(elements[i].id);
-
         $('#container_plumbjs').append(theState);
-        console.log($('#' + elements[i].id));
-        thing = $('#' + elements[i].id).children('.connect_question');
-        $('#' + elements[i].id).removeClass('ui-draggable ui-draggable-dragging'); //
 
-        jsPlumb.draggable('' + elements[i].id, {
+        var $added_element = $('#' + elements[i].id);
+        thing = $added_element.children('.connect_question');
+        $added_element.removeClass('ui-draggable ui-draggable-dragging'); //
+
+        jsPlumb.draggable(elements[i].id, {
           //containment: 'parent'
         });
 
@@ -842,11 +841,11 @@ jsPlumb.ready(function() {
           }
           // repopulate elements list
           $('#info_panel').hide();
-          populate_elements_list();
-
         }); 
       } // end of for loop for elements
       
+      populate_elements_list();
+
       // any new stats will start indexing from this number
       state_count++
       console.log('state count: ');
@@ -885,7 +884,7 @@ jsPlumb.ready(function() {
           connector: 'Flowchart',
           endpoint:'Blank',
           overlays: [
-                      ["Label", { label: this_connection.label, location:0.5, id: "connLabel"+count} ], 
+                      ["Label", { label: this_connection.label, location:0.5, id: "connLabel"} ], 
                       [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]
                     ],
           paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}

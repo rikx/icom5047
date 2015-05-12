@@ -62,10 +62,10 @@ block content
 									= user.username
 							.form-group
 								label(for='flowchart_name') Nombre de Flujo:
-								input#flowchart_name(class='form-control', name='flowchart_name', type='text', placeholder='Nombre')
+								input#flowchart_name(class='form-control', name='flowchart_name', type='text', value=flowchart.name)
 							.form-group
 								label(for='flowchart_version') Versión:
-								input#flowchart_version(class='form-control', name='flowchart_version', type='text', placeholder='Version')
+								input#flowchart_version(class='form-control', name='flowchart_version', type='text', value=flowchart.version)
 						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 			.col-md-5
 				.panel.panel-success
