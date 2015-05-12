@@ -30,6 +30,15 @@ jsPlumb.ready(function() {
     window.location.href = '/users';
   });
 
+  // Close info panel
+  $('#btn_close_edit_panel').on('click', function(){
+    //$('#info_panel').show();
+    $('#edit_panel').hide();
+    $('#edit_possible_answers').hide();
+
+    remove_active_class($preguntas_list);
+  });
+
   $('#btn_edit_item').on('click', function(){
     $('#info_panel').hide();
     $('#edit_panel').show();
@@ -76,8 +85,9 @@ jsPlumb.ready(function() {
 
     // update element in array
     this_element.name = new_text;
+    this_element.state = $('#'+this_element.id).prop('outerHTML');
     replace(this_element, elements_array);
-
+    console.log(elements_array);
 
     //update connection in array and ui
 
@@ -126,6 +136,14 @@ jsPlumb.ready(function() {
     // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
     $('#btn_edit').attr('data-id', this_element.id);
+  });
+
+  /* Focus on list element matching clicked element and show info panel */
+  $("[id^='state']").on('click', function(){
+    var this_id = $(this).attr('id');
+    var $list_element = $preguntas_list.find("[data-id='"+this_id+"']");
+    
+    $list_element.focus().trigger('click');
   });
 
   /* Populate's info panel with $this_element's information */
@@ -192,7 +210,9 @@ jsPlumb.ready(function() {
 
     $('#preguntas_list').html(table_content);
 
-    populate_info_panel(elements_array[0]);
+    if(elements_array.length >0){
+      populate_info_panel(elements_array[0]);
+    }
   }
 
   // JS PLUMB create code
@@ -397,6 +417,8 @@ jsPlumb.ready(function() {
       var title_id = $('<p>');
       var has_input = false;
 
+      // store item type in state
+      newState.attr('data-state-type', itemType);
       // add css and title fitting item type
       if(itemType == 'START'){
         newState.addClass('item_end_point');
@@ -630,9 +652,9 @@ jsPlumb.ready(function() {
 
       // check source and target pair does not exist
       var source_is_source = 0;
-      var source_is_target = 0;
-      var target_is_source = 0;
-      var target_is_target = 0;
+      //var source_is_target = 0;
+      //var target_is_source = 0;
+      //var target_is_target = 0;
       for(var z = 0; z<connections_array.length; z++){
         if(source_id == connections_array[z].source && target_id == connections_array[z].target){
           return false;
@@ -716,8 +738,8 @@ jsPlumb.ready(function() {
         } else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
           mylabel = 'con-end';
         } else {
-          mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
-          info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: "connLabel"} ]);
+          mylabel = prompt("Escriba la posible respuesta a la pregunta.");
+          info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
         }
         
         this_connection = {
@@ -727,7 +749,6 @@ jsPlumb.ready(function() {
         };
 
         connections_array.push(this_connection);
-        //lines_array.push(this_connection);
       } else if(!trigger){
         //var this_connection, mylabel;
         var source_id = info.sourceId;
@@ -778,10 +799,10 @@ jsPlumb.ready(function() {
   function recreate_graph(elements, connections){
     jsPlumb.ready(function() {
       // loop through elements to create them in the DOM
-      var this_id, temp;
-      var thing;
+      var this_id, theState;
+      var connection_div;
       for(var i=0; i<elements.length; i++){
-        var theState = $.parseHTML(elements[i].state);
+        theState = $.parseHTML(elements[i].state);
         
         if(elements[i].type == 'START'){
           $('#start_item').addClass('disabled');
@@ -799,14 +820,44 @@ jsPlumb.ready(function() {
         $('#container_plumbjs').append(theState);
 
         var $added_element = $('#' + elements[i].id);
-        thing = $added_element.children('.connect_question');
         $added_element.removeClass('ui-draggable ui-draggable-dragging'); //
 
-        jsPlumb.draggable(elements[i].id, {
+        jsPlumb.draggable(theState, {
           //containment: 'parent'
+          resizable: false,
+          drag: function(){
+            jsPlumb.repaintEverything();
+          },
+          stop: function(event) {
+            if ($(event.target).find('select').length == 0) {
+              var dragged_element = event.target;
+
+              // create item object
+              var this_name = dragged_element.getAttribute('data-state-name');
+              if(this_name == undefined){
+                this_name = 'Elemento sin título'
+              }
+              var this_item = {
+                id: dragged_element.getAttribute('id'),
+                name: this_name,
+                type: dragged_element.getAttribute('data-state-type'),
+                state: dragged_element.outerHTML
+              };
+
+              // check if item is already in array and updates it
+              if(containsObject(this_item, elements_array)) {
+                replace(this_item, elements_array);
+              } else {
+                elements_array.push(this_item);
+              }
+              // populate elements list with new item
+              populate_elements_list();
+            }
+            jsPlumb.repaintEverything();
+          }
         });
 
-        $('#' + elements[i].id).dblclick(function(e) {
+        $added_element.dblclick(function(e) {
           var this_id = $(this).attr('id');
 
           jsPlumb.detachAllConnections($(this));
@@ -841,6 +892,7 @@ jsPlumb.ready(function() {
           }
           // repopulate elements list
           $('#info_panel').hide();
+          populate_elements_list();
         }); 
       } // end of for loop for elements
       
@@ -864,13 +916,9 @@ jsPlumb.ready(function() {
         for(var x = 0; x < elements.length; x++){
           this_element = elements[x];
           if(this_element.id == this_connection.source){
-            //source_item = document.getElementById(this_element.id);
             source_item = this_element.id;
-            console.log('Calling connect on source: '+this_element.id);
           } else if(this_element.id   == this_connection.target){
-            //target_item = document.getElementById(this_element.id);
             target_item = this_element.id;
-            console.log('Calling connect on target: '+this_element.id);
           }
         }
         var common = {
@@ -891,20 +939,27 @@ jsPlumb.ready(function() {
         });
       }
       trigger = true;
+
       // enable connecting
       for(var i=0; i<elements.length; i++){
-        thing = $('#' + elements[i].id).children('.connect_question');
-        jsPlumb.makeTarget(elements[i].id, {
-          anchor: 'Continuos',
-          connector: 'Flowchart'
-        });
+        this_element = elements[i];
+        connection_div = $('#' + this_element.id).children('.connect_question');
 
-        jsPlumb.makeSource(thing, {
-          parent: elements[i].id,
-          anchor: 'Continuos',
-          connector: 'Flowchart',
-          endpoint: 'Blank'
-        });
+        if(this_element.type != 'START'){
+          jsPlumb.makeTarget(this_element.id, {
+            anchor: 'Continuos',
+            connector: 'Flowchart'
+          });
+        }
+        
+        if(this_element.type != 'END'){
+          jsPlumb.makeSource(connection_div, {
+            parent: this_element.id,
+            anchor: 'Continuos',
+            connector: 'Flowchart',
+            endpoint: 'Blank'
+          });
+        }
       }
     });
   }

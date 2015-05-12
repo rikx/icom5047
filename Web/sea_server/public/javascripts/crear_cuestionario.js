@@ -115,6 +115,14 @@ jsPlumb.ready(function() {
     $('#btn_edit').attr('data-id', this_element.id);
 	});
 
+  /* Focus on list element matching clicked element and show info panel */
+  $("[id^='state']").on('click', function(){
+    var this_id = $(this).attr('id');
+    var $list_element = $preguntas_list.find("[data-id='"+this_id+"']");
+    
+    $list_element.focus().trigger('click');
+  });
+
   /* Populate's info panel with $this_element's information */
   function populate_info_panel(this_element){
   	$('#pregunta_info_name').html(this_element.name);
@@ -176,9 +184,10 @@ jsPlumb.ready(function() {
 	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>Elemento "+this.id.substring(5)+': '+this.name+"</a></td></tr>";
 		});
 
-		$('#preguntas_list').html(table_content);
-
-		populate_info_panel(elements_array[0]);
+			$('#preguntas_list').html(table_content);
+		if(elements_array.length >0){
+			populate_info_panel(elements_array[0]);
+		}
 	}
 
  	// JS PLUMB create code
@@ -383,6 +392,8 @@ jsPlumb.ready(function() {
  			var title_id = $('<p>');
  			var has_input = false;
 
+ 			// store item type in state
+ 			newState.attr('data-state-type', itemType);
  			// add css and title fitting item type
  			if(itemType == 'START'){
 				newState.addClass('item_end_point');
@@ -633,9 +644,9 @@ jsPlumb.ready(function() {
 
 			// check source and target pair does not exist
 			var source_is_source = 0;
-			var source_is_target = 0;
-			var target_is_source = 0;
-			var target_is_target = 0;
+			//var source_is_target = 0;
+			//var target_is_source = 0;
+			//var target_is_target = 0;
 			for(var z = 0; z<connections_array.length; z++){
 				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
 					return false;
@@ -719,7 +730,7 @@ jsPlumb.ready(function() {
 				} else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
 					mylabel = 'con-end';
 				} else {
-					mylabel = prompt("Por favor, escriba la respuesta a la pregunta.");
+					mylabel = prompt("Escriba la posible respuesta a la pregunta.");
 					info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
 				}
 				
