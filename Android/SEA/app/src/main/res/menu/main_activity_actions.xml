@@ -25,7 +25,7 @@
 		  android:title="Synchronize FULL"
 		  android:showAsAction="never"
 		  android:orderInCategory="81"
-		  android:visible="false"
+		  android:visible="true"
 		  />
 
 
