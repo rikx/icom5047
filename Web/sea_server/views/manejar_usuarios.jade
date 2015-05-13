@@ -22,8 +22,8 @@ block content
 					a(class='btn btn-success btn-block', data-toggle='tooltip')
 									i(class='glyphicon glyphicon-home')
 			.col-md-5
-				//small
-					//*Buscar usuario por correo electrónico
+				small
+					*Buscar usuarios por correo electrónico
 				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
@@ -110,7 +110,7 @@ block content
 							#specialty_panel_edit.form-group(data-all-specialties=specialties)
 								.panel.panel-success
 									#especializacion_title_edit.panel-heading Tipo de Especialización
-									.panel-body
+									.panel-body(style='overflow:auto; height:150px;')
 											#specialist_categories_list_edit(role='form')
 											//button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
 						.btn-group(role='group', aria-label='info panel buttons')
@@ -143,17 +143,17 @@ block content
 								.panel.panel-success
 									#especializacion_title.panel-heading Tipo de Especialización
 									.panel-body
-											form#specialist_categories_list(role='form')
-											//button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
-								button#btn_edit_panel(class='btn btn-sm btn-success btn-block' type='button') Editar
-								a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
-									i(class='glyphicon glyphicon-trash')
+										form#specialist_categories_list(role='form')
+										//button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
 
-						.panel.panel-info
+						#assigned_locations.panel.panel-info
 							.panel-heading Localizaciones Asignadas
 							.panel-body
 								table#usuario_locations(class='table')
 						//button#btn_close_info_panel(class='btn btn-default') Cerrar
+						button#btn_edit_panel(class='btn btn-sm btn-success btn-block' type='button') Editar
+						a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-trash')
 			.col-md-1
 
 		.row

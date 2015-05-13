@@ -21,8 +21,8 @@ block content
 					a(class='btn btn-success btn-block', data-toggle='tooltip')
 									i(class='glyphicon glyphicon-home')
 			.col-md-5
-				//small
-					//| *Buscar reporte por nombre, fecha (dd/mm/aaaa), agente, localización o cuestionario
+				small
+					| *Buscar reportes por nombre, fecha (dd/mm/aaaa), agente, localización o cuestionario
 				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 
 			.col-md-4
@@ -65,7 +65,8 @@ block content
 					.panel-heading
 						h3#info_panel_heading(class='panel-title')
 					.panel-body
-						table#reporte_info(class='table table-nowrap')
+						//table#reporte_info(class='table table-nowrap')
+						table#reporte_info(class='table')
 							thead
 							tbody
 								tr
@@ -83,6 +84,9 @@ block content
 								tr
 									td Encuesta utilizada:
 									td#reporte_info_flowchart
+								tr
+									td Versión de encuesta:
+									td#reporte_info_flowchart_version
 						button#btn_view_report(class='btn btn-success btn-block', type='button') Ver Reporte Completo
 						if(user.user_type == 'admin')
 							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')

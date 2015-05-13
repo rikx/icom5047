@@ -16,15 +16,16 @@ block content
 
 		.row
 			.col-md-1
-			.col-md-6
+			.col-md-1
+				#btn_home(class='btn-group', role='group', aria-label='')
+					a(class='btn btn-success btn-block', data-toggle='tooltip')
+						i(class='glyphicon glyphicon-home')
+			.col-md-5
 				#nav(class='btn-group', role='group', aria-label='')
-					#btn_home(class='btn-group', role='group', aria-label='')
-						a(class='btn btn-success btn-block', data-toggle='tooltip')
-									i(class='glyphicon glyphicon-home')
-					btn(class='btn btn-default', type='button', id='categories_tab') Categorias 
+					btn(class='btn btn-default active', type='button', id='categories_tab') Categorias 
 					btn(class='btn btn-default', type='button', id='specialties_tab') Especialidades
 				//small
-				//	| *Buscar categoria por nombre
+				//	| *Buscar categorias por nombre
 				//input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
@@ -36,7 +37,7 @@ block content
 								.panel.panel-success
 									#categoria_panel_title.panel-heading Categorías de Localización
 									.panel-body
-										.list-group(style='overflow:auto; height:300px;')
+										.list-group(style='overflow:auto; height:550px;')
 											table(class='table')
 												tbody#categories
 										button#btn_add_categories(class='btn btn-default btn-success', type='button') Agregar Categorías
@@ -64,8 +65,8 @@ block content
 											label(for='new_category') Nueva Categoria:
 											input#new_category(class='form-control', name='new_category', type='text', placeholder='Nueva Categoria')
 										br
-										.btn-group(role='group', aria-label='edit panel buttons')
-											button#btn_post_new_category(class='btn btn-default') Someter
+										button#btn_post_new_category(class='btn btn-success btn-block') Someter
+										button#btn_close_add_category(class='btn btn-default btn-block') Cerrar
 				#edit_category_panel.form-group
 								.panel.panel-success
 									.panel-heading
@@ -75,8 +76,8 @@ block content
 											label(for='category_name') Editar Categoria:
 											input#category_name(class='form-control', name='category_name', type='text', placeholder='Editar Categoria')
 										br
-										.btn-group(role='group', aria-label='edit panel buttons')
-											button#btn_put_new_category(class='btn btn-default') Someter
+										button#btn_put_new_category(class='btn btn-success btn-block') Guardar
+										button#btn_close_edit_category(class='btn btn-default btn-block') Cerrar
 
 		#specialty_row.row
 				.col-md-1
@@ -85,7 +86,7 @@ block content
 								.panel.panel-success
 									#specialty_panel_title.panel-heading Especialidades
 									.panel-body
-										.list-group(style='overflow:auto; height:300px;')
+										.list-group(style='overflow:auto; height:550px;')
 											table(class='table')
 												tbody#specialties
 										button#btn_add_specialties(class='btn btn-default btn-success', type='button') Agregar Especialidades
@@ -117,8 +118,8 @@ block content
 											label(for='new_specialty') Nueva Especialidad:
 											input#new_specialty(class='form-control', name='new_specialty', type='text', placeholder='Nueva Especialidad')
 										br
-										.btn-group(role='group', aria-label='edit panel buttons')
-											button#btn_post_new_specialty(class='btn btn-default') Someter
+										button#btn_post_new_specialty(class='btn btn-success btn-block') Someter
+										button#btn_close_add_specialty(class='btn btn-default btn-block') Cerrar
 					#edit_specialty_panel.form-group
 								.panel.panel-success
 									.panel-heading
@@ -128,8 +129,8 @@ block content
 											label(for='specialty_name') Editar Especialidad:
 											input#specialty_name(class='form-control', name='specialty_name', type='text', placeholder='Editar Especialidad')
 										br
-										.btn-group(role='group', aria-label='edit panel buttons')
-											button#btn_put_new_specialty(class='btn btn-default') Someter
+										button#btn_put_new_specialty(class='btn btn-success btn-block') Guardar
+										button#btn_close_edit_specialty(class='btn btn-default btn-block') Cerrar
 
 			.row
 				.col-md-1
