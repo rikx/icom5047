@@ -235,7 +235,7 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 	 		if(err) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
-	 		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+	 		client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username, flowchart.status \
 										FROM flowchart \
 										INNER JOIN users ON user_id = creator_id \
 										WHERE flowchart.status != $1 \
@@ -384,9 +384,15 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 				res.send({exists: true});
 			} else {
   			// Insert new flowchart into db
+  			var the_status;
+  			if(flowchart_info.status == 1){
+					the_status = 1
+  			} else {
+  				the_status = 0;
+  			}
   			client.query("INSERT into flowchart (name, creator_id, version, status) VALUES ($1, $2, $3, $4) \
 											RETURNING flowchart_id", 
-											[flowchart_info.flowchart_name, creator_id, flowchart_info.flowchart_version, 1], function(err, result) {
+											[flowchart_info.flowchart_name, creator_id, flowchart_info.flowchart_version, the_status], function(err, result) {
 					if(err) {
 						return console.error('error running query', err);
 					} else {
@@ -968,7 +974,7 @@ router.get('/reportes', function(req, res, next) {
 	 		if(user_type == 'admin' || user_type == 'specialist') {
 	 			// get first 20 reports regardles of creator
 	 			query_config = {
-					text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+					text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name, flowchart.version \
 									FROM report INNER JOIN location ON report.location_id = location.location_id \
 									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 									INNER JOIN users ON report.creator_id = user_id \
@@ -980,7 +986,7 @@ router.get('/reportes', function(req, res, next) {
 	 		} else {
 	 			// get first 20 reports created by this user
 				query_config = {
-					text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+					text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name, flowchart.version \
 									FROM report INNER JOIN location ON report.location_id = location.location_id \
 									INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 									INNER JOIN users ON report.creator_id = user_id \

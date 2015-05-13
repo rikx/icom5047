@@ -66,7 +66,7 @@ $(document).ready(function(){
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(location){
-        return '<p><strong>Nombre: </strong>'+location.location_name+'</p>' + '<p><strong>Licensia: </strong>'+location.license+'</p>';
+        return '<p><strong>Nombre: </strong>'+location.location_name+'</p>' + '<p><strong>Licencia: </strong>'+location.license+'</p>';
       }
     }
   });
@@ -589,7 +589,7 @@ $('#btn_submit').on('click', function(){
 
     success: function(data) {
       if(data.exists){
-        alert("Localización con este número de licensia ya existe");
+        alert("Localización con este número de licencia ya existe");
       } else {
         alert("Localización ha sido añadido al sistema.");
         // clear add form
@@ -624,7 +624,7 @@ $('#btn_post_new_category').on('click', function(){
 
     success: function(data) {
       if(data.exists){
-        alert("Localización con este número de licensia ya existe");
+        alert("Localización con este número de licencia ya existe");
       } else {
         alert("Localización ha sido añadido al sistema.");
         // clear add form

@@ -366,13 +366,15 @@ jsPlumb.ready(function() {
     var form_data = $the_form.serializeArray();
     var new_flowchart = ConverToJSON(form_data);
     // checks created flowchart has a first item
-    if(!empty_field_check(form_data)){
-      // check 
+    if(!empty_field_check(form_data) && ($('input[name=ready_radios]:checked').length > 0)){
+      // check that endpoints are valid
       if(end_points.first_id != -1 && end_points.end_id != -1){
         if(check_item_connections()){
           // add missing flowchart fields
           new_flowchart.first_id = end_points.first_id;
           new_flowchart.end_id = end_points.end_id;
+          new_flowchart.status = $("input[name='ready_radios']:checked").val();
+
           // ajax call to post new ganadero
           $.ajax({
             url: "http://localhost:3000/users/admin/cuestionarios/crear",

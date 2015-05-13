@@ -207,7 +207,8 @@ $(document).ready(function(){
     $('#reporte_info_location').text($this_report.location_name);
     $('#reporte_info_creator').text($this_report.username);
     $('#report_info_date').text($this_report.report_date);
-    $('#reporte_info_flowchart').text($this_report.flowchart_name);
+    $('#reporte_info_flowchart').html($this_report.flowchart_name);
+    $('#reporte_info_flowchart_version').html($this_report.version);
     
     // set id values of info panel buttons
     $('#btn_view_report').attr('data-id', $this_report.report_id);

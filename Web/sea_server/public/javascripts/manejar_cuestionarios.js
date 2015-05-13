@@ -54,7 +54,7 @@ $(document).ready(function(){
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(cuestionario){
-        return '<p><strong>Nombre: </strong>'+cuestionario.flowchart_name+'</p>';
+        return '<p><strong>Nombre: </strong>'+cuestionario.flowchart_name+'</p>'+ '<p><strong>Versión: </strong>'+cuestionario.version+'</p>';
       }
     }
   });
@@ -173,6 +173,13 @@ $(document).ready(function(){
     $('#cuestionario_info_name').html(element.flowchart_name);
     $('#cuestionario_info_version').text(element.version);
     $('#cuestionario_info_creator').text(element.username);
+    var status_text;
+    if(element.status == 1){
+      status_text = 'Completo';
+    } else if(element.status == 0){
+      status_text = 'Incompleto'
+    }
+    $('#cuestionario_info_status').text(status_text);
 
     // set id values of info panel buttons
     $('#btn_edit_cuestionario').attr('data-id', element.flowchart_id);

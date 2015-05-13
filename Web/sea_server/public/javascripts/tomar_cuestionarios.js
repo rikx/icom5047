@@ -54,7 +54,7 @@ $(document).ready(function(){
     source: search_source.ttAdapter(),
     templates: {
       suggestion: function(cuestionario){
-        return '<p><strong>Nombre: </strong>'+cuestionario.flowchart_name+'</p>';
+        return '<p><strong>Nombre: </strong>'+cuestionario.flowchart_name+'</p>'+ '<p><strong>Versión: </strong>'+cuestionario.version+'</p>';
       }
     }
   });

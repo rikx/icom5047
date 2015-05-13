@@ -310,7 +310,7 @@ router.get('/cuestionarios/:user_input', function(req, res, next){
 		return console.error('error fetching client from pool', err);
 		}
 		// get all matching flowcharts and their basic data
-		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username, flowchart.status \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
 									WHERE LOWER(name) LIKE LOWER('%"+user_input+"%') AND flowchart.status != $1 \
@@ -824,7 +824,7 @@ router.get('/list_cuestionarios', function(req, res, next) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
-	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
+	  client.query('SELECT flowchart_id, name AS flowchart_name, version, creator_id, username, flowchart.status \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
 									WHERE flowchart.status != $1 \
@@ -1044,7 +1044,7 @@ router.get('/list_reportes', function(req, res, next) {
  		if(user_type == 'admin' || user_type == 'specialist') {
  			// get first 20 reports regardles of creator
  			query_config = {
-				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name, flowchart.version\
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \

@@ -75,6 +75,16 @@ block content
 							.form-group
 								label(for='flowchart_version') Versión:
 								input#flowchart_version(class='form-control', name='flowchart_version', type='text', value=flowchart.version)
+							.form-group
+								label(for='ready_radios') ¿Cuestionario está listo para uso?
+								.radio
+									label
+										input(type="radio", name="ready_radios", id="ready_radios_1", value=1)
+										| Si
+								.radio
+									label
+										input(type="radio", name="ready_radios", id="ready_radios_2", value=0)
+										| No
 						button#btn_submit(class='btn btn-lg btn-success btn-block', type='button') Someter
 			.col-md-5
 				.panel.panel-success

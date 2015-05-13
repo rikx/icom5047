@@ -566,14 +566,17 @@ function populate_info_panel($this_usuario){
     if($this_usuario.type == 'agent')
     {
       type = 'Agente';
+      $('#assigned_locations').show();
     } 
     else if ($this_usuario.type == 'specialist')
     {
       type = 'Especialista';
+      $('#assigned_locations').hide();
     } 
     else 
     {
       type = 'Administrador';
+      $('#assigned_locations').hide();
     }
 
     $('#usuario_info_type').text(type);
