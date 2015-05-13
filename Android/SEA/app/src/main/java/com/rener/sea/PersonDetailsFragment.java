@@ -25,6 +25,7 @@ import android.widget.ViewFlipper;
  */
 public class PersonDetailsFragment extends Fragment implements DetailsFragment, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
+    public static final String EMAIL_REGEX = "^([A-Z0-9a-z\\-_\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([A-Z0-9a-z.-]+)\\.[A-Z0-9a-z.-]{2,}))$";
     private static final int SHOW_LAYOUT = 0;
     private static final int EDIT_LAYOUT = 1;
     private Person person;
@@ -192,9 +193,9 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
         String strEmail = editEmail.getText().toString().trim();
         String strPhone = editPhoneNumber.getText().toString().trim();
 
-
-        boolean allow = (!strFirstName.equals("") && !strLastName1.equals(""));
-        if(!allow) {
+        //Validate name
+        boolean validName = (!strFirstName.equals("") && !strLastName1.equals(""));
+        if(!validName) {
             String message = "";
             if (strFirstName.equals("")) {
                 editFirstName.setText("");
@@ -204,6 +205,14 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
                 editLastName1.setText("");
                 message = getString(R.string.empty_last_name);
             }
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        //Validate email
+        boolean validEmail = strEmail.matches(EMAIL_REGEX) || strEmail.isEmpty();
+        if(!validEmail) {
+            String message = getString(R.string.invalid_email);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
         }
