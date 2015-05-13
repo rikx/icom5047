@@ -326,6 +326,57 @@ jsPlumb.ready(function() {
 		}
   }
 
+  /* */
+/*  function check_conditionals(){
+  	var this_element;
+  	var element_conns = [];
+  	for(var i = 0; i < elements_array.length; i++){
+  		this_element = elements_array[i];
+  		if(this_element.type == 'CONDITIONAL'){
+  			for(var j = 0; j < connections_array.length; j++){
+  				if(this_element.id == connections_array[j].source){
+  					element_conns.push(connections_array[j].label); 
+  				}
+  			}
+  			// if lt other must be ge
+	  		if(element_conns[0].substring(0,2) == 'lt' && element_conns[0].substring(0,2) != 'ge'){
+	  			return false;
+	  		}
+  			// if gt other must be le
+	  		if(element_conns[0].substring(0,2) == 'gt' && element_conns[0].substring(0,2) != 'le'){
+	  			return false;
+	  		}
+  			// if eq other must be ne
+	  		if(element_conns[0].substring(0,2) == 'eq' && element_conns[0].substring(0,2) != 'ne'){
+	  			return false;
+	  		}
+  			// if lt other must be ge
+	  		if(element_conns[0].substring(0,2) == 'ge' && element_conns[0].substring(0,2) != 'lt'){
+	  			return false;
+	  		}
+  			// if lt other must be ge
+	  		if(element_conns[0].substring(0,2) == 'le' && element_conns[0].substring(0,2) != 'gt'){
+	  			return false;
+	  		}
+  			// if lt other must be ge
+	  		if(element_conns[0].substring(0,2) == 'ne' && element_conns[0].substring(0,2) != 'eq'){
+	  			return false;
+	  		}
+  			// if rg other must be 'not'
+	  		if(element_conns[0].substring(0,2) == 'rg' && !(element_conns[0].substring(0,2) != 'not')){
+	  			return false;
+	  		}
+  			// if 'not' other must be rg
+	  		if(element_conns[0].substring(0,2) == 'not' && !(element_conns[0].substring(0,2) != 'rg')){
+	  			return false;
+	  		}
+	  		return true;
+  		}
+  	}
+  }*/
+
+
+
   /* POSTs new flowchart information */
   $('#btn_submit').on('click', function(){
   	var end_points = check_for_endpoints();
@@ -768,11 +819,13 @@ jsPlumb.ready(function() {
 					}
 				}
 				if(source_type == 'START'){
-					mylabel = 'con-start';
+					mylabel = 'con-inicio';
 				} else if(source_type == 'OPEN'){
-					mylabel = 'con-open';
+					mylabel = 'con-abierta';
 				} else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
-					mylabel = 'con-end';
+					mylabel = 'con-fin';
+				} else if(source_type == 'RECOM'){
+					mylabel = 'con-recom';
 				} else {
 					mylabel = prompt("Escriba la posible respuesta a la pregunta.");
 					info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);

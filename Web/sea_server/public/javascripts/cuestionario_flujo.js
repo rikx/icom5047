@@ -100,6 +100,7 @@ $(document).ready(function(){
 			}
 			// disable location input 
 			$('#take_survey_location_name').attr('disabled', true);
+			$('#take_survey_report_name').attr('disabled', true);
 
 			// get form data and conver to json format
 	    var $the_form = $('#form_survey_flow');
@@ -244,7 +245,6 @@ $(document).ready(function(){
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
 				comp_value = parseInt(temp, '10');
 				if(user_input < comp_value){
-					console.log('entered if');
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
 					return false;

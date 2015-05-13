@@ -778,11 +778,13 @@ jsPlumb.ready(function() {
           }
         }
         if(source_type == 'START'){
-          mylabel = 'con-start';
+          mylabel = 'con-inicio';
         } else if(source_type == 'OPEN'){
-          mylabel = 'con-open';
+          mylabel = 'con-abierta';
         } else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
-          mylabel = 'con-end';
+          mylabel = 'con-fin';
+        } else if(source_type == 'RECOM'){
+          mylabel = 'con-recom';
         } else {
           mylabel = prompt("Escriba la posible respuesta a la pregunta.");
           info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
