@@ -269,9 +269,8 @@ $(document).ready(function(){
   {
     alert("Por favor ingrese su primer apellido.");
   }
-  else if(!new_ganadero.ganadero_email.trim().length > 0)
   {
-    alert("Por favor ingrese su correo electrónico");
+    alert("Correo electrónico no es válido");
   }
   else if(new_ganadero.ganadero_email.trim().length > 255)
   {
