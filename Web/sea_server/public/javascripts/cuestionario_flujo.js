@@ -169,6 +169,7 @@ $(document).ready(function(){
 			answer_value = the_answer.val();
 		} else {
 			answer_value = $('#answer_recommendation_text').text();
+			the_answer = $('#answer_recommendation_text');
 		}
 
 		if(answer_value === null || answer_value === undefined || answer_value === '') {
