@@ -129,7 +129,8 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
-    remove_active_class($ganaderos_list);
+    //remove_active_class($ganaderos_list);
+    $('#info_panel').show();
   });
 
   /* Close info panel */

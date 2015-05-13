@@ -176,7 +176,9 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
-    remove_active_class($usuarios_list);
+    //remove_active_class($usuarios_list);
+      $('#info_panel').show();
+
   });
 
   /* Close info panel */
@@ -194,12 +196,6 @@ $(document).ready(function(){
     $('#edit_panel').hide();
     $('#info_panel').show();
     $('#add_specialty_panel').hide();
-
-
-
-    //button#btn_add_specialty(class='btn btn-default btn-success', type='button') Agregar Especialidades
-    //button#btn_edit_specialty(class='btn btn-default btn-success', type='button') Editar Especialidades
-
 
     $('#btn_add_specialty').show();
     $('#btn_edit_specialty').hide();
