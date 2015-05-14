@@ -92,7 +92,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
 
         getActivity().getMenuInflater().inflate(R.menu.navigation_menu, toolbar.getMenu());
         toolbar.setOnMenuItemClickListener(this);
-        ((MainActivity)getActivity()).getContextToolbar().getMenu().clear();
+        ((MainActivity) getActivity()).getContextToolbar().getMenu().clear();
 
         //Restore arguments if they exist
         curPos = getArguments().getInt("index", -1);
@@ -115,7 +115,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
             empty = getString(R.string.no_reports);
             list = db.getAllReports();
             adapter = new ReportListAdapter(getActivity(), list);
-        } else if(type.equals(TYPE_APPOINTMENTS)) {
+        } else if (type.equals(TYPE_APPOINTMENTS)) {
             //TODO: finish this
             list = db.getAllAppointments();
             adapter = new SimpleStringListAdapter(getActivity(), R.layout
@@ -173,7 +173,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE ;
+        int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE;
         clearSearchButton.setVisibility(visibility);
         String key = editSearch.getText().toString().trim();
         //adapter.getFilter().filter(key);
@@ -202,6 +202,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
 
     /**
      * Gets the MenuListFragment type
+     *
      * @return the MenuListFragment's type
      */
     public String getType() {
@@ -227,7 +228,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
 
     private List<Calendar> initDummyAppointments() {
         List<Calendar> dates = new ArrayList<>();
-        for(int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
             dates.add(Calendar.getInstance());
         return dates;
     }

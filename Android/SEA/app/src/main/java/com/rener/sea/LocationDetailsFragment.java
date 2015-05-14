@@ -101,11 +101,10 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         populateSpinners();
 
         //Determine if the new location view should be displayed
-        if(location != null) {
+        if (location != null) {
             setDataViews();
             flipper.setDisplayedChild(SHOW_LAYOUT);
-        }
-        else {
+        } else {
             flipper.setDisplayedChild(EDIT_LAYOUT);
         }
         viewCreated = true;
@@ -115,7 +114,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        Toolbar tb = ((MainActivity) getActivity()).getContextToolbar();
         options = tb.getMenu();
         options.clear();
         getActivity().getMenuInflater().inflate(R.menu.location_actions, options);
@@ -166,11 +165,10 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     @Override
     public boolean onDetailsChanged() {
         int displayed = flipper.getDisplayedChild();
-        if(viewCreated) {
-            if(displayed == SHOW_LAYOUT) {
+        if (viewCreated) {
+            if (displayed == SHOW_LAYOUT) {
                 setDataViews();
-            }
-            else if(displayed == EDIT_LAYOUT) {
+            } else if (displayed == EDIT_LAYOUT) {
                 populateSpinners();
             }
         }
@@ -206,34 +204,30 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         //Set the address fields
         String al1 = location.getAddressLine(1);
-        if(al1.equals("")) {
+        if (al1.equals("")) {
             textAddressLine1.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             textAddressLine1.setText(al1);
         }
         editAddressLine1.setText(al1);
         String al2 = location.getAddressLine(2);
-        if(al2.equals("")) {
+        if (al2.equals("")) {
             textAddressLine2.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             textAddressLine2.setText(al2);
         }
         editAddressLine2.setText(al2);
         String city = location.getCity();
-        if(city.equals("")) {
+        if (city.equals("")) {
             textCity.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             textCity.setText(city);
         }
         editCity.setText(city);
         String zip = location.getZipCode();
-        if(zip.equals("")) {
+        if (zip.equals("")) {
             textZipCode.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             textZipCode.setText(zip);
         }
         editZipCode.setText(zip);
@@ -286,7 +280,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     }
 
     private void saveLocation() {
-        if(getFields()) {
+        if (getFields()) {
             setDataViews();
             flipToShowLayout();
             ((MainActivity) getActivity()).onDataChanged();
@@ -295,6 +289,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
     /**
      * Gets the data from the views when it is edited
+     *
      * @return true if all data was set correctly
      */
     private boolean getFields() {
@@ -307,7 +302,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         String city = editCity.getText().toString().trim();
         String zip = editZipCode.getText().toString().trim();
 
-        if(name.equals("")) {
+        if (name.equals("")) {
             editName.setText("");
             String message = getString(R.string.empty_location_name);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -323,7 +318,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         location.setZipCode(zip);
 
         if (licence.equals("") || !valid) {
-            if(licence.equals("")) editLicense.setText("");
+            if (licence.equals("")) editLicense.setText("");
             String message = getString(R.string.invalid_licence);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
@@ -370,16 +365,15 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     }
 
     private void newReport() {
-        DBHelper dbHelper = ((MainActivity)getActivity()).getDBHelper();
+        DBHelper dbHelper = ((MainActivity) getActivity()).getDBHelper();
         int fcs = dbHelper.getAllFlowcharts().size();
         boolean allow = (fcs != 0);
-        if(allow) {
+        if (allow) {
             Intent intent = new Intent(getActivity(), SurveyActivity.class);
             intent.putExtra("LOCATION_ID", location.getId());
             startActivity(intent);
             getActivity().finish();
-        }
-        else {
+        } else {
             String message = getResources().getString(R.string.no_flowcharts);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
@@ -388,12 +382,12 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     private void goToLocationOwner() {
         //TODO: test this
         long id = location.getOwner().getId();
-        ((MainActivity)getActivity()).onDetailsRequest("PERSON", "OWNER", id);
+        ((MainActivity) getActivity()).onDetailsRequest("PERSON", "OWNER", id);
     }
 
     private void goToLocationManager() {
         long id = location.getOwner().getId();
-        ((MainActivity)getActivity()).onDetailsRequest("PERSON", "MANAGER", id);
+        ((MainActivity) getActivity()).onDetailsRequest("PERSON", "MANAGER", id);
     }
 
     public String getType() {

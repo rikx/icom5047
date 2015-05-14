@@ -12,12 +12,12 @@ import java.util.Locale;
 
 public class Appointment {
 
+    String dateFormat;
     private long id = -1;
     private DBHelper dbHelper;
-    String dateFormat;
     private User creator; //TODO: integrate this to DB
 
-    public Appointment(long id, DBHelper dbHelper,String dateFormat) {
+    public Appointment(long id, DBHelper dbHelper, String dateFormat) {
         this.dbHelper = dbHelper;
         this.dateFormat = dateFormat;
         invoke(id);

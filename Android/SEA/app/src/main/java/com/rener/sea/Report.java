@@ -32,13 +32,14 @@ public class Report implements Comparable<Report> {
         this.dbHelper = db;
         invoke(id);
     }
+
     // this method is only for the use of DBHelper
-    public Report(long id,String name, DBHelper db) {
+    public Report(long id, String name, DBHelper db) {
         //        String name = getName();
         //        String loc = getLocation().toString();
         //        String date = getDate().toString();
         this.dbHelper = db;
-        if(id > 0){
+        if (id > 0) {
             this.id = id;
             this.name = name;
         }
@@ -98,7 +99,7 @@ public class Report implements Comparable<Report> {
 
     private boolean invoke(long user_id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID,DBSchema.REPORT_NAME},
+        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID, DBSchema.REPORT_NAME},
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
@@ -128,7 +129,7 @@ public class Report implements Comparable<Report> {
             cursor.moveToFirst();
             if (!cursor.isNull(0))
                 name = cursor.getString(0);
-                this.name = name;
+            this.name = name;
             db.close();
             cursor.close();
         }
@@ -141,7 +142,7 @@ public class Report implements Comparable<Report> {
         values.put(DBSchema.REPORT_NAME, name);
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
-        if(id>0){
+        if (id > 0) {
             this.name = name;
         }
         db.close();
@@ -357,7 +358,7 @@ public class Report implements Comparable<Report> {
             db.close();
             cursor.close();
         }
-        return appointment != -1 ? new Appointment(appointment, dbHelper,dbHelper.getContext().getResources().getString(R.string.date_format_medium)) : null;
+        return appointment != -1 ? new Appointment(appointment, dbHelper, dbHelper.getContext().getResources().getString(R.string.date_format_medium)) : null;
     }
 
     // this method is maybe out of area
@@ -445,21 +446,21 @@ public class Report implements Comparable<Report> {
     }
 
     //TODO:is complited set comleted
-    public long getStatus(){
+    public long getStatus() {
         long status = -1;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_STATUS},
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
-                cursor.moveToFirst();
-                if (!cursor.isNull(0))
-                    status = cursor.getLong(0);
+            cursor.moveToFirst();
+            if (!cursor.isNull(0))
+                status = cursor.getLong(0);
         }
 
         return status;
     }
 
-    public long setCompleted(){
+    public long setCompleted() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_STATUS, 1);
@@ -469,7 +470,7 @@ public class Report implements Comparable<Report> {
         return id;// if -1 error during update
     }
 
-    public long delete(){
+    public long delete() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBSchema.REPORT_STATUS, 2);
@@ -478,8 +479,9 @@ public class Report implements Comparable<Report> {
         db.close();
         return id;// if -1 error during update
     }
+
     // TODO: test this method
-    public long destroy(){
+    public long destroy() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long id = db.delete(DBSchema.TABLE_REPORT, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();

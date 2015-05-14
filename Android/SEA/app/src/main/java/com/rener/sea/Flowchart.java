@@ -260,7 +260,7 @@ public class Flowchart implements Comparable<Flowchart> {
     }
 
     public String toString() {
-        return id == -1 ? dummy : getName()+" - "+getVersion();
+        return id == -1 ? dummy : getName() + " - " + getVersion();
     }
 
     @Override

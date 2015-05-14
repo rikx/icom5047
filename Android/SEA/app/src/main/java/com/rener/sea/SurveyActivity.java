@@ -98,10 +98,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         openSurvey = intent.getBooleanExtra("OPEN_SURVEY", false);
         long id = intent.getLongExtra("REPORT_ID", -1);
         // Continue report code is here if it gets implemented
-        if(id == -1) { //report is new
+        if (id == -1) { //report is new
             report = new Report(dbHelper, setCreator());
-        }
-        else { //exists
+        } else { //exists
             report = new Report(id, dbHelper);
             continueReport();
         }
@@ -141,7 +140,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {return super.onCreateOptionsMenu(menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -212,10 +212,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         //Set preselected location if necessary
         long loc_id = getIntent().getLongExtra("LOCATION_ID", -1);
-        if(loc_id != -1) {
-            for(int i=0; i<locations.size(); i++) {
+        if (loc_id != -1) {
+            for (int i = 0; i < locations.size(); i++) {
                 Location l = (Location) spinnerLocation.getAdapter().getItem(i);
-                if(l.getId() == loc_id)
+                if (l.getId() == loc_id)
                     spinnerLocation.setSelection(i);
             }
         }
@@ -224,7 +224,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.survey_next_question_button :
+            case R.id.survey_next_question_button:
                 nextPressed();
                 break;
         }
@@ -243,10 +243,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         path = new Path(report.getId(), dbHelper);
         report.setPath(path);
         progressLayout.removeAllViews();
-        if(openSurvey) {
+        if (openSurvey) {
             startOpenSurvey(flowchart);
-        }
-        else {
+        } else {
             nextButton.setVisibility(View.VISIBLE);
             newQuestion(flowchart.getFirst());
         }
@@ -347,7 +346,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
         String input = currentText.getText().toString();
-        if(!input.equals("")) nextPressed();
+        if (!input.equals("")) nextPressed();
         return true;
     }
 
@@ -365,7 +364,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     public void afterTextChanged(Editable s) {
 
     }
-
 
 
     private void handleUserInput(Item item, String input) {
@@ -431,11 +429,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         report.setNotes(notes);
 
         //This is where flow and open surveys diverge on submit
-        if(!openSurvey) {
+        if (!openSurvey) {
             report.setPath(path);
             report.setCompleted();
-        }
-        else {
+        } else {
             //TODO: open survey submit goes here
             submitOpenSurvey();
         }
@@ -449,13 +446,12 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         Item item = path.isEmpty() ? report.getFlowchart().getFirst() : path.getLastOption()
                 .getNext();
         String type = item.getType();
-        if(type.equals(Item.CONDITIONAL) || type.equals(Item.OPEN)) {
+        if (type.equals(Item.CONDITIONAL) || type.equals(Item.OPEN)) {
             String input = currentText.getText().toString().trim();
             handleUserInput(item, input);
-        }
-        else if(type.equals(Item.BOOLEAN) || type.equals(Item.MULTIPLE_CHOICE)) {
-            if(groupChecked != -1) {
-                for(int i=0; i<currentGroup.getChildCount(); i++) {
+        } else if (type.equals(Item.BOOLEAN) || type.equals(Item.MULTIPLE_CHOICE)) {
+            if (groupChecked != -1) {
+                for (int i = 0; i < currentGroup.getChildCount(); i++) {
                     currentGroup.getChildAt(i).setEnabled(false);
                 }
                 Option checked = item.getOptions().get(groupChecked);
@@ -508,7 +504,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void displayDiscardConfirmDialog() {
-        if(confirmDiscardDialog == null) {
+        if (confirmDiscardDialog == null) {
             //Get the string
             String title = getString(R.string.confirm_discard_report_title);
             String message = getString(R.string.confirm_discard_report_message);
@@ -538,11 +534,11 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     private void startOpenSurvey(Flowchart flowchart) { //TODO: TEST THIS
         List<Item> items = flowchart.getItems();
-        for(Item i : items) {
+        for (Item i : items) {
             String type = i.getType();
             boolean displayItem = !type.equals(Item.RECOMMENDATION) && !type.equals(Item.END) &&
                     !type.equals(Item.START);
-            if(displayItem) {
+            if (displayItem) {
                 openSurveyItems.add(i);
                 newQuestion(i);
             }
@@ -553,9 +549,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     private void submitOpenSurvey() {
         //TODO: submit open survey
-        for(int i=0; i<openSurveyItems.size(); i++) { //i needs to match the sequence number
+        for (int i = 0; i < openSurveyItems.size(); i++) { //i needs to match the sequence number
             Item item = openSurveyItems.get(i);
-            String type =item.getType();
+            String type = item.getType();
             long id = item.getId();
             switch (type) {
                 case Item.MULTIPLE_CHOICE:

@@ -8,9 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.SpannableString;
-import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -154,7 +152,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         //Set the flowchart
         Flowchart flowchart = report.getFlowchart();
 
-        if(flowchart.getId() != -1) {
+        if (flowchart.getId() != -1) {
 
             String fcName = report.getFlowchart().getName();
             textFlowchart.setText(fcName);
@@ -190,8 +188,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
                     interviewLayout.addView(answerView);
                 }
             }
-        }
-        else {
+        } else {
             String noFlowchart = getString(R.string.flowchart_not_found);
             textFlowchart.setText(noFlowchart);
         }
@@ -221,11 +218,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
         //Set the location
         Location location = report.getLocation();
-        if(location.getId() !=-1) {
+        if (location.getId() != -1) {
             String locName = location.getName();
             textLocation.setText(locName);
-        }
-        else {
+        } else {
             String noLocation = getString(R.string.location_not_found);
             textLocation.setText(noLocation);
         }
@@ -334,10 +330,10 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         //Set appointment creator view
         String creatorLabel = getString(R.string.creator_label);
         String creator = appointment.getCreator().getPerson().toString();
-        if(creator != null) {
+        if (creator != null) {
             TextView creatorText = (TextView) view.findViewById(R.id.appointment_creator_text);
             creatorText.setText(creatorLabel + ": " + creator);
-        }else{
+        } else {
             TextView creatorText = (TextView) view.findViewById(R.id.appointment_creator_text);
             creatorText.setText(creatorLabel + ": " + "Admin");
         }
@@ -468,13 +464,12 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         String notes = notesEdit.getText().toString().trim();
         boolean validName = !name.equals("");
         boolean validAppointment = saveAppointment();
-        if(validName && validAppointment) {
+        if (validName && validAppointment) {
             report.setName(name);
             report.setNotes(notes);
             this.onDetailsChanged();
             reportEditDialog.dismiss();
-        }
-        else {
+        } else {
             String message = getString(R.string.empty_name);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }

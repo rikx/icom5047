@@ -23,10 +23,11 @@ public class Person implements Comparable<Person> {
         this.dbHelper = dbHelper;
         invoke(personID);
     }
+
     // this method is only for the use of DBHelper
     public Person(long id, String first_name, String initial, String last_name1, String last_name2, DBHelper db) {
         this.dbHelper = db;
-        if(id > 0){
+        if (id > 0) {
             this.id = id;
             this.firstName = first_name;
             this.midleName = initial;
@@ -183,7 +184,7 @@ public class Person implements Comparable<Person> {
         values.put(DBSchema.PERSON_MIDDLE_INITIAL, initial);
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
-        if(id > 0)
+        if (id > 0)
             midleName = initial;
         db.close();
         return id;
@@ -216,7 +217,7 @@ public class Person implements Comparable<Person> {
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
-        if(id > 0)
+        if (id > 0)
             lastName1 = name;
         return id;
     }
@@ -243,7 +244,7 @@ public class Person implements Comparable<Person> {
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
-        if(id > 0)
+        if (id > 0)
             lastName2 = name;
         return id;
     }
@@ -271,7 +272,7 @@ public class Person implements Comparable<Person> {
 //            db.close();
 //            cursor.close();
 //        }
-        return (firstName + " " + ("".equals(midleName) ? "" : midleName + " ") + lastName1 +" "+ lastName2).trim();
+        return (firstName + " " + ("".equals(midleName) ? "" : midleName + " ") + lastName1 + " " + lastName2).trim();
     }
 
     public String getEmail() {

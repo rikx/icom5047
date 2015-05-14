@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 /**
  * Represents the activity that performs all functions related to authenticating the user
@@ -26,6 +25,16 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     private String password = null;
     private DBHelper dbHelper;
     private NetworkHelper networkHelper;
+
+    public static void deleteLogin(Context context) {
+        //Delete the saved login credentials
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(context.getString(R.string.key_saved_username));
+        editor.remove(context.getString(R.string.key_saved_password));
+        editor.apply();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,16 +107,14 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         EditText editPassword = (EditText) findViewById(R.id.field_password);
         username = editUsername.getText().toString();
         password = editPassword.getText().toString();
-        if(password.length() >= 72) {
+        if (password.length() >= 72) {
             String message = getString(R.string.long_password_error);
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
-        else if(password.length() == 0) {
+        } else if (password.length() == 0) {
 
             String message = getString(R.string.empty_password_error);
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
-        else if(!attemptLogin()) {
+        } else if (!attemptLogin()) {
             editPassword.setText("");
         }
     }
@@ -136,16 +143,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
             password = sPassword;
             attemptLogin();
         }
-    }
-
-    public static void deleteLogin(Context context) {
-        //Delete the saved login credentials
-        SharedPreferences sharedPref = context.getSharedPreferences(
-                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.remove(context.getString(R.string.key_saved_username));
-        editor.remove(context.getString(R.string.key_saved_password));
-        editor.apply();
     }
 
     private boolean attemptLogin() {
@@ -179,7 +176,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         String key = "";
         String success = "";
         String result = intent.getStringExtra(""); //TODO: set key
-        if(key.equals(success)) successfulLogin();
+        if (key.equals(success)) successfulLogin();
         else failedLogin();
     }
 

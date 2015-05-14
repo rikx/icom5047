@@ -2,10 +2,6 @@ package com.rener.sea;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,11 +63,10 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
         textPhoneNumber = (TextView) view.findViewById(R.id.person_text_phone);
         editPhoneNumber = (EditText) view.findViewById(R.id.person_edit_phone_number);
 
-        if(person != null) {
+        if (person != null) {
             setDataViews();
             flipper.setDisplayedChild(SHOW_LAYOUT);
-        }
-        else {
+        } else {
             flipper.setDisplayedChild(EDIT_LAYOUT);
         }
 
@@ -82,7 +77,7 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Toolbar tb = ((MainActivity)getActivity()).getContextToolbar();
+        Toolbar tb = ((MainActivity) getActivity()).getContextToolbar();
         options = tb.getMenu();
         options.clear();
         getActivity().getMenuInflater().inflate(R.menu.person_actions, options);
@@ -111,10 +106,9 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
                 flipToEditLayout();
                 break;
             case R.id.save_person_action:
-                if(person != null) {
+                if (person != null) {
                     savePerson();
-                }
-                else {
+                } else {
                     saveNewPerson();
                 }
                 break;
@@ -125,7 +119,7 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
     @Override
     public boolean onDetailsChanged() {
         int displayed = flipper.getDisplayedChild();
-        if(viewCreated && displayed == SHOW_LAYOUT) {
+        if (viewCreated && displayed == SHOW_LAYOUT) {
             setDataViews();
             return true;
         }
@@ -195,13 +189,12 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
 
         //Validate name
         boolean validName = (!strFirstName.equals("") && !strLastName1.equals(""));
-        if(!validName) {
+        if (!validName) {
             String message = "";
             if (strFirstName.equals("")) {
                 editFirstName.setText("");
                 message = getString(R.string.empty_first_name);
-            }
-            else if (strLastName1.equals("")) {
+            } else if (strLastName1.equals("")) {
                 editLastName1.setText("");
                 message = getString(R.string.empty_last_name);
             }
@@ -211,7 +204,7 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
 
         //Validate email
         boolean validEmail = strEmail.matches(EMAIL_REGEX) || strEmail.isEmpty();
-        if(!validEmail) {
+        if (!validEmail) {
             String message = getString(R.string.invalid_email);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
@@ -242,7 +235,7 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
     }
 
     private void savePerson() {
-        if(getFields()) {
+        if (getFields()) {
             setDataViews();
             flipToShowLayout();
             //Notify the activity that data has changed
@@ -259,17 +252,17 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
         String strEmail = editEmail.getText().toString();
         String strPhone = editPhoneNumber.getText().toString();
 
-        if(!strFirstName.equals("") && !strLastName1.equals("")) {
+        if (!strFirstName.equals("") && !strLastName1.equals("")) {
             //TODO: create the new person
         }
     }
 
     private void sendEmail() {
         String email = textEmail.getText().toString();
-        if(!email.equals("")) {
+        if (!email.equals("")) {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("message/rfc822");
-            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{email});
+            i.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
             try {
                 startActivity(Intent.createChooser(i, "Send mail..."));
             } catch (android.content.ActivityNotFoundException ex) {
