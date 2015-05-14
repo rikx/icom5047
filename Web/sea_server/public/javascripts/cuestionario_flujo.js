@@ -122,6 +122,7 @@ $(document).ready(function(){
 	      	sequence_number = 0;
 	      	// save new report id
 	      	$question_panel_answers.attr('data-report-id', data.report_id);
+	      	$('#btn_cancel').attr('data-report-id', data.report_id);
 			    // populate question panel
 					update_next_question($question_panel_question.attr('data-question-id'));
 					//
@@ -159,9 +160,23 @@ $(document).ready(function(){
 			case 'CONDITIONAL': {
 				the_answer = $('#answer_conditional_text');
 				has_user_input = true;
-				regex_conditional(the_answer.val(), the_answer);
+				if(validate_number_input(the_answer.val())){
+					regex_conditional(the_answer.val(), the_answer);
+				} else {
+					return;
+				}
 				break;
 			}
+		}
+
+		function validate_number_input(user_input){
+			var regex=/\-?\d+(\.\d+)?/;
+    	if(!user_input.match(regex)){
+        return true;
+    	} else {
+    		alert("Escriba solo números son válidos");
+        return false;
+    	}
 		}
 
 		// check if user selected or wrote an answer
@@ -174,7 +189,7 @@ $(document).ready(function(){
 		}
 
 		if(answer_value === null || answer_value === undefined || answer_value === '') {
-			alert("Por favor seleccione una contestacion o escriba en el espacio proveido.");
+			alert("Por favor seleccione una contestación o escriba en el espacio proveido. En el caso de preguntas donde se pide un número asegurese de escribir un número entero o decimal.");
 		} else {
 			// create new question-answer pair to post in db
 			var question_answer_pair = {
@@ -345,6 +360,27 @@ $(document).ready(function(){
 				// redirect to user home
 				window.location.href = '/users';
 		}
+	});
+
+	/* */
+	$('#btn_cancel').on('click', function(){
+		var report_id = $('#btn_cancel').attr("data-report-id");
+		$.ajax({
+		  url: "http://localhost:3000/cuestionario/flow/" + report_id,
+		  method: "DELETE",
+		  success: function(data) {
+		    alert("Cuestionario cancelado");
+				if(typeof data.redirect == 'string') {
+			    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+			  }
+		  },
+		  error: function( xhr, status, errorThrown ) {
+		    alert( "Sorry, there was a problem!" );
+		    console.log( "Error: " + errorThrown );
+		    console.log( "Status: " + status );
+		    console.dir( xhr );
+		  }
+		});
 	});
 
 	/* Save Survey and redirect to report page */
