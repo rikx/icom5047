@@ -24,12 +24,24 @@ public class Report implements Comparable<Report> {
     private Date date;
     private String type = "";
     private Path path;
+    private String name = null;
     private Appointment appointment = null;
     private DBHelper dbHelper = null;
 
     public Report(long id, DBHelper db) {
         this.dbHelper = db;
         invoke(id);
+    }
+    // this method is only for the use of DBHelper
+    public Report(long id,String name, DBHelper db) {
+        //        String name = getName();
+        //        String loc = getLocation().toString();
+        //        String date = getDate().toString();
+        this.dbHelper = db;
+        if(id > 0){
+            this.id = id;
+            this.name = name;
+        }
     }
 
     public Report(long report_id, long creator_id, long location_id, long subject_id, long flowchart_id, String note, Calendar date, DBHelper dbHelper) {
@@ -86,12 +98,14 @@ public class Report implements Comparable<Report> {
 
     private boolean invoke(long user_id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
+        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID,DBSchema.REPORT_NAME},
                 DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if (!cursor.isNull(0))
                 this.id = cursor.getLong(0);
+            if (!cursor.isNull(1))
+                this.name = cursor.getString(1);
             db.close();
             cursor.close();
             return true;
@@ -114,6 +128,7 @@ public class Report implements Comparable<Report> {
             cursor.moveToFirst();
             if (!cursor.isNull(0))
                 name = cursor.getString(0);
+                this.name = name;
             db.close();
             cursor.close();
         }
@@ -126,6 +141,9 @@ public class Report implements Comparable<Report> {
         values.put(DBSchema.REPORT_NAME, name);
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+        if(id>0){
+            this.name = name;
+        }
         db.close();
         return id;
     }

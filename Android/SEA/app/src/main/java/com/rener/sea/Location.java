@@ -21,12 +21,13 @@ public class Location implements Comparable<Location> {
         invoke(id);
     }
 
-    // this method is only for the ude of DBHelper
-    public Location(long id,String name, DBHelper db) {
+    // this method is only for the use of DBHelper
+    public Location(long id,long address_id,String name, DBHelper db) {
         this.dbHelper = db;
         if(id > 0) {
+            this.id = id;
             dummy = name;
-            invoke(id);
+            address = new Address(address_id, dbHelper);
         }
     }
 
