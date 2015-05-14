@@ -3,9 +3,11 @@ jsPlumb.ready(function() {
 	// stores current elements in the jsPlumb container
 	var elements_array = [];
 	var connections_array = [];
-	var states_array = [];
-	var lines_array = [];
 
+ 	var j =0; // item id
+ 	var trigger = true;
+
+	jsPlumb.setContainer($('#container_plumbjs'));
 	$('#container_plumbjs').resizable();
 
 	// Return to admin page button
@@ -13,11 +15,11 @@ jsPlumb.ready(function() {
 		window.location.href = '/users';
 	});
 
-  // Close info panel
+/*  // Close info panel
   $('#btn_close_info_panel').on('click', function(){
   	$('#info_panel').hide();
   	remove_active_class($preguntas_list);
-  });
+  });*/
 
   $('#btn_edit_item').on('click', function(){
 		$('#info_panel').hide();
@@ -65,6 +67,7 @@ jsPlumb.ready(function() {
 
     // update element in array
     this_element.name = new_text;
+    this_element.state = $('#'+this_element.id).prop('outerHTML');
     replace(this_element, elements_array);
 
 
@@ -93,8 +96,28 @@ jsPlumb.ready(function() {
     var this_id = $(this).attr('data-id');
 
     var $this_element = $('#'+this_id);
-    jsPlumb.detachAllConnections($this_element);
-    $this_element.remove(); 
+/*		// connections
+		var source_conns = jsPlumb.getConnections({source: this_id});
+		console.log(source_conns)
+		for (var i = 0; i < source_conns.length; i++)
+			jsPlumb.detach(source_conns[i]);
+
+		var target_conns = jsPlumb.getConnections({target: this_id});
+		console.log(target_conns)
+		for (var i = 0; i < target_conns.length; i++)
+			jsPlumb.detach(target_conns[i]);
+
+		// endpoints
+		deleteEmptyEndpoints(this_id);
+
+		// dom element
+   	$this_element.remove(); */
+
+   	// alternate delete
+   	//jsPlumb.detachAllConnections(this_id);
+		//jsPlumb.removeAllEndpoints(this_id);
+		//jsPlumb.detach(this_id);
+		jsPlumb.remove(this_id);
     
     // find connections where this element is a source or target and 
     // delete them
@@ -127,7 +150,7 @@ jsPlumb.ready(function() {
     populate_elements_list();
   });
 
-  /* Open info panel */
+	/* Open info panel */
   $preguntas_list.on('click', 'tr td a.show_info_elemento', function(e){
     // prevents link from firing
     e.preventDefault();
@@ -172,7 +195,7 @@ jsPlumb.ready(function() {
   	if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
 	  	var answers_content = '';
 	  	$.each(connections_array, function(i){
-	  		if(this_element.id == this.source){
+	  		if(this_element.c_id == this.source){
 	  			var label_text;
 	  			if(this_element.type == 'CONDITIONAL'){
 	  				console.log(this.label.substring(0,2))
@@ -186,12 +209,23 @@ jsPlumb.ready(function() {
 	  					case 'eq':
 	  						label_text = 'Igual que ' +this.label.substring(2);
 	  						break;
+	  					case 'ne':
+	  						label_text = 'No igual a ' +this.label.substring(2);
+	  						break;
 	  					case 'le':
 	  						label_text = 'Menor o igual que ' +this.label.substring(2);
 	  						break;
 	  					case 'ge':
 	  						label_text = 'Mayor o igual que ' +this.label.substring(2);
 	  						break;
+  						case 'ra':
+  							label_text = 'En rango '+this.label.substring(2);
+  							break;
+  						case '!r':
+  							label_text = 'Afuera del rango';
+  							break;
+	  					default:
+	  						label_text = 'ERROR: ha escrito condicion incorrectamente';
 		  			}
 		  		} else {
 						label_text = this.label;
@@ -226,7 +260,8 @@ jsPlumb.ready(function() {
 	    table_content += "show_info_elemento' href='#', data-id='"+this.id+"'>Elemento "+this.id.substring(5)+': '+this.name+"</a></td></tr>";
 		});
 
-			$('#preguntas_list').html(table_content);
+		$('#preguntas_list').html(table_content);
+		
 		if(elements_array.length >0){
 			populate_info_panel(elements_array[0]);
 		}
@@ -256,7 +291,7 @@ jsPlumb.ready(function() {
  		for(var i=0; i<elements_array.length; i++){
  			if(elements_array[i].type == 'START'){
  				for(var x=0; x<connections_array.length; x++){
- 					if(elements_array[i].id == connections_array[x].source){
+ 					if(elements_array[i].c_id == connections_array[x].source){
  						first_item = connections_array[x].target; // 'START' item's target
  					}	
  				}
@@ -289,7 +324,7 @@ jsPlumb.ready(function() {
   		multi_count = 0;
   		for(var j = 0; j < connections_array.length; j++){
   			if(this_element.type == 'START'){
-  				if(this_element.id == connections_array[j].source){
+  				if(this_element.c_id == connections_array[j].source){
 	  				start_count++;
 	  			}
   			} else if(this_element.type == 'END'){
@@ -297,7 +332,7 @@ jsPlumb.ready(function() {
   					end_count++;
   				}
   			} else {
-  				if(this_element.id == connections_array[j].source){
+  				if(this_element.c_id == connections_array[j].source){
   					if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
   						if(multi_count < 2){
   							if(multi_count < 1){
@@ -327,55 +362,85 @@ jsPlumb.ready(function() {
   }
 
   /* */
-/*  function check_conditionals(){
-  	var this_element;
-  	var element_conns = [];
-  	for(var i = 0; i < elements_array.length; i++){
-  		this_element = elements_array[i];
-  		if(this_element.type == 'CONDITIONAL'){
-  			for(var j = 0; j < connections_array.length; j++){
-  				if(this_element.id == connections_array[j].source){
-  					element_conns.push(connections_array[j].label); 
-  				}
-  			}
-  			// if lt other must be ge
-	  		if(element_conns[0].substring(0,2) == 'lt' && element_conns[0].substring(0,2) != 'ge'){
-	  			return false;
-	  		}
-  			// if gt other must be le
-	  		if(element_conns[0].substring(0,2) == 'gt' && element_conns[0].substring(0,2) != 'le'){
-	  			return false;
-	  		}
-  			// if eq other must be ne
-	  		if(element_conns[0].substring(0,2) == 'eq' && element_conns[0].substring(0,2) != 'ne'){
-	  			return false;
-	  		}
-  			// if lt other must be ge
-	  		if(element_conns[0].substring(0,2) == 'ge' && element_conns[0].substring(0,2) != 'lt'){
-	  			return false;
-	  		}
-  			// if lt other must be ge
-	  		if(element_conns[0].substring(0,2) == 'le' && element_conns[0].substring(0,2) != 'gt'){
-	  			return false;
-	  		}
-  			// if lt other must be ge
-	  		if(element_conns[0].substring(0,2) == 'ne' && element_conns[0].substring(0,2) != 'eq'){
-	  			return false;
-	  		}
-  			// if rg other must be 'not'
-	  		if(element_conns[0].substring(0,2) == 'rg' && !(element_conns[0].substring(0,2) != 'not')){
-	  			return false;
-	  		}
-  			// if 'not' other must be rg
-	  		if(element_conns[0].substring(0,2) == 'not' && !(element_conns[0].substring(0,2) != 'rg')){
-	  			return false;
-	  		}
-	  		return true;
-  		}
-  	}
-  }*/
+  function check_conditionals(){
+    var this_element;
+    var element_conns = [];
+    for(var i = 0; i < elements_array.length; i++){
+      this_element = elements_array[i];
+      if(this_element.type == 'CONDITIONAL'){
+        for(var j = 0; j < connections_array.length; j++){
+          if(this_element.c_id == connections_array[j].source){
+            element_conns.push(connections_array[j].label); 
+          }
+        }
+        var first_cond = element_conns[0].substring(0,2);
+        var second_cond = element_conns[1].substring(0,2);
+        var first_number, second_number, temp;
+        if(first_cond == 'ra' && second_cond == '!r'){
+          var commma_index = element_conns[0].indexOf(',');
+          temp = first_cond.substring(3,commma_index);
+          first_number = parseFloat(temp, '10');
+          temp = first_cond.substring(commma_index+1,element_conns[0].length-1);
+          second_number = parseFloat(temp, '10');
+          if(first_number == second_number){
+            return false;
+          }
+        } else if(first_cond == '!r' && second_cond == 'ra'){
+          var commma_index = element_conns[1].indexOf(',');
+          temp = first_cond.substring(3,commma_index);
+          first_number = parseFloat(temp, '10');
+          temp = first_cond.substring(commma_index+1,element_conns[1].length-1);
+          second_number = parseFloat(temp, '10');
+          if(first_number == second_number){
+            return false;
+          }
+        } else {
+          first_number = parseFloat(element_conns[0].substring(2), '10');
+          second_number = parseFloat(element_conns[1].substring(2), '10');
+          console.log(element_conns);
+          console.log(element_conns[0].substring(2));
+          console.log(first_cond + ', ' + second_cond + ', '+ first_number + ', '+ second_number);
+          if(first_number != second_number){
+            return false;
+          }
+        }
 
-
+        // if lt other must be ge
+        if(first_cond == 'lt' && second_cond != 'ge'){
+          return false;
+        }
+        // if gt other must be le
+        if(first_cond == 'gt' && second_cond != 'le'){
+          return false;
+        }
+        // if eq other must be ne
+        if(first_cond == 'eq' && second_cond != 'ne'){
+          return false;
+        }
+        // if lt other must be ge
+        if(first_cond == 'ge' && second_cond != 'lt'){
+          return false;
+        }
+        // if lt other must be ge
+        if(first_cond == 'le' && second_cond != 'gt'){
+          return false;
+        }
+        // if lt other must be ge
+        if(first_cond == 'ne' && second_cond != 'eq'){
+          return false;
+        }
+        // if ra other must be !ra
+        if(first_cond == 'ra' && second_cond != '!r'){
+          return false;
+        }
+        // if !ra other must be ra
+        if(first_cond == '!r' && second_cond != 'ra'){
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
   /* POSTs new flowchart information */
   $('#btn_submit').on('click', function(){
@@ -394,40 +459,44 @@ jsPlumb.ready(function() {
   		// check that endpoints are valid
 	    if(end_points.first_id != -1 && end_points.end_id != -1){
 	    	if(check_item_connections()){
-					// add missing flowchart fields
-					new_flowchart.first_id = end_points.first_id;
-					new_flowchart.end_id = end_points.end_id;
-					new_flowchart.status = $("input[name=ready_radios]:checked").val();
+	    		if(check_conditionals()){
+						// add missing flowchart fields
+						new_flowchart.first_id = end_points.first_id;
+						new_flowchart.end_id = end_points.end_id;
+						new_flowchart.status = $("input[name=ready_radios]:checked").val();
 
-					// ajax call to post new ganadero
-					$.ajax({
-					  url: "http://localhost:3000/users/admin/cuestionarios/crear",
-					  method: "POST",
-					  data: JSON.stringify({
-					  	info: new_flowchart,
-					  	items: elements_array,
-					  	options: connections_array
-					  }),
-					  contentType: "application/json",
-					  dataType: "json",
+						// ajax call to post new ganadero
+						$.ajax({
+						  url: "http://localhost:3000/users/admin/cuestionarios/crear",
+						  method: "POST",
+						  data: JSON.stringify({
+						  	info: new_flowchart,
+						  	items: elements_array,
+						  	options: connections_array
+						  }),
+						  contentType: "application/json",
+						  dataType: "json",
 
-					  success: function(data) {
-					    if(data.exists){
-					      alert("Cuestionario con este nombre y versión ya existe.");
-					    } else {
-					      alert("Cuestionario ha sido añadido al sistema.");
-					     	if(typeof data.redirect == 'string') {
-							    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
-							  }
-					    }
-					  },
-					  error: function( xhr, status, errorThrown ) {
-					    alert( "Sorry, there was a problem!" );
-					    console.log( "Error: " + errorThrown );
-					    console.log( "Status: " + status );
-					    console.dir( xhr );
-					  }
-					});	
+						  success: function(data) {
+						    if(data.exists){
+						      alert("Cuestionario con este nombre y versión ya existe.");
+						    } else {
+						      alert("Cuestionario ha sido añadido al sistema.");
+						     	if(typeof data.redirect == 'string') {
+								    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+								  }
+						    }
+						  },
+						  error: function( xhr, status, errorThrown ) {
+						    alert( "Sorry, there was a problem!" );
+						    console.log( "Error: " + errorThrown );
+						    console.log( "Status: " + status );
+						    console.dir( xhr );
+						  }
+						});	
+	    		} else {
+	    			alert('Condicionales no estan escritos correctamente.');
+	    		}
 	    	} else {
 	    		alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
 	    	}
@@ -435,15 +504,12 @@ jsPlumb.ready(function() {
 	    	alert('Cuestionario no tiene elemento inicial o final, o estos tienen conecciones existentes.');
 	    }
 	  } else {
-	  	alert('Ingrese nombre y version de cuestionario e indique si el cuestionario está listo para uso');
+	  	alert('Ingrese nombre y version de cuestionario e indique si el cuestionario está listo para uso.');
 	  }
   });
 
-
- 	var j =0; // item id
- 	var trigger = true;
- 	jsPlumb.Defaults.Container = $('#container_plumbjs');
-
+ 	//jsPlumb.Defaults.Container = $('#container_plumbjs');
+	
  	$('#list_question_type').on('click', 'li a', function(e){
 		// prevents link from firing
 		e.preventDefault();
@@ -551,6 +617,9 @@ jsPlumb.ready(function() {
 
 			// append connect node to state item
 			var connect = $('<div>').addClass('connect_question');
+			connect.attr('id', 'connect' + j);
+			newState.attr('data-connect-id', 'connect' + j);
+
 			newState.append(connect);
 
 			//add new state item to container
@@ -571,7 +640,28 @@ jsPlumb.ready(function() {
 					endpoint:'Blank'
 				});				
 			}
-   
+   		
+			// create item object
+			var new_name = $('#'+newState.attr('id')).attr('data-state-name');
+			if(new_name == undefined){
+				new_name = 'Elemento sin texto';
+			}
+   		// initial add to the global array
+			var new_item = {
+				id: newState.attr('id'),
+				c_id: newState.attr('data-connect-id'),
+				name: new_name,
+				type: itemType,
+				state: $('#'+newState.attr('id')).prop('outerHTML')
+			};
+
+			if(containsObject(new_item, elements_array)) {
+			 	replace(new_item, elements_array);
+			} else {
+			 	elements_array.push(new_item);
+			}
+			populate_elements_list();
+
 			jsPlumb.draggable(newState, {
 				//containment: 'parent',
 				resizable: false,
@@ -584,31 +674,24 @@ jsPlumb.ready(function() {
 						// create item object
 						var this_name = $('#'+newState.attr('id')).attr('data-state-name');
 						if(this_name == undefined){
-							this_name = 'Elemento sin título'
+							this_name = 'Elemento sin texto'
 						}
 						var this_item = {
 							id: newState.attr('id'),
+							c_id: $('#'+newState.attr('id')).attr('data-connect-id'),
 							name: this_name,
 							type: itemType,
 							state: $('#'+newState.attr('id')).prop('outerHTML')
 						};
 
-						var state_item = {
-							id: newState.attr('id'),
-							type: itemType,
-							state: $('#'+newState.attr('id')).prop('outerHTML')
-						}
-
 						// check if item is already in array and updates it
 					  if(containsObject(this_item, elements_array)) {
 					   	replace(this_item, elements_array);
-					   	replace(state_item, states_array);
 					  } else {
 					   	elements_array.push(this_item);
-					   	states_array.push(state_item);
 						}
 						// populate elements list with new item
-						populate_elements_list();
+						//populate_elements_list();
 					}
 					jsPlumb.repaintEverything();
 				}
@@ -669,24 +752,17 @@ jsPlumb.ready(function() {
 						// create item object
 						var this_item = {
 							id: newState.attr('id'),
+							c_id: $('#'+newState.attr('id')).attr('data-connect-id'),
 							name: $('#'+newState.attr('id')).attr('data-state-name'),
 							type: itemType,
 							state: $('#'+newState.attr('id')).prop('outerHTML')
 						};
 
-						var state_item = {
-							id: newState.attr('id'),
-							type: itemType,
-							state: $('#'+newState.attr('id')).prop('outerHTML')
-						}
-
 						// check if item is already in array and updates it
 					  if(containsObject(this_item, elements_array)) {
 					   	replace(this_item, elements_array);
-					   	replace(state_item, states_array);
 					  } else {
 					   	elements_array.push(this_item);
-					   	states_array.push(state_item);
 						}
 			      // populate elements list with new element
 			      populate_elements_list();
@@ -695,7 +771,6 @@ jsPlumb.ready(function() {
 				// focuses on input field of the created element
 				stateName.focus();
 			}
-
 			// increase state id variable
 			j++; 
 		});
@@ -709,7 +784,8 @@ jsPlumb.ready(function() {
 
 	jsPlumb.bind("beforeDrop", function(connection) {
 		if(trigger){
-			var source_id = connection.sourceId;
+			var state_number = connection.sourceId.substring(7);
+			var source_id = "state"+state_number;
 			var target_id = connection.targetId;
 
 			//check if source and target are the same
@@ -739,9 +815,7 @@ jsPlumb.ready(function() {
 
 			// check source and target pair does not exist
 			var source_is_source = 0;
-			//var source_is_target = 0;
-			//var target_is_source = 0;
-			//var target_is_target = 0;
+
 			for(var z = 0; z<connections_array.length; z++){
 				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
 					return false;
@@ -749,21 +823,6 @@ jsPlumb.ready(function() {
 				if(source_id == connections_array[z].source){
 					source_is_source++;
 				}
-/*				if(source_id == connections_array[z].target){
-					source_is_target++;
-				}
-				if(target_id == connections_array[z].source){
-					target_is_source++;
-				}
-				if(target_id == connections_array[z].target){
-					target_is_target++;
-				}*/
-/*				// check if target item already is a target in another connection
-				if(target_id == connections_array[z].target){
-					if(target_type != 'END' && target_type != 'RECOM'){
-						return false;
-					}
-				}*/
 			}
 
 			if(source_type == 'OPEN' && source_is_source == 1){
@@ -805,7 +864,8 @@ jsPlumb.ready(function() {
 			
 			if(trigger){
 				var this_connection, source_type, target_type, mylabel;
-				var source_id = info.sourceId;
+				var state_number = info.sourceId.substring(7);
+				var source_id = "state"+state_number;
 				var target_id = info.targetId;
 
 				for(var y = 0; y<elements_array.length; y++){
@@ -838,10 +898,9 @@ jsPlumb.ready(function() {
 				};
 
 				connections_array.push(this_connection);
-				lines_array.push(this_connection);
 			} else if(!trigger){
-				//var this_connection, mylabel;
-				var source_id = info.sourceId;
+				var state_number = info.sourceId.substring(7);
+				var source_id = "state"+state_number;
 				var target_id = info.targetId;
 				console.log('Creating connection: '+source_id+ ' to '+target_id);
 /*

@@ -243,7 +243,7 @@ $(document).ready(function(){
 			reg_ex = /lt\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
-				comp_value = parseInt(temp, '10');
+				comp_value = parseFloat(temp, '10');
 				if(user_input < comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
@@ -254,7 +254,7 @@ $(document).ready(function(){
 			reg_ex = /gt\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
-				comp_value = parseInt(temp, '10');
+				comp_value = parseFloat(temp, '10');
 				if(user_input > comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
@@ -265,7 +265,7 @@ $(document).ready(function(){
 			reg_ex = /eq\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
-				comp_value = parseInt(temp, '10');
+				comp_value = parseFloat(temp, '10');
 				if(user_input == comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
@@ -276,7 +276,7 @@ $(document).ready(function(){
 			reg_ex = /ne\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
-				comp_value = parseInt(temp, '10');
+				comp_value = parseFloat(temp, '10');
 				if(user_input != comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
@@ -287,7 +287,7 @@ $(document).ready(function(){
 			reg_ex = /le\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
-				comp_value = parseInt(temp, '10');
+				comp_value = parseFloat(temp, '10');
 				if(user_input <= comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
@@ -298,7 +298,7 @@ $(document).ready(function(){
 			reg_ex = /ge\-?\d+(\.\d+)?/;
 			if(reg_ex.test(this.answer)){
 				temp = this.answer.match(/\-?\d+(\.\d+)?/)[0];
-				comp_value = parseInt(temp, '10');
+				comp_value = parseFloat(temp, '10');
 				if(user_input >= comp_value){
 					input_field.attr('data-answer-id', this.option_id);
 					input_field.attr('data-next-id', this.next_id);
@@ -311,10 +311,10 @@ $(document).ready(function(){
 					var commma_index = this.answer.indexOf(',');
 					var left_value;
 					temp = this.answer.substring(3,commma_index);
-					left_value = parseInt(temp, '10');
+					left_value = parseFloat(temp, '10');
 					var right_value;
 					temp = this.answer.substring(commma_index+1,this.answer.length-1);
-					right_value = parseInt(temp, '10');
+					right_value = parseFloat(temp, '10');
 
 				if(user_input >= left_value && user_input <= right_value){
 					input_field.attr('data-answer-id', this.option_id);

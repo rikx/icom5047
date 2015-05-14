@@ -403,9 +403,9 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  			for(var i=0; i < flowchart_items.length; i++){
 		  				this_item = flowchart_items[i];
 		  				// insert this_item
-							client.query('INSERT into item (flowchart_id, state_id, label, type, state) VALUES ($1, $2, $3, $4, $5) \
+							client.query('INSERT into item (flowchart_id, state_id, label, type, state, connect_id) VALUES ($1, $2, $3, $4, $5, $6) \
 														RETURNING item_id, state_id', 
-														[flowchart_id, this_item.id, this_item.name, this_item.type, this_item.state], function(err, result) {
+														[flowchart_id, this_item.id, this_item.name, this_item.type, this_item.state, this_item.c_id], function(err, result) {
 								if(err) {
 									return console.error('error running query', err);
 								} else {
@@ -439,7 +439,7 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  			}
 						
 						// Get all items associated with this flowchart
-						client.query('SELECT item_id, state_id FROM item WHERE flowchart_id = $1', 
+						client.query('SELECT item_id, state_id, connect_id FROM item WHERE flowchart_id = $1', 
 													[flowchart_id], function(err, result){
 							if(err) {
 								return console.error('error running query', err);
@@ -454,7 +454,7 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 				  				// find matching source and target
 				  				var this_source, this_target;
 				  				items_array.forEach(function(item){
-				  					if(item.state_id == this_option.source){
+				  					if(item.connect_id == this_option.source){
 				  						this_source = item.item_id;
 				  					} else if(item.state_id == this_option.target){
 				  						this_target = item.item_id;
@@ -520,7 +520,7 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 				}
 	 		});
 	 		// get items
-	 		client.query("SELECT flowchart_id, item_id, label AS name, type, state_id AS id, state \
+	 		client.query("SELECT flowchart_id, item_id, label AS name, type, state_id AS id, state, connect_id \
 										FROM item \
 										WHERE flowchart_id = $1", 
 	 									[flowchart_id], function(err, result){
@@ -539,7 +539,7 @@ router.get('/admin/cuestionarios/:id', function(req, res, next) {
 																WHERE flowchart_id = $1), \
 													path_sources AS (SELECT flowchart_id, option.label, parent_id, next_id, \
 																	CASE \
-																	WHEN item_id = parent_id THEN state_id \
+																	WHEN item_id = parent_id THEN connect_id \
 																	END AS source \
 																FROM option \
 																INNER JOIN item ON item.item_id = option.parent_id \
