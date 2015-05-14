@@ -132,7 +132,9 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
-    remove_active_class($localizaciones_list);
+    //remove_active_class($localizaciones_list);
+    $('#info_panel').show();
+
   });
 
   /* Close add panel */

@@ -283,7 +283,10 @@ jsPlumb.ready(function() {
  		}
  	});
 
+ 	/* check if labels have the same name */
+ 	function check_equal_labels(){
 
+ 	}
  	/* gets first and end item ids from elements_array, if they exist */
  	function check_for_endpoints(){
  		var first_item = -1

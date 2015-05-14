@@ -129,7 +129,8 @@ $(document).ready(function(){
   /* Close edit panel */
   $('#btn_close_edit_panel').on('click', function(){
     $('#edit_panel').hide();
-    remove_active_class($ganaderos_list);
+    //remove_active_class($ganaderos_list);
+    $('#info_panel').show();
   });
 
   /* Close info panel */
@@ -269,9 +270,9 @@ $(document).ready(function(){
   {
     alert("Por favor ingrese su primer apellido.");
   }
-  else if(!new_ganadero.ganadero_email.trim().length > 0)
+  else if(!/^([A-Z0-9a-z\-_\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([A-Z0-9a-z.-]+)\.[A-Z0-9a-z.-]{2,}))$/.test(new_ganadero.ganadero_email.trim()) && !new_ganadero.ganadero_email.trim().length == 0)
   {
-    alert("Por favor ingrese su correo electrónico");
+    alert("Correo electrónico no es válido");
   }
   else if(new_ganadero.ganadero_email.trim().length > 255)
   {
