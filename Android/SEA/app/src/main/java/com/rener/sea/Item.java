@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class Item {
 
+    public static final String START = "START";
     public static final String RECOMMENDATION = "RECOM";
     public static final String END = "END";
     public static final String BOOLEAN = "BOOLEAN";

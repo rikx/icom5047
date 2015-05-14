@@ -54,12 +54,14 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private Path path;
     private LinearLayout progressLayout;
     private boolean surveyEnded = false;
-    private MenuItem submitItem;
+    private MenuItem submitOption;
     private Button nextButton;
     private RadioGroup currentGroup;
     private int groupChecked = -1;
     private EditText currentText;
     private AlertDialog confirmDiscardDialog;
+    private boolean openSurvey;
+    private List<Item> openSurveyItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         Menu options = toolbar.getMenu();
         getMenuInflater().inflate(R.menu.survey_activity_actions, options);
         toolbar.setOnMenuItemClickListener(this);
-        submitItem = options.findItem(R.id.save_report);
+        submitOption = options.findItem(R.id.save_report);
 
         //Set the static views
         editName = (EditText) findViewById(R.id.survey_edit_name);
@@ -93,7 +95,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         //Check if a new report must be created
         Intent intent = getIntent();
+        openSurvey = intent.getBooleanExtra("OPEN_SURVEY", false);
         long id = intent.getLongExtra("REPORT_ID", -1);
+        // Continue report code is here if it gets implemented
         if(id == -1) { //report is new
             report = new Report(dbHelper, setCreator());
         }
@@ -239,8 +243,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         path = new Path(report.getId(), dbHelper);
         report.setPath(path);
         progressLayout.removeAllViews();
-        nextButton.setVisibility(View.VISIBLE);
-        newQuestion(flowchart.getFirst());
+        if(openSurvey) {
+            startOpenSurvey(flowchart);
+        }
+        else {
+            nextButton.setVisibility(View.VISIBLE);
+            newQuestion(flowchart.getFirst());
+        }
     }
 
     private void newQuestion(Item question) {
@@ -250,12 +259,14 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         int sequence = path.size() + 1;
         textQuestion.setText(sequence + ". " + question.getLabel());
         textQuestion.setPadding(0, 30, 0, 0);
+        long id = question.getId();
         String type = question.getType();
         switch (type) {
             case Item.BOOLEAN:
             case Item.MULTIPLE_CHOICE:
                 progressLayout.addView(textQuestion);
                 currentGroup = new RadioGroup(this);
+                currentGroup.setTag(id);
                 currentGroup.setOrientation(RadioGroup.VERTICAL);
                 currentGroup.setOnCheckedChangeListener(this);
                 groupChecked = -1;
@@ -271,6 +282,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             case Item.OPEN: {
                 progressLayout.addView(textQuestion);
                 currentText = new EditText(this);
+                currentText.setTag(id);
                 currentText.setInputType(InputType.TYPE_CLASS_TEXT);
                 currentText.setHint(getString(R.string.open_hint));
                 progressLayout.addView(currentText);
@@ -279,6 +291,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             case Item.CONDITIONAL: {
                 progressLayout.addView(textQuestion);
                 currentText = new EditText(this);
+                currentText.setTag(id);
                 //Set this field to allow signed decimals
                 currentText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL
                         | InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -307,7 +320,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                         spinnerLocation.getSelectedItemPosition() != 0 &&
                         spinnerFlowchart.getSelectedItemPosition() != 0 &&
                         surveyEnded);
-        submitItem.setVisible(submittable);
+        submitOption.setVisible(submittable);
 
     }
 
@@ -363,7 +376,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             questionAnswered(option, input);
         } else if (type.equals(Item.CONDITIONAL)) {
             currentText.setEnabled(false);
-            double d = Double.valueOf(input);
+            double d = Double.valueOf(input); //TODO: validate this?
             Option option = handleConditional(d, item.getOptions());
             questionAnswered(option, input);
         }
@@ -412,13 +425,20 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private void submit() {
 
         //Finish the report
-        report.setPath(path);
         String name = editName.getText().toString().trim();
         report.setName(name);
         String notes = editNotes.getText().toString().trim();
         report.setNotes(notes);
 
-        report.setCompleted();
+        //This is where flow and open surveys diverge on submit
+        if(!openSurvey) {
+            report.setPath(path);
+            report.setCompleted();
+        }
+        else {
+            //TODO: open survey submit goes here
+            submitOpenSurvey();
+        }
 
         //Finish the activity
         startActivity(new Intent(this, MainActivity.class));
@@ -514,5 +534,49 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             confirmDiscardDialog = builder.create();
         }
         confirmDiscardDialog.show();
+    }
+
+    private void startOpenSurvey(Flowchart flowchart) { //TODO: TEST THIS
+        List<Item> items = flowchart.getItems();
+        for(Item i : items) {
+            String type = i.getType();
+            boolean displayItem = !type.equals(Item.RECOMMENDATION) && !type.equals(Item.END) &&
+                    !type.equals(Item.START);
+            if(displayItem) {
+                openSurveyItems.add(i);
+                newQuestion(i);
+            }
+        }
+        surveyEnded = true;
+        checkSubmittable();
+    }
+
+    private void submitOpenSurvey() {
+        //TODO: submit open survey
+        for(int i=0; i<openSurveyItems.size(); i++) { //i needs to match the sequence number
+            Item item = openSurveyItems.get(i);
+            String type =item.getType();
+            long id = item.getId();
+            switch (type) {
+                case Item.MULTIPLE_CHOICE:
+                    RadioGroup radioGroup = (RadioGroup) progressLayout.findViewWithTag(id);
+                    int checked = radioGroup.getCheckedRadioButtonId();
+                    Option option = item.getOptions().get(checked);
+                    path.addEntry(option);
+                    break;
+                case Item.OPEN:
+                    EditText openEdit = (EditText) progressLayout.findViewWithTag(id);
+                    String openInput = openEdit.getText().toString().trim();
+                    Option openOption = item.getOptions().get(0);
+                    path.addEntry(openOption, openInput);
+                    break;
+                case Item.CONDITIONAL:
+                    EditText condEdit = (EditText) progressLayout.findViewWithTag(id);
+                    String condInput = condEdit.getText().toString().trim(); //TODO: validate this?
+                    Option condOption = item.getOptions().get(0);
+                    path.addEntry(condOption, condInput);
+                    break;
+            }
+        }
     }
 }
