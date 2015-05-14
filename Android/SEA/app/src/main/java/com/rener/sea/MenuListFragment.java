@@ -82,6 +82,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
         clearSearchButton = (Button) view.findViewById(R.id.clearSearch);
         clearSearchButton.setOnClickListener(this);
         clearSearchButton.setVisibility(View.GONE);
+
         return view;
     }
 
@@ -103,13 +104,13 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
         if (type.equals(TYPE_PEOPLE)) {
             empty = getString(R.string.no_people);
             list = db.getAllPersons();
-            adapter = new ArrayAdapter<Person>(getActivity(),
-                    android.R.layout.simple_list_item_1, list);
+            adapter = new SimpleStringListAdapter(getActivity(), R.layout.simple_string_list_item,
+                    list);
         } else if (type.equals(TYPE_LOCATIONS)) {
             empty = getString(R.string.no_locations);
             list = db.getAllLocations();
-            adapter = new ArrayAdapter<Location>(getActivity(),
-                    android.R.layout.simple_list_item_1, list);
+            adapter = new SimpleStringListAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                    list);
         } else if (type.equals(TYPE_REPORTS)) {
             empty = getString(R.string.no_reports);
             list = db.getAllReports();
@@ -117,7 +118,8 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
         } else if(type.equals(TYPE_APPOINTMENTS)) {
             //TODO: finish this
             list = db.getAllAppointments();
-            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
+            adapter = new SimpleStringListAdapter(getActivity(), R.layout
+                    .simple_string_list_item, list);
         }
 
         setListAdapter(adapter);
@@ -173,7 +175,8 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE ;
         clearSearchButton.setVisibility(visibility);
-        //adapter.getFilter().filter(charSequence);
+        String key = editSearch.getText().toString().trim();
+        //adapter.getFilter().filter(key);
     }
 
     @Override
