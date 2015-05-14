@@ -171,6 +171,94 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 	});
 });
 
+/* GET Tomar Cuestionario Metodo Abierto
+ * Responds with take survey page for matching survey :id
+ */
+ router.get('/cuestionarios/open/:id', function(req, res, next) {
+ 	var cuestionario_id = req.params.id;
+ 	var locations_list;
+ 	var db = req.db;
+ 	var answers;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+ 		var query_config;
+ 		var user_id = req.session.user_id;
+ 		var user_type = req.session.user_type;
+
+ 		if(user_type == 'admin' || user_type == 'specialist'){
+ 			query_config = {
+ 				text: 'SELECT location_id, name AS location_name FROM location'
+ 			}
+ 		} else if(user_type	== 'agent'){
+ 			query_config = {
+ 				text: "SELECT location_id, name AS location_name FROM location WHERE agent_id = $1",
+ 				values: [user_id]
+ 			}
+ 		}
+
+		// query for all locations data
+		client.query(query_config, function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				locations_list = result.rows;
+			}
+		});
+						  				// insert this_option
+						  				client.query('SELECT flowchart.flowchart_id, item_id, option.label as answer_label, option_id \
+						  					FROM flowchart INNER JOIN item on \
+						  					flowchart.flowchart_id = item.flowchart_id \
+						  					INNER JOIN option on \
+						  					option.parent_id = item.item_id \
+ 						  					WHERE type != $1 \
+						  					AND type != $2 \
+						  					AND type != $3 \
+						  					AND flowchart.flowchart_id = $4', ['RECOM', 'END', 'START', cuestionario_id],  function(err, result) {
+						  						if(err) {
+						  							return console.error('error running query', err);
+						  						} else {
+						  							answers = result.rows;
+						  							console.log(answers);
+						  						}
+						  					});
+	  // query for flowchart info and first question
+	  client.query('SELECT flowchart.flowchart_id, item.label as question_label, item_id, type \
+	  	FROM flowchart INNER JOIN item on \
+	  	flowchart.flowchart_id = item.flowchart_id \
+	  	WHERE type != $1 \
+		AND type != $2 \
+		AND type != $3 \
+		AND flowchart.flowchart_id = $4', 
+	  	['RECOM', 'END', 'START', cuestionario_id], function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+
+	  	if(err) {
+	  		return console.error('error running query', err);
+	  	} else {
+	  		if(result.rowCount < 1){
+					res.redirect('/users'); // redirect since survey does not exist
+				} else{
+					//console.log(result.rows);
+					var current_user = {
+						user_id: req.session.user_id,
+						username: req.session.username
+					}
+					res.render('cuestionario_open', { 
+						title: 'Cuestionario Abierto', 
+						flowchart: result.rows, 
+						locations: locations_list, 
+						current_user: current_user,
+						options: answers 
+					});
+				}
+			}
+		});
+	});
+});
+
 /* 
  * GET Agente Home
  */
