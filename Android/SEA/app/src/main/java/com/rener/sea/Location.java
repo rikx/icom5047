@@ -21,6 +21,13 @@ public class Location implements Comparable<Location> {
         invoke(id);
     }
 
+    // this method is only for the ude of DBHelper
+    public Location(long id,String name, DBHelper db) {
+        this.dbHelper = db;
+        dummy = name;
+        this.id = id;
+    }
+
     public Location(long id, String name, long addressID, long ownerID, long managerID, String license, long agentID, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         //verify if exit
@@ -28,6 +35,9 @@ public class Location implements Comparable<Location> {
 
         } else {
             this.id = create(name, addressID, ownerID, managerID, license, agentID);
+            if(this.id>0){
+                dummy = name;
+            }
         }
     }
 
@@ -74,7 +84,7 @@ public class Location implements Comparable<Location> {
 
     private boolean invoke(long id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID},
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID,DBSchema.LOCATION_NAME},
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
@@ -82,6 +92,8 @@ public class Location implements Comparable<Location> {
                 this.id = cursor.getLong(0);
             if (!cursor.isNull(1))
                 this.address = new Address(cursor.getLong(1), dbHelper);
+            if (!cursor.isNull(2))
+                this.dummy = cursor.getString(2);
             db.close();
             cursor.close();
             return true;
@@ -96,20 +108,20 @@ public class Location implements Comparable<Location> {
 
     public String getName() {
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String name = null;
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_NAME},
-                DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            if (!cursor.isNull(0)) {
-                name = cursor.getString(0);
-            }
-            db.close();
-            cursor.close();
-        }
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String name = null;
+//        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_NAME},
+//                DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            if (!cursor.isNull(0)) {
+//                name = cursor.getString(0);
+//            }
+//            db.close();
+//            cursor.close();
+//        }
 
-        return name;
+        return dummy;
     }
 
     public long setName(String name) {
@@ -118,6 +130,8 @@ public class Location implements Comparable<Location> {
         values.put(DBSchema.LOCATION_NAME, String.valueOf(name));
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)});
+        if(id>0)
+            dummy = name;
         db.close();
         return id;// if -1 error during update
     }

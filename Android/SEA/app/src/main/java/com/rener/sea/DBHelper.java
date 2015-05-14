@@ -33,7 +33,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
-    private static int DATABASE_VERSION = 4;
+    private static int DATABASE_VERSION = 5;
     //    public static int SYNC_STATUS = 0;
     private static JSONObject dataSync = new JSONObject();
     private boolean dummyDB = false;
@@ -156,11 +156,11 @@ public final class DBHelper extends SQLiteOpenHelper {
     public Context getContext(){
         return this.context;
     }
-
+    // REF: public Cursor query (String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
     public List<Appointment> getAllAppointments() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_ID},
-                DBSchema.STATUS + "=?", new String[]{String.valueOf(1)}, null, null, DBSchema.APPOINTMENT_DATE + " DESC", null);
+                null, null, null, null, "date("+DBSchema.APPOINTMENT_DATE+") DESC", null);
         ArrayList<Appointment> Appointments;
         Appointments = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -176,11 +176,15 @@ public final class DBHelper extends SQLiteOpenHelper {
         return Appointments;
 
     }
-
+// this query is not optimized
     public List<Person> getAllPersons() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
-                DBSchema.STATUS + "=?", new String[]{String.valueOf(1)}, null, null, DBSchema.PERSON_FIRST_NAME + " COLLATE NOCASE", null);
+//        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
+//                null, null, null, null, DBSchema.PERSON_FIRST_NAME + " COLLATE NOCASE", null);
+        Cursor cursor = db.rawQuery("SELECT person_id " +
+                "FROM "+DBSchema.TABLE_PERSON +
+                " WHERE "+DBSchema.STATUS+" != ? AND "+DBSchema.PERSON_ID+" NOT IN (SELECT "+DBSchema.USER_PERSON_ID+" FROM "+DBSchema.TABLE_USERS+") " +
+                "ORDER BY "+DBSchema.PERSON_FIRST_NAME+" COLLATE NOCASE",new String[]{String.valueOf(-1)});
         ArrayList<Person> persons;
         persons = new ArrayList<>();
 //        Log.i(this.toString(), "Cursor " + cursor);
@@ -204,7 +208,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Flowchart> getAllFlowcharts() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_FLOWCHART, new String[]{DBSchema.FLOWCHART_ID},
-                DBSchema.STATUS + "=?", new String[]{String.valueOf(1)}, null, null, DBSchema.FLOWCHART_NAME + " COLLATE NOCASE", null);
+                DBSchema.STATUS + " =? ", new String[]{String.valueOf(1)}, null, null, DBSchema.FLOWCHART_NAME + " COLLATE NOCASE", null);
         ArrayList<Flowchart> flowcharts;
         flowcharts = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -223,14 +227,14 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     public List<Location> getAllLocations() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID},
-                DBSchema.STATUS + "=?", new String[]{String.valueOf(1)}, null, null, DBSchema.LOCATION_NAME + " COLLATE NOCASE", null);
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID,DBSchema.LOCATION_NAME},
+                DBSchema.STATUS + " !=? ", new String[]{String.valueOf(-1)}, null, null, DBSchema.LOCATION_NAME + " COLLATE NOCASE", null);
         ArrayList<Location> location;
         location = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                location.add(new Location(cursor.getLong(0), this));
+                location.add(new Location(cursor.getLong(0),cursor.getString(1), this));
             }
 
             db.close();
@@ -244,7 +248,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
-                null, null, null, null, DBSchema.REPORT_DATE_FILED + " COLLATE NOCASE", null);
+                null, null, null, null, "date("+DBSchema.REPORT_DATE_FILED+") DESC", null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -665,8 +669,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.PERSON_MIDDLE_INITIAL, item.getString(DBSchema.PERSON_MIDDLE_INITIAL));
                 if (!item.isNull(DBSchema.PERSON_PHONE_NUMBER))
                     values.put(DBSchema.PERSON_PHONE_NUMBER, item.getString(DBSchema.PERSON_PHONE_NUMBER));
-                if (!item.isNull(DBSchema.STATUS))
-                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_PERSON, null, values, 5);
@@ -698,8 +700,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.APPOINTMENT_PURPOSE, item.getString(DBSchema.APPOINTMENT_PURPOSE));
                 if (!item.isNull(DBSchema.APPOINTMENT_MAKER_ID))
                     values.put(DBSchema.APPOINTMENT_MAKER_ID, item.getLong(DBSchema.APPOINTMENT_MAKER_ID));
-                if (!item.isNull(DBSchema.STATUS))
-                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_APPOINTMENTS, null, values, 5);
@@ -759,6 +759,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.ADDRESS_ZIPCODE, item.getString(DBSchema.ADDRESS_ZIPCODE));
                 if (!item.isNull(DBSchema.ADDRESS_LINE2))
                     values.put(DBSchema.ADDRESS_LINE2, item.getString(DBSchema.ADDRESS_LINE2));
+                if (!item.isNull(DBSchema.STATUS))
+                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_ADDRESS, null, values, 5);
@@ -838,7 +840,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 if(!item.isNull(DBSchema.LOCATION_AGENT_ID))
                     values.put(DBSchema.LOCATION_AGENT_ID, item.getLong(DBSchema.LOCATION_AGENT_ID));
                 if (!item.isNull(DBSchema.STATUS))
-                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
+                    values.put(DBSchema.STATUS, item.getLong(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_LOCATION, null, values, 5);
@@ -2860,7 +2862,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
         String device_id = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
 
-        Log.i(this.toString(), "HTTP Sync called ");
+        Log.i(this.toString(), "HTTP Login call");
 
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();

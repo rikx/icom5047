@@ -26,6 +26,7 @@ public class DBSchema {
             ADDRESS_CITY + " TEXT," +
             ADDRESS_ZIPCODE + " TEXT," +
             ADDRESS_LINE2 + " TEXT," +
+            STATUS + " INTEGER DEFAULT 1," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_APPOINTMENTS = "appointments";
     public static final String APPOINTMENT_ID = "appointment_id";
@@ -149,7 +150,7 @@ public class DBSchema {
             PERSON_LAST_NAME2 + " TEXT," +
             PERSON_MIDDLE_INITIAL + " TEXT," +
             PERSON_PHONE_NUMBER + " TEXT," +
-            STATUS + " INTEGER DEFAULT 0," +
+            STATUS + " INTEGER DEFAULT 1," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_REPORT = "report";
     public static final String REPORT_ID = "report_id";
@@ -206,6 +207,7 @@ public class DBSchema {
             USER_PERSON_ID + " INTEGER," +
             USER_SALT + " TEXT," +
             USER_TYPE + " TEXT," +
+            STATUS + " INTEGER DEFAULT 1," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_USERS_SPECIALIZATION = "users_specialization";
     public static final String USERS_SPECIALIZATION_USER_ID = "user_id";
@@ -249,6 +251,6 @@ public class DBSchema {
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test1.php";
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test2.php";
 //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test3.php"; // working
-    public static final String SYNC_URL = "http://136.145.116.231/mobile/test6.php";
+    public static final String SYNC_URL = "http://136.145.116.231/mobile/test7.php";
 
 }
