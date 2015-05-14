@@ -32,7 +32,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
 
     private DBHelper dbHelper;
     private NetworkHelper networkHelper;
-    private Fragment leftFragment;
+    private MenuListFragment leftFragment;
     private Fragment rightFragment;
     private BroadcastReceiver networkReceiver;
     private Toolbar toolbar;
@@ -167,7 +167,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         toolbar.setSubtitle(getString(R.string.appointments));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        leftFragment = manager.findFragmentByTag("APPOINTMENTS");
+        leftFragment = (MenuListFragment) manager.findFragmentByTag("APPOINTMENTS");
         if (leftFragment == null) {
             leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_APPOINTMENTS);
             transaction.replace(R.id.main_list_container, leftFragment, "APPOINTMENTS");
@@ -186,7 +186,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         toolbar.setSubtitle(getString(R.string.reports));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        leftFragment = manager.findFragmentByTag("REPORTS");
+        leftFragment = (MenuListFragment) manager.findFragmentByTag("REPORTS");
         if (leftFragment == null) {
             leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_REPORTS);
             transaction.replace(R.id.main_list_container, leftFragment, "REPORTS");
@@ -204,7 +204,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         toolbar.setSubtitle(getString(R.string.people));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        leftFragment = manager.findFragmentByTag("PEOPLE");
+        leftFragment = (MenuListFragment) manager.findFragmentByTag("PEOPLE");
         if (leftFragment == null) {
             leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_PEOPLE);
             transaction.replace(R.id.main_list_container, leftFragment, "PEOPLE");
@@ -222,7 +222,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         toolbar.setSubtitle(getString(R.string.locations));
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        leftFragment = manager.findFragmentByTag("LOCATIONS");
+        leftFragment = (MenuListFragment) manager.findFragmentByTag("LOCATIONS");
         if (leftFragment == null) {
             leftFragment = MenuListFragment.newInstance(MenuListFragment.TYPE_LOCATIONS);
             transaction.replace(R.id.main_list_container, leftFragment, "LOCATIONS");
@@ -255,7 +255,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
             showReport(report);
         } else if (type.equals(MenuListFragment.TYPE_APPOINTMENTS)) {
             Appointment appointment = (Appointment) listView.getAdapter().getItem(position);
-            showReport(appointment.getReport());
+            showAppointmentReport(appointment);
         }
     }
 
@@ -351,6 +351,17 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         details.setReport(report);
         rightFragment = details;
         transaction.replace(R.id.main_details_container, rightFragment, "REPORT");
+        transaction.commit();
+    }
+
+    private void showAppointmentReport(Appointment appointment) {
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        ReportDetailsFragment details = new ReportDetailsFragment();
+        Report report = appointment.getReport();
+        details.setReport(report);
+        rightFragment = details;
+        transaction.replace(R.id.main_details_container, rightFragment, "APPOINTMENT");
         transaction.commit();
     }
 
