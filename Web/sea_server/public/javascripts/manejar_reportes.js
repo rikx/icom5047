@@ -209,6 +209,14 @@ $(document).ready(function(){
     $('#report_info_date').text($this_report.report_date);
     $('#reporte_info_flowchart').html($this_report.flowchart_name);
     $('#reporte_info_flowchart_version').html($this_report.version);
+
+    var survey_type;
+    if($this_report.status == 0){
+      survey_type = 'Método abierto';
+    } else if($this_report.status == 1){
+      survey_type = 'Método con flujo';
+    }
+    $('#reporte_info_flowchart_type').html(survey_type);
     
     // set id values of info panel buttons
     $('#btn_view_report').attr('data-id', $this_report.report_id);

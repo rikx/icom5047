@@ -73,7 +73,7 @@ block content
 									td Reporte ID:
 									td#reporte_info_id 
 								tr
-									td Para Localización: 
+									td Para localización: 
 									td#reporte_info_location
 								tr
 									td Creado por:
@@ -87,6 +87,9 @@ block content
 								tr
 									td Versión de encuesta:
 									td#reporte_info_flowchart_version
+								tr
+									td Tipo de encuesta:
+									td#reporte_info_flowchart_type
 						button#btn_view_report(class='btn btn-success btn-block', type='button') Ver Reporte Completo
 						if(user.user_type == 'admin')
 							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')

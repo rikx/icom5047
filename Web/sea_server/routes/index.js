@@ -438,7 +438,7 @@ router.get('/reportes/:user_input', function(req, res, next){
  		if(user_type == 'admin' || user_type == 'specialist') {
  			// get first 20 reports regardles of creator
  			query_config = {
-				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, report.status, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
@@ -449,7 +449,7 @@ router.get('/reportes/:user_input', function(req, res, next){
  		} else {
  			// get first 20 reports created by this user
 			query_config = {
-				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, report.status, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
@@ -1204,7 +1204,7 @@ router.get('/list_reportes', function(req, res, next) {
  		if(user_type == 'admin' || user_type == 'specialist') {
  			// get first 20 reports regardles of creator
  			query_config = {
-				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name, flowchart.version\
+				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, report.status, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name, flowchart.version\
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
@@ -1216,7 +1216,7 @@ router.get('/list_reportes', function(req, res, next) {
  		} else {
  			// get first 20 reports created by this user
 			query_config = {
-				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
+				text: "SELECT report_id, report.creator_id, users.username, to_char(report.date_filed, 'DD/MM/YYYY') AS report_date, report.location_id, report.name as report_name, report.status, location.name AS location_name, report.flowchart_id, flowchart.name AS flowchart_name \
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \

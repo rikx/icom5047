@@ -40,7 +40,7 @@ block content
 					//button#btn_citas(class='btn btn-sm btn-default btn-block', type='button') Regresar a Citas
 		br
 		.row
-			.col-md-6		
+			.col-md-6
 				.panel.panel-success(style='overflow:auto; height:550px;')
 					#answered_survey(class='panel-heading title', data-survey=survey)
 						center
@@ -87,12 +87,15 @@ block content
 									= reporte.report_date
 								p Localización: 
 									= reporte.location_name
-								//p Tipo de Encuesta: 
-								//	= reporte.survey_type
 								p Nombre de Encuesta: 
 									= reporte.survey_name
 									|  
 									= reporte.survey_version
+								p Tipo de Encuesta: 
+									if(reporte.status == 0)
+										| Método Abierto
+									else if(reporte.status == 1)
+										| Método con flujo
 				// For use in phase 3
 				center(style="display:none")
 					
