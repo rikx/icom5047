@@ -207,7 +207,7 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 			}
 		});
 						  				// insert this_option
-						  				client.query('SELECT flowchart.flowchart_id, item_id, option.label as answer_label, option_id \
+						  				client.query('SELECT name, flowchart.flowchart_id, item_id, option.label as answer_label, option_id \
 						  					FROM flowchart INNER JOIN item on \
 						  					flowchart.flowchart_id = item.flowchart_id \
 						  					INNER JOIN option on \
@@ -224,7 +224,7 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 						  						}
 						  					});
 	  // query for flowchart info and first question
-	  client.query('SELECT flowchart.flowchart_id, item.label as question_label, item_id, type \
+	  client.query('SELECT name, flowchart.flowchart_id, item.label as question_label, item_id, type \
 	  	FROM flowchart INNER JOIN item on \
 	  	flowchart.flowchart_id = item.flowchart_id \
 	  	WHERE type != $1 \

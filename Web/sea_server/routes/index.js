@@ -121,6 +121,42 @@ router.post('/report', function(req, res, next) {
 	}
 });
 
+/* POST survey start
+ * Creates new report
+ */
+ router.post('/report_open', function(req, res, next) {
+ 	if(!req.body.hasOwnProperty('take_survey_user_id')
+ 		|| !req.body.hasOwnProperty('take_survey_location_id')
+ 		|| !req.body.hasOwnProperty('take_survey_id')
+ 		|| !req.body.hasOwnProperty('take_survey_date')
+ 		|| !req.body.hasOwnProperty('report_name')) {
+ 		res.statusCode = 400;
+ 	return res.send('Error: Missing fields for post report.');
+ } else {
+ 	var db = req.db;
+ 	console.log("Posting Report For Open Method.");
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+			// insert new report
+			client.query('INSERT into report (creator_id, location_id, flowchart_id, date_filed, name, status) \
+				VALUES ($1, $2, $3, $4, $5, $6) \
+				RETURNING report_id', 
+				[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date, req.body.report_name, 0], function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		  	done();
+		  	if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		var report_id = req.session.report_id = result.rows[0].report_id;
+		  		res.json({report_id: report_id});
+		  	}
+		  });
+		});
+ }
+});
+
 /* DELETE report and partially answered survey due to user cancelation
  *
  */
