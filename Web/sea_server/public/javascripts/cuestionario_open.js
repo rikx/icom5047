@@ -1,5 +1,7 @@
 $(document).ready(function(){
-	console.log("ayyy lmao");
+	var radio_answers = [];
+	var text_answers = [];
+	var current_report;
 	// store question-answer pairs of answered questions
 	var answered_questions = []; 
 	// path sequence number
@@ -97,7 +99,6 @@ $(document).ready(function(){
 	/* Saves pre-survey information and displays first questions */
 	$('#take_survey_start').on('click', function(){
 
-		populate_questions_list_carl();
 		// var location_input = $('#take_survey_location_name').val();
 		// // validate location input 
 		// if(valid_input(location_input, locations_array)){
@@ -448,11 +449,10 @@ $(document).ready(function(){
 		});
 	}
 
-	function populate_questions_list_carl()
+	function populate_open_questions_list()
 	{	
 		var the_content = '';
 		$.each(flowchart, function(i){
-
 			the_content += "<p data-question='question" + i +"'>" +  flowchart[i].question_label   + " </p>";
 			if(flowchart[i].type == 'MULTI')
 			{
@@ -460,7 +460,7 @@ $(document).ready(function(){
 				{
 					if(options[j].item_id == flowchart[i].item_id)
 					{
-						the_content += "<div class='radio'><label><input data-question='question"+i+"' name='answer_radios' type='radio' value='"+options[j].answer_label+"' data-answer-id='"+options[j].item_id+"'></input>";
+						the_content += "<div class='radio'><label><input data-question='question"+i+"' name='answer_radios" + i +"' type='radio' value='"+options[j].answer_label+"' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></input>";
 						the_content += options[j].answer_label+"</label></div>";
 					}
 				});
@@ -471,17 +471,144 @@ $(document).ready(function(){
 				{
 					if(options[j].item_id == flowchart[i].item_id)
 					{
-						the_content += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+options[j].item_id+"'></textarea>";
+						the_content += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></textarea>";
 					}
 				});
 			}else if(flowchart[i].type == 'CONDITIONAL')
 			{
-
+				if(options[j].item_id == flowchart[i].item_id)
+					{
+						the_content += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></textarea>";
+					}
 			}
 		});
+
+
+		// var	new_path = {
+		// 	report_id: $question_panel_answers.attr('data-report-id'),
+		// 	option_id: the_answer.attr('data-answer-id'),
+		// 	sequence: sequence_number
+		// }
+
 		console.log(the_content);
 		$('#next_question_answers').html(the_content);
 		$('#row_current').show();
 
-	}		
+	}	
+
+	/* Saves pre-survey information and displays first questions */
+	$('#take_survey_start_open').on('click', function(){
+		var location_input = $('#take_survey_location_name').val();
+		// validate location input 
+		if(valid_input(location_input, locations_array)){
+			if($('#take_survey_report_name').val() == ''){
+				alert('Por favor ingrese un nombre para el reporte que se va a crear.');
+				return;
+			}
+			// disable location input 
+			$('#take_survey_location_name').attr('disabled', true);
+			$('#take_survey_report_name').attr('disabled', true);
+			// get form data and conver to json format
+			var $the_form = $('#form_survey_flow');
+			var form_data = $the_form.serializeArray();
+			var new_open_cuestionario = ConverToJSON(form_data);
+			new_open_cuestionario.report_name = $('#take_survey_report_name').val();
+			console.log(new_open_cuestionario);
+	    // ajax call to post new report
+	    $.ajax({
+	    	url: "http://localhost:3000/report_open",
+	    	method: "POST",
+	    	data: JSON.stringify(new_open_cuestionario),
+	    	contentType: "application/json",
+	    	dataType: "json",
+
+	    	success: function(data) {
+	    	alert("Cuestionario ha sido comenzado con metodo abierto.");
+	    	current_report = data.report_id;
+
+
+	    	populate_open_questions_list();
+		//radioCheck();
+				},
+				error: function( xhr, status, errorThrown ) {
+					alert( "Sorry, there was a problem!" );
+					console.log( "Error: " + errorThrown );
+					console.log( "Status: " + status );
+					console.dir( xhr );
+				}
+			});
+	} else {
+		alert('La localización escrita no existe. Por favor seleccione una localización valida');
+	}
+});	
+
+
+
+function get_answers()
+{
+	radio_answers = $(":radio:checked");
+	text_answers = $('textarea');
+
+	console.log(text_answers);
+	console.log(text_answers[0].value);
+}
+
+$('#btn_test').on('click', function(){
+	var array = [];
+	var an_answer;
+	get_answers();
+	var i;
+	var seq = 0;
+
+	for(i = 0; i < radio_answers.length; i++)
+	{
+		 an_answer = {
+		 	report_id: current_report,
+		 	option_id: radio_answers[i].getAttribute('data-answer-id'),
+		 	item_id: radio_answers[i].getAttribute('data-question-id'),
+		 	has_data: false,
+		 	sequence: seq
+		 };
+		array.push(an_answer);
+		seq++;
+	}
+
+	for(i = 0; i < text_answers.length; i++)
+	{
+		 an_answer = {
+		 	report_id: current_report,
+		 	option_id: text_answers[i].getAttribute('data-answer-id'),
+		 	item_id: text_answers[i].getAttribute('data-question-id'),
+		 	has_data: true,
+		 	data: text_answers[i].value,
+		 	sequence: seq
+		 };
+		array.push(an_answer);
+		seq++;
+	}
+
+//'/cuestionario/submit_open_questions'
+
+	$.ajax({
+		url: "http://localhost:3000/users/cuestionario/open/submit",
+		method: "POST",
+		data: JSON.stringify({answers: array}),
+		contentType: "application/json",
+		dataType: "json",
+
+		success: function(data) {
+			alert("Cuestionario terminado.");
+				// redirect to report page using returned id
+				var report_id = data.report_id;
+				window.location.href = '/users/reportes/'+report_id;
+			},
+			error: function( xhr, status, errorThrown ) {
+				alert( "Sorry, there was a problem!" );
+				console.log( "Error: " + errorThrown );
+				console.log( "Status: " + status );
+				console.dir( xhr );
+			}
+		});
+
+});
 });
