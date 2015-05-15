@@ -171,7 +171,8 @@ $(document).ready(function(){
 
 		function validate_number_input(user_input){
 			var regex=/\-?\d+(\.\d+)?/;
-    	if(!user_input.match(regex)){
+			console.log(user_input.match(regex))
+    	if(user_input.match(regex)){
         return true;
     	} else {
     		alert("Escriba solo números son válidos");
