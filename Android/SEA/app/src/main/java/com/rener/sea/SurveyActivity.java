@@ -577,6 +577,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     private void startOpenSurvey(Flowchart flowchart) { //TODO: TEST THIS
         List<Item> items = flowchart.getItems();
+        openSurveyItems = new ArrayList<>();
         for (Item i : items) {
             String type = i.getType();
             boolean displayItem = !type.equals(Item.RECOMMENDATION) && !type.equals(Item.END) &&
