@@ -476,10 +476,16 @@ $(document).ready(function(){
 				});
 			}else if(flowchart[i].type == 'CONDITIONAL')
 			{
-				if(options[j].item_id == flowchart[i].item_id)
-					{
+				$.each(options, function(j)
+				{
+					if(options[j].item_id == flowchart[i].item_id)
+					{	console.log("here");
 						the_content += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></textarea>";
+						return false;
 					}
+					
+				});
+
 			}
 		});
 
@@ -542,15 +548,17 @@ $(document).ready(function(){
 	}
 });	
 
-
-
 function get_answers()
 {
 	radio_answers = $(":radio:checked");
-	text_answers = $('textarea');
-
-	console.log(text_answers);
-	console.log(text_answers[0].value);
+	var text_boxes = $('textarea');
+	$.each(text_boxes, function(i)
+	{
+		if(text_boxes[i].value != '')
+		{
+			text_answers.push(text_boxes[i]);
+		}
+	});
 }
 
 $('#btn_submit').on('click', function(){

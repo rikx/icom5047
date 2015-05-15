@@ -91,10 +91,13 @@ $(document).ready(function(){
 
   /* POSTs new appointment */
   $('#btn_submit_appointment').on('click', function(){
+    var today = new Date();
+    console.log(today);
     var $the_form = $('#form_post_appointment');
     var form_data = $the_form.serializeArray();
     var new_appointment = ConverToJSON(form_data);
-    console.log(new_appointment);
+     console.log(new_appointment.cita_date);
+    console.log(today < new_appointment.cita_date);
     if(!new_appointment.cita_date.length > 0)
     { 
       alert("Por favor ingrese una fecha.");
@@ -102,6 +105,10 @@ $(document).ready(function(){
     else if(!new_appointment.cita_time.length > 0)
     {
       alert("Por favor ingrese una hora.");
+    }
+    else if(new_appointment.cita_date < today)
+    {
+       alert("La fecha entrada ya pasó");
     }
     else
     {

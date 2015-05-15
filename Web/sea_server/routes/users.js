@@ -1688,7 +1688,7 @@ router.get('/localizaciones', function(req, res, next) {
 			// query for location data
 			client.query('SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 										FROM location INNER JOIN address ON location.address_id = address.address_id \
-										WHERE location.status != $1 \
+										WHERE location.status != $1  \
 										ORDER BY location_name \
 										LIMIT 20',[-1],  function(err, result) {
 					if(err) {

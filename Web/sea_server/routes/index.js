@@ -1010,24 +1010,87 @@ router.get('/list_usuarios', function(req, res, next) {
 router.get('/list_localizaciones', function(req, res, next) {
 	var localizaciones_list, categories_list, agentes_list, ganaderos_list;
 	var db = req.db;
-	db.connect(req.conString, function(err, client, done) {
-		if(err) {
-	  	return console.error('error fetching client from pool', err);
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+	var query_config_1;
+	var query_config_2;
+	var query_config_3;
+	var query_config_4;
+	console.log(user_id);
+	console.log(user_type);
+	if(user_type == 'agent')
+	{
+		query_config_1 = {
+			text: 'SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
+			FROM location INNER JOIN address ON location.address_id = address.address_id \
+			WHERE location.status != $1 AND agent_id =$2 \
+			ORDER BY location_name \
+			LIMIT 20;',
+			values: [-1, user_id]
 		}
-		// query for location data
-	  client.query('SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
+		query_config_2 = {
+			text: 'WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+										FROM location \
+										WHERE location.status != $1 AND agent_id = $2 \
+										ORDER BY location_name \
+										LIMIT 20) \
+									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
+									FROM locations \
+									LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
+									LEFT JOIN category AS cat ON lc.category_id = cat.category_id',
+			values: [-1, user_id]
+		}
+
+		query_config_3 = {
+			text: 'WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
+										FROM location \
+										WHERE location.status != $1 AND agent_id =$2 \
+										ORDER BY location_name \
+										LIMIT 20) \
+									SELECT locations.location_id, agent_id, username \
+									FROM locations,users \
+									WHERE user_id = agent_id;',
+			values: [-1, user_id]
+		}
+
+		query_config_4 = {
+			text: "WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
+											FROM location \
+											WHERE location.status != $1 AND agent_id = $2 \
+											ORDER BY location_name \
+											LIMIT 20), \
+								owners AS ( \
+														SELECT owner_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as owner_name, locations.location_id AS owner_location, \
+														CASE WHEN person_id = owner_id THEN 'owner' \
+														END AS relation_owner \
+														FROM locations \
+														INNER JOIN person ON person_id = owner_id), \
+								managers AS ( \
+														SELECT manager_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as manager_name , locations.location_id AS manager_location, \
+														CASE WHEN person_id = manager_id THEN 'manager' \
+														END AS relation_manager \
+														FROM locations \
+														INNER JOIN person ON person_id = manager_id) \
+								SELECT * \
+								FROM owners \
+								FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
+			values: [-1, user_id]
+		}
+	}
+	else
+	{
+		query_config_1 = {
+	 				text: 'SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 									FROM location INNER JOIN address ON location.address_id = address.address_id \
 									WHERE location.status != $1 \
 									ORDER BY location_name \
-									LIMIT 20;',[-1], function(err, result) {
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	localizaciones_list = result.rows;
-	    }
-	  });
-		// query for location categories
-		client.query('WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
+									LIMIT 20;',
+					values: [-1]
+	 			}
+
+	 	query_config_2 = {
+			text: 'WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 										FROM location \
 										WHERE location.status != $1 \
 										ORDER BY location_name \
@@ -1035,30 +1098,24 @@ router.get('/list_localizaciones', function(req, res, next) {
 									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
 									FROM locations \
 									LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
-									LEFT JOIN category AS cat ON lc.category_id = cat.category_id',[-1], function(err, result){
-			if(err) {
-				return console.error('error running query', err);
-			} else {
-				categories_list = result.rows;
-			}
-		});
-	  // query for associated agentes
-	  client.query('WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
+									LEFT JOIN category AS cat ON lc.category_id = cat.category_id',
+			values: [-1]
+		}
+
+		query_config_3 = {
+			text: 'WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
 										FROM location \
 										WHERE location.status != $1 \
 										ORDER BY location_name \
 										LIMIT 20) \
 									SELECT locations.location_id, agent_id, username \
 									FROM locations,users \
-									WHERE user_id = agent_id;', [-1], function(err, result) {
-    	if(err) {
-	      return console.error('error running query', err);
-	    } else {
-	    	agentes_list = result.rows;
-	    }
-	  });
-	  // query for associated ganaderos
-		  client.query("WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
+									WHERE user_id = agent_id;',
+			values: [-1]
+		}
+
+		query_config_4 = {
+			text: "WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
 											FROM location \
 											WHERE location.status != $1 \
 											ORDER BY location_name \
@@ -1077,7 +1134,41 @@ router.get('/list_localizaciones', function(req, res, next) {
 														INNER JOIN person ON person_id = manager_id) \
 								SELECT * \
 								FROM owners \
-								FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location", [-1], function(err, result) {
+								FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
+			values: [-1]
+		}
+	}
+
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// query for location data
+	  client.query(query_config_1, function(err, result) {
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	localizaciones_list = result.rows;
+	    }
+	  });
+		// query for location categories
+		client.query(query_config_2, function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				categories_list = result.rows;
+			}
+		});
+	  // query for associated agentes
+	  client.query(query_config_3, function(err, result) {
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	agentes_list = result.rows;
+	    }
+	  });
+	  // query for associated ganaderos
+		  client.query(query_config_4, function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	    done();
 

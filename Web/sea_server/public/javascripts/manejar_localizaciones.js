@@ -893,7 +893,7 @@ function populate_list(locations_set){
   }
   else
   {
-       $.each(locations_set, function(i){
+    $.each(locations_set, function(i){
     table_content += '<tr>';
     table_content += "<td><a class='list-group-item ";
     // if initial list item, set to active
