@@ -238,11 +238,8 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
                 if (location.getOwner().getId() == item.getId())
                     ownerSpinner.setSelection(i);
             }
-            String label = getResources().getString(R.string.owner_label);
-            String owned = location.getOwner().toString();
-            textOwner.setText(label + ": " + owned);
-        } else {
-            textOwner.setText(R.string.no_owner);
+            String ownerName = location.getOwner().toString();
+            textOwner.setText(ownerName);
         }
 
         if (location.hasManager()) {
@@ -251,19 +248,13 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
                 if (location.getManager().getId() == item.getId())
                     managerSpinner.setSelection(i);
             }
-            String label = getResources().getString(R.string.manager_label);
-            String managed = location.getManager().toString();
-            textManager.setText(label + ": " + managed);
-        } else {
-            textManager.setText(R.string.no_manager);
+            String managerName = location.getManager().toString();
+            textManager.setText(managerName);
         }
 
         if (location.hasAgent()) {
-            String label = getResources().getString(R.string.agent_label);
-            String assigned = location.getAgent().toString();
-            textAgent.setText(label + ": " + assigned);
-        } else {
-            textAgent.setText(R.string.no_agent);
+            String agentName = location.getAgent().toString();
+            textAgent.setText(agentName);
         }
     }
 

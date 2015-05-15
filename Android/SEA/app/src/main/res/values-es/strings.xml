@@ -114,7 +114,7 @@
 	<string name="invalid_licence">Licencia inválida</string>
 	<string name="past_date_message">Fecha no puede ser pasada</string>
 	<string name="appointments">Citas</string>
-	<string name="date_format_medium">EEE, d \'de\' MMM</string>
+	<string name="date_format_medium">EEE d/MMM/yy hh:mm a</string>
 	<string name="time_format">hh:mm a</string>
 	<string name="email_label">Correo electrónicro</string>
 	<string name="phone_number_label">Número de teléfono</string>
