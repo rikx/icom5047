@@ -79,7 +79,7 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
 
     @Override
     public Filter getFilter() {
-        if(filter == null) filter = new ReportFilter(reports);
+        if (filter == null) filter = new ReportFilter(reports);
         return filter;
     }
 
@@ -110,16 +110,15 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
         protected FilterResults performFiltering(CharSequence charSequence) {
             String constraint = charSequence.toString().toLowerCase();
             FilterResults results = new FilterResults();
-            if(constraint != null && constraint.length() > 0) {
+            if (constraint != null && constraint.length() > 0) {
                 ArrayList<Report> filtered = new ArrayList<>();
                 for (Report r : sourceReports) {
                     boolean hit = isHit(r, constraint);
-                    if(hit) filtered.add(r);
+                    if (hit) filtered.add(r);
                 }
                 results.values = filtered;
                 results.count = filtered.size();
-            }
-            else {
+            } else {
                 synchronized (this) {
                     results.values = sourceReports;
                     results.count = sourceReports.size();
@@ -133,7 +132,7 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
             ArrayList<Report> filtered = (ArrayList<Report>) filterResults.values;
             notifyDataSetChanged();
             clear();
-            for(Report r : filtered)
+            for (Report r : filtered)
                 add(r);
             notifyDataSetInvalidated();
         }

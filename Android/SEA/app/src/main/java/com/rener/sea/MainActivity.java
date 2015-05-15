@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -108,10 +107,9 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
     public void onBackPressed() {
         FragmentManager manager = getFragmentManager();
         int count = manager.getBackStackEntryCount();
-        if(count > 0) {
+        if (count > 0) {
             manager.popBackStack();
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -261,9 +259,10 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
 
     /**
      * Listener that handles fragment requests to possibly display other fragments
+     *
      * @param type the type of DetailsFragment requested
-     * @param tag a tag that will be assigned to the new fragment
-     * @param id the details object's unique id
+     * @param tag  a tag that will be assigned to the new fragment
+     * @param id   the details object's unique id
      */
     public void onDetailsRequest(String type, String tag, long id) {
         //TODO: rethink this
@@ -288,15 +287,14 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         list.onListDataChanged(); //TODO: TEST THIS
 
         //Refresh the details view
-        if(rightFragment != null) {
+        if (rightFragment != null) {
             DetailsFragment details;
             String tag = rightFragment.getTag();
             if (tag.equals("LOCATION")) {
                 details = (LocationDetailsFragment) rightFragment;
             } else if (tag.equals("REPORT")) {
                 details = (ReportDetailsFragment) rightFragment;
-            }
-            else {
+            } else {
                 details = (PersonDetailsFragment) rightFragment;
             }
             details.onDetailsChanged();
@@ -315,7 +313,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         details.setPerson(person);
         rightFragment = details;
         transaction.replace(R.id.main_details_container, rightFragment, tag);
-        if(!tag.equals("PERSON")) {
+        if (!tag.equals("PERSON")) {
             transaction.addToBackStack(null);
         }
         transaction.commit();
@@ -333,7 +331,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         details.setLocation(location);
         rightFragment = details;
         transaction.replace(R.id.main_details_container, rightFragment, tag);
-        if(!tag.equals("LOCATION")) {
+        if (!tag.equals("LOCATION")) {
             transaction.addToBackStack(null);
         }
         transaction.commit();
@@ -405,7 +403,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
             };
             IntentFilter filter = new IntentFilter("SYNC");
             registerReceiver(syncReceiver, filter);
-            if(full) dbHelper.syncDBFull();
+            if (full) dbHelper.syncDBFull();
             else dbHelper.syncDB();
         }
     }

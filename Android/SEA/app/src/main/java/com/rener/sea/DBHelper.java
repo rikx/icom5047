@@ -111,25 +111,39 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_USERS_SPECIALIZATION);
         onCreate(db);
     }
+
     // TODO: create table if not exist
-    private void setSequence(long sequence){
+    private void setSequence(long seq) {
         SQLiteDatabase db = getReadableDatabase();
-        Log.i(this.toString(), "SQLITE_SEQUENCE = "+sequence);
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_DEVICES+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_FLOWCHART+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_ITEM+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_LOCATION+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_LOCATION_CATEGORY+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_OPTION+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_PERSON+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_REPORT+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_PATH+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_SPECIALIZATION+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_USERS+"'");
-        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+sequence+" WHERE name = '"+DBSchema.TABLE_USERS_SPECIALIZATION+"'");
+        Log.i(this.toString(), "SQLITE_SEQUENCE = " + seq);
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_DEVICES+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_FLOWCHART+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ITEM+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION_CATEGORY+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_OPTION+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PERSON+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_REPORT+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PATH+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_SPECIALIZATION+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS+"'");
+//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS_SPECIALIZATION+"'");
+        Log.i(this.toString(), "SQLITE_SEQUENCE = " + seq);
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_ADDRESS + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_APPOINTMENTS + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_CATEGORY + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_FLOWCHART + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_ITEM + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_LOCATION + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_OPTION + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_PERSON + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_REPORT + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_PATH + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_SPECIALIZATION + "')");
+        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_USERS + "')");
         db.close();
     }
 
@@ -153,20 +167,22 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 
     }
-    public Context getContext(){
+
+    public Context getContext() {
         return this.context;
     }
+
     // REF: public Cursor query (String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
     public List<Appointment> getAllAppointments() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_APPOINTMENTS, new String[]{DBSchema.APPOINTMENT_ID},
-                null, null, null, null, "date("+DBSchema.APPOINTMENT_DATE+") DESC", null);
+                null, null, null, null, "date(" + DBSchema.APPOINTMENT_DATE + ") DESC", null);
         ArrayList<Appointment> Appointments;
         Appointments = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                Appointments.add(new Appointment(cursor.getLong(0), this,context.getResources().getString(R.string.date_format_medium)));
+                Appointments.add(new Appointment(cursor.getLong(0), this, context.getResources().getString(R.string.date_format_medium)));
             }
 
             db.close();
@@ -176,15 +192,16 @@ public final class DBHelper extends SQLiteOpenHelper {
         return Appointments;
 
     }
-// this query is not optimized
+
+    // this query is not optimized
     public List<Person> getAllPersons() {
         SQLiteDatabase db = getReadableDatabase();
 //        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
 //                null, null, null, null, DBSchema.PERSON_FIRST_NAME + " COLLATE NOCASE", null);
-        Cursor cursor = db.rawQuery("SELECT person_id " +
-                "FROM "+DBSchema.TABLE_PERSON +
-                " WHERE "+DBSchema.STATUS+" != ? AND "+DBSchema.PERSON_ID+" NOT IN (SELECT "+DBSchema.USER_PERSON_ID+" FROM "+DBSchema.TABLE_USERS+") " +
-                "ORDER BY "+DBSchema.PERSON_FIRST_NAME+" COLLATE NOCASE",new String[]{String.valueOf(-1)});
+        Cursor cursor = db.rawQuery("SELECT " + DBSchema.PERSON_ID + ", " + DBSchema.PERSON_FIRST_NAME + ", " + DBSchema.PERSON_MIDDLE_INITIAL + ", " + DBSchema.PERSON_LAST_NAME1 + ", " + DBSchema.PERSON_LAST_NAME2 + " " +
+                "FROM " + DBSchema.TABLE_PERSON +
+                " WHERE " + DBSchema.STATUS + " != ? AND " + DBSchema.PERSON_ID + " NOT IN (SELECT " + DBSchema.USER_PERSON_ID + " FROM " + DBSchema.TABLE_USERS + ") " +
+                "ORDER BY " + DBSchema.PERSON_FIRST_NAME + " COLLATE NOCASE", new String[]{String.valueOf(-1)});
         ArrayList<Person> persons;
         persons = new ArrayList<>();
 //        Log.i(this.toString(), "Cursor " + cursor);
@@ -192,7 +209,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         if ((cursor != null) && (cursor.getCount() > 0)) {
 //            Log.i(this.toString(), "Inside if");
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                persons.add(new Person(cursor.getLong(0), this));
+                persons.add(new Person(cursor.getLong(0), cursor.getString(1), (cursor.isNull(2) ? "" : cursor.getString(2)), cursor.getString(3), (cursor.isNull(4) ? "" : cursor.getString(4)), this));
 //                Log.i(this.toString(), "People created " + cursor.getLong(0));
             }
 
@@ -227,14 +244,34 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     public List<Location> getAllLocations() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID,DBSchema.LOCATION_NAME},
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID, DBSchema.LOCATION_NAME},
                 DBSchema.STATUS + " !=? ", new String[]{String.valueOf(-1)}, null, null, DBSchema.LOCATION_NAME + " COLLATE NOCASE", null);
         ArrayList<Location> location;
         location = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                location.add(new Location(cursor.getLong(0),cursor.getString(1), this));
+                location.add(new Location(cursor.getLong(0), cursor.getLong(1), cursor.getString(2), this));
+            }
+
+            db.close();
+            cursor.close();
+
+        }
+        return location;
+
+    }
+
+    public List<Location> getAllLocationsOf(long agentID) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID, DBSchema.LOCATION_NAME},
+                DBSchema.STATUS + " !=? AND " + DBSchema.LOCATION_AGENT_ID + " =? ", new String[]{String.valueOf(-1), String.valueOf(agentID)}, null, null, DBSchema.LOCATION_NAME + " COLLATE NOCASE", null);
+        ArrayList<Location> location;
+        location = new ArrayList<>();
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                location.add(new Location(cursor.getLong(0), cursor.getLong(1), cursor.getString(2), this));
             }
 
             db.close();
@@ -247,14 +284,14 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID},
-                null, null, null, null, "date("+DBSchema.REPORT_DATE_FILED+") DESC", null);
+        Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID, DBSchema.REPORT_NAME},
+                null, null, null, null, "date(" + DBSchema.REPORT_DATE_FILED + ") DESC", null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                reports.add(new Report(cursor.getLong(0), this));
+                reports.add(new Report(cursor.getLong(0), cursor.getString(1), this));
             }
 
             db.close();
@@ -333,7 +370,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    //TODO: implement flag for loggin do not delete hash pass or username from pref file
+    //TODO: implement flag for login not delete hash pass or username from pref file
     public boolean authLogin(String username, String password) {
 
 
@@ -347,19 +384,19 @@ public final class DBHelper extends SQLiteOpenHelper {
         boolean userN = username.equals(oldUsername);
         boolean hash = oldHash.equals(user.getPassword());
         boolean pass = password.equals(oldPassword);
-        boolean exist = user.getId() != -1 ? true:false;
+        boolean exist = user.getId() != -1 ? true : false;
 
-        if(userN && pass && hash && exist){
+        if (userN && pass && hash && exist) {
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
             intent.setAction("AUTH_RESULT");
             intent.putExtra("RESULT", 1);
             context.sendBroadcast(intent);
-        }else if((userN && pass && !hash && exist) || exist){ // password has changed ask server for auth
+        } else if ((userN && pass && !hash && exist) || exist) { // password has changed ask server for auth
 
-            loginAuthentication(username,password);
+            loginAuthentication(username, password);
 
-        }else { //ask db for credentials nothing local
+        } else { //ask db for credentials nothing local
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
             intent.setAction("AUTH_RESULT");
@@ -563,7 +600,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.PATH_OPTION_ID, item.getLong(DBSchema.PATH_OPTION_ID));
                 if (!item.isNull(DBSchema.PATH_DATA))
                     values.put(DBSchema.PATH_DATA, item.getString(DBSchema.PATH_DATA));
-                if(!item.isNull(DBSchema.PATH_SEQUENCE))
+                if (!item.isNull(DBSchema.PATH_SEQUENCE))
                     values.put(DBSchema.PATH_SEQUENCE, item.getLong(DBSchema.PATH_SEQUENCE));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
                 db.insertWithOnConflict(DBSchema.TABLE_PATH, null, values, 5);
@@ -580,12 +617,12 @@ public final class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
                 ContentValues values = new ContentValues();
-                if(!item.isNull(DBSchema.USERS_SPECIALIZATION_USER_ID))
+                if (!item.isNull(DBSchema.USERS_SPECIALIZATION_USER_ID))
                     values.put(DBSchema.USERS_SPECIALIZATION_USER_ID, item.getLong(DBSchema.USERS_SPECIALIZATION_USER_ID));
-                if(!item.isNull(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID))
+                if (!item.isNull(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID))
                     values.put(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID, item.getString(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID));
                 db.insertWithOnConflict(DBSchema.TABLE_USERS_SPECIALIZATION, null, values, 5);
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
@@ -831,13 +868,13 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.LOCATION_NAME, item.getString(DBSchema.LOCATION_NAME));
                 if (!item.isNull(DBSchema.LOCATION_ADDRESS_ID))
                     values.put(DBSchema.LOCATION_ADDRESS_ID, item.getLong(DBSchema.LOCATION_ADDRESS_ID));
-                if(!item.isNull(DBSchema.LOCATION_OWNER_ID))
+                if (!item.isNull(DBSchema.LOCATION_OWNER_ID))
                     values.put(DBSchema.LOCATION_OWNER_ID, item.getLong(DBSchema.LOCATION_OWNER_ID));
-                if(!item.isNull(DBSchema.LOCATION_MANAGER_ID))
+                if (!item.isNull(DBSchema.LOCATION_MANAGER_ID))
                     values.put(DBSchema.LOCATION_MANAGER_ID, item.getLong(DBSchema.LOCATION_MANAGER_ID));
                 if (!item.isNull(DBSchema.LOCATION_LICENSE))
                     values.put(DBSchema.LOCATION_LICENSE, item.getString(DBSchema.LOCATION_LICENSE));
-                if(!item.isNull(DBSchema.LOCATION_AGENT_ID))
+                if (!item.isNull(DBSchema.LOCATION_AGENT_ID))
                     values.put(DBSchema.LOCATION_AGENT_ID, item.getLong(DBSchema.LOCATION_AGENT_ID));
                 if (!item.isNull(DBSchema.STATUS))
                     values.put(DBSchema.STATUS, item.getLong(DBSchema.STATUS));
@@ -1056,24 +1093,24 @@ public final class DBHelper extends SQLiteOpenHelper {
         JSONArray data;
         data = new JSONArray();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_USERS_SPECIALIZATION,new String[] {
+        Cursor cursor = db.query(DBSchema.TABLE_USERS_SPECIALIZATION, new String[]{
                         DBSchema.USERS_SPECIALIZATION_USER_ID,
                         DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID
                 },
-                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES},null,null,null,null);
+                DBSchema.MODIFIED + "=?", new String[]{DBSchema.MODIFIED_YES}, null, null, null, null);
         if (cursor.moveToFirst()) {
             if ((cursor != null) && (cursor.getCount() > 0))
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     JSONObject map = new JSONObject();
                     try {
-                        if(!cursor.isNull(0))//
-                            map.put(DBSchema.USERS_SPECIALIZATION_USER_ID,    cursor.getString(0));
+                        if (!cursor.isNull(0))//
+                            map.put(DBSchema.USERS_SPECIALIZATION_USER_ID, cursor.getString(0));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        if(!cursor.isNull(1))//
-                            map.put(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID,    cursor.getString(1));
+                        if (!cursor.isNull(1))//
+                            map.put(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID, cursor.getString(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1853,7 +1890,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
-            for ( i = 0; i < data.length(); i++){
+            for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
                 ContentValues values = new ContentValues();
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
@@ -2072,7 +2109,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteItem(JSONArray data){
+
+    private long deleteItem(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2086,7 +2124,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deletePath(JSONArray data){
+
+    private long deletePath(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2100,13 +2139,14 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteUsers_specialization(JSONArray data){
+
+    private long deleteUsers_specialization(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
             for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
-                db.delete(DBSchema.TABLE_USERS_SPECIALIZATION,DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID + " =? AND " + DBSchema.USERS_SPECIALIZATION_USER_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID)),String.valueOf(item.getLong(DBSchema.USERS_SPECIALIZATION_USER_ID))});
+                db.delete(DBSchema.TABLE_USERS_SPECIALIZATION, DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID + " =? AND " + DBSchema.USERS_SPECIALIZATION_USER_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.USERS_SPECIALIZATION_SPECIALIZATION_ID)), String.valueOf(item.getLong(DBSchema.USERS_SPECIALIZATION_USER_ID))});
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -2114,7 +2154,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteOption(JSONArray data){
+
+    private long deleteOption(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2128,7 +2169,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteSpecialization(JSONArray data){
+
+    private long deleteSpecialization(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2142,7 +2184,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deletePerson(JSONArray data){
+
+    private long deletePerson(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2156,7 +2199,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteAppointments(JSONArray data){
+
+    private long deleteAppointments(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2170,7 +2214,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteAddress(JSONArray data){
+
+    private long deleteAddress(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2184,7 +2229,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteCategory(JSONArray data){
+
+    private long deleteCategory(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2198,13 +2244,14 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteLocation_category(JSONArray data){
+
+    private long deleteLocation_category(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
             for (i = 0; i < data.length(); i++) {
                 JSONObject item = data.getJSONObject(i);
-                long id = db.delete(DBSchema.TABLE_LOCATION_CATEGORY, DBSchema.LOCATION_CATEGORY_LOCATION_ID + " =? AND " + DBSchema.LOCATION_CATEGORY_CATEGORY_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_LOCATION_ID)),String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_CATEGORY_ID))});
+                long id = db.delete(DBSchema.TABLE_LOCATION_CATEGORY, DBSchema.LOCATION_CATEGORY_LOCATION_ID + " =? AND " + DBSchema.LOCATION_CATEGORY_CATEGORY_ID + " =? ", new String[]{String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_LOCATION_ID)), String.valueOf(item.getLong(DBSchema.LOCATION_CATEGORY_CATEGORY_ID))});
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -2212,7 +2259,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteLocation(JSONArray data){
+
+    private long deleteLocation(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2226,7 +2274,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteReport(JSONArray data){
+
+    private long deleteReport(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2240,7 +2289,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteUsers(JSONArray data){
+
+    private long deleteUsers(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2254,7 +2304,8 @@ public final class DBHelper extends SQLiteOpenHelper {
         db.close();
         return i;
     }
-    private long deleteFlowchart(JSONArray data){
+
+    private long deleteFlowchart(JSONArray data) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = -1;
         try {
@@ -2359,7 +2410,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    private void setLocalData(JSONObject serverJSONObject){
+    private void setLocalData(JSONObject serverJSONObject) {
 
         try {
             setItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
@@ -2434,7 +2485,8 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 
     }
-    private void deleteLocalData(JSONObject serverJSONObject){
+
+    private void deleteLocalData(JSONObject serverJSONObject) {
 
         try {
             deleteItem(serverJSONObject.getJSONArray(DBSchema.TABLE_ITEM));
@@ -2511,13 +2563,12 @@ public final class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
     // TODO: set tuple as sync and set the path
     // puede devolver true todo el tiempo
     // send user id;
 
     public void syncDB() {
-        String device_id = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         Log.i(this.toString(), "HTTP Sync called ");
         //Create AsycHttpClient object
@@ -2536,9 +2587,9 @@ public final class DBHelper extends SQLiteOpenHelper {
                     try {
 
                         JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        if(status.getInt(DBSchema.SYNC_STATUS) == 1) {
+                        if (status.getInt(DBSchema.SYNC_STATUS) == 1) {
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
-                        }else {
+                        } else {
 
                             Log.i(this.toString(), "HTTP Sync success Transaction fail");
                         }
@@ -2634,12 +2685,12 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 
                         JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        if(status.getInt(DBSchema.SYNC_STATUS) == 1) {
+                        if (status.getInt(DBSchema.SYNC_STATUS) == 1) {
 
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
                             deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
 
-                        }else {
+                        } else {
 
                             Log.i(this.toString(), "HTTP Sync success Transaction fail");
                         }
@@ -2659,9 +2710,9 @@ public final class DBHelper extends SQLiteOpenHelper {
                         JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
                         long status = syncInf.getLong(DBSchema.SYNC_STATUS);
                         Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
-                        String  local_data = syncInf.getString("local_data");
+                        String local_data = syncInf.getString("local_data");
                         Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
-                        if(status == DBSchema.STATUS_SUCCESS){
+                        if (status == DBSchema.STATUS_SUCCESS) {
                             setSyncDone();
                         }
                     } catch (JSONException e) {
@@ -2726,7 +2777,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public void syncDBFull() {
         deleteDB();
         getDummy();
-        String device_id = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         String prefKey = context.getResources().getString(R.string.preference_file_key);
         String usernameKey = context.getResources().getString(R.string.key_saved_username);
         SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
@@ -2747,54 +2798,23 @@ public final class DBHelper extends SQLiteOpenHelper {
                 Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
 
 
-            try {
-                setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                try {
+                    setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 // initialize sequences
                 try {
                     JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                    if(status.getInt(DBSchema.SYNC_STATUS) == 0) {
+                    if (status.getInt(DBSchema.SYNC_STATUS) == 0) {
                         if (status.getInt("flag") == 1) {
                             Log.i(this.toString(), "SETTING BASE SEQUENCE");
-                            long seq = status.getLong("base_sequence");
-                            SQLiteDatabase db = getWritableDatabase();
-                            Log.i(this.toString(), "SQLITE_SEQUENCE = "+seq);
-//                            db.execSQL("CREATE TABLE IF NOT EXISTS SQLITE_SEQUENCE(name,seq)");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_DEVICES+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_FLOWCHART+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ITEM+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION_CATEGORY+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_OPTION+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PERSON+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_REPORT+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PATH+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_SPECIALIZATION+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS+"'");
-//                            db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS_SPECIALIZATION+"'");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_ADDRESS+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_APPOINTMENTS+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_CATEGORY+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_FLOWCHART+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_ITEM+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_LOCATION+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_OPTION+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_PERSON+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_REPORT+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_PATH+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_SPECIALIZATION+"')");
-                            db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES("+seq+",'"+DBSchema.TABLE_USERS+"')");
-//                            db.close();
-
+//                            long seq = status.getLong("base_sequence");
+//
 //                            setSequence(status.getLong("base_sequence"));
 
                         }
-                    }else {
+                    } else {
 
                         Log.i(this.toString(), "HTTP Sync success Transaction fail");
                     }
@@ -2857,10 +2877,10 @@ public final class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
+    // TODO: testing
     public void loginAuthentication(String username, String password) {
 
-        String device_id = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
+        final String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         Log.i(this.toString(), "HTTP Login call");
 
@@ -2868,7 +2888,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         RequestParams params = new RequestParams();
 
         params.put(DBSchema.AUTH_USER, DBSchema.SYNC_FULL);
-        params.put(DBSchema.AUTH_PASS  , password);
+        params.put(DBSchema.AUTH_PASS, password);
         params.put(DBSchema.AUTH_DEVICE, device_id);
 
         client.post(DBSchema.AUTH_URL, params, new JsonHttpResponseHandler() {
@@ -2876,25 +2896,66 @@ public final class DBHelper extends SQLiteOpenHelper {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
-//                SQLiteDatabase db = getWritableDatabase();
-//                try {
-//                    JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-//                    if(status.getInt(DBSchema.SYNC_STATUS) == 0) {
-//                        if (status.getInt("flag") == 1) {
-//                            Log.i(this.toString(), "SETTING BASE SEQUENCE");
-//                            setSequence(status.getLong("base_sequence"));
-//
-//                        }
-//                    }else {
-//
-//                        Log.i(this.toString(), "HTTP Sync success Transaction fail");
-//                    }
-//
-//                } catch (JSONException e) {
-//
-//                    e.printStackTrace();
-//                }
-//
+                //'device' => 0, 'user' => 0, 'hash' => 0, 'id' => $device, 'seq' => -1
+                try {
+                    boolean device = response.getBoolean("device");
+                    boolean user = response.getBoolean("user");
+                    boolean switchUser = response.getBoolean("flag");
+                    String hash = response.getString("hash");
+                    String deviceID = response.getString("id");
+                    long seq = response.getLong("seq");
+
+                    if (device_id.equals(deviceID) && device && user) { // the responce come fro the server, user and passw corect
+                        if (switchUser) {
+                            syncDB();
+                            syncDBFull();
+                        }
+                        Intent intent = new Intent();
+                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        intent.setAction("AUTH");
+                        intent.putExtra("AUTH_RESULT", 200);
+                        context.sendBroadcast(intent);
+
+                    }
+                    if (device_id.equals(deviceID) && device && !user) { // the response come fro the server, the device exist but wrong credentials
+
+                        Intent intent = new Intent();
+                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        intent.setAction("AUTH");
+                        intent.putExtra("AUTH_RESULT", -200);
+                        context.sendBroadcast(intent);
+
+                    } else if (!device) { // new device
+                        setSequence(seq);
+                        if (user) { // user credentials are ok
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("AUTH");
+                            intent.putExtra("AUTH_RESULT", 200);
+                            context.sendBroadcast(intent);
+
+                            syncDBFull();
+
+                        } else { // user credentials are wrong
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("AUTH");
+                            intent.putExtra("AUTH_RESULT", -200);
+                            context.sendBroadcast(intent);
+                        }
+                    } else {
+                        Intent intent = new Intent();
+                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        intent.setAction("AUTH");
+                        intent.putExtra("AUTH_RESULT", -1);
+                        context.sendBroadcast(intent);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
 //                Intent intent = new Intent();
 //                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 //                intent.setAction("SYNC");

@@ -120,7 +120,7 @@ public class DBSchema {
             LOCATION_CATEGORY_LOCATION_ID + " INTEGER," +
             LOCATION_CATEGORY_CATEGORY_ID + " INTEGER," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "', " +
-            "PRIMARY KEY (location_id, category_id) "+")";
+            "PRIMARY KEY (location_id, category_id) " + ")";
     public static final String TABLE_OPTION = "option";
     public static final String OPTION_ID = "option_id";
     public static final String OPTION_PARENT_ID = "parent_id";
@@ -137,7 +137,7 @@ public class DBSchema {
     public static final String PERSON_LAST_NAME1 = "last_name1";
     public static final String PERSON_FIRST_NAME = "first_name";
     public static final String PERSON_EMAIL = "email";
-//    public static final String PERSON_SPEC_ID = "spec_id";
+    //    public static final String PERSON_SPEC_ID = "spec_id";
     public static final String PERSON_LAST_NAME2 = "last_name2";
     public static final String PERSON_MIDDLE_INITIAL = "middle_initial";
     public static final String PERSON_PHONE_NUMBER = "phone_number";
@@ -156,7 +156,7 @@ public class DBSchema {
     public static final String REPORT_ID = "report_id";
     public static final String REPORT_CREATOR_ID = "creator_id";
     public static final String REPORT_LOCATION_ID = "location_id";
-//    public static final String REPORT_SUBJECT_ID = "subject_id";
+    //    public static final String REPORT_SUBJECT_ID = "subject_id";
     public static final String REPORT_FLOWCHART_ID = "flowchart_id";
     public static final String REPORT_NOTE = "note";
     public static final String REPORT_DATE_FILED = "date_filed";
@@ -184,8 +184,8 @@ public class DBSchema {
             PATH_SEQUENCE + " INTEGER," +
             PATH_DATA + " TEXT," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "', " +
-            "UNIQUE ("+PATH_REPORT_ID+", "+PATH_OPTION_ID+", "+PATH_SEQUENCE+"), " +
-            "FOREIGN KEY("+PATH_REPORT_ID+") REFERENCES "+TABLE_REPORT+"("+REPORT_ID+"))";
+            "UNIQUE (" + PATH_REPORT_ID + ", " + PATH_OPTION_ID + ", " + PATH_SEQUENCE + "), " +
+            "FOREIGN KEY(" + PATH_REPORT_ID + ") REFERENCES " + TABLE_REPORT + "(" + REPORT_ID + "))";
     public static final String TABLE_SPECIALIZATION = "specialization";
     public static final String SPECIALIZATION_ID = "spec_id";
     public static final String SPECIALIZATION_NAME = "name";
@@ -216,7 +216,7 @@ public class DBSchema {
             USERS_SPECIALIZATION_USER_ID + " INTEGER," +
             USERS_SPECIALIZATION_SPECIALIZATION_ID + " INTEGER," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "'," +
-            "PRIMARY KEY ("+USERS_SPECIALIZATION_USER_ID+", "+USERS_SPECIALIZATION_SPECIALIZATION_ID+"))";
+            "PRIMARY KEY (" + USERS_SPECIALIZATION_USER_ID + ", " + USERS_SPECIALIZATION_SPECIALIZATION_ID + "))";
 
 
     public static final DateFormat FORMATDATE = new SimpleDateFormat("yyyy-MM-dd");

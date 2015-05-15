@@ -22,6 +22,7 @@ public class NetworkHelper {
 
     /**
      * Constructor that receives a context to perform operations on
+     *
      * @param context the application context
      */
     public NetworkHelper(Context context) {
@@ -30,6 +31,7 @@ public class NetworkHelper {
 
     /**
      * Checks whether there is an active network connection
+     *
      * @return true if there is an active network connection
      */
     public boolean isNetworkConnected() {
@@ -41,6 +43,7 @@ public class NetworkHelper {
 
     /**
      * Checks whether an Internet connection is available by connection to Google
+     *
      * @return true if a connection Google could be established
      */
     public boolean isInternetAvailable() {
@@ -51,6 +54,7 @@ public class NetworkHelper {
 
     /**
      * Checks whether the SEA server is available by establishing a connection to it
+     *
      * @return true if a connection to the SEA server could be established
      */
     public boolean isServerAvailable() {

@@ -12,11 +12,28 @@ public class Person implements Comparable<Person> {
 
     DBHelper dbHelper = null;
     String dummy = null;
+    String firstName = "";
+    String midleName = "";
+    String lastName1 = "";
+    String lastName2 = "";
+
     private long id = -1;
 
     public Person(long personID, DBHelper dbHelper) {
         this.dbHelper = dbHelper;
         invoke(personID);
+    }
+
+    // this method is only for the use of DBHelper
+    public Person(long id, String first_name, String initial, String last_name1, String last_name2, DBHelper db) {
+        this.dbHelper = db;
+        if (id > 0) {
+            this.id = id;
+            this.firstName = first_name;
+            this.midleName = initial;
+            this.lastName1 = last_name1;
+            this.lastName2 = last_name2;
+        }
     }
 
     public Person(long id, String first_name, String initial, String last_name1, String last_name2, String email, String phone_number, DBHelper db) {
@@ -122,18 +139,18 @@ public class Person implements Comparable<Person> {
 //    }
 
     public String getFirstName() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String name = "";
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_FIRST_NAME},
-                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            if (!cursor.isNull(0))
-                name = cursor.getString(0);
-            db.close();
-            cursor.close();
-        }
-        return name;
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String name = "";
+//        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_FIRST_NAME},
+//                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            if (!cursor.isNull(0))
+//                name = cursor.getString(0);
+//            db.close();
+//            cursor.close();
+//        }
+        return firstName;
     }
 
     public long setFirstName(String name) {
@@ -147,18 +164,18 @@ public class Person implements Comparable<Person> {
     }
 
     public String getMiddleName() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String initial = "";
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_MIDDLE_INITIAL},
-                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            if (!cursor.isNull(0))
-                initial = cursor.getString(0);
-            db.close();
-            cursor.close();
-        }
-        return initial;
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String initial = "";
+//        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_MIDDLE_INITIAL},
+//                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            if (!cursor.isNull(0))
+//                initial = cursor.getString(0);
+//            db.close();
+//            cursor.close();
+//        }
+        return midleName;
     }
 
     public long setMiddleName(String initial) {
@@ -167,6 +184,8 @@ public class Person implements Comparable<Person> {
         values.put(DBSchema.PERSON_MIDDLE_INITIAL, initial);
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
+        if (id > 0)
+            midleName = initial;
         db.close();
         return id;
     }
@@ -177,18 +196,18 @@ public class Person implements Comparable<Person> {
     }
 
     public String getLastName1() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String last1 = "";
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_LAST_NAME1},
-                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            if (!cursor.isNull(0))
-                last1 = cursor.getString(0);
-            db.close();
-            cursor.close();
-        }
-        return last1;
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String last1 = "";
+//        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_LAST_NAME1},
+//                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            if (!cursor.isNull(0))
+//                last1 = cursor.getString(0);
+//            db.close();
+//            cursor.close();
+//        }
+        return lastName1;
     }
 
     public long setLastName1(String name) {
@@ -198,22 +217,24 @@ public class Person implements Comparable<Person> {
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
+        if (id > 0)
+            lastName1 = name;
         return id;
     }
 
     public String getLastName2() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String last2 = "";
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_LAST_NAME2},
-                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-            if (!cursor.isNull(0))
-                last2 = cursor.getString(0);
-            db.close();
-            cursor.close();
-        }
-        return last2;
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String last2 = "";
+//        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_LAST_NAME2},
+//                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            if (!cursor.isNull(0))
+//                last2 = cursor.getString(0);
+//            db.close();
+//            cursor.close();
+//        }
+        return lastName2;
     }
 
     public long setLastName2(String name) {
@@ -223,6 +244,8 @@ public class Person implements Comparable<Person> {
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_PERSON, values, DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(this.id)});
         db.close();
+        if (id > 0)
+            lastName2 = name;
         return id;
     }
 
@@ -232,24 +255,24 @@ public class Person implements Comparable<Person> {
      * @return a string with the person's full name
      */
     public String getFullNameFirstLast() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String fullName = "";
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_FIRST_NAME, DBSchema.PERSON_MIDDLE_INITIAL, DBSchema.PERSON_LAST_NAME1, DBSchema.PERSON_LAST_NAME2},
-                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-            cursor.moveToFirst();
-
-            if (cursor.isNull(1) || "".equals(cursor.getString(1)))
-                fullName = (cursor.getString(0) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" : cursor.getString(3))).trim();
-            else
-
-                fullName = (cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" : cursor.getString(3))).trim();
-
-            db.close();
-            cursor.close();
-        }
-        return fullName;
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String fullName = "";
+//        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_FIRST_NAME, DBSchema.PERSON_MIDDLE_INITIAL, DBSchema.PERSON_LAST_NAME1, DBSchema.PERSON_LAST_NAME2},
+//                DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+//
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//
+//            if (cursor.isNull(1) || "".equals(cursor.getString(1)))
+//                fullName = (cursor.getString(0) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" : cursor.getString(3))).trim();
+//            else
+//
+//                fullName = (cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2) + " " + (cursor.isNull(3) ? "" : cursor.getString(3))).trim();
+//
+//            db.close();
+//            cursor.close();
+//        }
+        return (firstName + " " + ("".equals(midleName) ? "" : midleName + " ") + lastName1 + " " + lastName2).trim();
     }
 
     public String getEmail() {

@@ -3,7 +3,6 @@ package com.rener.sea;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 /**
  * A class representing a location
@@ -21,12 +20,13 @@ public class Location implements Comparable<Location> {
         invoke(id);
     }
 
-    // this method is only for the ude of DBHelper
-    public Location(long id,String name, DBHelper db) {
+    // this method is only for the use of DBHelper
+    public Location(long id, long address_id, String name, DBHelper db) {
         this.dbHelper = db;
-        if(id > 0) {
+        if (id > 0) {
+            this.id = id;
             dummy = name;
-            invoke(id);
+            address = new Address(address_id, dbHelper);
         }
     }
 
@@ -37,7 +37,7 @@ public class Location implements Comparable<Location> {
 
         } else {
             this.id = create(name, addressID, ownerID, managerID, license, agentID);
-            if(this.id>0){
+            if (this.id > 0) {
                 dummy = name;
             }
         }
@@ -86,7 +86,7 @@ public class Location implements Comparable<Location> {
 
     private boolean invoke(long id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID,DBSchema.LOCATION_NAME},
+        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID, DBSchema.LOCATION_NAME},
                 DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
@@ -132,7 +132,7 @@ public class Location implements Comparable<Location> {
         values.put(DBSchema.LOCATION_NAME, String.valueOf(name));
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = db.update(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)});
-        if(id>0)
+        if (id > 0)
             dummy = name;
         db.close();
         return id;// if -1 error during update
@@ -313,7 +313,7 @@ public class Location implements Comparable<Location> {
         values.put(DBSchema.LOCATION_LICENSE, String.valueOf(license));
         values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
         long id = -1;
-            id = db.updateWithOnConflict(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)},SQLiteDatabase.CONFLICT_IGNORE);
+        id = db.updateWithOnConflict(DBSchema.TABLE_LOCATION, values, DBSchema.LOCATION_ID + "=?", new String[]{String.valueOf(this.id)}, SQLiteDatabase.CONFLICT_IGNORE);
 
         db.close();
         return id;// if conflict during Update return 0 if error during update return -1
