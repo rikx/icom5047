@@ -553,7 +553,7 @@ function get_answers()
 	console.log(text_answers[0].value);
 }
 
-$('#btn_test').on('click', function(){
+$('#btn_submit').on('click', function(){
 	var array = [];
 	var an_answer;
 	get_answers();
@@ -587,28 +587,28 @@ $('#btn_test').on('click', function(){
 		seq++;
 	}
 
-//'/cuestionario/submit_open_questions'
-
+for(var j = 0; j < array.length; j++)
+{
 	$.ajax({
 		url: "http://localhost:3000/users/cuestionario/open/submit",
 		method: "POST",
-		data: JSON.stringify({answers: array}),
+		data: JSON.stringify({answer: array[j]}),
 		contentType: "application/json",
 		dataType: "json",
 
 		success: function(data) {
-			alert("Cuestionario terminado.");
-				// redirect to report page using returned id
-				var report_id = data.report_id;
-				window.location.href = '/users/reportes/'+report_id;
-			},
-			error: function( xhr, status, errorThrown ) {
-				alert( "Sorry, there was a problem!" );
-				console.log( "Error: " + errorThrown );
-				console.log( "Status: " + status );
-				console.dir( xhr );
-			}
-		});
+		},
+		error: function( xhr, status, errorThrown ) {
+			alert( "Sorry, there was a problem!" );
+			console.log( "Error: " + errorThrown );
+			console.log( "Status: " + status );
+			console.dir( xhr );
+		}
+	});
+}
+
+alert("Cuestionario terminado.");
+window.location.href = '/users/reportes/'+current_report;
 
 });
 });
