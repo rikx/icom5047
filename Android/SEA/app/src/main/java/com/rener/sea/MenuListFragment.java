@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -175,8 +176,12 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         int visibility = charSequence.length() > 0 ? View.VISIBLE : View.GONE;
         clearSearchButton.setVisibility(visibility);
-        String key = editSearch.getText().toString().trim();
-        //adapter.getFilter().filter(key);
+        String key = editSearch.getText().toString();
+        SimpleStringFilterable filterable = (SimpleStringFilterable) adapter;
+        if (filterable != null) {
+            filterable.getSimpleStringFilter().filter(key);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

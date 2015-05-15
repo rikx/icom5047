@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ReportListAdapter extends ArrayAdapter<Report> {
+public class ReportListAdapter extends ArrayAdapter<Report> implements SimpleStringFilterable {
 
     private Context context;
     private List<Report> reports;
-    private Filter filter;
+    private SimpleStringFilter filter;
 
     public ReportListAdapter(Context context, List<Report> reports) {
         super(context, R.layout.report_list_item, reports);
@@ -69,6 +69,15 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
+    }
+
+    @Override
+    public SimpleStringFilter getSimpleStringFilter() {
+        if(filter == null) {
+            List<Object> objects = (List<Object>) (List<?>) reports;
+            filter = new SimpleStringFilter(objects);
+        }
+        return filter;
     }
 
     private static class ReportHolder {
