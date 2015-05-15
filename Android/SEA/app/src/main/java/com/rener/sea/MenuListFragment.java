@@ -109,7 +109,7 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
         } else if (type.equals(TYPE_LOCATIONS)) {
             empty = getString(R.string.no_locations);
             list = db.getAllLocations();
-            adapter = new SimpleStringListAdapter(getActivity(), android.R.layout.simple_list_item_1,
+            adapter = new SimpleStringListAdapter(getActivity(), R.layout.simple_string_list_item,
                     list);
         } else if (type.equals(TYPE_REPORTS)) {
             empty = getString(R.string.no_reports);

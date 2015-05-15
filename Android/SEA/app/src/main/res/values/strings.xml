@@ -118,7 +118,7 @@
 	<string name="invalid_licence">Invalid licence</string>
 	<string name="past_date_message">Date cannot be in the past</string>
 	<string name="appointments">Appointments</string>
-	<string name="date_format_medium">EEE, MMM d</string>
+	<string name="date_format_medium">EEE MMM/dd/yy hh:mm a</string>
 	<string name="email_label">Email Address</string>
 	<string name="phone_number_label">Phone Number</string>
 	<string name="no_email_clients_installed">There are no email apps installed.</string>
@@ -137,4 +137,8 @@
 	<string name="location_not_found">Location not found</string>
 	<string name="user_not_found">User not found</string>
 	<string name="invalid_email">Please give  a valid email address</string>
+	<string name="confirm_flowchart_title">Flowchart confirmation</string>
+	<string name="confirm_flowchart_message">Would you like to start a survey with flow or open method?</string>
+	<string name="method_flow">Flow</string>
+	<string name="method_open">Open</string>
 </resources>

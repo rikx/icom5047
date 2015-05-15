@@ -89,12 +89,16 @@ public class Person implements Comparable<Person> {
 
     private boolean invoke(long person_id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID},
+        Cursor cursor = db.query(DBSchema.TABLE_PERSON, new String[]{DBSchema.PERSON_ID,DBSchema.PERSON_FIRST_NAME,DBSchema.PERSON_MIDDLE_INITIAL,DBSchema.PERSON_LAST_NAME1,DBSchema.PERSON_LAST_NAME2},
                 DBSchema.PERSON_ID + "=?", new String[]{String.valueOf(person_id)}, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             if (!cursor.isNull(0))
                 this.id = cursor.getLong(0);
+            firstName = cursor.getString(1);
+            midleName = (cursor.isNull(2) ? "" : cursor.getString(2));
+            lastName1 = cursor.getString(3);
+            lastName2 = (cursor.isNull(4) ? "" : cursor.getString(4));
             db.close();
             cursor.close();
             return true;

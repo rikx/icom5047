@@ -107,7 +107,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginStart="16dp"
-					android:text="@string/no_owner"
+					android:hint="@string/no_owner"
 					/>
 			</LinearLayout>
 
@@ -132,7 +132,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginStart="16dp"
-					android:text="@string/no_manager"
+					android:hint="@string/no_manager"
 					/>
 			</LinearLayout>
 
@@ -157,7 +157,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginStart="16dp"
-					android:text="@string/no_agent"
+					android:hint="@string/no_agent"
 					/>
 			</LinearLayout>
 

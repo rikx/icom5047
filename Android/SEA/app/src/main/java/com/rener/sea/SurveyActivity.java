@@ -59,9 +59,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private RadioGroup currentGroup;
     private int groupChecked = -1;
     private EditText currentText;
-    private AlertDialog confirmDiscardDialog;
+    private AlertDialog confirmDiscardDialog, confirmFlowchartDialog;
     private boolean openSurvey;
     private List<Item> openSurveyItems;
+    Flowchart flowchart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
         //Check if a new report must be created
         Intent intent = getIntent();
-        openSurvey = intent.getBooleanExtra("OPEN_SURVEY", false);
         long id = intent.getLongExtra("REPORT_ID", -1);
         // Continue report code is here if it gets implemented
         if (id == -1) { //report is new
@@ -167,10 +167,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         if (i != 0) {
             switch (adapterView.getId()) {
                 case R.id.survey_flowchart_spinner:
-                    spinnerFlowchart.setEnabled(false);
-                    Flowchart flowchart = (Flowchart) spinnerFlowchart.getSelectedItem();
-                    report.setFlowchart(flowchart);
-                    flowchartSelected(flowchart);
+                    flowchart = (Flowchart) spinnerFlowchart.getItemAtPosition(i);
+                    displayFlowchartConfirmDialog();
                     break;
                 case R.id.survey_location_spinner:
                     Location location = (Location) spinnerLocation.getSelectedItem();
@@ -239,7 +237,9 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         return creator;
     }
 
-    private void flowchartSelected(Flowchart flowchart) {
+    private void flowchartSelected() {
+        spinnerFlowchart.setEnabled(false);
+        report.setFlowchart(flowchart);
         path = new Path(report.getId(), dbHelper);
         report.setPath(path);
         progressLayout.removeAllViews();
@@ -532,8 +532,52 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         confirmDiscardDialog.show();
     }
 
+    private void displayFlowchartConfirmDialog() {
+        if (confirmFlowchartDialog == null) {
+            //Get the string
+            String title = getString(R.string.confirm_flowchart_title);
+            String message = getString(R.string.confirm_flowchart_message);
+            String cancel = getString(R.string.cancel);
+            String open = getString(R.string.method_open);
+            String flow =getString(R.string.method_flow);
+
+            //Build the dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    flowchart = null;
+                    spinnerFlowchart.setSelection(0);
+                    confirmFlowchartDialog.dismiss();
+                }
+            });
+            builder.setNeutralButton(open, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    openSurvey = true;
+                    flowchartSelected();
+                    confirmFlowchartDialog.dismiss();
+                }
+            });
+            builder.setPositiveButton(flow, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    openSurvey = false;
+                    flowchartSelected();
+                    confirmFlowchartDialog.dismiss();
+                }
+            });
+
+            confirmFlowchartDialog = builder.create();
+        }
+        confirmFlowchartDialog.show();
+    }
+
     private void startOpenSurvey(Flowchart flowchart) { //TODO: TEST THIS
         List<Item> items = flowchart.getItems();
+        openSurveyItems = new ArrayList<>();
         for (Item i : items) {
             String type = i.getType();
             boolean displayItem = !type.equals(Item.RECOMMENDATION) && !type.equals(Item.END) &&

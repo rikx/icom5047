@@ -25,21 +25,13 @@ public class SimpleStringListAdapter extends ArrayAdapter<Object> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row;
-
-        //Inflate the layout and set it's views if necessary
-        if (convertView == null) {
-            //View hasn't been created and must be initialized
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(layout, parent, false);
-            TextView textView = (TextView) row.findViewById(R.id.string_textview);
-            String string = getItem(position).toString();
-            textView.setText(string);
-
-        } else {
-            //View can be recycled
-            row = convertView;
-        }
+        //View hasn't been created and must be initialized
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        row = inflater.inflate(layout, parent, false);
+        TextView textView = (TextView) row.findViewById(R.id.string_textview);
+        String string = getItem(position).toString();
+        textView.setText(string);
         return row;
     }
 

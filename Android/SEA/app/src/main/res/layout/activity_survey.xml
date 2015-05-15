@@ -31,7 +31,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center_horizontal"
-				android:hint="@string/name"
+				android:hint="@string/report_name"
 				android:inputType="textCapWords"/>
 
 			<Spinner
@@ -74,6 +74,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="16dp"
+				android:layout_gravity="center_horizontal"
 				android:drawableStart="@drawable/ic_action_accept"
 				android:text="@string/next_question"
 				android:visibility="gone"
