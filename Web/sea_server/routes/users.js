@@ -1300,53 +1300,97 @@ router.post('/reports/appointment/:id/:uid', function(req, res, next) {
 	}
 });
 
-router.post('/cuestionario/open/submit', function(req, res, next) {
-	console.log('carl');
- //  var report_id = req.params.id;
- //  var maker = req.params.uid;
+/* POST survey answer
+ *
+ */
+router.post('/cuestionario/open/submit/discard', function(req, res, next) {
+ 	// if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('option_id') 
+ 	// 	||!req.body.hasOwnProperty('has_data') || !req.body.hasOwnProperty('sequence')) {
+ 	// 	return res.send('Error: Missing fields for post path.');
+ 	// } else {
+ 		// console.log("Open Method Server!");
+ 		// console.log(req.body);
+ 		// console.log(req.body.answers[0]);
+ 		// console.log(req.body.answers[1]);
 
-	// if(!req.body.hasOwnProperty('cita_date') || !req.body.hasOwnProperty('cita_time') || !req.body.hasOwnProperty('cita_purpose') ) {
-	// 	res.statusCode = 400;
-	// 	return res.send('Error: Missing fields for post report appointment.');
-	// } else {
-	// 	var db = req.db;
-	// 	db.connect(req.conString, function(err, client, done) {
-	// 		if(err) {
-	// 			return console.error('error fetching client from pool', err);
-	// 		}
-	// 		// Verify appointment does not already exist in db
-	// 		client.query("SELECT appointment_id FROM appointments WHERE report_id = $1", [report_id], function(err, result) {
-	// 	 		if(err) {
-	// 	  		return console.error('error running query', err);
-	// 	 		} else {
-	// 		 		if(result.rowCount > 0){
-	// 		   		res.send({exists: true});
-	// 	  		} else {
-	// 		   		// Insert new appointment into db
-	// 			   	client.query("INSERT into appointments (date, time, purpose, report_id, maker_id, status) \
-	// 			    							VALUES ($1, $2, $3, $4, $5, $6) \
-	// 			    							RETURNING appointment_id, to_char(date, 'DD/MM/YYYY') AS date, to_char(time, 'HH12:MI AM') AS time, purpose", 
-	// 			    							[req.body.cita_date, req.body.cita_time, req.body.cita_purpose, report_id, maker, 1] , function(err, result) {
-	// 				   	//call `done()` to release the client back to the pool
-	// 				  	done();
-	// 				  	if(err) {
-	// 				   		return console.error('error running query', err);
-	// 				   	} else {
-	// 				   		var the_result = result.rows[0];
-	// 				   		var new_appointment = {
-	// 				   			appointment_id: the_result.appointment_id,
-	// 				   			date: the_result.date,
-	// 				   			time: the_result.time,
-	// 				   			purpose: the_result.purpose
-	// 				   		};
-	// 							res.json({appointment: new_appointment});
-	// 			   		}
-	// 	  			});
-	// 				}
-	//  			}
-	// 		});
-	// 	});
-	// }
+		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+		  	return console.error('error fetching client from pool', err);
+			}
+
+			var query_config;
+
+			for(var i = 0; i < req.body.answers.length; i++)
+			{
+
+			console.log("Iteracion " + i);
+			if(req.body.answers[i].has_data == true){
+				query_config = {
+					text: "INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)",
+					values: [req.body.answers[i].report_id, req.body.answers[i].option_id, req.body.answers[i].data, req.body.answers[i].sequence]
+				}
+			} else {
+				query_config = {
+					text: "INSERT into path (report_id, option_id, sequence) VALUES ($1, $2, $3)",
+					values: [req.body.answers[i].report_id, req.body.answers[i].option_id, req.body.answers[i].sequence]
+				}
+			}
+			// insert new report
+		  client.query(query_config, function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		    done();
+	    	if(err) {
+		      return console.error('error running query', err);
+		    } else {
+		    	res.json(true);
+		    }
+		  });
+		}	
+		});
+});
+
+/* POST survey answer
+ *
+ */
+router.post('/cuestionario/open/submit', function(req, res, next) {
+ 	// if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('option_id') 
+ 	// 	||!req.body.hasOwnProperty('has_data') || !req.body.hasOwnProperty('sequence')) {
+ 	// 	return res.send('Error: Missing fields for post path.');
+ 	// } else {
+ 		console.log("Open Method Server Execution");
+ 		console.log(req.body.answer);
+
+		var db = req.db;
+ 		db.connect(req.conString, function(err, client, done) {
+			if(err) {
+		  	return console.error('error fetching client from pool', err);
+			}
+			var query_config;
+			if(req.body.answer.has_data == true){
+				query_config = {
+					text: "INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)",
+					values: [req.body.answer.report_id, req.body.answer.option_id, req.body.answer.user_input, req.body.answer.sequence]
+				}
+			} else {
+				query_config = {
+					text: "INSERT into path (report_id, option_id, sequence) VALUES ($1, $2, $3)",
+					values: [req.body.answer.report_id, req.body.answer.option_id, req.body.answer.sequence]
+				}
+			}
+			// insert new report
+		  client.query(query_config, function(err, result) {
+		  	//call `done()` to release the client back to the pool
+		    done();
+	    	if(err) {
+		      return console.error('error running query', err);
+		    } else {
+		    	var report_id = req.session.report_id;
+		    	res.json({report_id: report_id});
+		    }
+		  });
+		});
+ 	
 });
 
 /* GET Admin Manejar Usuarios 
