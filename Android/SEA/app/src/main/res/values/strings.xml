@@ -137,4 +137,8 @@
 	<string name="location_not_found">Location not found</string>
 	<string name="user_not_found">User not found</string>
 	<string name="invalid_email">Please give  a valid email address</string>
+	<string name="confirm_flowchart_title">Flowchart confirmation</string>
+	<string name="confirm_flowchart_message">Would you like to start a survey with flow or open method?</string>
+	<string name="method_flow">Flow</string>
+	<string name="method_open">Open</string>
 </resources>
