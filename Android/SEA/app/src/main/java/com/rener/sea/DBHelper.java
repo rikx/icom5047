@@ -320,7 +320,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         long id = -1;
         Cursor cursor = db.query(DBSchema.TABLE_ITEM, new String[]{DBSchema.ITEM_ID},
-                DBSchema.ITEM_FLOWCHART_ID + "=?", new String[]{String.valueOf(flowchartID)}, null, null, null, null);
+                DBSchema.ITEM_FLOWCHART_ID + " =? ", new String[]{String.valueOf(flowchartID)}, null, null, null, null);
         ArrayList<Item> items = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
@@ -574,6 +574,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.ITEM_ID, item.getLong(DBSchema.ITEM_ID));
                 if (!item.isNull(DBSchema.ITEM_LABEL))
                     values.put(DBSchema.ITEM_LABEL, item.getString(DBSchema.ITEM_LABEL));
+                if (!item.isNull(DBSchema.ITEM_FLOWCHART_ID))
+                    values.put(DBSchema.ITEM_FLOWCHART_ID, item.getString(DBSchema.ITEM_FLOWCHART_ID));
                 if (!item.isNull(DBSchema.ITEM_TYPE))
                     values.put(DBSchema.ITEM_TYPE, item.getString(DBSchema.ITEM_TYPE));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
