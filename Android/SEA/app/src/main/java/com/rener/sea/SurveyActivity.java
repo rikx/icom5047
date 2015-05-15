@@ -29,6 +29,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private RadioGroup currentGroup;
     private int groupChecked = -1;
     private EditText currentText;
-    private AlertDialog confirmDiscardDialog, confirmFlowchartDialog;
+    private AlertDialog confirmDiscardDialog, confirmFlowchartDialog, confirmSubmitDialog;
     private boolean openSurvey;
     private List<Item> openSurveyItems;
     Flowchart flowchart;
@@ -175,13 +176,13 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                     report.setLocation(location);
                     break;
             }
-            checkSubmittable();
+            isSubmittable();
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        checkSubmittable();
+        isSubmittable();
     }
 
     private void setSpinnerData() {
@@ -312,15 +313,38 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         }
     }
 
-    private void checkSubmittable() {
-        //TODO: incomplete reports
-        boolean submittable =
-                (!editName.getText().toString().trim().equals("") &&
-                        spinnerLocation.getSelectedItemPosition() != 0 &&
-                        spinnerFlowchart.getSelectedItemPosition() != 0 &&
-                        surveyEnded);
-        submitOption.setVisible(submittable);
+    private boolean isSubmittable() {
+        boolean submittable = true;
 
+        String name = editName.getText().toString().trim();
+        if(name.isEmpty()) {
+            String message = getString(R.string.empty_name);
+            //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            submittable = false;
+        }
+
+        int locationSpinnerPos = spinnerLocation.getSelectedItemPosition();
+        if(locationSpinnerPos == 0) {
+            String message = getString(R.string.location_not_found);
+            //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            submittable = false;
+        }
+
+        int flowchartSpinnerPos = spinnerFlowchart.getSelectedItemPosition();
+        if(flowchartSpinnerPos == 0) {
+            String message = getString(R.string.flowchart_not_found);
+            //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            submittable = false;
+        }
+
+        if(!surveyEnded) {
+            submittable = false;
+        }
+
+        if(submittable) {
+            submitOption.setVisible(submittable);
+        }
+        return submittable;
     }
 
     private void questionAnswered(Option answer) {
@@ -357,7 +381,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        checkSubmittable();
+        isSubmittable();
     }
 
     @Override
@@ -465,7 +489,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         String ended = getString(R.string.survey_completed);
         nextButton.setText(ended);
         surveyEnded = true;
-        checkSubmittable();
+        isSubmittable();
     }
 
     private void highlightTextView(TextView textView) {
@@ -588,7 +612,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             }
         }
         surveyEnded = true;
-        checkSubmittable();
+        isSubmittable();
     }
 
     private void submitOpenSurvey() {
