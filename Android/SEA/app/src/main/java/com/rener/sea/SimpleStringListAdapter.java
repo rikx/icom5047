@@ -7,19 +7,23 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class SimpleStringListAdapter extends ArrayAdapter<Object> {
+public class SimpleStringListAdapter extends ArrayAdapter<Object> implements
+        SimpleStringFilterable {
 
     private Context context;
     private List<Object> objects;
     private int layout;
+    private SimpleStringFilter filter;
 
     public SimpleStringListAdapter(Context context, int layout, List<Object> objects) {
         super(context, layout, objects);
-        this.objects = objects;
         this.context = context;
         this.layout = layout;
+        this.objects = objects;
     }
 
     @Override
@@ -48,5 +52,10 @@ public class SimpleStringListAdapter extends ArrayAdapter<Object> {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public SimpleStringFilter getSimpleStringFilter() {
+        if(filter == null) filter = new SimpleStringFilter(objects);
+        return filter;
     }
 }
