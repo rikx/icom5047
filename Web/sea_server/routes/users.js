@@ -1303,56 +1303,6 @@ router.post('/reports/appointment/:id/:uid', function(req, res, next) {
 /* POST survey answer
  *
  */
-router.post('/cuestionario/open/submit/discard', function(req, res, next) {
- 	// if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('option_id') 
- 	// 	||!req.body.hasOwnProperty('has_data') || !req.body.hasOwnProperty('sequence')) {
- 	// 	return res.send('Error: Missing fields for post path.');
- 	// } else {
- 		// console.log("Open Method Server!");
- 		// console.log(req.body);
- 		// console.log(req.body.answers[0]);
- 		// console.log(req.body.answers[1]);
-
-		var db = req.db;
- 		db.connect(req.conString, function(err, client, done) {
-			if(err) {
-		  	return console.error('error fetching client from pool', err);
-			}
-
-			var query_config;
-
-			for(var i = 0; i < req.body.answers.length; i++)
-			{
-
-			console.log("Iteracion " + i);
-			if(req.body.answers[i].has_data == true){
-				query_config = {
-					text: "INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)",
-					values: [req.body.answers[i].report_id, req.body.answers[i].option_id, req.body.answers[i].data, req.body.answers[i].sequence]
-				}
-			} else {
-				query_config = {
-					text: "INSERT into path (report_id, option_id, sequence) VALUES ($1, $2, $3)",
-					values: [req.body.answers[i].report_id, req.body.answers[i].option_id, req.body.answers[i].sequence]
-				}
-			}
-			// insert new report
-		  client.query(query_config, function(err, result) {
-		  	//call `done()` to release the client back to the pool
-		    done();
-	    	if(err) {
-		      return console.error('error running query', err);
-		    } else {
-		    	res.json(true);
-		    }
-		  });
-		}	
-		});
-});
-
-/* POST survey answer
- *
- */
 router.post('/cuestionario/open/submit', function(req, res, next) {
  	// if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('option_id') 
  	// 	||!req.body.hasOwnProperty('has_data') || !req.body.hasOwnProperty('sequence')) {
@@ -1370,7 +1320,7 @@ router.post('/cuestionario/open/submit', function(req, res, next) {
 			if(req.body.answer.has_data == true){
 				query_config = {
 					text: "INSERT into path (report_id, option_id, data, sequence) VALUES ($1, $2, $3, $4)",
-					values: [req.body.answer.report_id, req.body.answer.option_id, req.body.answer.user_input, req.body.answer.sequence]
+					values: [req.body.answer.report_id, req.body.answer.option_id, req.body.answer.data, req.body.answer.sequence]
 				}
 			} else {
 				query_config = {
