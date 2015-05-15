@@ -137,4 +137,5 @@
 	<string name="confirm_flowchart_title">Confirmación de cuestionario</string>
 	<string name="method_flow">Con flujo</string>
 	<string name="method_open">Abierto</string>
+	<string name="no_notes">No hay notas</string>
 </resources>

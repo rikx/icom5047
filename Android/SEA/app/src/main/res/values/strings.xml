@@ -141,4 +141,5 @@
 	<string name="confirm_flowchart_message">Would you like to start a survey with flow or open method?</string>
 	<string name="method_flow">Flow</string>
 	<string name="method_open">Open</string>
+	<string name="no_notes">No notes found</string>
 </resources>

@@ -43,8 +43,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     public static final int VIEW_APPOINTMENT_LAYOUT = 1;
     private Report report;
     private TextView textName, textLocation, textDate, textCreator,
-            textFlowchart;
-    private EditText editNotes;
+            textFlowchart, textNotes;
     private LinearLayout interviewLayout;
     private ViewFlipper appointmentFlipper;
     private View appointmentView;
@@ -78,8 +77,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
 
         //Set the edit views
-        editNotes = (EditText) view.findViewById(R.id.report_text_notes);
-        editNotes.setEnabled(false); //TODO: review report notes
+        textNotes = (TextView) view.findViewById(R.id.report_text_notes);
 
         //Set the location layout listener
         LinearLayout location = (LinearLayout) view.findViewById(R.id.report_location_layout);
@@ -227,7 +225,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         }
 
         //Set the notes
-        editNotes.setText(report.getNotes());
+        textNotes.setText(report.getNotes());
 
         //Set the creator
         User creator = report.getCreator();
