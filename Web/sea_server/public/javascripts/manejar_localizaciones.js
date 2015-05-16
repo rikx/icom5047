@@ -12,11 +12,28 @@ $(document).ready(function(){
   var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
   var all_categorias_array = JSON.parse($('#categoria_panel').attr('data-all-categorias'));
   var user_info = JSON.parse($localizaciones_list.attr('data-user'));
+  var data_username = $localizaciones_list.attr('data-username');
+  var data_user_type = $localizaciones_list.attr('data-type');
+  //var data_username = $localizaciones_list.attr('data-user');
+  //var data_user_type = $localizaciones_list.attr('data-type');
   var all_ganaderos = [];
   var all_agentes = [];
  
-  $('#currently_signed_in').text("Usuario actual: " + user_info.username);
-  $('#current_type').text("Tipo de cuenta: " + user_info.user_type);
+  //$('#currently_signed_in').text("Usuario actual: " + user_info.username);
+ // $('#current_type').text("Tipo de cuenta: " + user_info.user_type);
+
+  if(data_user_type == 'admin')
+  {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  }
+  else if(data_user_type == 'agent')
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  }
+  else
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+  }
 
   // initial info panel population
   if(localizaciones_array.length > 0)

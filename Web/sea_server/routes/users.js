@@ -1913,7 +1913,9 @@ router.get('/localizaciones', function(req, res, next) {
 		  			agentes: agentes_list, 
 		  			ganaderos: ganaderos_list, 
 		  			categorias: all_categories,
-		  			user: current_user
+		  			user: current_user,
+		  			username: username,
+		  			user_type: user_type
 		  		});
 		  	}
 		  });

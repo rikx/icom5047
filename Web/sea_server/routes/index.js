@@ -1351,7 +1351,9 @@ router.get('/list_localizaciones', function(req, res, next) {
 	    	res.json({localizaciones : localizaciones_list, 
 	    		location_categories: categories_list, 
 	    		agentes: agentes_list, 
-	    		ganaderos: ganaderos_list
+	    		ganaderos: ganaderos_list,
+	    		user_type: user_type,
+		  		username : username
 	    	});
 	    }
 	  });

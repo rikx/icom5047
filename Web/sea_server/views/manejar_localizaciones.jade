@@ -10,7 +10,7 @@ block content
 			.col-md-8
 				.jumbotron
 					center
-						h2 Servicio de Extensión Agrícola
+						h2#header_page Servicio de Extensión Agrícola
 						h4 Manejar Localizaciones
 						//h5#currently_signed_in
 						//h6#current_type
@@ -39,7 +39,7 @@ block content
 						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
-								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories, data-user=user)
+								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories, data-user=user, data-type=user_type, data-username=username)
 						if user.user_type != 'agent'
 							button#btn_add_localizacion(class='btn btn-default btn-success', type='button') Agregar Localización
 
