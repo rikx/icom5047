@@ -29,6 +29,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -42,11 +43,11 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         .OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
         TextView.OnEditorActionListener, TextWatcher, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
-    private static final String GREATER_THAN_REGEX = "gt\\d+(\\.\\d+)?";
-    private static final String LESS_THAN_REGEX = "lt\\d+(\\.\\d+)?";
-    private static final String GREATER_EQUAL_REGEX = "ge\\d+(\\.\\d+)?";
-    private static final String LESS_EQUAL_REGEX = "gt\\d+(\\.\\d+)?";
-    private static final String RANGE_REGEX = "ra(\\[|\\()\\d+(\\.\\d+)?,\\d+(\\.\\d+)?(\\]|\\))";
+    private static final String GREATER_THAN_REGEX = "^(gt).+$";
+    private static final String LESS_THAN_REGEX = "^(lt).+$";
+    private static final String GREATER_EQUAL_REGEX = "^(ge).+$";
+    private static final String LESS_EQUAL_REGEX = "^(le).+$";
+    private static final String RANGE_REGEX = "^(ra).+$";
     Flowchart flowchart;
     private DBHelper dbHelper;
     private Report report;
@@ -153,7 +154,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_report:
-                submit();
+                showConfirmSubmitDialog();
                 break;
             case R.id.discard_report:
                 displayDiscardConfirmDialog();
@@ -396,9 +397,16 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             Option option = item.getOptions().get(0);
             questionAnswered(option, input);
         } else if (type.equals(Item.CONDITIONAL)) {
+            double decimal;
+            try {
+                decimal = Double.valueOf(input);
+            } catch (NumberFormatException e) {
+                String message = getString(R.string.invalid_decimal);
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                return;
+            }
             currentText.setEnabled(false);
-            double d = Double.valueOf(input); //TODO: validate this?
-            Option option = handleConditional(d, item.getOptions());
+            Option option = handleConditional(decimal, item.getOptions());
             questionAnswered(option, input);
         }
     }
@@ -456,7 +464,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             report.setPath(path);
             report.setCompleted();
         } else {
-            //TODO: open survey submit goes here
             submitOpenSurvey();
         }
 
@@ -598,7 +605,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         confirmFlowchartDialog.show();
     }
 
-    private void startOpenSurvey(Flowchart flowchart) { //TODO: TEST THIS
+    private void startOpenSurvey(Flowchart flowchart) {
         List<Item> items = flowchart.getItems();
         openSurveyItems = new ArrayList<>();
         for (Item i : items) {
@@ -615,7 +622,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     }
 
     private void submitOpenSurvey() {
-        //TODO: submit open survey
         for (int i = 0; i < openSurveyItems.size(); i++) { //i needs to match the sequence number
             Item item = openSurveyItems.get(i);
             String type = item.getType();
@@ -641,5 +647,32 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                     break;
             }
         }
+    }
+
+    private void showConfirmSubmitDialog() {
+        if(confirmSubmitDialog == null) {
+            String title = getString(R.string.confirm_submit_title);
+            String message = getString(R.string.confirm_submit_message);
+            String cancel = getString(R.string.cancel);
+            final String submit = getString(R.string.submit);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    confirmSubmitDialog.dismiss();
+                }
+            });
+            builder.setPositiveButton(submit, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    submit();
+                    confirmSubmitDialog.dismiss();
+                }
+            });
+            confirmSubmitDialog = builder.create();
+        }
+        confirmSubmitDialog.show();
     }
 }

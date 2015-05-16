@@ -1,6 +1,7 @@
 package com.rener.sea;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     private String password = null;
     private DBHelper dbHelper;
     private NetworkHelper networkHelper;
+    private ProgressDialog progressDialog;
 
     public static void deleteLogin(Context context) {
         //Delete the saved login credentials
@@ -51,11 +53,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         dbHelper = new DBHelper(getApplicationContext());
         networkHelper = new NetworkHelper(this);
         networkHelper.isInternetAvailable();
-        // TODO: fill db with dummy data eliminar despues
-//        dbHelper.deleteDB();
-//        if (dbHelper.getDummy())
-//            dbHelper.syncDBFull();
-//        else dbHelper.syncDB();
 
         //Perform the login procedure
         loadLogin();
@@ -151,16 +148,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     }
 
     private void attemptLogin() {
-        //Check login credentials
-//        dbHelper.syncDB();
-//        String salt = "$2a$06$DkLy6BIWUalW66HzwYF48e";
-//        String hash = BCrypt.hashpw(password, salt);
-//        Boolean match = BCrypt.checkpw(password, salt);
-        setLoginReceiver();
-        dbHelper.authLogin(username, password);
-    }
-
-    private void setLoginReceiver() {
+        showLoginProgressDialog();
         final BroadcastReceiver loginReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -170,36 +158,63 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         };
         IntentFilter filter = new IntentFilter("AUTH");
         registerReceiver(loginReceiver, filter);
+        dbHelper.authLogin(username, password);
     }
 
     private void handleLoginResult(Intent intent) {
-        String key = "";
-        String success = "";
-        int result = intent.getIntExtra("AUTH_RESULT", -1); //TODO: set key
+        int result = intent.getIntExtra("AUTH_RESULT", -1);
         Log.i(this.toString(), " Login Handler result = " + result);
         switch (result) {
-            case 1: // the stored credential has ben match
+            case 1: //successful login with previous user
                 successfulLogin();
                 break;
-            case -200: // wrong credential
-                Log.i(this.toString(), " Login Handler wrong credentials");
+            case -200: //login failed, wrong credentials");
                 failedLogin();
                 break;
-            default:
-                Log.i(this.toString(), " Login Handler NPI");
+            case 2: //successful login with new user
+                performNewUserLogin();
                 break;
-
         }
-//        if (key.equals(success)) successfulLogin();
-//        else failedLogin();
+        progressDialog.dismiss();
+    }
+
+    private void performNewUserLogin() {
+        final BroadcastReceiver initialSyncReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                unregisterReceiver(this);
+                handleInitialSyncResult(intent);
+            }
+        };
+        IntentFilter filter = new IntentFilter("SYNC");
+        registerReceiver(initialSyncReceiver, filter);
+        dbHelper.syncDB();
+    }
+
+    private void handleInitialSyncResult(Intent intent) {
+        int result = intent.getIntExtra("SYNC_RESULT", -1);
+        switch (result) {
+            case 200:
+                performFullSync();
+                break;
+        }
+    }
+
+    private void performFullSync() {
+        final BroadcastReceiver fullSyncReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                unregisterReceiver(this);
+                successfulLogin();
+            }
+        };
+        IntentFilter filter = new IntentFilter("SYNC_FULL");
+        registerReceiver(fullSyncReceiver, filter);
+        dbHelper.setSyncDone();
+        dbHelper.syncDBFull();
     }
 
     private void successfulLogin() {
-        SharedPreferences sharedPref = this.getSharedPreferences(
-                this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("Log", true);
-        dbHelper.syncDB();
         saveLogin();
         startActivity(new Intent(this, MainActivity.class));
         Log.i(this.toString(), "login successful");
@@ -211,11 +226,21 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         SharedPreferences sharedPref = this.getSharedPreferences(
                 this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("Log", false);
+        editor.remove("Log");
+        editor.apply();
         EditText editPassword = (EditText) findViewById(R.id.field_password);
         editPassword.setText("");
         String s = getResources().getString(R.string.login_nak);
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
         Log.i(this.toString(), "login failed");
+    }
+
+    private void showLoginProgressDialog() {
+        if(progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        }
+        progressDialog.show();
     }
 }

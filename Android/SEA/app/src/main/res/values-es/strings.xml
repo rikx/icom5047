@@ -138,4 +138,7 @@
 	<string name="method_flow">Con flujo</string>
 	<string name="method_open">Abierto</string>
 	<string name="no_notes">No hay notas</string>
+	<string name="invalid_decimal">Por favor entre un número decimal válido</string>
+	<string name="confirm_submit_message">¿Está seguro que desea someter este reporte?</string>
+	<string name="confirm_submit_title">Someter reporte</string>
 </resources>

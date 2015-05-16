@@ -142,4 +142,7 @@
 	<string name="method_flow">Flow</string>
 	<string name="method_open">Open</string>
 	<string name="no_notes">No notes found</string>
+	<string name="invalid_decimal">Please input a valid decimal number</string>
+	<string name="confirm_submit_title">Report Submission Confirmation</string>
+	<string name="confirm_submit_message">Are you sure you wish to submit this report?</string>
 </resources>
