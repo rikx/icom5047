@@ -472,8 +472,8 @@ jsPlumb.ready(function() {
   	if(!empty_field_check(form_data) && ($('input[name=ready_radios]:checked').length > 0)){
   		// check that endpoints are valid
 	    if(end_points.first_id != -1 && end_points.end_id != -1){
-//	    	if(check_item_connections()){
-//	    		if(check_conditionals()){
+	    	if(check_item_connections()){
+	    		if(check_conditionals()){
 						// add missing flowchart fields
 						new_flowchart.first_id = end_points.first_id;
 						new_flowchart.end_id = end_points.end_id;
@@ -508,12 +508,12 @@ jsPlumb.ready(function() {
 						    console.dir( xhr );
 						  }
 						});	
-	    		//} else {
-	    		//	alert('Condicionales no estan escritos correctamente.');
-	    		//}
-	    	//} else {
-	    	//	alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
-	    	//}
+	    		} else {
+	    			alert('Condicionales no estan escritos correctamente.');
+	    		}
+	    	} else {
+	    		alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
+	    	}
 	    } else {
 	    	alert('Cuestionario no tiene elemento inicial o final, o estos tienen conecciones existentes.');
 	    }
