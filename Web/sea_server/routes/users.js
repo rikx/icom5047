@@ -60,7 +60,9 @@ router.get('/admin/categorias', function(req, res, next) {
 				  		res.render('manejar_categorias', { 
 				  			title: 'Manejar Categorias', 
 				  			categories: categories_list,
-				  			specialties: result.rows
+				  			specialties: result.rows,
+				  			user_type:user_type,
+				  			username:username
 				  		});
 				  	}
 				  });

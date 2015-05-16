@@ -10,7 +10,7 @@ block content
 			.col-md-8
 				.jumbotron
 					center
-						h2 Servicio de Extensión Agrícola
+						h2#header_page Servicio de Extensión Agrícola
 						h4 Manejar Categorias
 			.col-md-2
 
@@ -33,7 +33,7 @@ block content
 		#category_row.row
 			.col-md-1
 			.col-md-6
-				#categoria_panel.form-group(data-all-categorias=categories)
+				#categoria_panel.form-group(data-all-categorias=categories, data-type=user_type, data-username=username)
 								.panel.panel-success
 									#categoria_panel_title.panel-heading Categorías de Localización
 									.panel-body

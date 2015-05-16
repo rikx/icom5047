@@ -4,12 +4,30 @@ $(document).ready(function(){
 	$specialties_list = $('#specialties');
 	var all_categories = JSON.parse($('#categoria_panel').attr('data-all-categorias'));
 	var all_specialties = JSON.parse($('#specialty_panel').attr('data-all-specialties'));
+  var data_username = $('#categoria_panel').attr('data-username');
+  var data_user_type = $('#categoria_panel').attr('data-type');
 
 	$('#edit_category_panel').hide();
 	$('#add_category_panel').hide();
 	$('#edit_specialty_panel').hide();
 	$('#add_specialty_panel').hide();
   $('#specialty_row').hide();
+
+
+
+
+ if(data_user_type == 'admin')
+  {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  }
+  else if(data_user_type == 'agent')
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  }
+  else
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+  }
 
 
 	populate_list_categories(all_categories);
