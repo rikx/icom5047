@@ -333,6 +333,9 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 router.get('/usuarios/:user_input', function(req, res, next) {
 	var user_input = req.params.user_input;
 	var usuarios_list, specialties_list, locations_list;
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
@@ -383,7 +386,9 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 	    	res.json({
 	    		usuarios : usuarios_list,
 	    		specialties: specialties_list,
-	    		locations: locations_list
+	    		locations: locations_list,
+	    		user_type: user_type,
+		  		username : username
 	    	});
 	    }
 	  });
@@ -1039,7 +1044,9 @@ router.get('/list_ganaderos', function(req, res, next) {
 
 			res.json({
 				ganaderos: ganaderos_list, 
-				locations: locations_list
+				locations: locations_list,
+				user_type: user_type,
+				userame: username
 			});
 		}
 	});	

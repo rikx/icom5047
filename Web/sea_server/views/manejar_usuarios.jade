@@ -10,7 +10,7 @@ block content
 			.col-md-8
 				.jumbotron
 					center
-						h2 Servicio de Extensión Agrícola
+						h2#header_page Servicio de Extensión Agrícola
 						h4 Manejar Usuarios
 			.col-md-2
 
@@ -36,7 +36,7 @@ block content
 						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
-								tbody#usuarios_list(data-usuarios=usuarios, data-locations=locations, data-specialties=user_specialties)
+								tbody#usuarios_list(data-usuarios=usuarios, data-locations=locations, data-specialties=user_specialties, data-type=user_type, data-user=username)
 									each usuario, i in usuarios
 										tr
 											td

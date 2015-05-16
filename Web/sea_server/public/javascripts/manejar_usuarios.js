@@ -14,6 +14,8 @@ $(document).ready(function(){
   var data_usuarios = $usuarios_list.attr('data-usuarios');
   var data_locations = $usuarios_list.attr('data-locations');
   var data_specialties = $usuarios_list.attr('data-specialties');
+  var data_username = $usuarios_list.attr('data-user');
+  var data_user_type = $usuarios_list.attr('data-type');
   var data_all_specialties = $('#specialty_panel').attr('data-all-specialties');
 
   if(data_usuarios.length >2){
@@ -33,6 +35,20 @@ $(document).ready(function(){
     populate_info_panel(usuarios_array[0]);
   } else {
     $('#info_panel').hide();
+  }
+ 
+
+  if(data_user_type == 'admin')
+  {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  }
+  else if(data_user_type == 'agent')
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  }
+  else
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
   }
 
    /* Search Code start */

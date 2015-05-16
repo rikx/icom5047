@@ -1472,7 +1472,9 @@ router.get('/admin/usuarios', function(req, res, next) {
 		  		 usuarios : usuarios_list, 
 		  		 user_specialties: specialties_list, 
 		  		 locations : locations_list, 
-		  		 specialties: all_specialties
+		  		 specialties: all_specialties,
+		  		 user_type: user_type,
+		  		 username : username
 		  		});
 		  	}
 		  });
