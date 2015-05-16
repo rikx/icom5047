@@ -741,7 +741,6 @@ router.get('/ganaderos', function(req, res, next) {
 	 					return console.error('error running query', err);
 	 				} else {
 	 					ganaderos_list = result.rows;
-	 					console.log(result.rows)
 	 				}
 	 			});
 	 		// get associated locations
