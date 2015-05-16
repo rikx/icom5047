@@ -685,12 +685,7 @@ router.get('/ganaderos', function(req, res, next) {
 						 			FROM person \
 						 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 						 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-						 			LIMIT 20) \
-								SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id \
-								UNION \
-								SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id",
+						 			LIMIT 20)",
 	 				values: [-1]
 	 			}
 	 			query_config2 = {

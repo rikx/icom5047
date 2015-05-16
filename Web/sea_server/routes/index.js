@@ -236,6 +236,11 @@ router.post('/cuestionario/path', function(req, res, next) {
  */
 router.get('/ganaderos/:user_input', function(req, res, next) {
 	var user_input = req.params.user_input;
+
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+	
 	var ganaderos_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -249,9 +254,6 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 										WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) as ganaderos \
 									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", [-1], function(err, result) {
-	  	//call `done()` to release the client back to the pool
-	    done();
-
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -859,12 +861,7 @@ router.get('/list_ganaderos', function(req, res, next) {
 								 			FROM person \
 								 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
 								 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-								 			LIMIT 20) \
-							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name  \
-							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id \
-							UNION \
-							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name  \
-							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id",
+								 			LIMIT 20)",
  				values: [-1]
  			}
  			query_config2 = {
