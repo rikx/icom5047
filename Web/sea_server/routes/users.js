@@ -761,7 +761,9 @@ router.get('/ganaderos', function(req, res, next) {
 						title: 'Manejar Ganaderos', 
 						ganaderos: ganaderos_list, 
 						locations: locations_list,
-						user: current_user 
+						user: current_user,
+						user_type: user_type,
+						username: username 
 					});
 				}
 			});	

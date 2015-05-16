@@ -10,7 +10,7 @@ block content
 			.col-md-8
 				.jumbotron
 					center
-						h2 Servicio de Extensión Agrícola
+						h2#header_page Servicio de Extensión Agrícola
 						h4 Manejar Ganaderos
 			.col-md-2
 
@@ -37,7 +37,7 @@ block content
 						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
-								tbody#ganaderos_list(data-ganaderos=ganaderos, data-localizaciones=locations, data-user=user)
+								tbody#ganaderos_list(data-ganaderos=ganaderos, data-localizaciones=locations, data-user=user, data-type=user_type, data-username=username)
 									each ganadero, i in ganaderos
 										tr
 											td

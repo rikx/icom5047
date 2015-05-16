@@ -6,20 +6,10 @@ $(document).ready(function(){
   var ganaderos_array = [];
   var localizaciones_array = []; 
   var user_info = JSON.parse($ganaderos_list.attr('data-user'));
-
   var data_ganaderos = $ganaderos_list.attr('data-ganaderos')
-
-  console.log("The Ganaderos");
-  console.log(data_ganaderos);
-
-
   var data_locations = $ganaderos_list.attr('data-localizaciones');
-
-   console.log("The Locations");
-   console.log(data_locations);
-
-   console.log("User Info is");
-   console.log(user_info);
+  var data_username = $ganaderos_list.attr('data-username');
+  var data_user_type = $ganaderos_list.attr('data-type');
 
 
   if(data_ganaderos.length >2){
@@ -29,6 +19,19 @@ $(document).ready(function(){
       localizaciones_array = JSON.parse($ganaderos_list.attr('data-localizaciones'));
     }
 
+
+    if(data_user_type == 'admin')
+    {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+    }
+    else if(data_user_type == 'agent')
+    {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+    }
+    else
+    {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+    }
 
 
     // initial info panel population
