@@ -1790,7 +1790,7 @@ router.get('/localizaciones', function(req, res, next) {
 			values: [-1, user_id]
 		}
 	}
-	else
+	else if (user_type == 'admin' || user_type == 'specialist')
 	{
 		query_config_1 = {
 	 				text: 'SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
