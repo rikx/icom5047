@@ -243,7 +243,7 @@ public class DBSchema {
     public static final int LOGIN_SUCCESS = 1;
     public static final int LOGIN_SUCCESS_NEW_USER = 2;
     public static final int LOGIN_FAIL = -200;
-
+    public static final int SYNC_SUCCESS = 200;
 
     public static final String AUTH_USER = "username";
     public static final String AUTH_PASS = "password";

@@ -431,7 +431,7 @@ public final class DBHelper extends SQLiteOpenHelper {
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
             intent.setAction("AUTH");
-            intent.putExtra("AUTH_RESULT", 1);
+            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS);
             context.sendBroadcast(intent);
 
         }
@@ -2659,7 +2659,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     try {
 
                         JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        if (status.getInt(DBSchema.SYNC_STATUS) == 1) {
+                        if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
                         } else {
 
@@ -2679,7 +2679,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                     intent.setAction("SYNC");
-                    intent.putExtra("SYNC_RESULT", 200);
+                    intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
                     context.sendBroadcast(intent);
 
                 }
@@ -2714,7 +2714,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("SYNC");
-                            intent.putExtra("SYNC_RESULT", -1);
+                            intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
                             context.sendBroadcast(intent);
                             Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
                             break;
@@ -2757,7 +2757,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
 
                         JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        if (status.getInt(DBSchema.SYNC_STATUS) == 1) {
+                        if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
 
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
                             if (!userSW)
@@ -2777,7 +2777,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                     intent.setAction("SYNC");
-                    intent.putExtra("SYNC_RESULT", 200);
+                    intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
                     context.sendBroadcast(intent);
                     try {
                         JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
@@ -2831,7 +2831,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("SYNC");
-                            intent.putExtra("SYNC_RESULT", -1);
+                            intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
                             context.sendBroadcast(intent);
                             Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
                             break;
@@ -2879,7 +2879,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 // initialize sequences
                 try {
                     JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                    if (status.getInt(DBSchema.SYNC_STATUS) == 1) {
+                    if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
 
                         setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
 
@@ -2896,7 +2896,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 Intent intent = new Intent();
                 intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                 intent.setAction("SYNC_FULL");
-                intent.putExtra("SYNC_RESULT", 200);
+                intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
                 context.sendBroadcast(intent);
 
             }
@@ -2931,7 +2931,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         Intent intent = new Intent();
                         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                         intent.setAction("SYNC_FULL");
-                        intent.putExtra("SYNC_RESULT", -1);
+                        intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
                         context.sendBroadcast(intent);
                         Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
                         break;
@@ -2987,14 +2987,14 @@ public final class DBHelper extends SQLiteOpenHelper {
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", 2);
+                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
                             context.sendBroadcast(intent);
 
                         } else {
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", 1);
+                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS);
                             context.sendBroadcast(intent);
                         }
 
@@ -3004,7 +3004,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         Intent intent = new Intent();
                         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                         intent.setAction("AUTH");
-                        intent.putExtra("AUTH_RESULT", -200);
+                        intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_FAIL);
                         context.sendBroadcast(intent);
 
                     } else if (!device) { // new device
@@ -3019,22 +3019,22 @@ public final class DBHelper extends SQLiteOpenHelper {
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", 1);
+                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
                             context.sendBroadcast(intent);
-                            syncDBFull();
+//                            syncDBFull();
 
                         } else { // user credentials are wrong
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", -200);
+                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_FAIL);
                             context.sendBroadcast(intent);
                         }
                     } else {
                         Intent intent = new Intent();
                         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                         intent.setAction("AUTH");
-                        intent.putExtra("AUTH_RESULT", -1);
+                        intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
                         context.sendBroadcast(intent);
                     }
 
@@ -3081,7 +3081,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         Intent intent = new Intent();
                         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                         intent.setAction("AUTH");
-                        intent.putExtra("AUTH_RESULT", -1);
+                        intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
                         context.sendBroadcast(intent);
                         Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
                         break;
