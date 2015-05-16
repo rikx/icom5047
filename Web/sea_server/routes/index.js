@@ -572,8 +572,10 @@ router.get('/citas/:user_input', function(req, res, next) {
  * returns locations matching :user_input and their associated information 
  */
 router.get('/localizaciones/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
 	var localizaciones_list, categories_list, agentes_list, ganaderos_list;
 	var db = req.db;
+
 	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
