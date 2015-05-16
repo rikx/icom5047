@@ -2895,7 +2895,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 Intent intent = new Intent();
                 intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                intent.setAction("SYNC");
+                intent.setAction("SYNC_FULL");
                 intent.putExtra("SYNC_RESULT", 200);
                 context.sendBroadcast(intent);
 
@@ -2914,7 +2914,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     case 404:
                         Intent intent404 = new Intent();
                         intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent404.setAction("SYNC");
+                        intent404.setAction("SYNC_FULL");
                         intent404.putExtra("SYNC_RESULT", 404);
                         context.sendBroadcast(intent404);
                         Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
@@ -2922,7 +2922,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     case 500:
                         Intent intent500 = new Intent();
                         intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent500.setAction("SYNC");
+                        intent500.setAction("SYNC_FULL");
                         intent500.putExtra("SYNC_RESULT", 500);
                         context.sendBroadcast(intent500);
                         Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
@@ -2930,7 +2930,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     default:
                         Intent intent = new Intent();
                         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent.setAction("SYNC");
+                        intent.setAction("SYNC_FULL");
                         intent.putExtra("SYNC_RESULT", -1);
                         context.sendBroadcast(intent);
                         Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
@@ -2980,13 +2980,14 @@ public final class DBHelper extends SQLiteOpenHelper {
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(context.getString(R.string.key_saved_passhash), hash);
                         editor.apply();
+                        // sync db
                         if (switchUser) {
-                            syncDB();
-                            syncDBFull();
+//                            syncDB();
+//                            syncDBFull();
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", 1);
+                            intent.putExtra("AUTH_RESULT", 2);
                             context.sendBroadcast(intent);
 
                         } else {

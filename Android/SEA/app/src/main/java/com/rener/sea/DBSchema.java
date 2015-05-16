@@ -240,6 +240,9 @@ public class DBSchema {
     public static final String POST_SERVER_DATA_NEW = "new_data";// // return in JSON response object  {sync_status: 1, new_data: {db_data}}
     public static final String POST_SERVER_DATA_DELETED = "deleted_data";
     public static final String POST_SYNC_INF = "sync_info";
+    public static final int LOGIN_SUCCESS = 1;
+    public static final int LOGIN_SUCCESS_NEW_USER = 2;
+    public static final int LOGIN_FAIL = -200;
 
 
     public static final String AUTH_USER = "username";
