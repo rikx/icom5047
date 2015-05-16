@@ -681,11 +681,11 @@ router.get('/ganaderos', function(req, res, next) {
 	 		var query_config1, query_config2;
 	 		if(user_type == 'admin' || user_type=='specialist'){
 	 			query_config1 = {
-	 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-						 			FROM person \
-						 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
-						 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-						 			LIMIT 20)",
+	 				text: "SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+								FROM person \
+								WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+								ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+								LIMIT 20",
 	 				values: [-1]
 	 			}
 	 			query_config2 = {

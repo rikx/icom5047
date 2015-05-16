@@ -240,20 +240,69 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
-	
+
 	var ganaderos_list, locations_list;
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
 		}
+		var query_config1, query_config2;
+ 		if(user_type == 'admin' || user_type=='specialist'){
+ 			query_config1 = {
+ 				text: "SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+							FROM person \
+							WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
+							ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC",
+ 				values: [-1]
+ 			}
+ 			query_config2 = {
+ 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+					 			FROM person \
+					 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
+					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+					 			LIMIT 20), \
+							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
+								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id), \
+							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
+								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id) \
+					 		SELECT * \
+					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
+				values: [-1]
+ 			}
+ 		} else if(user_type == 'agent'){
+ 			query_config1 = {
+ 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+					 			FROM person \
+					 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
+					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name  \
+							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id \
+							WHERE agent_id = $2\
+							UNION \
+							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id \
+							WHERE agent_id = $2",
+ 				values: [-1, user_id]
+ 			}
+ 			query_config2 = {
+ 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+					 			FROM person \
+					 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
+					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC), \
+							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
+								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id \
+								WHERE agent_id = $2), \
+							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
+								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id \
+								WHERE agent_id = $2) \
+					 		SELECT * \
+					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
+				values: [-1, user_id]
+ 			}
+ 		}
 		// get ganaderos
-	  client.query("SELECT * \
-									FROM (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-										FROM person \
-										WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
-										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) as ganaderos \
-									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", [-1], function(err, result) {
+	  client.query(query_config1, function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -261,17 +310,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 	    }
 	  });
 	  // get associated locations
-	  client.query("WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-						 			FROM person \
-						 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
-						 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC), \
-								owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
-									FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id), \
-								managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
-									FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id) \
-						 		SELECT * \
-						 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location \
-								WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", [-1], function(err, result){
+	  client.query(query_config2, function(err, result){
 			//call `done()` to release the client back to the pool
 			done();
 			if(err) {
@@ -857,11 +896,11 @@ router.get('/list_ganaderos', function(req, res, next) {
  		var query_config1, query_config2;
  		if(user_type == 'admin' || user_type=='specialist'){
  			query_config1 = {
- 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-								 			FROM person \
-								 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
-								 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-								 			LIMIT 20)",
+ 				text: "SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+							FROM person \
+							WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+							ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
+							LIMIT 20",
  				values: [-1]
  			}
  			query_config2 = {
