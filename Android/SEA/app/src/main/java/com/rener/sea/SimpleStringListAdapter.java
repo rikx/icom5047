@@ -7,9 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class SimpleStringListAdapter extends ArrayAdapter<Object> implements
         SimpleStringFilterable {
@@ -55,7 +53,7 @@ public class SimpleStringListAdapter extends ArrayAdapter<Object> implements
     }
 
     public SimpleStringFilter getSimpleStringFilter() {
-        if(filter == null) filter = new SimpleStringFilter(objects);
+        if (filter == null) filter = new SimpleStringFilter(objects);
         return filter;
     }
 }

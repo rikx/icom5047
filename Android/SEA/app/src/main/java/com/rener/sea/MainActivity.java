@@ -451,7 +451,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         if (allow) {
             Intent intent = new Intent(this, SurveyActivity.class);
             LocationDetailsFragment locDetails = (LocationDetailsFragment) rightFragment;
-            if(locDetails != null) {
+            if (locDetails != null) {
                 long loc_id = locDetails.getLocationId();
                 intent.putExtra("LOCATION_ID", loc_id);
             }

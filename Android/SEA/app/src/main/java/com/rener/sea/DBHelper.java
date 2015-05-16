@@ -246,23 +246,59 @@ public final class DBHelper extends SQLiteOpenHelper {
     }
 
     public List<Location> getAllLocations() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID, DBSchema.LOCATION_NAME},
-                DBSchema.STATUS + " !=? ", new String[]{String.valueOf(-1)}, null, null, DBSchema.LOCATION_NAME + " COLLATE NOCASE", null);
-        ArrayList<Location> location;
-        location = new ArrayList<>();
-        if ((cursor != null) && (cursor.getCount() > 0)) {
+        String username = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString(context.getString(R.string.key_saved_username), null);
+        if (isAgent(username)) {
+            return getAllLocationsOf(getUserId(username));
+        } else {
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_ID, DBSchema.LOCATION_ADDRESS_ID, DBSchema.LOCATION_NAME},
+                    DBSchema.STATUS + " !=? ", new String[]{String.valueOf(-1)}, null, null, DBSchema.LOCATION_NAME + " COLLATE NOCASE", null);
+            ArrayList<Location> location;
+            location = new ArrayList<>();
+            if ((cursor != null) && (cursor.getCount() > 0)) {
 
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                location.add(new Location(cursor.getLong(0), cursor.getLong(1), cursor.getString(2), this));
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    location.add(new Location(cursor.getLong(0), cursor.getLong(1), cursor.getString(2), this));
+                }
+
+                db.close();
+                cursor.close();
+
             }
+            return location;
+        }
 
+    }
+
+    public boolean isAgent(String username) {
+        boolean agent = false;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_TYPE
+                },
+                DBSchema.USER_USERNAME + "=?", new String[]{String.valueOf(username)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            agent = cursor.getString(0).equals("agent");
             db.close();
             cursor.close();
-
         }
-        return location;
+        return agent;
+    }
 
+    public long getUserId(String username) {
+        long agentId = -1;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(DBSchema.TABLE_USERS, new String[]{DBSchema.USER_ID
+                },
+                DBSchema.USER_USERNAME + "=?", new String[]{String.valueOf(username)}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            agentId = cursor.getLong(0);
+            db.close();
+            cursor.close();
+        }
+        return agentId;
     }
 
     public List<Location> getAllLocationsOf(long agentID) {
@@ -288,7 +324,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID, DBSchema.REPORT_NAME},
-                null, null, null, null, "date(" + DBSchema.REPORT_DATE_FILED + ") DESC, "+DBSchema.REPORT_NAME+" COLLATE NOCASE", null);
+                null, null, null, null, "date(" + DBSchema.REPORT_DATE_FILED + ") DESC, " + DBSchema.REPORT_NAME + " COLLATE NOCASE", null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -392,11 +428,11 @@ public final class DBHelper extends SQLiteOpenHelper {
         boolean exist = user.getId() != -1 ? true : false;
 
         if (userN && pass && hash && exist) {
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                intent.setAction("AUTH");
-                intent.putExtra("AUTH_RESULT", 1);
-                context.sendBroadcast(intent);
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+            intent.setAction("AUTH");
+            intent.putExtra("AUTH_RESULT", 1);
+            context.sendBroadcast(intent);
 
         }
 //        else if (userN && pass && hash && exist) {
@@ -411,16 +447,16 @@ public final class DBHelper extends SQLiteOpenHelper {
 //
 //
 //        }
-            else{ //ask db for credentials nothing local
+        else { //ask db for credentials nothing local
 
-                loginAuthentication(username, password);
+            loginAuthentication(username, password);
 
 //            Intent intent = new Intent();
 //            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 //            intent.setAction("AUTH_RESULT");
 //            intent.putExtra("RESULT", -200);
 //            context.sendBroadcast(intent);
-            }
+        }
 
 //            if (userN && pass && hash && exist) {
 //                Intent intent = new Intent();
@@ -979,6 +1015,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.USER_PERSON_ID, item.getLong(DBSchema.USER_PERSON_ID));
                 if (!item.isNull(DBSchema.USER_SALT))
                     values.put(DBSchema.USER_SALT, item.getString(DBSchema.USER_SALT));
+                if (!item.isNull(DBSchema.USER_TYPE))
+                    values.put(DBSchema.USER_TYPE, item.getString(DBSchema.USER_TYPE));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_USERS, null, values, 5);
@@ -2723,7 +2761,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
                             if (!userSW)
-                            deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
+                                deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
 
                         } else {
 
@@ -2951,7 +2989,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                             intent.putExtra("AUTH_RESULT", 1);
                             context.sendBroadcast(intent);
 
-                        }else {
+                        } else {
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");

@@ -247,10 +247,8 @@ public class DBSchema {
     public static final String AUTH_DEVICE = "android_id";
     public static final String AUTH_URL = "http://136.145.116.231/mobile/test10.php";
 
-    //    public static final String SYNC_URL = "http://136.145.116.231:3000/synchronization";
-//    public static final String SYNC_URL = "http://136.145.116.231/mobile/test1.php";
-//    public static final String SYNC_URL = "http://136.145.116.231/mobile/test2.php";
-//    public static final String SYNC_URL = "http://136.145.116.231/mobile/test3.php"; // working
-    public static final String SYNC_URL = "http://136.145.116.231/mobile/test7.php";
+
+    //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test7.php"; // working
+    public static final String SYNC_URL = "http://136.145.116.231/mobile/test8.php"; // working
 
 }

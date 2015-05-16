@@ -29,7 +29,6 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -48,6 +47,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private static final String GREATER_EQUAL_REGEX = "ge\\d+(\\.\\d+)?";
     private static final String LESS_EQUAL_REGEX = "gt\\d+(\\.\\d+)?";
     private static final String RANGE_REGEX = "ra(\\[|\\()\\d+(\\.\\d+)?,\\d+(\\.\\d+)?(\\]|\\))";
+    Flowchart flowchart;
     private DBHelper dbHelper;
     private Report report;
     private EditText editName, editNotes;
@@ -63,7 +63,6 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
     private AlertDialog confirmDiscardDialog, confirmFlowchartDialog, confirmSubmitDialog;
     private boolean openSurvey;
     private List<Item> openSurveyItems;
-    Flowchart flowchart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -317,31 +316,31 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         boolean submittable = true;
 
         String name = editName.getText().toString().trim();
-        if(name.isEmpty()) {
+        if (name.isEmpty()) {
             String message = getString(R.string.empty_name);
             //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             submittable = false;
         }
 
         int locationSpinnerPos = spinnerLocation.getSelectedItemPosition();
-        if(locationSpinnerPos == 0) {
+        if (locationSpinnerPos == 0) {
             String message = getString(R.string.location_not_found);
             //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             submittable = false;
         }
 
         int flowchartSpinnerPos = spinnerFlowchart.getSelectedItemPosition();
-        if(flowchartSpinnerPos == 0) {
+        if (flowchartSpinnerPos == 0) {
             String message = getString(R.string.flowchart_not_found);
             //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             submittable = false;
         }
 
-        if(!surveyEnded) {
+        if (!surveyEnded) {
             submittable = false;
         }
 
-        if(submittable) {
+        if (submittable) {
             submitOption.setVisible(submittable);
         }
         return submittable;
@@ -563,7 +562,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             String message = getString(R.string.confirm_flowchart_message);
             String cancel = getString(R.string.cancel);
             String open = getString(R.string.method_open);
-            String flow =getString(R.string.method_flow);
+            String flow = getString(R.string.method_flow);
 
             //Build the dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

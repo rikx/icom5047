@@ -115,7 +115,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
             String message = getString(R.string.empty_password_error);
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        } else{
+        } else {
             attemptLogin();
         }
     }
@@ -129,7 +129,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.key_saved_username), username);
         editor.putString(getString(R.string.key_saved_password), password);
-        editor.putBoolean("Log",true);
+        editor.putBoolean("Log", true);
         editor.apply();
         Log.i(this.toString(), "saveLogin: " + username + ", " + password);
     }
@@ -141,7 +141,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         String sPassword = sharedPref.getString(getString(R.string.key_saved_password), null);
         boolean log = sharedPref.getBoolean("Log", false);
         Log.i(this.toString(), "loadLogin: " + sUsername + ", " + sPassword);
-        if(log) {
+        if (log) {
             if (sUsername != null && sPassword != null) {
                 username = sUsername;
                 password = sPassword;
@@ -156,8 +156,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 //        String salt = "$2a$06$DkLy6BIWUalW66HzwYF48e";
 //        String hash = BCrypt.hashpw(password, salt);
 //        Boolean match = BCrypt.checkpw(password, salt);
-            setLoginReceiver();
-            dbHelper.authLogin(username, password);
+        setLoginReceiver();
+        dbHelper.authLogin(username, password);
     }
 
     private void setLoginReceiver() {
@@ -176,8 +176,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         String key = "";
         String success = "";
         int result = intent.getIntExtra("AUTH_RESULT", -1); //TODO: set key
-        Log.i(this.toString(), " Login Handler result = "+result);
-        switch (result){
+        Log.i(this.toString(), " Login Handler result = " + result);
+        switch (result) {
             case 1: // the stored credential has ben match
                 successfulLogin();
                 break;

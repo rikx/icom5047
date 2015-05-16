@@ -5,10 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,7 +71,7 @@ public class ReportListAdapter extends ArrayAdapter<Report> implements SimpleStr
 
     @Override
     public SimpleStringFilter getSimpleStringFilter() {
-        if(filter == null) {
+        if (filter == null) {
             List<Object> objects = (List<Object>) (List<?>) reports;
             filter = new SimpleStringFilter(objects);
         }
