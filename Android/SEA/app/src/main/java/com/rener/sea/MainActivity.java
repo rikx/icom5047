@@ -61,7 +61,7 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
         networkReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                sync();
+//                sync();
             }
         };
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);

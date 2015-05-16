@@ -33,11 +33,12 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
-    private static int DATABASE_VERSION = 5;
+    private static int DATABASE_VERSION = 6;
     //    public static int SYNC_STATUS = 0;
     private static JSONObject dataSync = new JSONObject();
     private boolean dummyDB = false;
     private Context context;
+    private boolean userSW = false;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -94,56 +95,58 @@ public final class DBHelper extends SQLiteOpenHelper {
     // TODO:
     public void deleteDB() {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_ADDRESS);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_APPOINTMENTS);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_CATEGORY);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_DEVICES);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_FLOWCHART);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_ITEM);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_LOCATION);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_LOCATION_CATEGORY);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_OPTION);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_PATH);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_PERSON);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_REPORT);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_SPECIALIZATION);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_USERS);
-        db.execSQL("DROP TABLE IF EXISTS " + DBSchema.TABLE_USERS_SPECIALIZATION);
-        onCreate(db);
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_ADDRESS + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_APPOINTMENTS + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_CATEGORY + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_DEVICES + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_FLOWCHART + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_ITEM + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_LOCATION + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_LOCATION_CATEGORY + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_OPTION + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_PATH + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_PERSON + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_REPORT + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_SPECIALIZATION + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_USERS + " WHERE 1 = 1 ");
+        db.execSQL("DELETE FROM " + DBSchema.TABLE_USERS_SPECIALIZATION + " WHERE 1 = 1 ");
     }
 
     // TODO: create table if not exist
     private void setSequence(long seq) {
-        SQLiteDatabase db = getReadableDatabase();
+//        deleteDB();
+        getDummy();
+        SQLiteDatabase db = getWritableDatabase();
         Log.i(this.toString(), "SQLITE_SEQUENCE = " + seq);
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_DEVICES+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_FLOWCHART+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ITEM+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION_CATEGORY+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_OPTION+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PERSON+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_REPORT+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PATH+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_SPECIALIZATION+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS+"'");
-//        db.execSQL("UPDATE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS_SPECIALIZATION+"'");
+
         Log.i(this.toString(), "SQLITE_SEQUENCE = " + seq);
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_ADDRESS + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_APPOINTMENTS + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_CATEGORY + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_FLOWCHART + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_ITEM + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_LOCATION + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_OPTION + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_PERSON + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_REPORT + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_PATH + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_SPECIALIZATION + "')");
-        db.execSQL("INSERT INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_USERS + "')");
+//        db.execSQL("DELETE FROM sqlite_sequence WHERE 1 = 1");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_ADDRESS + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_APPOINTMENTS + "');");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_CATEGORY + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_FLOWCHART + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_ITEM + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_LOCATION + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_OPTION + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_PERSON + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_REPORT + "');");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_PATH + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_SPECIALIZATION + "')");
+        db.execSQL("INSERT OR REPLACE INTO sqlite_sequence(seq,name) VALUES(" + seq + ",'" + DBSchema.TABLE_USERS + "')");
+
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ADDRESS+"'");
+//        db.execSQL("UPDATE OR REPLACE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_APPOINTMENTS+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_CATEGORY+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_FLOWCHART+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_ITEM+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_LOCATION+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_OPTION+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PERSON+"'");
+//        db.execSQL("UPDATE OR REPLACE SQLITE_SEQUENCE SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_REPORT+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_PATH+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_SPECIALIZATION+"'");
+////        db.execSQL("UPDATE OR REPLACE sqlite_sequence SET seq = "+seq+" WHERE name = '"+DBSchema.TABLE_USERS+"'");
+
         db.close();
     }
 
@@ -371,7 +374,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     }
 
     //TODO: implement flag for login not delete hash pass or username from pref file
-    public boolean authLogin(String username, String password) {
+    public void authLogin(String username, String password) {
 
 
         String oldUsername = context.getSharedPreferences(
@@ -380,6 +383,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString(context.getString(R.string.key_saved_password), null);
         String oldHash = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString(context.getString(R.string.key_saved_passhash), "");
+        boolean log = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getBoolean("Log", false);
         User user = findUserByUsername(username);
         boolean userN = username.equals(oldUsername);
         boolean hash = oldHash.equals(user.getPassword());
@@ -387,23 +392,50 @@ public final class DBHelper extends SQLiteOpenHelper {
         boolean exist = user.getId() != -1 ? true : false;
 
         if (userN && pass && hash && exist) {
-            Intent intent = new Intent();
-            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-            intent.setAction("AUTH_RESULT");
-            intent.putExtra("RESULT", 1);
-            context.sendBroadcast(intent);
-        } else if ((userN && pass && !hash && exist) || exist) { // password has changed ask server for auth
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                intent.setAction("AUTH");
+                intent.putExtra("AUTH_RESULT", 1);
+                context.sendBroadcast(intent);
 
-            loginAuthentication(username, password);
-
-        } else { //ask db for credentials nothing local
-            Intent intent = new Intent();
-            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-            intent.setAction("AUTH_RESULT");
-            intent.putExtra("RESULT", -200);
-            context.sendBroadcast(intent);
         }
-        return true;
+//        else if (userN && pass && hash && exist) {
+//                Intent intent = new Intent();
+//                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                intent.setAction("AUTH");
+//                intent.putExtra("AUTH_RESULT", 1);
+//                context.sendBroadcast(intent);
+//            }
+//        else if ((userN && pass && !hash && exist) || exist) { // password has changed ask server for auth
+//
+//
+//
+//        }
+            else{ //ask db for credentials nothing local
+
+                loginAuthentication(username, password);
+
+//            Intent intent = new Intent();
+//            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//            intent.setAction("AUTH_RESULT");
+//            intent.putExtra("RESULT", -200);
+//            context.sendBroadcast(intent);
+            }
+
+//            if (userN && pass && hash && exist) {
+//                Intent intent = new Intent();
+//                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                intent.setAction("AUTH");
+//                intent.putExtra("AUTH_RESULT", 1);
+//                context.sendBroadcast(intent);
+//            }else {
+//            Intent intent = new Intent();
+//            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//            intent.setAction("AUTH");
+//            intent.putExtra("AUTH_RESULT", -200);
+//            context.sendBroadcast(intent);
+//            }
+//        }
 //
 //
 //
@@ -2578,7 +2610,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         RequestParams params = new RequestParams();
         params.put(DBSchema.POST_DEVICE_ID, device_id);
 
-        if (!isEmpty()) { // initial sync is FULL
+        if (!isEmpty() || userSW) { // initial sync is FULL
             params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_FULL);
             client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
                 @Override
@@ -2593,7 +2625,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
                         } else {
 
-                            Log.i(this.toString(), "HTTP Sync success Transaction fail");
+                            Log.i(this.toString(), "HTTP Sync success Transaction fail FULL");
                         }
 
                     } catch (JSONException e) {
@@ -2690,11 +2722,12 @@ public final class DBHelper extends SQLiteOpenHelper {
                         if (status.getInt(DBSchema.SYNC_STATUS) == 1) {
 
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+                            if (!userSW)
                             deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
 
                         } else {
 
-                            Log.i(this.toString(), "HTTP Sync success Transaction fail");
+                            Log.i(this.toString(), "HTTP Sync success Transaction fail INCREMENTAL");
                         }
 
 
@@ -2808,17 +2841,13 @@ public final class DBHelper extends SQLiteOpenHelper {
                 // initialize sequences
                 try {
                     JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                    if (status.getInt(DBSchema.SYNC_STATUS) == 0) {
-                        if (status.getInt("flag") == 1) {
-                            Log.i(this.toString(), "SETTING BASE SEQUENCE");
-//                            long seq = status.getLong("base_sequence");
-//
-//                            setSequence(status.getLong("base_sequence"));
+                    if (status.getInt(DBSchema.SYNC_STATUS) == 1) {
 
-                        }
+                        setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+
                     } else {
 
-                        Log.i(this.toString(), "HTTP Sync success Transaction fail");
+                        Log.i(this.toString(), "HTTP Sync success Transaction fail syncDBFull");
                     }
 
                 } catch (JSONException e) {
@@ -2889,7 +2918,7 @@ public final class DBHelper extends SQLiteOpenHelper {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
 
-        params.put(DBSchema.AUTH_USER, DBSchema.SYNC_FULL);
+        params.put(DBSchema.AUTH_USER, username);
         params.put(DBSchema.AUTH_PASS, password);
         params.put(DBSchema.AUTH_DEVICE, device_id);
 
@@ -2908,15 +2937,27 @@ public final class DBHelper extends SQLiteOpenHelper {
                     long seq = response.getLong("seq");
 
                     if (device_id.equals(deviceID) && device && user) { // the responce come fro the server, user and passw corect
+                        SharedPreferences sharedPref = context.getSharedPreferences(
+                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(context.getString(R.string.key_saved_passhash), hash);
+                        editor.apply();
                         if (switchUser) {
                             syncDB();
                             syncDBFull();
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("AUTH");
+                            intent.putExtra("AUTH_RESULT", 1);
+                            context.sendBroadcast(intent);
+
+                        }else {
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("AUTH");
+                            intent.putExtra("AUTH_RESULT", 1);
+                            context.sendBroadcast(intent);
                         }
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent.setAction("AUTH");
-                        intent.putExtra("AUTH_RESULT", 200);
-                        context.sendBroadcast(intent);
 
                     }
                     if (device_id.equals(deviceID) && device && !user) { // the response come fro the server, the device exist but wrong credentials
@@ -2928,14 +2969,19 @@ public final class DBHelper extends SQLiteOpenHelper {
                         context.sendBroadcast(intent);
 
                     } else if (!device) { // new device
+                        getDummy();
                         setSequence(seq);
                         if (user) { // user credentials are ok
+                            SharedPreferences sharedPref = context.getSharedPreferences(
+                                    context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(context.getString(R.string.key_saved_passhash), hash);
+                            editor.apply();
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", 200);
+                            intent.putExtra("AUTH_RESULT", 1);
                             context.sendBroadcast(intent);
-
                             syncDBFull();
 
                         } else { // user credentials are wrong
@@ -2975,34 +3021,34 @@ public final class DBHelper extends SQLiteOpenHelper {
             @Override
             public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
                 Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
-//                switch (statusCode) {
-//                    case 404:
-//                        Intent intent404 = new Intent();
-//                        intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-//                        intent404.setAction("SYNC");
-//                        intent404.putExtra("SYNC_RESULT", 404);
-//                        context.sendBroadcast(intent404);
-//                        Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
-//                        break;
-//                    case 500:
-//                        Intent intent500 = new Intent();
-//                        intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-//                        intent500.setAction("SYNC");
-//                        intent500.putExtra("SYNC_RESULT", 500);
-//                        context.sendBroadcast(intent500);
-//                        Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
-//                        break;
-//                    default:
-//                        Intent intent = new Intent();
-//                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-//                        intent.setAction("SYNC");
-//                        intent.putExtra("SYNC_RESULT", -1);
-//                        context.sendBroadcast(intent);
-//                        Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
-//                        break;
-//
-//
-//                }
+                switch (statusCode) {
+                    case 404:
+                        Intent intent404 = new Intent();
+                        intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        intent404.setAction("AUTH");
+                        intent404.putExtra("AUTH_RESULT", 404);
+                        context.sendBroadcast(intent404);
+                        Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+                        break;
+                    case 500:
+                        Intent intent500 = new Intent();
+                        intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        intent500.setAction("AUTH");
+                        intent500.putExtra("AUTH_RESULT", 500);
+                        context.sendBroadcast(intent500);
+                        Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+                        break;
+                    default:
+                        Intent intent = new Intent();
+                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        intent.setAction("AUTH");
+                        intent.putExtra("AUTH_RESULT", -1);
+                        context.sendBroadcast(intent);
+                        Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+                        break;
+
+
+                }
             }
 
 

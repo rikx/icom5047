@@ -243,8 +243,8 @@ public class DBSchema {
 
 
     public static final String AUTH_USER = "username";
-    public static final String AUTH_PASS = "username";
-    public static final String AUTH_DEVICE = "username";
+    public static final String AUTH_PASS = "password";
+    public static final String AUTH_DEVICE = "android_id";
     public static final String AUTH_URL = "http://136.145.116.231/mobile/test10.php";
 
     //    public static final String SYNC_URL = "http://136.145.116.231:3000/synchronization";

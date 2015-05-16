@@ -31,8 +31,9 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.remove(context.getString(R.string.key_saved_username));
-        editor.remove(context.getString(R.string.key_saved_password));
+        editor.remove("Log");
+//        editor.remove(context.getString(R.string.key_saved_username));
+//        editor.remove(context.getString(R.string.key_saved_password));
         editor.apply();
     }
 
@@ -52,9 +53,9 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         networkHelper.isInternetAvailable();
         // TODO: fill db with dummy data eliminar despues
 //        dbHelper.deleteDB();
-        if (dbHelper.getDummy())
-            dbHelper.syncDBFull();
-        else dbHelper.syncDB();
+//        if (dbHelper.getDummy())
+//            dbHelper.syncDBFull();
+//        else dbHelper.syncDB();
 
         //Perform the login procedure
         loadLogin();
@@ -114,8 +115,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
             String message = getString(R.string.empty_password_error);
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        } else if (!attemptLogin()) {
-            editPassword.setText("");
+        } else{
+            attemptLogin();
         }
     }
 
@@ -128,6 +129,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.key_saved_username), username);
         editor.putString(getString(R.string.key_saved_password), password);
+        editor.putBoolean("Log",true);
         editor.apply();
         Log.i(this.toString(), "saveLogin: " + username + ", " + password);
     }
@@ -137,27 +139,25 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
         String sPassword = sharedPref.getString(getString(R.string.key_saved_password), null);
+        boolean log = sharedPref.getBoolean("Log", false);
         Log.i(this.toString(), "loadLogin: " + sUsername + ", " + sPassword);
-        if (sUsername != null && sPassword != null) {
-            username = sUsername;
-            password = sPassword;
-            attemptLogin();
+        if(log) {
+            if (sUsername != null && sPassword != null) {
+                username = sUsername;
+                password = sPassword;
+                attemptLogin();
+            }
         }
     }
 
-    private boolean attemptLogin() {
+    private void attemptLogin() {
         //Check login credentials
-        dbHelper.syncDB();
-        String salt = "$2a$06$DkLy6BIWUalW66HzwYF48e";
-        String hash = BCrypt.hashpw(password, salt);
-        Boolean match = BCrypt.checkpw(password, salt);
-        if (dbHelper.authLogin(username, password)) {
-            successfulLogin();
-            return true;
-        } else {
-            failedLogin();
-            return false;
-        }
+//        dbHelper.syncDB();
+//        String salt = "$2a$06$DkLy6BIWUalW66HzwYF48e";
+//        String hash = BCrypt.hashpw(password, salt);
+//        Boolean match = BCrypt.checkpw(password, salt);
+            setLoginReceiver();
+            dbHelper.authLogin(username, password);
     }
 
     private void setLoginReceiver() {
@@ -175,12 +175,31 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     private void handleLoginResult(Intent intent) {
         String key = "";
         String success = "";
-        String result = intent.getStringExtra(""); //TODO: set key
-        if (key.equals(success)) successfulLogin();
-        else failedLogin();
+        int result = intent.getIntExtra("AUTH_RESULT", -1); //TODO: set key
+        Log.i(this.toString(), " Login Handler result = "+result);
+        switch (result){
+            case 1: // the stored credential has ben match
+                successfulLogin();
+                break;
+            case -200: // wrong credential
+                Log.i(this.toString(), " Login Handler wrong credentials");
+                failedLogin();
+                break;
+            default:
+                Log.i(this.toString(), " Login Handler NPI");
+                break;
+
+        }
+//        if (key.equals(success)) successfulLogin();
+//        else failedLogin();
     }
 
     private void successfulLogin() {
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("Log", true);
+        dbHelper.syncDB();
         saveLogin();
         startActivity(new Intent(this, MainActivity.class));
         Log.i(this.toString(), "login successful");
@@ -189,6 +208,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
     private void failedLogin() {
         deleteLogin(this);
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("Log", false);
+        EditText editPassword = (EditText) findViewById(R.id.field_password);
+        editPassword.setText("");
         String s = getResources().getString(R.string.login_nak);
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
         Log.i(this.toString(), "login failed");
