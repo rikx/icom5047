@@ -1074,6 +1074,7 @@ router.get('/list_localizaciones', function(req, res, next) {
 	var query_config_4;
 	console.log(user_id);
 	console.log(user_type);
+	console.log("index");
 	if(user_type == 'agent')
 	{
 		query_config_1 = {

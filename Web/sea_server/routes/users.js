@@ -1722,6 +1722,8 @@ router.get('/localizaciones', function(req, res, next) {
 	var query_config_4;
 	console.log(user_id);
 	console.log(user_type);
+		console.log("users");
+
 
   if (!username) {
   	user_id = req.session.user_id = '';
@@ -1872,7 +1874,7 @@ router.get('/localizaciones', function(req, res, next) {
 				}
 			});
 			// query for location categories
-			client.query(query_config_2, [-1],  function(err, result){
+			client.query(query_config_2,  function(err, result){
 				if(err) {
 					return console.error('error running query', err);
 				} else {
@@ -1881,7 +1883,7 @@ router.get('/localizaciones', function(req, res, next) {
 			});
 
 		  // query for associated agentes
-		  client.query(query_config_3, [-1], function(err, result) {
+		  client.query(query_config_3, function(err, result) {
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
@@ -1890,7 +1892,7 @@ router.get('/localizaciones', function(req, res, next) {
 		  });
 
 		  // query for associated ganaderos
-		  client.query(query_config_4, [-1], function(err, result) {
+		  client.query(query_config_4, function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		  	done();
 
