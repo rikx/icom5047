@@ -7,6 +7,24 @@ jsPlumb.ready(function() {
  	var j =0; // item id
  	var trigger = true;
 
+  var data_username = $('#header_page').attr('data-username');
+  var data_user_type = $('#header_page').attr('data-type');
+
+
+  //  if(data_user_type == 'admin')
+  // {
+  //     $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  // }
+  // else if(data_user_type == 'agent')
+  // {
+  //   $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  // }
+  // else
+  // {
+  //   $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+  // }
+
+
 	jsPlumb.setContainer($('#container_plumbjs'));
 	$('#container_plumbjs').resizable();
 

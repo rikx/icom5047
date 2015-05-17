@@ -373,7 +373,7 @@ router.get('/admin/cuestionarios/crear', function(req, res, next) {
 			user_id: user_id,
 			username: username
 		}
-			res.render('crear_cuestionario', { title: 'Crear Cuestionario', user: current_user});
+			res.render('crear_cuestionario', { title: 'Crear Cuestionario', user: current_user, user_type, username:username});
 		}
 });
 
