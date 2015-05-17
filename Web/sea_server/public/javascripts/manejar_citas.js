@@ -394,10 +394,6 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     // inject content string into html
     $citas_list.html(table_content);
 
-    if(user_info.user_type != 'admin'){
-      $('#btn_delete').hide();
-    }
-
     populate_info_panel(cita_set[0]);
   }
 });

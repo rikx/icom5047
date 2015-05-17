@@ -40,6 +40,13 @@ block content
 							table(class='table')
 								thead
 								tbody#localizaciones_list(data-localizaciones=localizaciones, data-agentes=agentes, data-ganaderos=ganaderos, data-categorias=location_categories, data-user=user, data-type=user_type, data-username=username)
+									each location, i in localizaciones
+										tr
+											td
+												if i!=0
+													a(class='list-group-item show_info_localizacion', href='#', data-id=location.location_id)= location.location_name
+												else 
+													a(class='list-group-item show_info_localizacion active', href='#', data-id=cita.location_id)= location.location_name
 						if user.user_type != 'agent'
 							button#btn_add_localizacion(class='btn btn-default btn-success', type='button') Agregar Localización
 
@@ -128,8 +135,8 @@ block content
 								.panel-body
 									table#localizacion_agentes(class='table')
 						if(user.user_type != 'agent')
-							button#btn_add_associates(class='btn btn-sm btn-info btn-block' type='button', data-id=localizaciones[0].location_id) Editar Personas Asociadas
-						button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button', data-id=localizaciones[0].location_id) Editar
+							button#btn_add_associates(class='btn btn-sm btn-info btn-block' type='button', data-id='') Editar Personas Asociadas
+						button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button', data-id='') Editar
 						if(user.user_type == 'admin')
 							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
 								i(class='glyphicon glyphicon-trash')

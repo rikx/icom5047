@@ -3,14 +3,40 @@ $(document).ready(function(){
   $localizaciones_list = $('#localizaciones_list');
 
   // initial population of localizaciones list
-  populate_localizaciones();
+  //populate_localizaciones();
 
   // store data for initial 20 locations
-  var localizaciones_array = JSON.parse($localizaciones_list.attr('data-localizaciones'));
-  var categorias_array = JSON.parse($localizaciones_list.attr('data-categorias'));
-  var agents_array =  JSON.parse($localizaciones_list.attr('data-agentes'));
-  var ganaderos_array =  JSON.parse($localizaciones_list.attr('data-ganaderos'));
-  var all_categorias_array = JSON.parse($('#categoria_panel').attr('data-all-categorias'));
+  var localizaciones_array = [];
+  var categorias_array = [];
+  var agents_array = [];
+  var ganaderos_array = [];
+  var all_categorias_array = [];
+
+  var data_locations = $localizaciones_list.attr('data-localizaciones');
+  var data_categories = $localizaciones_list.attr('data-categorias');
+  var data_agents = $localizaciones_list.attr('data-agentes');
+  var data_ganaderos =  $localizaciones_list.attr('data-ganaderos');
+  var data_all_categories = $('#categoria_panel').attr('data-all-categorias');
+ 
+  if(data_locations.length >2){
+    localizaciones_array = JSON.parse($localizaciones_list.attr('data-localizaciones'));
+
+    if(data_categories.length >2){
+      categorias_array = JSON.parse($localizaciones_list.attr('data-categorias'));
+    }
+    if(data_agents.length >2){
+      categorias_array = JSON.parse($localizaciones_list.attr('data-agentes'));
+    }
+    if(data_ganaderos.length >2){
+      categorias_array = JSON.parse($localizaciones_list.attr('data-ganaderos'));
+    }
+    if(data_all_categories.length >2){
+      categorias_array = JSON.parse($localizaciones_list.attr('data-all-categorias'));
+    }
+  } else {
+    $('#info_panel').hide();
+  }
+
   var user_info = JSON.parse($localizaciones_list.attr('data-user'));
   var data_username = $localizaciones_list.attr('data-username');
   var data_user_type = $localizaciones_list.attr('data-type');
@@ -878,9 +904,8 @@ function populate_localizaciones(){
     localizaciones_array = data.localizaciones;
     agents_array = data.agentes;
     ganaderos_array = data.ganaderos;
-    console.log('agents');
-    console.log(agents_array);
     categorias_array = data.location_categories;
+
     populate_list(data.localizaciones);
     populate_info_panel(data.localizaciones[0]);
   });
@@ -892,9 +917,7 @@ function populate_list(locations_set){
   var table_content = '';
 
   // for each item in JSON, add table row and cells
-  if(user_info.user_type == 'admin')
-  {
-     $.each(locations_set, function(i){
+  $.each(locations_set, function(i){
     table_content += '<tr>';
     table_content += "<td><a class='list-group-item ";
     // if initial list item, set to active
@@ -907,26 +930,12 @@ function populate_list(locations_set){
    //table_content += "<td><a class='btn_delete_localizacion btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.location_id+"'><i class='glyphicon glyphicon-trash'></i></a></td>";
     table_content += '</tr>';
   });  
-  }
-  else
-  {
-    $.each(locations_set, function(i){
-    table_content += '<tr>';
-    table_content += "<td><a class='list-group-item ";
-    // if initial list item, set to active
-    if(i==0) {
-      table_content +=  'active ';
-    }
-    table_content += "show_info_localizacion' href='#', data-id='"+this.location_id+"'>"+this.location_name+"</a></td>";
-    table_content += '</tr>';
-  });   
-  }
  
   // inject content string into html
   $localizaciones_list.html(table_content);
 
   // populate info panel with first location's information
-  //populate_info_panel(localizaciones_array[0]);
+  populate_info_panel(locations_set[0]);
 };
 
   function populate_categories_info(variable){
@@ -993,7 +1002,7 @@ function populate_list(locations_set){
   });
 
 
-   if(content == '')
+  if(content == '')
     content = "<p> Localización no tiene categorías asignadas. </p>";  
   $('#categories_list').html(content);
 
