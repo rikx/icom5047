@@ -195,7 +195,7 @@ jsPlumb.ready(function() {
     // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
     $('#btn_delete_item').attr('data-id', this_element.id);
-    $('#btn_delete_item').attr('source-id', this_element.c_id);
+    $('#btn_delete_item').attr('source-id', this_element.connect_id);
     $('#btn_edit').attr('data-id', this_element.id);
 	});
 
@@ -215,7 +215,7 @@ jsPlumb.ready(function() {
   	if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
 	  	var answers_content = '';
 	  	$.each(connections_array, function(i){
-	  		if(this_element.c_id == this.source){
+	  		if(this_element.connect_id == this.source){
 	  			var label_text;
 	  			if(this_element.type == 'CONDITIONAL'){
 	  				//console.log(this.label.substring(0,2))
@@ -262,7 +262,7 @@ jsPlumb.ready(function() {
 	  // set id values of info panel buttons
     $('#btn_edit_item').attr('data-id', this_element.id);
     $('#btn_delete_item').attr('data-id', this_element.id);
-    $('#btn_delete_item').attr('source-id', this_element.c_id);
+    $('#btn_delete_item').attr('source-id', this_element.connect_id);
     $('#btn_edit').attr('data-id', this_element.id);
   }
 
@@ -323,7 +323,7 @@ jsPlumb.ready(function() {
  		for(var i=0; i<elements_array.length; i++){
  			if(elements_array[i].type == 'START'){
  				for(var x=0; x<connections_array.length; x++){
- 					if(elements_array[i].c_id == connections_array[x].source){
+ 					if(elements_array[i].connect_id == connections_array[x].source){
  						first_item = connections_array[x].target; // 'START' item's target
  					}	
  				}
@@ -356,7 +356,7 @@ jsPlumb.ready(function() {
   		multi_count = 0;
   		for(var j = 0; j < connections_array.length; j++){
   			if(this_element.type == 'START'){
-  				if(this_element.c_id == connections_array[j].source){
+  				if(this_element.connect_id == connections_array[j].source){
 	  				start_count++;
 	  			}
   			} else if(this_element.type == 'END'){
@@ -364,7 +364,7 @@ jsPlumb.ready(function() {
   					end_count++;
   				}
   			} else {
-  				if(this_element.c_id == connections_array[j].source){
+  				if(this_element.connect_id == connections_array[j].source){
   					if(this_element.type == 'MULTI' || this_element.type == 'CONDITIONAL'){
   						if(multi_count < 2){
   							if(multi_count < 1){
@@ -401,7 +401,7 @@ jsPlumb.ready(function() {
       this_element = elements_array[i];
       if(this_element.type == 'CONDITIONAL'){
         for(var j = 0; j < connections_array.length; j++){
-          if(this_element.c_id == connections_array[j].source){
+          if(this_element.connect_id == connections_array[j].source){
             element_conns.push(connections_array[j].label); 
           }
         }
@@ -684,7 +684,7 @@ jsPlumb.ready(function() {
       console.log(state_html.prop('outerHTML'));
       var new_item = {
 				id: newState.attr('id'),
-				c_id: newState.attr('data-connect-id'),
+				connect_id: newState.attr('data-connect-id'),
 				name: new_name,
 				type: itemType,
 				state: state_html.prop('outerHTML')
@@ -717,7 +717,7 @@ jsPlumb.ready(function() {
             console.log(state_html.prop('outerHTML'))
             var this_item = {
 							id: newState.attr('id'),
-							c_id: $('#'+newState.attr('id')).attr('data-connect-id'),
+							connect_id: $('#'+newState.attr('id')).attr('data-connect-id'),
 							name: this_name,
 							type: itemType,
 							state: state_html.prop('outerHTML')
@@ -794,7 +794,7 @@ jsPlumb.ready(function() {
             console.log(state_html.prop('outerHTML'))
             var this_item = {
 							id: newState.attr('id'),
-							c_id: $('#'+newState.attr('id')).attr('data-connect-id'),
+							connect_id: $('#'+newState.attr('id')).attr('data-connect-id'),
 							name: $('#'+newState.attr('id')).attr('data-state-name'),
 							type: itemType,
 							state: state_html.prop('outerHTML')

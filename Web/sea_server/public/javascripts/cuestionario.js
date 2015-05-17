@@ -1118,7 +1118,7 @@ jsPlumb.ready(function() {
         };
 
         //var source_anchor, target_anchor;
-        if(source_item.type == 'START'){
+/*        if(source_item.type == 'START'){
           jsPlumb.connect({
             source: $('#' + source_item.id).attr('data-connect-id'), 
             target: target_item.id,
@@ -1144,7 +1144,7 @@ jsPlumb.ready(function() {
                       ],
             paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
           });
-        } else {
+        } else {*/
           jsPlumb.connect({
             source: $('#' + source_item.id).attr('data-connect-id'), 
             target: target_item.id,
@@ -1157,7 +1157,7 @@ jsPlumb.ready(function() {
                       ],
             paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
           });
-        }
+       // }
       }
       trigger = true;
       jsPlumb.repaintEverything();

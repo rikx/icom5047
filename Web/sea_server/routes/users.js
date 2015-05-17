@@ -503,7 +503,7 @@ router.post('/admin/cuestionarios/crear', function(req, res, next) {
 		  				// insert this_item
 							client.query('INSERT into item (flowchart_id, state_id, label, type, state, connect_id) VALUES ($1, $2, $3, $4, $5, $6) \
 														RETURNING item_id, state_id', 
-														[flowchart_id, this_item.id, this_item.name, this_item.type, this_item.state, this_item.c_id], function(err, result) {
+														[flowchart_id, this_item.id, this_item.name, this_item.type, this_item.state, this_item.connect_id], function(err, result) {
 								if(err) {
 									return console.error('error running query', err);
 								} else {
