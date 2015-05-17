@@ -10,7 +10,7 @@ block content
 			.col-md-8
 				.jumbotron
 					center
-						h2 Servicio de Extensión Agrícola
+						h2#header_page Servicio de Extensión Agrícola
 						h4 Manejar Dispositivos
 			.col-md-2
 		
@@ -37,7 +37,7 @@ block content
 						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
-								tbody#dispositivos_list(data-dispositivos=dispositivos)
+								tbody#dispositivos_list(data-dispositivos=dispositivos, data-type=user_type, data-username=username)
 						//button#btn_add_usuario(class='btn btn-default btn-success', type='button') Añadir Usuario
 						button#btn_add_dispositivo(class='btn btn-default btn-success', type='button') Agregar Dispositivo
 

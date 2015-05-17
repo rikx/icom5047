@@ -1,6 +1,8 @@
 $(document).ready(function(){
   // dispositivos list
   $dispositivos_list = $('#dispositivos_list');
+  var data_username = $dispositivos_list.attr('data-username');
+  var data_user_type = $dispositivos_list.attr('data-type');
   // store data for initial 20 dispositivos
   var dispositivos_array = [];
   
@@ -16,6 +18,19 @@ $(document).ready(function(){
     $('#info_panel').hide();
   }
 
+
+ if(data_user_type == 'admin')
+  {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  }
+  else if(data_user_type == 'agent')
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  }
+  else
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+  }
   // hide input that contains user chosen from dropdown
   //$('#dispositivo_usuario').hide();
 

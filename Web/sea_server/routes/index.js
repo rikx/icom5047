@@ -1479,6 +1479,10 @@ router.get('/list_citas', function(req, res, next) {
 router.get('/list_dispositivos', function(req, res, next) {
 	var dispositivos_list;
 	var db = req.db;
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
@@ -1494,7 +1498,8 @@ router.get('/list_dispositivos', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	dispositivos_list = result.rows;
-	    	res.json({dispositivos: dispositivos_list});
+	    	res.json({dispositivos: dispositivos_list, username:username, user_type:user_type});
+
 	    }
 	  });
 	});

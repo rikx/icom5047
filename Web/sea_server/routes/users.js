@@ -2560,7 +2560,9 @@ router.get('/admin/dispositivos', function(req, res, next) {
 		  		res.render('manejar_dispositivos', { 
 		  			title: 'Manejar Dispositivos', 
 		  			dispositivos: dispositivos_list, 
-		  			usuarios: usuarios_list
+		  			usuarios: usuarios_list,
+		  			username:username,
+		  			user_type:user_type
 		  		});
 		  	}
 		  });
