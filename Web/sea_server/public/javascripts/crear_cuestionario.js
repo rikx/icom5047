@@ -218,7 +218,7 @@ jsPlumb.ready(function() {
 	  		if(this_element.c_id == this.source){
 	  			var label_text;
 	  			if(this_element.type == 'CONDITIONAL'){
-	  				console.log(this.label.substring(0,2))
+	  				//console.log(this.label.substring(0,2))
 	  				switch(this.label.substring(0,2)){
 	  					case 'lt':
 	  						label_text = 'Menor que ' +this.label.substring(2);
@@ -679,12 +679,15 @@ jsPlumb.ready(function() {
 				new_name = 'Elemento sin texto';
 			}
    		// initial add to the global array
-			var new_item = {
+      var state_html = $('#'+newState.attr('id')).clone().removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
+			state_html.children('.connect_question').removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
+      console.log(state_html.prop('outerHTML'));
+      var new_item = {
 				id: newState.attr('id'),
 				c_id: newState.attr('data-connect-id'),
 				name: new_name,
 				type: itemType,
-				state: $('#'+newState.attr('id')).prop('outerHTML')
+				state: state_html.prop('outerHTML')
 			};
 
 			if(containsObject(new_item, elements_array)) {
@@ -708,12 +711,16 @@ jsPlumb.ready(function() {
 						if(this_name == undefined){
 							this_name = 'Elemento sin texto'
 						}
-						var this_item = {
+
+            var state_html = $('#'+newState.attr('id')).clone().removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
+						state_html.children('.connect_question').removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
+            console.log(state_html.prop('outerHTML'))
+            var this_item = {
 							id: newState.attr('id'),
 							c_id: $('#'+newState.attr('id')).attr('data-connect-id'),
 							name: this_name,
 							type: itemType,
-							state: $('#'+newState.attr('id')).prop('outerHTML')
+							state: state_html.prop('outerHTML')
 						};
 
 						// check if item is already in array and updates it
@@ -782,12 +789,15 @@ jsPlumb.ready(function() {
 			      // repaint it do to the resize
 			      jsPlumb.repaintEverything();
 						// create item object
-						var this_item = {
+            var state_html = $('#'+newState.attr('id')).clone().removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
+						state_html.children('.connect_question').removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
+            console.log(state_html.prop('outerHTML'))
+            var this_item = {
 							id: newState.attr('id'),
 							c_id: $('#'+newState.attr('id')).attr('data-connect-id'),
 							name: $('#'+newState.attr('id')).attr('data-state-name'),
 							type: itemType,
-							state: $('#'+newState.attr('id')).prop('outerHTML')
+							state: state_html.prop('outerHTML')
 						};
 
 						// check if item is already in array and updates it

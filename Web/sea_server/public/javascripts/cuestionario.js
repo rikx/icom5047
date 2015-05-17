@@ -20,8 +20,8 @@ jsPlumb.ready(function() {
     
     // initial info panel population
     populate_info_panel(elements_array[0]);
-    console.log(elements_array)
-    console.log(connections_array)
+    //console.log(elements_array)
+    //console.log(connections_array)
     recreate_graph(elements_array, connections_array);
     $('#info_panel').show();
   } else {
@@ -204,7 +204,7 @@ jsPlumb.ready(function() {
         if(this_element.connect_id == this.source){
           var label_text;
           if(this_element.type == 'CONDITIONAL'){
-            console.log(this.label.substring(0,2))
+            //console.log(this.label.substring(0,2))
             switch(this.label.substring(0,2)){
               case 'lt':
                 label_text = 'Menor que ' +this.label.substring(2);
@@ -974,11 +974,19 @@ jsPlumb.ready(function() {
           state_count = temp_state_count;
         } 
         
+        //theState[0].classList.remove("ui-draggable", "ui-droppable", "ui-draggable-dragging", "_jsPlumb_endpoint_anchor", "_jsPlumb_connected");
+/*        theState[0].classList.remove("ui-droppable")
+        theState[0].classList.remove("ui-draggable-dragging");
+        theState[0].classList.remove("_jsPlumb_endpoint_anchor");
+        theState[0].classList.remove("_jsPlumb_connected");*/
+        //console.log(theState);
         $('#container_plumbjs').append(theState);
 
         var $added_element = $('#' + elements[i].id);
-        $added_element.removeClass('ui-draggable ui-draggable-dragging _jsPlumb_endpoint_anchor _jsPlumb_connected'); 
+        $added_element.removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
+        //console.log($added_element);
 
+        //console.log(theState)
         jsPlumb.draggable(theState, {
           //containment: 'parent'
           resizable: false,
@@ -1069,7 +1077,7 @@ jsPlumb.ready(function() {
       // enable connecting
       for(var i=0; i<elements.length; i++){
         this_element = elements[i];
-        connection_div = $('#' + this_element.id).children('.connect_question');
+        connection_div = $('#' + this_element.id).children('.connect_question').removeClass('ui-draggable ui-draggable-dragging ui-droppable _jsPlumb_endpoint_anchor _jsPlumb_connected');
 
         if(this_element.type != 'START'){
           jsPlumb.makeTarget(this_element.id, {
@@ -1106,18 +1114,51 @@ jsPlumb.ready(function() {
           anchors: ['Continuous', 'Continuous'],
           endpoint:'Blank'
         };
-        jsPlumb.connect({
-          source: source_item, 
-          target: target_item,
-          anchors: ['Continuous', 'Continuous'],
-          connector: 'Flowchart',
-          endpoint:'Blank',
-          overlays: [
-                      ["Label", { label: this_connection.label, location:0.5, id: "connLabel"} ], 
-                      [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]
-                    ],
-          paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
-        });
+
+        var source_anchor, target_anchor;
+        if(this_element.type == 'START'){
+          jsPlumb.connect({
+            source: source_item, 
+            target: target_item,
+            isSource: true,
+            isTarget: false,
+            anchors: ['Bottom', 'Continuous'],
+            connector: 'Flowchart',
+            endpoint:'Blank',
+            overlays: [
+                        ["Label", { label: this_connection.label, location:0.5, id: "connLabel"} ], 
+                        [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]
+                      ],
+            paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
+          });
+        } else if(this_element.type == 'END'){
+          jsPlumb.connect({
+            source: source_item, 
+            target: target_item,
+            isSource: false,
+            isTarget: true,
+            anchors: ['Top', 'Continuous'],
+            connector: 'Flowchart',
+            overlays: [
+                        ["Label", { label: this_connection.label, location:0.5, id: "connLabel"} ], 
+                        [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]
+                      ],
+            paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
+          });
+        } else {
+          jsPlumb.connect({
+            source: source_item, 
+            target: target_item,
+            anchors: ['Continuous', 'Continuous'],
+            connector: 'Flowchart',
+            endpoint:'Blank',
+            overlays: [
+                        ["Label", { label: this_connection.label, location:0.5, id: "connLabel"} ], 
+                        [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]
+                      ],
+            paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
+          });
+        }
       }
       trigger = true;
       jsPlumb.repaintEverything();
