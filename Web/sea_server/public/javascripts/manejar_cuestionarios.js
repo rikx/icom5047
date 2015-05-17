@@ -1,7 +1,9 @@
 $(document).ready(function(){
   // cuestionarios list
   $cuestionarios_list = $('#cuestionarios_list');
-
+  var data_username = $cuestionarios_list.attr('data-username');
+  var data_user_type = $cuestionarios_list.attr('data-type');
+  console.log(data_user_type);
   // store data for initial 20 cuestionarios
   var cuestionarios_array = []; 
 
@@ -15,6 +17,19 @@ $(document).ready(function(){
     $('#info_panel').hide();
   }
 
+
+  if(data_user_type == 'admin')
+  {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  }
+  else if(data_user_type == 'agent')
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  }
+  else
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+  }
    /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({

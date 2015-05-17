@@ -78,6 +78,10 @@ router.get('/admin/categorias', function(req, res, next) {
  */
 router.get('/cuestionarios', function(req, res, next) {
  	var db = req.db;
+ 	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
+
  	db.connect(req.conString, function(err, client, done) {
  		if(err) {
  			return console.error('error fetching client from pool', err);
@@ -96,7 +100,9 @@ router.get('/cuestionarios', function(req, res, next) {
 	  	} else {
 	  		res.render('tomar_cuestionarios', { 
 	  			title: 'Cuestionarios', 
-	  			cuestionarios: result.rows
+	  			cuestionarios: result.rows,
+	  			username:username,
+	  			user_type:user_type
 	  		});
 	  	}
 	  });
@@ -339,7 +345,9 @@ router.get('/admin/cuestionarios', function(req, res, next) {
 		  	} else {
 		  		res.render('manejar_cuestionarios', { 
 		  			title: 'Manejar Cuestionarios', 
-		  			cuestionarios: result.rows
+		  			cuestionarios: result.rows,
+		  			username:username,
+		  			user_type:user_type
 		  		});
 		  	}
 		  });

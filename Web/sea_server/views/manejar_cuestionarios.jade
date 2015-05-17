@@ -10,7 +10,7 @@ block content
 			.col-md-8
 				.jumbotron
 					center
-						h2 Servicio de Extensión Agrícola
+						h2#header_page Servicio de Extensión Agrícola
 						h4 Manejar Cuestionarios
 			.col-md-2
 
@@ -36,7 +36,7 @@ block content
 						.list-group(style='overflow:auto; height:550px;')
 							table(class='table')
 								thead
-								tbody#cuestionarios_list(data-cuestionarios=cuestionarios)
+								tbody#cuestionarios_list(data-cuestionarios=cuestionarios, data-type=user_type, data-username=username)
 									each cuestionario, i in cuestionarios
 										tr
 											td
