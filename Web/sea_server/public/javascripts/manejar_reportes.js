@@ -5,8 +5,8 @@ $(document).ready(function(){
   // store data for initial 20 dispositivos
   var reportes_array = [];
   var user_info = JSON.parse($reportes_list.attr('data-user'));
-  var data_username = $usuarios_list.attr('data-usename');
-  var data_user_type = $usuarios_list.attr('data-type');
+  var data_username = $reportes_list.attr('data-username');
+  var data_user_type = $reportes_list.attr('data-type');
 
 
    if(data_user_type == 'admin')

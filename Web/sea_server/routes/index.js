@@ -1465,7 +1465,7 @@ router.get('/list_citas', function(req, res, next) {
 		  	if(err) {
 		  		return console.error('error running query', err);
 		  	} else {
-		  		res.json({citas: result.rows});
+		  		res.json({citas: result.rows, username:username, user_type:user_type});
 		  	}
 		  });
 	 	});

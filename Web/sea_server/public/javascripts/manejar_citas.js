@@ -5,6 +5,8 @@ $(document).ready(function(){
   // store data for initial 20 citas
   var citas_array = []; 
   var user_info = JSON.parse($citas_list.attr('data-user'));
+  var data_username = $citas_list.attr('data-username');
+  var data_user_type = $citas_list.attr('data-type');
 
   var data_citas = $citas_list.attr('data-citas');
   if(data_citas.length >2){
@@ -16,6 +18,18 @@ $(document).ready(function(){
     $('#info_panel').hide();
   }
 
+   if(data_user_type == 'admin')
+  {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  }
+  else if(data_user_type == 'agent')
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  }
+  else
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+  }
   /* Search Code start */
   // constructs the suggestion engine
   var search_source = new Bloodhound({

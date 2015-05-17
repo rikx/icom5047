@@ -2337,7 +2337,9 @@ router.get('/citas', function(req, res, next) {
 		  		res.render('manejar_citas', { 
 		  			title: 'Manejar Citas', 
 		  			citas: result.rows,
-		  			user: current_user
+		  			user: current_user,
+		  			username: username,
+		  			user_type:user_type
 		  		});
 		  	}
 		  });

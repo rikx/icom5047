@@ -10,7 +10,7 @@ block content
 			.col-md-8
 				.jumbotron
 					center
-						h2 Servicio de Extensión Agricola
+						h2#header_page Servicio de Extensión Agricola
 						h4 Manejar Citas
 			.col-md-2
 		
@@ -41,7 +41,7 @@ block content
 									//		center Localización
 									//	th 
 									//		center Fecha y Hora
-								tbody#citas_list(data-citas=citas, data-user=user)
+								tbody#citas_list(data-citas=citas, data-user=user, data-type=user_type, data-username=username)
 									each cita, i in citas
 										tr
 											td
