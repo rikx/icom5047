@@ -791,6 +791,7 @@ jsPlumb.ready(function() {
 
 
   jsPlumb.bind("beforeDrop", function(connection) {
+    console.log(connection)
     if(trigger){
       var state_number = connection.sourceId.substring(7);
       var source_id = "state"+state_number;
@@ -866,6 +867,7 @@ jsPlumb.ready(function() {
   });
 
   jsPlumb.bind("connection", function(info, originalEvent) {
+    console.log(info)
     //jsPlumb.ready(function() {
       info.connection.addOverlay( [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]);
       info.connection.setPaintStyle( {lineWidth:10,strokeStyle:'rgb(204,255,204)'});
@@ -1081,7 +1083,7 @@ jsPlumb.ready(function() {
 
         if(this_element.type != 'START'){
           jsPlumb.makeTarget(this_element.id, {
-            anchor: 'Continuos',
+            anchor: 'Continuous',
             connector: 'Flowchart'
           });
         }
@@ -1089,7 +1091,7 @@ jsPlumb.ready(function() {
         if(this_element.type != 'END'){
           jsPlumb.makeSource(connection_div, {
             parent: this_element.id,
-            anchor: 'Continuos',
+            anchor: 'Continuous',
             connector: 'Flowchart',
             endpoint: 'Blank'
           });
@@ -1105,9 +1107,9 @@ jsPlumb.ready(function() {
         for(var x = 0; x < elements.length; x++){
           this_element = elements[x];
           if(this_element.connect_id == this_connection.source){
-            source_item = this_element.id;
+            source_item = this_element
           } else if(this_element.id == this_connection.target){
-            target_item = this_element.id;
+            target_item = this_element;
           }
         }
         var common = {
@@ -1115,13 +1117,11 @@ jsPlumb.ready(function() {
           endpoint:'Blank'
         };
 
-        var source_anchor, target_anchor;
-        if(this_element.type == 'START'){
+        //var source_anchor, target_anchor;
+        if(source_item.type == 'START'){
           jsPlumb.connect({
-            source: source_item, 
-            target: target_item,
-            isSource: true,
-            isTarget: false,
+            source: $('#' + source_item.id).attr('data-connect-id'), 
+            target: target_item.id,
             anchors: ['Bottom', 'Continuous'],
             connector: 'Flowchart',
             endpoint:'Blank',
@@ -1131,14 +1131,13 @@ jsPlumb.ready(function() {
                       ],
             paintStyle: {lineWidth:10,strokeStyle:'rgb(204,255,204)'}
           });
-        } else if(this_element.type == 'END'){
+        } else if(target_item.type == 'END'){
           jsPlumb.connect({
-            source: source_item, 
-            target: target_item,
-            isSource: false,
-            isTarget: true,
-            anchors: ['Top', 'Continuous'],
+            source: $('#' + source_item.id).attr('data-connect-id'), 
+            target: target_item.id,
+            anchors: ['Continuous', 'Top'],
             connector: 'Flowchart',
+            endpoint:'Blank',
             overlays: [
                         ["Label", { label: this_connection.label, location:0.5, id: "connLabel"} ], 
                         [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]
@@ -1147,8 +1146,8 @@ jsPlumb.ready(function() {
           });
         } else {
           jsPlumb.connect({
-            source: source_item, 
-            target: target_item,
+            source: $('#' + source_item.id).attr('data-connect-id'), 
+            target: target_item.id,
             anchors: ['Continuous', 'Continuous'],
             connector: 'Flowchart',
             endpoint:'Blank',
