@@ -1094,6 +1094,9 @@ router.get('/list_cuestionarios', function(req, res, next) {
 router.get('/list_tomar_cuestionarios', function(req, res, next) {
 	var cuestionarios_list;
 	var db = req.db;
+	var user_id = req.session.user_id;
+	var username = req.session.username;
+	var user_type = req.session.user_type;
 	db.connect(req.conString, function(err, client, done) {
 		if(err) {
 	  	return console.error('error fetching client from pool', err);
@@ -1111,7 +1114,7 @@ router.get('/list_tomar_cuestionarios', function(req, res, next) {
 	      return console.error('error running query', err);
 	    } else {
 	    	cuestionarios_list = result.rows;
-	    	res.json({cuestionarios: cuestionarios_list});
+	    	res.json({cuestionarios: cuestionarios_list, username:username, user_type:user_type});
 	    }
 	  });
 	});
