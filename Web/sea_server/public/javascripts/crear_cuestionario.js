@@ -931,7 +931,7 @@ jsPlumb.ready(function() {
 				} else {
 					mylabel = prompt("Escriba la posible respuesta a la pregunta.");
           while(mylabel == null){
-            mylabel = prompt("Si le dio al botón de cancel por error, escriba el texto y presione 'OK'. Si cometío un error presione 'OK' y luego borre el elemento").
+            mylabel = prompt("Si le dio al botón de cancel por error, escriba el texto y presione 'OK'. Si cometío un error presione 'OK' y luego borre el elemento.");
           }
   				info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
 				}
