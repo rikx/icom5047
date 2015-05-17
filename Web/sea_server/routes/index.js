@@ -1407,7 +1407,7 @@ router.get('/list_reportes', function(req, res, next) {
 			if(err) {
 				return console.error('error running query', err);
 			} else {
-				res.json({ reports: result.rows});
+				res.json({ reports: result.rows, username:username, user_type:user_type});
 			}
 		});
  	});

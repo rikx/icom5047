@@ -5,6 +5,22 @@ $(document).ready(function(){
   // store data for initial 20 dispositivos
   var reportes_array = [];
   var user_info = JSON.parse($reportes_list.attr('data-user'));
+  var data_username = $usuarios_list.attr('data-usename');
+  var data_user_type = $usuarios_list.attr('data-type');
+
+
+   if(data_user_type == 'admin')
+  {
+      $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Administrador'+ " - " +data_username+"</small> </h2>");
+  }
+  else if(data_user_type == 'agent')
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Agente'+ " - " +data_username+"</small> </h2>");
+  }
+  else
+  {
+    $('#header_page').html("<h2> Servicio de Extensión Agrícola <br> <small>"+'Especialista'+ " - " +data_username+"</small> </h2>");
+  }
   
   var data_reportes = $reportes_list.attr('data-reports');
   if(data_reportes.length > 2){

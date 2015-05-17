@@ -1146,7 +1146,9 @@ router.get('/reportes', function(req, res, next) {
 					res.render('manejar_reportes', { 
 						title: 'Manejar Reportes', 
 						reports: result.rows,
-						user: current_user
+						user: current_user,
+						username:username,
+						user_type:user_type
 					});
 				}
 			});
