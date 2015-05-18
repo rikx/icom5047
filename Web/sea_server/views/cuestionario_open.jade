@@ -80,7 +80,10 @@ block content
 					.panel-body#next_question
 						p#next_question_question(data-question-id=flowchart.first_id, data-question-type='')
 						#next_question_answers
-						button#btn_submit(class='btn btn-default btn-success', type='button') Someter
+						btn-group
+							button#btn_submit(class='btn btn-sm btn-success', type='button') Someter
+							button#btn_cancel(class='btn btn-sm btn-success', type='button') Cancelar Progreso
+
 		
 		.row#row_buttons(style="display: none;")
 			.col-md-2
@@ -90,8 +93,6 @@ block content
 				//button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button', disabled) Guardar Progreso (Abort)
 			.col-md-4
 				button#btn_end_survey(class='btn btn-sm btn-default btn-block', type='button', style="display: none;") Finalizar Cuestionario
-				button#btn_cancel(class='btn btn-sm btn-default btn-block', type='button') Cancelar Progreso
-
 		br
 		.row#row_home
 			.col-md-2
