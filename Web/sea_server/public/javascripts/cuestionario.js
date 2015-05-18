@@ -29,7 +29,12 @@ jsPlumb.ready(function() {
   }
 
   jsPlumb.setContainer($('#container_plumbjs'));
-  $('#container_plumbjs').resizable();
+  $('#resizable').resizable({
+    handles: 'se'
+  });
+  $('#resizable').on('resize', function(){
+    jsPlumb.repaintEverything();
+  });
 
   // Return to admin page button
   $('#btn_home').on('click', function(){
