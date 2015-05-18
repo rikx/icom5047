@@ -278,9 +278,5 @@ $(document).ready(function(){
     
     // inject content string into html
     $reportes_list.html(table_content);
-
-    if(user_info.user_type != 'admin'){
-      $('#btn_delete').hide();
-    }
   }
 });
