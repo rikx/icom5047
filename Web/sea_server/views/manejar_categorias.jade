@@ -50,11 +50,9 @@ block content
 							thead
 							tbody
 								tr
-									td#category_info_name 
-										=categories[0].name
-						button#btn_edit_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id, data-category-name=categories[0].name) Editar
-						//button#btn_delete_categories(class='btn btn-default btn-block btn-success', type='button', data-id=categories[0].category_id) Eliminar
-						a#btn_delete_category(class='btn btn-danger btn-block', data-toggle='tooltip',data-id=categories[0].category_id)
+									td#category_info_name
+						button#btn_edit_categories(class='btn btn-default btn-block btn-success', type='button') Editar
+						a#btn_delete_category(class='btn btn-danger btn-block', data-toggle='tooltip')
 							i(class='glyphicon glyphicon-trash')
 				#add_category_panel.form-group
 								.panel.panel-success
@@ -101,11 +99,9 @@ block content
 								thead
 								tbody
 									tr
-										td#specialty_info_name 
-											=specialties[0].name
-							button#btn_edit_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id, data-category-name=specialties[0].name) Editar
-							//button#btn_delete_specialties(class='btn btn-default btn-block btn-success', type='button', data-id=specialties[0].spec_id) Eliminar
-							a#btn_delete_specialty(class='btn btn-danger btn-block', data-toggle='tooltip',data-id=specialties[0].spec_id)
+										td#specialty_info_name
+							button#btn_edit_specialties(class='btn btn-default btn-block btn-success', type='button') Editar
+							a#btn_delete_specialty(class='btn btn-danger btn-block', data-toggle='tooltip')
 								i(class='glyphicon glyphicon-trash')
 
 
