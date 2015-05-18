@@ -630,20 +630,26 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 case Item.MULTIPLE_CHOICE:
                     RadioGroup radioGroup = (RadioGroup) progressLayout.findViewWithTag(id);
                     int checked = radioGroup.getCheckedRadioButtonId();
-                    Option option = item.getOptions().get(checked);
-                    path.addEntry(option);
+                    if(checked != -1) {
+                        Option option = item.getOptions().get(checked);
+                        path.addEntry(option);
+                    }
                     break;
                 case Item.OPEN:
                     EditText openEdit = (EditText) progressLayout.findViewWithTag(id);
                     String openInput = openEdit.getText().toString().trim();
-                    Option openOption = item.getOptions().get(0);
-                    path.addEntry(openOption, openInput);
+                    if(!openInput.isEmpty()) {
+                        Option openOption = item.getOptions().get(0);
+                        path.addEntry(openOption, openInput);
+                    }
                     break;
                 case Item.CONDITIONAL:
                     EditText condEdit = (EditText) progressLayout.findViewWithTag(id);
-                    String condInput = condEdit.getText().toString().trim(); //TODO: validate this?
-                    Option condOption = item.getOptions().get(0);
-                    path.addEntry(condOption, condInput);
+                    String condInput = condEdit.getText().toString().trim();
+                    if(!condInput.isEmpty()) {
+                        Option condOption = item.getOptions().get(0);
+                        path.addEntry(condOption, condInput);
+                    }
                     break;
             }
         }
