@@ -319,7 +319,7 @@ $(document).ready(function(){
   /* Populate info panel with $this_dispositivo info */
   function populate_info_panel($this_dispositivo) {
     var name;
-    console.log($this_dispositivo.device_name)
+    //console.log($this_dispositivo.device_name)
     if($this_dispositivo.device_name != null){
       name = $this_dispositivo.device_name;
     } else {
@@ -368,9 +368,15 @@ $(document).ready(function(){
       // if initial list item, set to active
       if(i==0) {
         table_content +=  'active ';
-        populate_info_panel(this);
+        //populate_info_panel(this);
       }
-      table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+this.device_name+"</a></td>";
+      var name;
+      if(this.device_name != null){
+        name = this.device_name;
+      } else {
+        name =  'Dispositivo sin nombre';
+      }
+      table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+name+"</a></td>";
 /*      if(this.last_sync == null)
       {
         table_content += '<td><center>'+"Nunca se ha sincronizado"+'</center></td>';

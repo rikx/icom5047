@@ -350,7 +350,7 @@ jsPlumb.ready(function() {
   	var valid_item_count = 0;
   	var multi_count = 0;
   	var this_element;
-    var element_num;
+    var element_num; //substring(5)
   	
   	for(var i = 0; i < elements_array.length; i++){
   		this_element = elements_array[i];
