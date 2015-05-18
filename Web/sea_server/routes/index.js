@@ -190,6 +190,32 @@ router.delete('/cuestionario/flow/:id', function(req,res,next){
 	});
 });
 
+/* DELETE report and partially answered survey due to user cancelation
+ *
+ */
+router.delete('/cuestionario/open/:id', function(req,res,next){
+	var report_to_delete = req.params.id;
+
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+
+	  // delete report
+	  client.query('DELETE from report WHERE report_id = $1', 
+	  							[report_to_delete], function(err, result){
+	  	// call 'done()' to release it back to the client pool
+	  	done();
+	  	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.send({redirect: '/users'});
+	    }
+	  });
+	});
+});
+
 /* POST survey answer
  *
  */

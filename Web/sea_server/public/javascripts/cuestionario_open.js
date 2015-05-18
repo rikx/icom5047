@@ -396,6 +396,27 @@ $(document).ready(function(){
 		$answered_list.html(answered_content);
 	}
 
+		/* */
+	$('#btn_cancel').on('click', function(){
+		var report_id = $('#btn_cancel').attr("data-report-id");
+		$.ajax({
+		  url: "http://localhost:3000/cuestionario/open/" + report_id,
+		  method: "DELETE",
+		  success: function(data) {
+		    alert("Cuestionario cancelado");
+				if(typeof data.redirect == 'string') {
+			    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+			  }
+		  },
+		  error: function( xhr, status, errorThrown ) {
+		    alert( "Sorry, there was a problem!" );
+		    console.log( "Error: " + errorThrown );
+		    console.log( "Status: " + status );
+		    console.dir( xhr );
+		  }
+		});
+	});
+
 	/* */
 	function update_next_question(next_question_id) {
 		$('#panel_title_first').hide();
@@ -531,6 +552,8 @@ $(document).ready(function(){
 	    	success: function(data) {
 	    	alert("Cuestionario ha sido comenzado con metodo abierto.");
 	    	current_report = data.report_id;
+	    	$('#btn_cancel').attr('data-report-id', data.report_id);
+
 
 
 	    	populate_open_questions_list();
