@@ -528,7 +528,7 @@ jsPlumb.ready(function() {
   						  }
   						});	
   	    		} else {
-  	    			alert('Condicionales no estan escritos correctamente.');
+  	    			alert('Condicionales no estan escritos correctamente. Los códigos válidos son: lt#, gt#, le#, ge#, eq#, ne#, ra[#,#], ra[#,#), ra(#,#], ra(#,#) ó !r.');
   	    		}
   	    	} else{
             alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
