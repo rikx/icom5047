@@ -795,7 +795,6 @@ jsPlumb.ready(function() {
 
 
   jsPlumb.bind("beforeDrop", function(connection) {
-    console.log(connection)
     if(trigger){
       var state_number = connection.sourceId.substring(7);
       var source_id = "state"+state_number;
@@ -830,10 +829,10 @@ jsPlumb.ready(function() {
       var source_is_source = 0;
 
       for(var z = 0; z<connections_array.length; z++){
-        if(source_id == connections_array[z].source && target_id == connections_array[z].target){
+        if('connect'+state_number == connections_array[z].source && target_id == connections_array[z].target){
           return false;
         }
-        if(source_id == connections_array[z].source){
+        if('connect'+state_number == connections_array[z].source){
           source_is_source++;
         }
       }
@@ -854,7 +853,7 @@ jsPlumb.ready(function() {
           return false;
         }
         for(var z = 0; z<connections_array.length; z++){
-          if(source_id == connections_array[z].source){
+          if('connect'+state_number == connections_array[z].source){
             start_count++;
           } 
         }
@@ -871,7 +870,6 @@ jsPlumb.ready(function() {
   });
 
   jsPlumb.bind("connection", function(info, originalEvent) {
-    console.log(info)
     //jsPlumb.ready(function() {
       info.connection.addOverlay( [ "Arrow", { width:20, length:20, location:1, id:"arrow" } ]);
       info.connection.setPaintStyle( {lineWidth:10,strokeStyle:'rgb(204,255,204)'});
@@ -905,8 +903,9 @@ jsPlumb.ready(function() {
           while(mylabel == null){
             mylabel = prompt("Si le dio al botón de cancel por error, escriba el texto y presione 'OK'. Si cometío un error presione 'OK' y luego borre el elemento.");
           }
-          info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
         }
+
+        info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: 'connect'+state_number+'-'+target_id} ]);
         
         this_connection = {
           source: info.sourceId,
@@ -919,7 +918,7 @@ jsPlumb.ready(function() {
         var state_number = info.sourceId.substring(7);
         var source_id = "state"+state_number;
         var target_id = info.targetId;
-        console.log('Creating connection: '+source_id+ ' to '+target_id);
+        console.log('Creating connection: connect'+state_number+' to '+target_id);
 /*
         for(z = 0; z<lines_array.length; z++){
           this_connection = lines_array[z];
