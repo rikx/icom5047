@@ -508,7 +508,7 @@ jsPlumb.ready(function() {
           } else {
             alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
           }
-        else {
+        } else {
           alert("Verifique que todos los elementos tienen nombre");
         }
       } else {
