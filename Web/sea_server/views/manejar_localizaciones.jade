@@ -46,7 +46,7 @@ block content
 												if i!=0
 													a(class='list-group-item show_info_localizacion', href='#', data-id=location.location_id)= location.location_name
 												else 
-													a(class='list-group-item show_info_localizacion active', href='#', data-id=cita.location_id)= location.location_name
+													a(class='list-group-item show_info_localizacion active', href='#', data-id=location.location_id)= location.location_name
 						if user.user_type != 'agent'
 							button#btn_add_localizacion(class='btn btn-default btn-success', type='button') Agregar Localización
 

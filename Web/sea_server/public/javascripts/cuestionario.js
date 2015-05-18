@@ -465,47 +465,51 @@ jsPlumb.ready(function() {
     if(!empty_field_check(form_data) && ($('input[name=ready_radios]:checked').length > 0)){
       // check that endpoints are valid
       if(end_points.first_id != -1 && end_points.end_id != -1){
-        if(check_item_connections()){
-          if(check_conditionals()){
-            // add missing flowchart fields
-            new_flowchart.first_id = end_points.first_id;
-            new_flowchart.end_id = end_points.end_id;
-            new_flowchart.status = $("input[name=ready_radios]:checked").val();
+        if(($('#container_plumbjs').find("textarea")).length == 0){
+          if(check_item_connections()){
+            if(check_conditionals()){
+              // add missing flowchart fields
+              new_flowchart.first_id = end_points.first_id;
+              new_flowchart.end_id = end_points.end_id;
+              new_flowchart.status = $("input[name=ready_radios]:checked").val();
 
-            // ajax call to post new ganadero
-            $.ajax({
-              url: "http://localhost:3000/users/admin/cuestionarios/crear",
-              method: "POST",
-              data: JSON.stringify({
-                info: new_flowchart,
-                items: elements_array,
-                options: connections_array
-              }),
-              contentType: "application/json",
-              dataType: "json",
+              // ajax call to post new ganadero
+              $.ajax({
+                url: "http://localhost:3000/users/admin/cuestionarios/crear",
+                method: "POST",
+                data: JSON.stringify({
+                  info: new_flowchart,
+                  items: elements_array,
+                  options: connections_array
+                }),
+                contentType: "application/json",
+                dataType: "json",
 
-              success: function(data) {
-                if(data.exists){
-                  alert("Cuestionario con este nombre y versión ya existe.");
-                } else {
-                  alert("Cuestionario ha sido añadido al sistema.");
-                  if(typeof data.redirect == 'string') {
-                    window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+                success: function(data) {
+                  if(data.exists){
+                    alert("Cuestionario con este nombre y versión ya existe.");
+                  } else {
+                    alert("Cuestionario ha sido añadido al sistema.");
+                    if(typeof data.redirect == 'string') {
+                      window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+                    }
                   }
+                },
+                error: function( xhr, status, errorThrown ) {
+                  alert( "Sorry, there was a problem!" );
+                  console.log( "Error: " + errorThrown );
+                  console.log( "Status: " + status );
+                  console.dir( xhr );
                 }
-              },
-              error: function( xhr, status, errorThrown ) {
-                alert( "Sorry, there was a problem!" );
-                console.log( "Error: " + errorThrown );
-                console.log( "Status: " + status );
-                console.dir( xhr );
-              }
-            }); 
+              }); 
+            } else {
+              alert('Condicionales no estan escritos correctamente.');
+            }
           } else {
-            alert('Condicionales no estan escritos correctamente.');
+            alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
           }
-        } else {
-          alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
+        else {
+          alert("Verifique que todos los elementos tienen nombre");
         }
       } else {
         alert('Cuestionario no tiene elemento inicial o final, o estos tienen conecciones existentes.');
@@ -898,6 +902,9 @@ jsPlumb.ready(function() {
           mylabel = 'con-recom';
         } else {
           mylabel = prompt("Escriba la posible respuesta a la pregunta.");
+          while(mylabel == null){
+            mylabel = prompt("Si le dio al botón de cancel por error, escriba el texto y presione 'OK'. Si cometío un error presione 'OK' y luego borre el elemento.");
+          }
           info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
         }
         
