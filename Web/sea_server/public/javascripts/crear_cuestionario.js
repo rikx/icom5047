@@ -26,7 +26,13 @@ jsPlumb.ready(function() {
 
 
 	jsPlumb.setContainer($('#container_plumbjs'));
-	$('#container_plumbjs').resizable();
+	$('#resizable').resizable({
+    handles: 'se'
+  });
+  $('#resizable').on('resize', function(){
+    jsPlumb.repaintEverything();
+  });
+  
 
 	// Return to admin page button
 	$('#btn_home').on('click', function(){
@@ -350,6 +356,7 @@ jsPlumb.ready(function() {
   	var valid_item_count = 0;
   	var multi_count = 0;
   	var this_element;
+    var element_num; //substring(5)
   	
   	for(var i = 0; i < elements_array.length; i++){
   		this_element = elements_array[i];
@@ -528,7 +535,7 @@ jsPlumb.ready(function() {
   						  }
   						});	
   	    		} else {
-  	    			alert('Condicionales no estan escritos correctamente.');
+  	    			alert('Condicionales no estan escritos correctamente. Los códigos válidos son: lt#, gt#, le#, ge#, eq#, ne#, ra[#,#], ra[#,#), ra(#,#], ra(#,#) ó !r.');
   	    		}
   	    	} else{
             alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
@@ -863,10 +870,10 @@ jsPlumb.ready(function() {
 			var source_is_source = 0;
 
 			for(var z = 0; z<connections_array.length; z++){
-				if(source_id == connections_array[z].source && target_id == connections_array[z].target){
+				if('connect'+state_number == connections_array[z].source && target_id == connections_array[z].target){
 					return false;
 				}
-				if(source_id == connections_array[z].source){
+				if('connect'+state_number == connections_array[z].source){
 					source_is_source++;
 				}
 			}
@@ -887,7 +894,7 @@ jsPlumb.ready(function() {
 					return false;
 				}
 				for(var z = 0; z<connections_array.length; z++){
-					if(source_id == connections_array[z].source){
+					if('connect'+state_number == connections_array[z].source){
 						start_count++;
 					} 
 				}
@@ -936,10 +943,11 @@ jsPlumb.ready(function() {
 					mylabel = prompt("Escriba la posible respuesta a la pregunta.");
           while(mylabel == null){
             mylabel = prompt("Si le dio al botón de cancel por error, escriba el texto y presione 'OK'. Si cometío un error presione 'OK' y luego borre el elemento.");
-          }
-  				info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: source_id+'-'+target_id} ]);
+          }		
 				}
-				
+
+				info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: 'connect'+state_number+'-'+target_id} ]);
+
 				this_connection = {
 					source: info.sourceId,
 					target: info.targetId,
@@ -951,7 +959,7 @@ jsPlumb.ready(function() {
 				var state_number = info.sourceId.substring(7);
 				var source_id = "state"+state_number;
 				var target_id = info.targetId;
-				console.log('Creating connection: '+source_id+ ' to '+target_id);
+				console.log('Creating connection: connect'+state_number+ ' to '+target_id);
 /*
 				for(z = 0; z<lines_array.length; z++){
 					this_connection = lines_array[z];

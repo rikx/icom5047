@@ -57,17 +57,6 @@ block content
 							.col-md-3
 								button#take_survey_start(class='btn btn-default btn-success', type='button') Comenzar Encuesta
 
-		.row#row_answered(style="display: none;")
-			.col-md-2
-			.col-md-8
-				.panel.panel-success
-					.panel-heading 
-						h3(class='panel-title')
-							| Preguntas Contestadas
-					.panel-body
-						ol#answered_questions
-							p No ha contestado preguntas.
-		
 		.row#row_current(style="display: none;")
 			.col-md-2
 			.col-md-8
@@ -77,20 +66,29 @@ block content
 							| Primera Pregunta
 						h3#panel_title_next(class='panel-title', style="display: none;")
 							| Próxima Pregunta
-					.panel-body#next_question
+					.panel-body#next_question(style='overflow:auto; height:300px;')
 						p#next_question_question(data-question-id=flowchart.first_id, data-question-type='')
 						#next_question_answers
-		
-		.row#row_buttons(style="display: none;")
+					.row#row_buttons(style="display: none;")
+						.col-md-3
+							button#btn_next_question(class='btn btn-sm btn-default btn-block', type='button') Próxima Pregunta
+						//.col-md-2
+							//button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button', disabled) Guardar Progreso (Abort)
+						.col-md-3
+							button#btn_cancel(class='btn btn-sm btn-default btn-block', type='button') Cancelar Progreso
+						.col-md-4
+							button#btn_end_survey(class='btn btn-sm btn-default btn-block', type='button', style="display: none;") Finalizar Cuestionario
+		br
+		.row#row_answered(style="display: none;")
 			.col-md-2
-			.col-md-2
-				button#btn_next_question(class='btn btn-sm btn-default btn-block', type='button') Próxima Pregunta
-			//.col-md-2
-				//button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button', disabled) Guardar Progreso (Abort)
-			.col-md-2
-				button#btn_cancel(class='btn btn-sm btn-default btn-block', type='button') Cancelar Progreso
-			.col-md-4
-				button#btn_end_survey(class='btn btn-sm btn-default btn-block', type='button', style="display: none;") Finalizar Cuestionario
+			.col-md-8
+				.panel.panel-success
+					.panel-heading 
+						h3(class='panel-title')
+							| Preguntas Contestadas
+					.panel-body(style='overflow:auto; height:330px;')
+						ol#answered_questions
+							p No ha contestado preguntas.
 		br
 		.row#row_home
 			.col-md-2
