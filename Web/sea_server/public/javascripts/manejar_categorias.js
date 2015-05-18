@@ -403,8 +403,8 @@ function populate_categories_info_panel($this_category){
 
   // set id values of info panel buttons
   $('#btn_edit_categories').attr('data-id', $this_category.category_id);
+  $('#btn_edit_categories').attr('data-category-name', $this_category.name); 
   $('#btn_delete_category').attr('data-id', $this_category.category_id);
-  $('#btn_delete_category').attr('data-category-name', $this_category.name); 
 }
 
 /* Populate info panel with $this_specialty information */
@@ -413,8 +413,8 @@ function populate_specialties_info_panel($this_specialty){
 
   // set id values of info panel buttons
   $('#btn_edit_specialties').attr('data-id', $this_specialty.spec_id);
+  $('#btn_edit_specialties').attr('data-specialty-name', $this_specialty.name); 
   $('#btn_delete_specialty').attr('data-id', $this_specialty.spec_id);
-  $('#btn_delete_specialty').attr('data-specialty-name', $this_specialty.name); 
 }
 
 /* Populate list with first 20 usuarios, organized alphabetically */
@@ -453,9 +453,9 @@ function populate_list_categories(the_categories){
 
 
 /* Populate list with usuarios_set information */
-function populate_list_specialties(all_specialties){
+function populate_list_specialties(the_specialties){
 	table_content = '';
-	$.each(all_specialties, function(i){
+	$.each(the_specialties, function(i){
 		table_content += '<tr>';
 		table_content += "<td><a class='list-group-item ";
       // if initial list item, set to active
@@ -463,7 +463,7 @@ function populate_list_specialties(all_specialties){
       	table_content +=  'active ';
         populate_specialties_info_panel(this);
       }
-      table_content += "the_specialty' href='#', data-id='"+all_specialties[i].spec_id+"',  data-specialty-name='"+all_specialties[i].name+"'>"+all_specialties[i].name+"</a></td>";
+      table_content += "the_specialty' href='#', data-id='"+this.spec_id+"',  data-specialty-name='"+this.name+"'>"+this.name+"</a></td>";
       table_content += '</tr>';
   });
 	$('#specialties').html(table_content);
