@@ -195,6 +195,12 @@ jsPlumb.ready(function() {
     var arrayPosition = elements_array.map(function(arrayItem) { return arrayItem.id; }).indexOf(item_id);
     var this_element = elements_array[arrayPosition];
 
+    if(($('#'+item_id).find("textarea")).length == 1){
+      $('#btn_edit_item').addClass('disabled');
+    } else {
+      $('#btn_edit_item').removeClass('disabled');
+    }
+
     // populate info panel with this_ganadero info
     populate_info_panel(this_element);
 
@@ -796,7 +802,9 @@ jsPlumb.ready(function() {
 			      $(this).parent().html("<p class='has_text'>"+this.value+'</p>');
 			      var state_id = $(this).attr('data-id');
 			      $('#'+state_id).attr('data-state-name', this.value);
-
+            if($('#btn_edit_item').attr('data-id') == state_id){
+              $('#btn_edit_item').removeClass('disabled');
+            } 
 			      // repaint it do to the resize
 			      jsPlumb.repaintEverything();
 						// create item object
