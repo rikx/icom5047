@@ -1360,7 +1360,7 @@ router.post('/reports/appointment/:id/:uid', function(req, res, next) {
 /* POST survey answer
  *
  */
-router.post('/open/submit', function(req, res, next) {
+router.post('/cuestionario/open/submit', function(req, res, next) {
  	// if(!req.body.hasOwnProperty('report_id') || !req.body.hasOwnProperty('option_id') 
  	// 	||!req.body.hasOwnProperty('has_data') || !req.body.hasOwnProperty('sequence')) {
  	// 	return res.send('Error: Missing fields for post path.');
