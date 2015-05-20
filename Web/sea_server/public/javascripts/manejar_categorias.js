@@ -282,7 +282,6 @@ $(document).ready(function(){
 
 	/* POSTs new category information */
 	$('#btn_put_new_category').on('click', function(){
-
   // get form data and conver to json format
   var category_name = $('#btn_edit_categories').attr("data-category-name");
   var category_id = $('#btn_edit_categories').attr("data-id");
@@ -290,8 +289,6 @@ $(document).ready(function(){
   var $the_form = $('#form_edit_category');
   var form_data = $the_form.serializeArray();
   var new_category = ConverToJSON(form_data);
-  //url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
-
   $.ajax({
   	url: "http://localhost:3000/users/admin/edit_category/" + category_id,
   	method: "PUT",
@@ -299,15 +296,14 @@ $(document).ready(function(){
   	contentType: "application/json",
   	dataType: "json",
   	success: function(data) {
-  		alert("Categoria fue editada exitosamente");
+      if(data.exists){
+        alert("Categoría con este nombre ya existe");
+      } else {
+        alert("Categoría fue modificada exitosamente.");
         $the_form[0].reset();
-        // update locations list after posting 
         populate_categories();
         $('#edit_category_panel').hide();
-
-    
-
-
+      }
 },
 error: function( xhr, status, errorThrown ) {
 	alert( "Sorry, there was a problem!" );
@@ -380,12 +376,16 @@ $('#btn_put_new_specialty').on('click', function(){
   	contentType: "application/json",
   	dataType: "json",
   	success: function(data) {
-  		alert("Especialidad fue editada exitosamente");
-        // clear add form
+        if(data.exists){
+        alert("Especialidad con este nombre ya existe");
+      } else {
+        alert("Especialidad fue modificada exitosamente.");
         $the_form[0].reset();
-        // update locations list after posting 
         populate_specialties();
         $('#edit_specialty_panel').hide();
+      }
+  		
+
 
 },
 error: function( xhr, status, errorThrown ) {

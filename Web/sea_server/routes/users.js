@@ -979,6 +979,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
  */
  router.put('/admin/edit_category/:id', function(req, res, next) {
  	console.log("edit category");
+ 	console.log(req.body.category_name);
  	if(!req.body.hasOwnProperty('category_name')) {
  		res.statusCode = 400;
  		return res.send('Error: Missing fields for put categories.');
@@ -989,19 +990,66 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
 			// Edit category
-			client.query("UPDATE category SET name = $1 WHERE category_id = $2", 
-										[req.body.category_name, req.params.id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					res.json(true);
-				}
-			});
+		    // Verify category does not already exist in db
+    	client.query("SELECT * FROM category WHERE name = $1", 
+    								[req.body.category_name], function(err, result) {
+     		if(err) {
+      		return console.error('error running query', err);
+     		} else {
+      		if(result.rowCount > 0){
+      			console.log('cacacacaacacacacaa');
+      			res.send({exists: true});
+      		} else {
+
+      			console.log("caca");
+	       		// Insert new category into db
+	       		client.query("UPDATE category SET name = $1 WHERE category_id = $2", 
+ 										[req.body.category_name, req.params.id] , function(err, result) {
+	       			//call `done()` to release the client back to the pool
+	       			done();
+	       			if(err) {
+	        			return console.error('error running query', err);
+	       			} else {
+	        			res.json(true);
+	       			}
+	      		});
+	      	}
+	     	}
+	    });
 		});
 	}
 });
+
+
+//  /* PUT Admin Manejar Ganaderos 
+//  * Edit ganadero matching :id in database
+//  */
+//  router.put('/admin/edit_category/:id', function(req, res, next) {
+//  	console.log("edit category");
+//  	if(!req.body.hasOwnProperty('category_name')) {
+//  		res.statusCode = 400;
+//  		return res.send('Error: Missing fields for put categories.');
+//  	} else {
+// 	 	var db = req.db;
+// 	 	db.connect(req.conString, function(err, client, done) {
+// 	 		if(err) {
+// 	 			return console.error('error fetching client from pool', err);
+// 	 		}
+// 			// Edit category
+// 			client.query("UPDATE category SET name = $1 WHERE category_id = $2", 
+// 										[req.body.category_name, req.params.id] , function(err, result) {
+// 				//call `done()` to release the client back to the pool
+// 				done();
+// 				if(err) {
+// 					return console.error('error running query', err);
+// 				} else {
+// 					res.json(true);
+// 				}
+// 			});
+// 		});
+// 	}
+// });
+
 
 /* PUT/DELETE categories
  */
@@ -1064,7 +1112,7 @@ router.put('/admin/user_specialties', function(req, res, next) {
 
 
 
- /* PUT Admin Manejar Ganaderos 
+/* PUT Admin Manejar Ganaderos 
  * Edit ganadero matching :id in database
  */
  router.put('/admin/edit_specialty/:id', function(req, res, next) {
@@ -1078,20 +1126,63 @@ router.put('/admin/user_specialties', function(req, res, next) {
 	 		if(err) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
-			// Edit category
-			client.query("UPDATE specialization SET name = $1 WHERE spec_id = $2", 
-										[req.body.specialty_name, req.params.id] , function(err, result) {
-				//call `done()` to release the client back to the pool
-				done();
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					res.json(true);
-				}
-			});
+	    // Verify specialty does not already exist in db
+	    client.query("SELECT * FROM specialization WHERE name = $1", 
+	    							[req.body.specialty_name], function(err, result) {
+	     	if(err) {
+	      	return console.error('error running query', err);
+	     	} else {
+	      	if(result.rowCount > 0){
+	       		res.send({exists: true});
+	      	} else {
+	       		// Insert new ganadero into db
+	       		client.query("UPDATE specialization SET name = $1 WHERE spec_id = $2", 
+ 										[req.body.specialty_name, req.params.id]  , function(err, result) {
+	       			//call `done()` to release the client back to the pool
+	       			done();
+	       			if(err) {
+	       				return console.error('error running query', err);
+	       			} else {
+	        			res.json(true);
+	       			}
+	      		});
+	      	}
+	     	}
+	    });
 		});
 	}
 });
+
+
+
+// /* PUT Admin Manejar Ganaderos 
+//  * Edit ganadero matching :id in database
+//  */
+//  router.put('/admin/edit_specialty/:id', function(req, res, next) {
+//  	console.log("edit spec");
+//  	if(!req.body.hasOwnProperty('specialty_name')) {
+//  		res.statusCode = 400;
+//  		return res.send('Error: Missing fields for put categories.');
+//  	} else {
+// 	 	var db = req.db;
+// 	 	db.connect(req.conString, function(err, client, done) {
+// 	 		if(err) {
+// 	 			return console.error('error fetching client from pool', err);
+// 	 		}
+// 			// Edit category
+// 			client.query("UPDATE specialization SET name = $1 WHERE spec_id = $2", 
+// 										[req.body.specialty_name, req.params.id] , function(err, result) {
+// 				//call `done()` to release the client back to the pool
+// 				done();
+// 				if(err) {
+// 					return console.error('error running query', err);
+// 				} else {
+// 					res.json(true);
+// 				}
+// 			});
+// 		});
+// 	}
+// });
 
 /* GET User Manejar Reportes
  * Renders page and includes response with first 20 reportes, 
