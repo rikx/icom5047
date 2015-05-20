@@ -174,8 +174,10 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
             case 2: //successful login with new user
                 performNewUserLogin();
                 break;
+	        default:
+		        failedLogin();
+		        break;
         }
-        progressDialog.dismiss();
     }
 
     private void performNewUserLogin() {
@@ -216,8 +218,11 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
     private void successfulLogin() {
         saveLogin();
-        startActivity(new Intent(this, MainActivity.class));
+	    Intent intent = new Intent(this, MainActivity.class);
+	    intent.putExtra("LOGIN", true);
+        startActivity(intent);
         Log.i(this.toString(), "login successful");
+        progressDialog.dismiss();
         finish();
     }
 
@@ -233,6 +238,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         String s = getResources().getString(R.string.login_nak);
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
         Log.i(this.toString(), "login failed");
+        progressDialog.dismiss();
     }
 
     private void showLoginProgressDialog() {

@@ -248,10 +248,10 @@ public class DBSchema {
     public static final String AUTH_USER = "username";
     public static final String AUTH_PASS = "password";
     public static final String AUTH_DEVICE = "android_id";
-    public static final String AUTH_URL = "http://136.145.116.231/mobile/test10.php";
+    public static final String AUTH_URL = "http://136.145.116.231:8080/mobile/test10.php";
 
 
     //    public static final String SYNC_URL = "http://136.145.116.231/mobile/test7.php"; // working
-    public static final String SYNC_URL = "http://136.145.116.231/mobile/test8.php"; // working
+    public static final String SYNC_URL = "http://136.145.116.231:8080/mobile/test8.php"; // working
 
 }
