@@ -43,6 +43,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         .OnItemSelectedListener, RadioGroup.OnCheckedChangeListener,
         TextView.OnEditorActionListener, TextWatcher, View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
+    private static final String EQUAL_REGEX = "^(=).+$";
     private static final String GREATER_THAN_REGEX = "^(gt).+$";
     private static final String LESS_THAN_REGEX = "^(lt).+$";
     private static final String GREATER_EQUAL_REGEX = "^(ge).+$";
@@ -256,7 +257,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         List<Option> options = question.getOptions();
         //Display question and it's options
         TextView textQuestion = new TextView(this);
-        int sequence = path.size() + 1;
+        int sequence = openSurvey ? openSurveyItems.size() : path.size()+1;
         textQuestion.setText(sequence + ". " + question.getLabel());
         textQuestion.setPadding(0, 30, 0, 0);
         long id = question.getId();
@@ -430,6 +431,10 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
             String str = label.substring(2, label.length());
             double op = Double.valueOf(str);
             if (input >= op) return o;
+        } else if(label.matches(EQUAL_REGEX)) {
+            String str = label.substring(2, label.length());
+            double op = Double.valueOf(str);
+            if(input == op) return o;
         } else if (label.matches(RANGE_REGEX)) {
             char left = label.charAt(2);
             char right = label.charAt(label.length() - 1);
