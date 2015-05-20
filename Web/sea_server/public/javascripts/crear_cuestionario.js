@@ -951,7 +951,38 @@ jsPlumb.ready(function() {
 					mylabel = prompt("Escriba la posible respuesta a la pregunta.");
           while(mylabel == null){
             mylabel = prompt("Si le dio al botón de cancel por error, escriba el texto y presione 'OK'. Si cometío un error presione 'OK' y luego borre el elemento.");
-          }		
+          }
+          mylabel = mylabel.trim();
+          var sanitized = mylabel;
+          if(sanitized.matches('^(=).+$') {
+              sanitized = sanitized.replace(/\s/g, '');
+              sanitized = sanitized.replace('=', 'eq');
+              mylabel = sanitized;
+          }
+          else if(sanitized.matches('^(<=).+$') {
+              sanitized = sanitized.replace(/\s/g, '');
+              sanitized = sanitized.replace('<=', 'le');
+              mylabel = sanitized;
+          }
+          else if(sanitized.matches('^(<).+$') {
+              sanitized = sanitized.replace(/\s/g, '');
+              sanitized = sanitized.replace('<', 'lt');
+              mylabel = sanitized;
+          }
+          else if(sanitized.matches('^(>=).+$') {
+              sanitized = sanitized.replace(/\s/g, '');
+              sanitized = sanitized.replace('>=', 'ge');
+              mylabel = sanitized;
+          }
+          else if(sanitized.matches('^(>).+$') {
+              sanitized = sanitized.replace(/\s/g, '');
+              sanitized = sanitized.replace('=', 'gt');
+              mylabel = sanitized;
+          }
+          else if(sanitized.matches('^(ra).+$') {
+              sanitized = sanitized.replace(/\s/g, '');
+              mylabel = sanitized;
+          }
 				}
 
 				info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: 'connect'+state_number+'-'+target_id} ]);
