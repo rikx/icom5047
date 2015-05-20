@@ -915,6 +915,40 @@ jsPlumb.ready(function() {
           while(mylabel == null){
             mylabel = prompt("Si le dio al botón de cancel por error, escriba el texto y presione 'OK'. Si cometío un error presione 'OK' y luego borre el elemento.");
           }
+          mylabel = mylabel.trim();
+          var sanitized = mylabel;
+          if(sanitized.match('^(=).+$')) {
+            sanitized = sanitized.replace(/\s/g, '');
+            sanitized = sanitized.replace("=", "eq");
+            mylabel = sanitized;
+          }
+          else if(sanitized.match('^(<=).+$')) {
+            sanitized = sanitized.replace(/\s/g, '');
+            sanitized = sanitized.replace("<=", "le");
+            mylabel = sanitized;
+          }
+          else if(sanitized.match('^(<).+$')) {
+            sanitized = sanitized.replace(/\s/g, '');
+            sanitized = sanitized.replace("<", "lt");
+            mylabel = sanitized;
+          }
+
+          else if(sanitized.match('^(>=).+$')) {
+            sanitized = sanitized.replace(/\s/g, '');
+            sanitized = sanitized.replace(">=", "ge");
+            mylabel = sanitized;
+          }
+
+          else if(sanitized.match('^(>).+$')) {
+            sanitized = sanitized.replace(/\s/g, '');
+            sanitized = sanitized.replace(">", "gt");
+            mylabel = sanitized;
+          }
+
+          else if(sanitized.match('^(ra).+$')) {
+            sanitized = sanitized.replace(/\s/g, '');
+            mylabel = sanitized;
+          }
         }
 
         info.connection.addOverlay(["Label", { label: mylabel, location:0.5, id: 'connect'+state_number+'-'+target_id} ]);
