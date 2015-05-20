@@ -14,9 +14,13 @@ $(document).ready(function(){
 
   var data_locations = $localizaciones_list.attr('data-localizaciones');
   var data_categories = $localizaciones_list.attr('data-categorias');
+
   var data_agents = $localizaciones_list.attr('data-agentes');
+
   var data_ganaderos =  $localizaciones_list.attr('data-ganaderos');
+
   var data_all_categories = $('#categoria_panel').attr('data-all-categorias');
+
  
   if(data_locations.length >2){
     localizaciones_array = JSON.parse($localizaciones_list.attr('data-localizaciones'));
@@ -25,17 +29,22 @@ $(document).ready(function(){
       categorias_array = JSON.parse($localizaciones_list.attr('data-categorias'));
     }
     if(data_agents.length >2){
-      categorias_array = JSON.parse($localizaciones_list.attr('data-agentes'));
+
+      agents_array = JSON.parse($localizaciones_list.attr('data-agentes'));
     }
     if(data_ganaderos.length >2){
-      categorias_array = JSON.parse($localizaciones_list.attr('data-ganaderos'));
+
+      ganaderos_array = JSON.parse($localizaciones_list.attr('data-ganaderos'));
     }
     if(data_all_categories.length >2){
-      categorias_array = JSON.parse($localizaciones_list.attr('data-all-categorias'));
+
+      all_categorias_array = JSON.parse($localizaciones_list.attr('data-all-categorias'));
     }
   } else {
     $('#info_panel').hide();
   }
+
+
 
   var user_info = JSON.parse($localizaciones_list.attr('data-user'));
   var data_username = $localizaciones_list.attr('data-username');

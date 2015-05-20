@@ -417,6 +417,18 @@ $(document).ready(function(){
 		});
 	});
 
+	function validate_number_input(user_input){
+		var regex=/\-?\d+(\.\d+)?/;
+		console.log(user_input.match(regex))
+		if(user_input.match(regex)){
+			return true;
+		} else {
+			alert("Escriba solo números son válidos para preguntas condicionales.");
+			return false;
+		}
+	}
+
+
 	/* */
 	function update_next_question(next_question_id) {
 		$('#panel_title_first').hide();
@@ -492,7 +504,7 @@ $(document).ready(function(){
 				{
 					if(options[j].item_id == flowchart[i].item_id)
 					{
-						the_content += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></textarea>";
+						the_content += "<textarea id='answer_open_text' data-question-type='OPEN' name='answer_open_text' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></textarea>";
 					}
 				});
 			}else if(flowchart[i].type == 'CONDITIONAL')
@@ -500,8 +512,8 @@ $(document).ready(function(){
 				$.each(options, function(j)
 				{
 					if(options[j].item_id == flowchart[i].item_id)
-					{	console.log("here");
-						the_content += "<textarea id='answer_open_text' name='answer_open_text' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></textarea>";
+					{	
+						the_content += "<textarea id='answer_open_text' data-question-type='CONDITIONAL' name='answer_open_text' data-answer-id='"+options[j].option_id+"' data-question-id='"+options[j].item_id+"'></textarea>";
 						return false;
 					}
 					
@@ -573,6 +585,11 @@ $(document).ready(function(){
 
 function get_answers()
 {
+
+
+	//var conditional_answers = $('[data-question-type="CONDITIONAL"]');
+	//console.log(conditional_answers);
+
 	radio_answers = $(":radio:checked");
 	var text_boxes = $('textarea');
 	$.each(text_boxes, function(i)
