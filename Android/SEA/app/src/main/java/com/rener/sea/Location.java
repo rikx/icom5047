@@ -202,7 +202,7 @@ public class Location implements Comparable<Location> {
         return getOwner().getId() != -1;
     }
 
-    public Person getAgent() {
+    public User getAgent() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         long agentID = -1;
         Cursor cursor = db.query(DBSchema.TABLE_LOCATION, new String[]{DBSchema.LOCATION_AGENT_ID},
@@ -215,7 +215,7 @@ public class Location implements Comparable<Location> {
             cursor.close();
         }
 
-        return new Person(agentID, dbHelper);
+        return new User(agentID, dbHelper);
     }
 
     public long setAgent(Person agent) {
