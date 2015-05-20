@@ -798,10 +798,10 @@ jsPlumb.ready(function() {
 					if (e.keyCode === 13) {
 			      //var state = $(this).closest('.item');
 			      //state.children('.title').text(this.value);
-
-			      $(this).parent().html("<p class='has_text'>"+this.value+'</p>');
+            var trimmed = this.value.trim();
+			      $(this).parent().html("<p class='has_text'>"+trimmed+'</p>');
 			      var state_id = $(this).attr('data-id');
-			      $('#'+state_id).attr('data-state-name', this.value);
+			      $('#'+state_id).attr('data-state-name', trimmed);
             if($('#btn_edit_item').attr('data-id') == state_id){
               $('#btn_edit_item').removeClass('disabled');
             } 
