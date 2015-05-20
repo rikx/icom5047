@@ -252,8 +252,9 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             textManager.setText(managerName);
         }
 
-        if (location.hasAgent()) {
-            String agentName = location.getAgent().toString();
+	    User agent = location.getAgent();
+        if (agent.getId() != -1) {
+            String agentName = agent.getPerson().toString();
             textAgent.setText(agentName);
         }
     }
