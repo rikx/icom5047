@@ -376,7 +376,7 @@ $(document).ready(function(){
       } else {
         name =  'Dispositivo sin nombre';
       }
-      table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+name+" asignado a "+this.username+"</a></td>";
+      table_content += "show_info_dispositivo' href='#', data-id='"+this.device_id+"'>"+name+" ("+this.username+")</a></td>";
 /*      if(this.last_sync == null)
       {
         table_content += '<td><center>'+"Nunca se ha sincronizado"+'</center></td>';
