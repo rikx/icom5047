@@ -2562,7 +2562,8 @@ router.get('/admin/dispositivos', function(req, res, next) {
 
 		  // to populate dispositivo dropdown list
 		  client.query('SELECT user_id, username FROM users \
-								  	ORDER BY username ASC', function(err, result) {
+		  							WHERE status != $1 \
+								  	ORDER BY username ASC', [-1], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		  	done();
 		  	if(err) {
