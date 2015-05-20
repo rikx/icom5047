@@ -42,7 +42,7 @@ $(document).ready(function(){
     },
     local: citas_array,
     remote: {
-      url: 'http://localhost:3000/citas/%QUERY',
+      url: '/citas/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         citas_array = list.citas;
@@ -217,7 +217,7 @@ $(document).ready(function(){
     {
     // ajax call to update ganadero
     $.ajax({
-      url: "http://localhost:3000/users/admin/citas/" + appointment_id,
+      url: "/users/admin/citas/" + appointment_id,
       method: "PUT",
       data: JSON.stringify(new_cita),
       contentType: "application/json",
@@ -248,7 +248,7 @@ $(document).ready(function(){
     if(confirm_delete){
       // ajax call to delete device
       $.ajax({
-        url: "http://localhost:3000/users/admin/citas/"+$(this).attr('data-id'),
+        url: "/users/admin/citas/"+$(this).attr('data-id'),
         method: "DELETE",
         success: function(data) {
           alert("Cita ha sido borrado del sistema.");
@@ -279,7 +279,7 @@ $('#cita_info').on('click', 'tr td a.show_location_info', function(e){
     $('#location_panel').show();
     // contains location id
     var location_id = $(this).attr('data-location-id');
-    $.getJSON('http://localhost:3000/location/'+location_id, function(data){
+    $.getJSON('/location/'+location_id, function(data){
       // populate location panel with this_location
       populate_location_panel(data.location, data.ganaderos, data.agentes);
     });
@@ -363,7 +363,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
 
   /* Populate list with first 20 reportes, organized alphabetically by location */
   function populate_citas(){
-    $.getJSON('http://localhost:3000/list_citas', function(data) {
+    $.getJSON('/list_citas', function(data) {
       citas_array = data.citas;
 
       populate_list(data.citas);

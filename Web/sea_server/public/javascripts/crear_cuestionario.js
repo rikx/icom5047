@@ -513,7 +513,7 @@ jsPlumb.ready(function() {
 
   						// ajax call to post new ganadero
   						$.ajax({
-  						  url: "http://localhost:3000/users/admin/cuestionarios/crear",
+  						  url: "/users/admin/cuestionarios/crear",
   						  method: "POST",
   						  data: JSON.stringify({
   						  	info: new_flowchart,

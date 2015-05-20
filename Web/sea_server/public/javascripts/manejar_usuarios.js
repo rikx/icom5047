@@ -63,7 +63,7 @@ $(document).ready(function(){
     },
     local: usuarios_array,
     remote: {
-      url: 'http://localhost:3000/usuarios/%QUERY',
+      url: '/usuarios/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         usuarios_array = list.usuarios;
@@ -155,7 +155,7 @@ $(document).ready(function(){
 
   // ajax call to post new category
   $.ajax({
-    url: "http://localhost:3000/users/admin/new_specialty",
+    url: "/users/admin/new_specialty",
     method: "POST",
     data: JSON.stringify(new_specialty),
     contentType: "application/json",
@@ -301,7 +301,7 @@ $(document).ready(function(){
     else
     {
     $.ajax({
-      url: "http://localhost:3000/users/admin/usuarios",
+      url: "/users/admin/usuarios",
       method: "POST",
       data: JSON.stringify(new_usuario),
       contentType: "application/json",
@@ -426,7 +426,7 @@ $('#btn_edit').on('click', function(){
   {
      // ajax call to update ganadero
      $.ajax({
-      url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+      url: "/users/admin/usuarios/" + usuario_id,
       method: "PUT",
       data: JSON.stringify(new_usuario),
       contentType: "application/json",
@@ -461,7 +461,7 @@ $('#btn_edit').on('click', function(){
 };
 
 $.ajax({
-  url: "http://localhost:3000/users/admin/user_specialties",
+  url: "/users/admin/user_specialties",
   method: "PUT",
   data: JSON.stringify(specialties),
   contentType: "application/json",
@@ -507,7 +507,7 @@ $.ajax({
 // };
 
 // $.ajax({
-//   url: "http://localhost:3000/users/admin/user_specialties",
+//   url: "/users/admin/user_specialties",
 //   method: "PUT",
 //   data: JSON.stringify(specialties),
 //   contentType: "application/json",
@@ -536,7 +536,7 @@ $usuarios_list.on('click', 'tr td a.btn_delete_user', function(e){
     $(this).attr('data-id');
 
     $.ajax({
-      url: "http://localhost:3000/users/admin/user",
+      url: "/users/admin/user",
       method: "DELETE",
 
       success: function( data ) {
@@ -633,7 +633,7 @@ function populate_info_panel($this_usuario){
 
   /* Populate list with first 20 usuarios, organized alphabetically */
   function populate_usuarios(){
-    $.getJSON('http://localhost:3000/list_usuarios', function(data) {
+    $.getJSON('/list_usuarios', function(data) {
       usuarios_array = data.usuarios;
       locations_array = data.locations;
       specialties_array = data.user_specialties;
@@ -647,7 +647,7 @@ function populate_info_panel($this_usuario){
     $('#btn_delete').on('click', function(){
       var user_id = $('#btn_delete').attr("data-id");
       $.ajax({
-        url: "http://localhost:3000/users/admin/delete_user/" + user_id,
+        url: "/users/admin/delete_user/" + user_id,
         method: "PUT",
         contentType: "application/json",
         dataType: "json",

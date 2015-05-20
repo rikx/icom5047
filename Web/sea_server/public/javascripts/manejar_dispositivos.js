@@ -46,7 +46,7 @@ $(document).ready(function(){
     },
     local: dispositivos_array,
     remote: {
-      url: 'http://localhost:3000/dispositivos/%QUERY',
+      url: '/dispositivos/%QUERY',
       filter: function(list) {
         // populate global array with matching results
         dispositivos_array = list.devices;
@@ -194,7 +194,7 @@ $(document).ready(function(){
     {
     //ajax call to post new device
     $.ajax({
-      url: "http://localhost:3000/users/admin/dispositivos",
+      url: "/users/admin/dispositivos",
       method: "POST",
       data: JSON.stringify(new_dispositivo),
       contentType: "application/json",
@@ -257,7 +257,7 @@ $(document).ready(function(){
     {
     // ajax call to update device
     $.ajax({
-      url: "http://localhost:3000/users/admin/dispositivos/" + dispositivo_id,
+      url: "/users/admin/dispositivos/" + dispositivo_id,
       method: "PUT",
       data: JSON.stringify(new_dispositivo),
       contentType: "application/json",
@@ -288,7 +288,7 @@ $(document).ready(function(){
     if(confirm_delete){
       // ajax call to delete device
       $.ajax({
-        url: "http://localhost:3000/users/admin/dispositivos/"+$(this).attr('data-id'),
+        url: "/users/admin/dispositivos/"+$(this).attr('data-id'),
         method: "DELETE",
         success: function(data) {
           alert("Dispositivo ha sido borrado del sistema.");
@@ -346,7 +346,7 @@ $(document).ready(function(){
 
   /* Populate list with first 20 dispositivos, ordered by assigned user */
   function populate_dispositivos() {
-  	$.getJSON('http://localhost:3000/list_dispositivos', function(data) {
+  	$.getJSON('/list_dispositivos', function(data) {
   		dispositivos_array = data.dispositivos;
 
       populate_list(data.dispositivos);

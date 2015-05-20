@@ -78,7 +78,7 @@ $(document).ready(function(){
     },
     local: localizaciones_array,
     remote: {
-      url: 'http://localhost:3000/localizaciones/%QUERY',
+      url: '/localizaciones/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         localizaciones_array = list.locations;
@@ -284,7 +284,7 @@ $(document).ready(function(){
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 6,
     remote: {
-      url: 'http://localhost:3000/ganaderos/%QUERY',
+      url: '/ganaderos/%QUERY',
       filter: function(list) {
         all_ganaderos = list.ganaderos;
         return $.map(list.ganaderos, function(ganadero) { 
@@ -358,7 +358,7 @@ $('#btn_submit_ganadero').on('click', function(){
     else
     {
       $.ajax({
-        url: "http://localhost:3000/users/admin/associated/ganadero",
+        url: "/users/admin/associated/ganadero",
         method: "PUT",
         data: JSON.stringify(ganadero_association),
         contentType: "application/json",
@@ -406,7 +406,7 @@ $('#btn_submit_ganadero').on('click', function(){
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 6,
     remote: {
-      url: 'http://localhost:3000/agents/%QUERY',
+      url: '/agents/%QUERY',
       filter: function(list) {
         all_agentes = list.agents;
         return $.map(list.agents, function(agent) { 
@@ -456,7 +456,7 @@ $('#btn_submit_ganadero').on('click', function(){
     else
     {
     $.ajax({
-      url: "http://localhost:3000/users/admin/associated/agent",
+      url: "/users/admin/associated/agent",
       method: "PUT",
       data: JSON.stringify(agent_association),
       contentType: "application/json",
@@ -510,7 +510,7 @@ console.log(category_location);
 
 
 $.ajax({
-  url: "http://localhost:3000/users/admin/category_location",
+  url: "/users/admin/category_location",
   method: "PUT",
   data: JSON.stringify(category_location),
   contentType: "application/json",
@@ -535,9 +535,9 @@ $.ajax({
 //Delete Localizacion
 $('#btn_delete').on('click', function(){
   var location_id = $('#btn_delete').attr("data-id");
-  //url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+  //url: "/users/admin/usuarios/" + usuario_id,
   $.ajax({
-    url: "http://localhost:3000/users/admin/delete_location/" + location_id,
+    url: "/users/admin/delete_location/" + location_id,
     method: "PUT",
     contentType: "application/json",
     dataType: "json",
@@ -626,7 +626,7 @@ $('#btn_submit').on('click', function(){
   else
   {
   $.ajax({
-    url: "http://localhost:3000/users/admin/localizaciones",
+    url: "/users/admin/localizaciones",
     method: "POST",
     data: JSON.stringify(new_location),
     contentType: "application/json",
@@ -661,7 +661,7 @@ $('#btn_post_new_category').on('click', function(){
   var new_category = ConverToJSON(form_data);
   // ajax call to post new category
   $.ajax({
-    url: "http://localhost:3000/users/admin/new_category",
+    url: "/users/admin/new_category",
     method: "POST",
     data: JSON.stringify(new_category),
     contentType: "application/json",
@@ -746,7 +746,7 @@ $('#btn_edit').on('click', function(){
 
   // ajax call to update location
   $.ajax({
-    url: "http://localhost:3000/users/admin/localizaciones/" + location_id,
+    url: "/users/admin/localizaciones/" + location_id,
     method: "PUT",
     data: JSON.stringify(new_location),
     contentType: "application/json",
@@ -786,7 +786,7 @@ $("input:checkbox:not(:checked)").each(function(i){
 };
 
 $.ajax({
-  url: "http://localhost:3000/users/admin/category_location",
+  url: "/users/admin/category_location",
   method: "PUT",
   data: JSON.stringify(category_location),
   contentType: "application/json",
@@ -898,7 +898,7 @@ function populate_info_panel($this_location){
 
 /* Populate list with first 20 locations, organized alphabetically by location_name */
 function populate_localizaciones(){
-  $.getJSON('http://localhost:3000/list_localizaciones', function(data) {
+  $.getJSON('/list_localizaciones', function(data) {
     $('#edit_associates_heading').hide();
     $('#localizacion_associates').hide();
     localizaciones_array = data.localizaciones;
@@ -942,7 +942,7 @@ function populate_list(locations_set){
 
     var the_categories = [];
 /*    $.ajax({
-      url: "http://localhost:3000/location/" + variable + "/categories/",
+      url: "/location/" + variable + "/categories/",
       method: "GET",
       contentType: "application/json",
       dataType: "json",

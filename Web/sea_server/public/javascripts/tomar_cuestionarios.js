@@ -41,7 +41,7 @@ $(document).ready(function(){
     },
     local: cuestionarios_array,
     remote: {
-      url: 'http://localhost:3000/cuestionarios/take/%QUERY',
+      url: '/cuestionarios/take/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         cuestionarios_array = list.cuestionarios;
@@ -171,7 +171,7 @@ $(document).ready(function(){
 
     /* Populate list with first 20 cuestionarios, organized alphabetically */
   function populate_cuestionarios(){
-    $.getJSON('http://localhost:3000/list_tomar_cuestionarios', function(data) {
+    $.getJSON('/list_tomar_cuestionarios', function(data) {
       cuestionarios_array = data.cuestionarios;
 
       populate_list(data.cuestionarios);

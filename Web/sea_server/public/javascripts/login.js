@@ -8,7 +8,7 @@ $(document).ready(function() {
 
 	  // ajax call to post login
 	  $.ajax({
-	    url: "http://localhost:3000/login",
+	    url: "/login",
 	    method: "POST",
 	    data: JSON.stringify(new_user),
 	    contentType: "application/json",

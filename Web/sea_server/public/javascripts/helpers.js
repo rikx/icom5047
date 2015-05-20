@@ -16,7 +16,7 @@
  	function logout_helper(){
 	  // ajax call to get logout
 	  $.ajax({
-	    url: "http://localhost:3000/logout",
+	    url: "/logout",
 	    method: "GET",
 
 	    success: function() {

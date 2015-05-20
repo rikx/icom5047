@@ -44,7 +44,7 @@ $(document).ready(function(){
     },
     local: reportes_array,
     remote: {
-      url: 'http://localhost:3000/reportes/%QUERY',
+      url: '/reportes/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         reportes_array = list.reports;
@@ -123,7 +123,7 @@ $(document).ready(function(){
   $('#btn_delete').on('click', function(){
     var report_id = $('#btn_delete').attr("data-id");
   $.ajax({
-    url: "http://localhost:3000/users/admin/delete_report/" + report_id,
+    url: "/users/admin/delete_report/" + report_id,
     method: "PUT",
     contentType: "application/json",
     dataType: "json",
@@ -194,7 +194,7 @@ $(document).ready(function(){
   //   if(confirm_delete){
   //     // ajax call to delete report
   //     $.ajax({
-  //       url: "http://localhost:3000/users/admin/reportes/"+$(this).attr('data-id'),
+  //       url: "/users/admin/reportes/"+$(this).attr('data-id'),
   //       method: "DELETE",
   //       success: function(data) {
   //         alert("Reporte ha sido borrado del sistema.");
@@ -241,7 +241,7 @@ $(document).ready(function(){
 
   /* Populate list with first 20 reportes, organized alphabetically by report name */
   function populate_reportes(){
-    $.getJSON('http://localhost:3000/list_reportes', function(data) {
+    $.getJSON('/list_reportes', function(data) {
       reportes_array = data.reports;
 
       populate_list(data.reports);

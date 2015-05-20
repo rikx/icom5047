@@ -53,7 +53,7 @@ $(document).ready(function(){
     },
     local: ganaderos_array,
     remote: {
-      url: 'http://localhost:3000/ganaderos/%QUERY',
+      url: '/ganaderos/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         ganaderos_array = list.ganaderos;
@@ -210,7 +210,7 @@ $(document).ready(function(){
     {
     // ajax call to post new ganadero
     $.ajax({
-      url: "http://localhost:3000/users/admin/ganaderos",
+      url: "/users/admin/ganaderos",
       method: "POST",
       data: JSON.stringify(new_ganadero),
       contentType: "application/json",
@@ -285,7 +285,7 @@ $(document).ready(function(){
   {
   // ajax call to update ganadero
   $.ajax({
-    url: "http://localhost:3000/users/admin/ganaderos/" + ganadero_id,
+    url: "/users/admin/ganaderos/" + ganadero_id,
     method: "PUT",
     data: JSON.stringify(new_ganadero),
     contentType: "application/json",
@@ -314,7 +314,7 @@ $(document).ready(function(){
     $('#btn_delete').on('click', function(){
       var ganadero_id = $('#btn_delete').attr("data-id");
       $.ajax({
-        url: "http://localhost:3000/users/admin/delete_ganadero/" + ganadero_id,
+        url: "/users/admin/delete_ganadero/" + ganadero_id,
         method: "PUT",
         contentType: "application/json",
         dataType: "json",
@@ -373,7 +373,7 @@ $(document).ready(function(){
 
   /* Populate list with first 20 ganaderos, organized alphabetically */
   function populate_ganaderos(){
-    $.getJSON('http://localhost:3000/list_ganaderos', function(data) {
+    $.getJSON('/list_ganaderos', function(data) {
       ganaderos_array = data.ganaderos;
       localizaciones_array = data.locations;
       

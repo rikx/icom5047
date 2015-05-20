@@ -42,7 +42,7 @@ $(document).ready(function(){
     },
     local: cuestionarios_array,
     remote: {
-      url: 'http://localhost:3000/cuestionarios/%QUERY',
+      url: '/cuestionarios/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
         cuestionarios_array = list.cuestionarios;
@@ -114,9 +114,9 @@ $(document).ready(function(){
   //Delete Flowchart
   $('#btn_delete').on('click', function(){
   var flowchart_id = $('#btn_delete').attr("data-id");
-  //url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+  //url: "/users/admin/usuarios/" + usuario_id,
   $.ajax({
-    url: "http://localhost:3000/users/admin/delete_flowchart/" + flowchart_id,
+    url: "/users/admin/delete_flowchart/" + flowchart_id,
     method: "PUT",
     contentType: "application/json",
     dataType: "json",
@@ -204,7 +204,7 @@ $(document).ready(function(){
 
    /* Populate list with first 20 cuestionarios, organized alphabetically */
   function populate_cuestionarios(){
-    $.getJSON('http://localhost:3000/list_cuestionarios', function(data) {
+    $.getJSON('/list_cuestionarios', function(data) {
       cuestionarios_array = data.cuestionarios;
 
       populate_list(data.cuestionarios);

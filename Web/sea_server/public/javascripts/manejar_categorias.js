@@ -212,7 +212,7 @@ $(document).ready(function(){
   else{
   // ajax call to post new category
   $.ajax({
-  	url: "http://localhost:3000/users/admin/new_category",
+  	url: "/users/admin/new_category",
   	method: "POST",
   	data: JSON.stringify(new_category),
   	contentType: "application/json",
@@ -253,7 +253,7 @@ $(document).ready(function(){
   {
   // ajax call to post new category
   $.ajax({
-  	url: "http://localhost:3000/users/admin/new_specialty",
+  	url: "/users/admin/new_specialty",
   	method: "POST",
   	data: JSON.stringify(new_specialty),
   	contentType: "application/json",
@@ -290,7 +290,7 @@ $(document).ready(function(){
   var form_data = $the_form.serializeArray();
   var new_category = ConverToJSON(form_data);
   $.ajax({
-  	url: "http://localhost:3000/users/admin/edit_category/" + category_id,
+  	url: "/users/admin/edit_category/" + category_id,
   	method: "PUT",
   	data: JSON.stringify(new_category),
   	contentType: "application/json",
@@ -319,7 +319,7 @@ error: function( xhr, status, errorThrown ) {
 $('#btn_delete_category').on('click', function(){
    var category_id = $('#btn_edit_categories').attr("data-id");
   $.ajax({
-    url: "http://localhost:3000/users/admin/delete_category/" + category_id,
+    url: "/users/admin/delete_category/" + category_id,
     method: "DELETE",
     contentType: "application/json",
     dataType: "json",
@@ -342,7 +342,7 @@ $('#btn_delete_category').on('click', function(){
 $('#btn_delete_specialty').on('click', function(){
  var specialty_id = $('#btn_edit_specialties').attr("data-id");
  $.ajax({
-  url: "http://localhost:3000/users/admin/delete_specialty/" + specialty_id,
+  url: "/users/admin/delete_specialty/" + specialty_id,
   method: "DELETE",
   contentType: "application/json",
   dataType: "json",
@@ -368,9 +368,9 @@ $('#btn_put_new_specialty').on('click', function(){
   var $the_form = $('#form_edit_specialty');
   var form_data = $the_form.serializeArray();
   var new_specialty = ConverToJSON(form_data);
-  //url: "http://localhost:3000/users/admin/usuarios/" + usuario_id,
+  //url: "/users/admin/usuarios/" + usuario_id,
   $.ajax({
-  	url: "http://localhost:3000/users/admin/edit_specialty/" + specialty_id,
+  	url: "/users/admin/edit_specialty/" + specialty_id,
   	method: "PUT",
   	data: JSON.stringify(new_specialty),
   	contentType: "application/json",
@@ -419,7 +419,7 @@ function populate_specialties_info_panel($this_specialty){
 
 /* Populate list with first 20 usuarios, organized alphabetically */
 function populate_categories(){
-	$.getJSON('http://localhost:3000/list_categories', function(data) {
+	$.getJSON('/list_categories', function(data) {
 		all_categories = data.categories;
 		populate_list_categories(data.categories);
 	});
@@ -427,7 +427,7 @@ function populate_categories(){
 
 /* Populate list with first 20 usuarios, organized alphabetically */
 function populate_specialties(){
-	$.getJSON('http://localhost:3000/list_specialties', function(data) {
+	$.getJSON('/list_specialties', function(data) {
 		all_specialties = data.specialties;
 		populate_list_specialties(data.specialties);
 	});

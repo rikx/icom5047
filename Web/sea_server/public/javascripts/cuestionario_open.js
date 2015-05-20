@@ -118,7 +118,7 @@ $(document).ready(function(){
 	 //    new_cuestionario.report_name = $('#take_survey_report_name').val();
 	 //    // ajax call to post new report
 	 //    $.ajax({
-	 //      url: "http://localhost:3000/report",
+	 //      url: "/report",
 	 //      method: "POST",
 	 //      data: JSON.stringify(new_cuestionario),
 	 //      contentType: "application/json",
@@ -210,7 +210,7 @@ $(document).ready(function(){
 			}
 
 	    $.ajax({
-	      url: "http://localhost:3000/cuestionario/path",
+	      url: "/cuestionario/path",
 	      method: "POST",
 	      data: JSON.stringify(new_path),
 	      contentType: "application/json",
@@ -365,7 +365,7 @@ $(document).ready(function(){
 			sequence: sequence_number
 		};
     $.ajax({
-      url: "http://localhost:3000/cuestionario/path",
+      url: "/cuestionario/path",
       method: "POST",
       data: JSON.stringify(end_path),
       contentType: "application/json",
@@ -400,7 +400,7 @@ $(document).ready(function(){
 	$('#btn_cancel').on('click', function(){
 		var report_id = $('#btn_cancel').attr("data-report-id");
 		$.ajax({
-		  url: "http://localhost:3000/cuestionario/open/" + report_id,
+		  url: "/cuestionario/open/" + report_id,
 		  method: "DELETE",
 		  success: function(data) {
 		    alert("Cuestionario cancelado");
@@ -434,7 +434,7 @@ $(document).ready(function(){
 		$('#panel_title_first').hide();
 		$('#panel_title_next').show();
 
-		$.getJSON('http://localhost:3000/element/'+next_question_id, function(data) {
+		$.getJSON('/element/'+next_question_id, function(data) {
 			var this_item = data.question_family[0];
 			// populate question heading with question
 			$question_panel_question.html(this_item.question);
@@ -555,7 +555,7 @@ $(document).ready(function(){
 			console.log(new_open_cuestionario);
 	    // ajax call to post new report
 	    $.ajax({
-	    	url: "http://localhost:3000/report_open",
+	    	url: "/report_open",
 	    	method: "POST",
 	    	data: JSON.stringify(new_open_cuestionario),
 	    	contentType: "application/json",
@@ -638,7 +638,7 @@ $('#btn_submit').on('click', function(){
 for(var j = 0; j < array.length; j++)
 {
 	$.ajax({
-		url: "http://localhost:3000/users/cuestionario/open/submit",
+		url: "/users/cuestionario/open/submit",
 		method: "POST",
 		data: JSON.stringify({answer: array[j]}),
 		contentType: "application/json",
