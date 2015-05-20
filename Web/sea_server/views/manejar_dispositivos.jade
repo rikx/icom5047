@@ -93,8 +93,11 @@ block content
 									td#dispositivo_info_usuario
 								tr 
 									td 
-										| Última Sincronicazión: 
-									td#dispositivo_info_last_sync
+										| Última Sincronización: 
+									//td#dispositivo_info_last_sync
+								tr
+									td
+										#dispositivo_info_last_sync(class='word-wrap: break-word')
 						button#btn_edit_dispositivo(class='btn btn-success btn-block', type='button') Editar
 						a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
 							i(class='glyphicon glyphicon-trash')

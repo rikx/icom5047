@@ -572,7 +572,11 @@ function populate_info_panel($this_usuario){
     }
     $('#usuario_info_lastname_paternal').text($this_usuario.last_name1);
     $('#usuario_info_lastname_maternal').text($this_usuario.last_name2);
-    $('#usuario_info_contact').text($this_usuario.email + " " + $this_usuario.phone_number);
+    //$('#usuario_info_contact').text($this_usuario.email + " " + $this_usuario.phone_number);
+    $('#usuario_info_telefono').text($this_usuario.phone_number);
+    $('#usuario_info_contact').text($this_usuario.email);
+    //$('#usuario_telefono').text($this_usuario.phone_number);
+
 
 
     if($this_usuario.type == 'agent')
