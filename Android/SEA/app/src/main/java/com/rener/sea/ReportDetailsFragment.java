@@ -152,7 +152,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
         if (flowchart.getId() != -1) {
 
-            String fcName = report.getFlowchart().getName();
+            String fcName = report.getFlowchart().toString();
             textFlowchart.setText(fcName);
 
             //Set the path through the flowchart
@@ -172,11 +172,11 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
                 TextView seqView = new TextView(getActivity());
                 seqView.setText(sequence + ".");
                 TextView questionView = new TextView(getActivity());
-                questionView.setText(question);
+                questionView.setText(question.trim());
                 questionView.setPadding(4, 0, 0, 0);
                 TextView answerView = new TextView(getActivity());
-                answerView.setText(answer);
-                answerView.setPadding(16, 0, 0, 0);
+                answerView.setText(answer.trim());
+                answerView.setPadding(16, 0, 0, 8);
                 //Set the element layout
                 interviewLayout.addView(questionView);
                 if (item.getType().equals(Item.RECOMMENDATION)) {
