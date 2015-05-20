@@ -77,7 +77,7 @@ block content
 					.panel-heading
 						h3#info_panel_heading(class='panel-title')
 					.panel-body
-						table#dispositivo_info(class='table table-nowrap')
+						table#dispositivo_info(class='table')
 							thead
 							tbody(data-dispositivos=dispositivos)
 								tr
@@ -94,10 +94,15 @@ block content
 								tr 
 									td 
 										| Última Sincronización: 
-									//td#dispositivo_info_last_sync
-								tr
 									td
-										#dispositivo_info_last_sync(class='word-wrap: break-word')
+										#dispositivo_info_last_sync
+								//tr 
+								//	td 
+								//		| Última Sincronización: 
+									//td#dispositivo_info_last_sync
+								//tr
+								//	td
+										#dispositivo_info_last_sync
 						button#btn_edit_dispositivo(class='btn btn-success btn-block', type='button') Editar
 						a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
 							i(class='glyphicon glyphicon-trash')

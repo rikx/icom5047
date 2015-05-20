@@ -92,7 +92,7 @@ block content
 					.panel-heading
 						h3#info_panel_heading(class='panel-title') 
 					.panel-body
-						table#ganadero_info(class='table table-nowrap')
+						table#ganadero_info(class='table')
 							thead
 							tbody#body_info(data-ganaderos=ganaderos, data-localizaciones=locations, data-user=user)
 								tr
@@ -104,6 +104,9 @@ block content
 								tr
 									td Información de Contacto:
 									td#ganadero_info_contact
+								tr
+									td Télefono
+									td#ganadero_info_telefono
 						.panel.panel-info
 							.panel-heading Localizaciones Asignadas
 							.panel-body
