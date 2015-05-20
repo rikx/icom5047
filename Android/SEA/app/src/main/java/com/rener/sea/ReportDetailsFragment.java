@@ -172,11 +172,12 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
                 TextView seqView = new TextView(getActivity());
                 seqView.setText(sequence + ".");
                 TextView questionView = new TextView(getActivity());
-                questionView.setText(question.trim());
+                questionView.setText(question.trim().replaceAll("\\n", ""));
                 questionView.setPadding(4, 0, 0, 0);
                 TextView answerView = new TextView(getActivity());
                 answerView.setText(answer.trim());
-                answerView.setPadding(16, 0, 0, 8);
+	            answerView.setPadding(32, 0, 0, 8);
+	            answerView.setTypeface(null, Typeface.ITALIC);
                 //Set the element layout
                 interviewLayout.addView(questionView);
                 if (item.getType().equals(Item.RECOMMENDATION)) {

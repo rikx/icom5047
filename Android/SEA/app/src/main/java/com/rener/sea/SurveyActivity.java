@@ -258,7 +258,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
         //Display question and it's options
         TextView textQuestion = new TextView(this);
         int sequence = openSurvey ? openSurveyItems.size() : path.size()+1;
-        textQuestion.setText(sequence + ". " + question.getLabel());
+	    String questionString = question.getLabel().trim().replaceAll("\\n", "");
+        textQuestion.setText(sequence + ". " + questionString);
         textQuestion.setPadding(0, 30, 0, 0);
         long id = question.getId();
         String type = question.getType();
@@ -296,7 +297,7 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
                 //Set this field to allow signed decimals
                 currentText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL
                         | InputType.TYPE_NUMBER_FLAG_SIGNED);
-                currentText.setHint(getString(R.string.open_hint));
+                currentText.setHint(getString(R.string.cond_hint));
                 currentText.setOnEditorActionListener(this);
                 currentText.setImeActionLabel(getString(R.string.done), EditorInfo.IME_ACTION_DONE);
                 progressLayout.addView(currentText);
@@ -392,8 +393,8 @@ public class SurveyActivity extends FragmentActivity implements AdapterView
 
 
     private void handleUserInput(Item item, String input) {
-        String type = item.getType();
-        if (type.equals(Item.OPEN)) {
+	    String type = item.getType();
+	    if (type.equals(Item.OPEN)) {
             currentText.setEnabled(false);
             Option option = item.getOptions().get(0);
             questionAnswered(option, input);

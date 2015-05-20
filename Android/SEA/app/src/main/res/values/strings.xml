@@ -145,4 +145,5 @@
 	<string name="invalid_decimal">Please input a valid decimal number</string>
 	<string name="confirm_submit_title">Report Submission Confirmation</string>
 	<string name="confirm_submit_message">Are you sure you wish to submit this report?</string>
+	<string name="cond_hint">Enter a valid number here</string>
 </resources>
