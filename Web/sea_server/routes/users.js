@@ -1714,7 +1714,7 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
  	console.log("email email");
  	console.log(req.body.usuario_email);
  	console.log("old mail");
- 	console.log(req.body.usuario_email_old);
+ 	console.log(req.body.change_password);
  	var new_username = req.body.usuario_email;
  	var at_index = new_username.indexOf('@');
  	new_username = new_username.substring(0, at_index);
@@ -1853,6 +1853,8 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 		});
 	}
 });
+
+
 
 /* POST Admin User Specialties
  * Add new user specialty to database

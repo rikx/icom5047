@@ -424,6 +424,8 @@ $('#btn_edit').on('click', function(){
   }
   else
   {
+    //if(new_usuario.change_password)
+    //{
      // ajax call to update ganadero
      $.ajax({
       url: "/users/admin/usuarios/" + usuario_id,
@@ -445,7 +447,7 @@ $('#btn_edit').on('click', function(){
         }
         //alert("Informacion de usuario ha sido editada en el sistema.");
       // update ganadero list after posting 
-  
+
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
@@ -454,6 +456,41 @@ $('#btn_edit').on('click', function(){
       console.dir( xhr );
     }
   });
+   //}
+  //  else
+  //  {
+
+  //    $.ajax({
+  //     url: "/users/admin/usuarios/no_change_password/" + usuario_id,
+  //     method: "PUT",
+  //     data: JSON.stringify(new_usuario),
+  //     contentType: "application/json",
+  //     dataType: "json",
+
+  //     success: function(data) {
+  //       if(data.exists)
+  //       {
+  //         alert("Ya existe ususario con ese correo electrónico");
+  //       }
+  //       else
+  //       {
+  //         alert("Se ha modificado usuario sin modificar password");
+  //         populate_usuarios();
+
+  //       }
+  //       //alert("Informacion de usuario ha sido editada en el sistema.");
+  //     // update ganadero list after posting 
+
+  //   },
+  //   error: function( xhr, status, errorThrown ) {
+  //     alert( "Sorry, there was a problem!" );
+  //     console.log( "Error: " + errorThrown );
+  //     console.log( "Status: " + status );
+  //     console.dir( xhr );
+  //   }
+  // });
+
+  //  }
 
    //get user id and specialty ids associated to said user id
    var usuario_id =  $('#btn_edit').attr('data-id');
