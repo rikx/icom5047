@@ -290,7 +290,7 @@ $(document).ready(function(){
     queryTokenizer: Bloodhound.tokenizers.whitespace, 
     limit: 6,
     remote: {
-      url: '/ganaderos/%QUERY',
+      url: '/all_ganaderos/%QUERY',
       filter: function(list) {
         all_ganaderos = list.ganaderos;
         return $.map(list.ganaderos, function(ganadero) { 
