@@ -227,7 +227,10 @@ $(document).ready(function(){
       }
         // update ganadero list after posting 
         populate_categories();
+        $('#info_panel_category').show();
+        $('#edit_category_panel').hide();
         $('#add_category_panel').hide();
+
     },
     error: function( xhr, status, errorThrown ) {
     	alert( "Sorry, there was a problem!" );
@@ -300,8 +303,9 @@ $(document).ready(function(){
         alert("Categoría con este nombre ya existe");
       } else {
         alert("Categoría fue modificada exitosamente.");
-        $the_form[0].reset();
+        //$the_form[0].reset();
         populate_categories();
+        $('#info_panel_category').show();
         $('#edit_category_panel').hide();
       }
 },
@@ -326,7 +330,8 @@ $('#btn_delete_category').on('click', function(){
     success: function(data) {
       alert("Categoría fue eliminada exitosamente");
         //var the_categories = data.categories;
-      $('specialty_info_panel').hide();
+       $('#info_panel_category').show();
+       $('#edit_category_panel').hide();
       populate_categories();
       },
       error: function( xhr, status, errorThrown ) {
