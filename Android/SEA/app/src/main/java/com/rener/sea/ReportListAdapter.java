@@ -26,7 +26,6 @@ public class ReportListAdapter extends ArrayAdapter<Report> implements SimpleStr
     public View getView(int position, View convertView, ViewGroup parent) {
         View row;
         ReportHolder holder;
-        Report report = getItem(position);
 
         //View hasn't been created and must be initialized
         LayoutInflater inflater = (LayoutInflater) context
@@ -39,6 +38,7 @@ public class ReportListAdapter extends ArrayAdapter<Report> implements SimpleStr
         holder.dateText = (TextView) row.findViewById(R.id.report_list_item_date);
         row.setTag(holder);
 
+	    Report report = getItem(position);
         //Get the data
         String name = report.getName();
         String location = report.getLocation().getName();
@@ -59,6 +59,11 @@ public class ReportListAdapter extends ArrayAdapter<Report> implements SimpleStr
         return reports.size();
     }
 
+	@Override
+	public Report getItem(int position) {
+		return reports.get(position);
+	}
+
     @Override
     public long getItemId(int position) {
         return reports.get(position).getId();
@@ -77,6 +82,11 @@ public class ReportListAdapter extends ArrayAdapter<Report> implements SimpleStr
         }
         return filter;
     }
+
+	public void refreshList(List reports) {
+		this.reports = reports;
+		notifyDataSetChanged();
+	}
 
     private static class ReportHolder {
         TextView nameText;
