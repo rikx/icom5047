@@ -41,9 +41,17 @@ block content
 										tr
 											td
 												if i!=0
-													a(class='list-group-item show_info_cuestionario', href='#', data-id=cuestionario.flowchart_id)= cuestionario.flowchart_name
+													a(class='list-group-item show_info_cuestionario', href='#', data-id=cuestionario.flowchart_id)
+														= cuestionario.flowchart_name
+														|  (
+														= cuestionario.version
+														| )
 												else 
-													a(class='list-group-item active show_info_cuestionario', href='#', data-id=cuestionario.flowchart_id)= cuestionario.flowchart_name
+													a(class='list-group-item active show_info_cuestionario', href='#', data-id=cuestionario.flowchart_id)
+														= cuestionario.flowchart_name
+														|  (
+														= cuestionario.version
+														| )
 											//td
 											//	button(class='btn_edit_cuestionario btn btn-sm btn-success btn-block', type='button', data-id=cuestionario.flowchart_id) Editar
 											//td

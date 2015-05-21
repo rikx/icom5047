@@ -1711,9 +1711,14 @@ router.post('/admin/usuarios', function(req, res, next) {
  */
 router.put('/admin/usuarios/:id', function(req, res, next) {
  	var user_id = req.params.id;
- 	console.log(req.body.change_password);
- 	console.log(req.body.usuario_name);
+ 	console.log("email email");
  	console.log(req.body.usuario_email);
+ 	console.log("old mail");
+ 	console.log(req.body.change_password);
+ 	var new_username = req.body.usuario_email;
+ 	var at_index = new_username.indexOf('@');
+ 	new_username = new_username.substring(0, at_index);
+
  	if(!req.body.hasOwnProperty('usuario_email') 
  		|| !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
@@ -1732,48 +1737,50 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 	 		}
 
 
-	 // 		client.query("SELECT * FROM users WHERE username = $1", 
-	 // 			[req.body.usuario_email] , function(err, result) {
-		// 	//call `done()` to release the client back to the pool
-		// 	done();
-		// 	if(err) {
-		// 		return console.error('error running query', err);
-		// 	} else {
-		// 		res.json(true);
-		// 	}
-		// });
-			// edit user table
-		  // use as username string content before '@' in usuario_email
-			var new_username = req.body.usuario_email;
-			var at_index = new_username.indexOf('@');
-			new_username = new_username.substring(0, at_index);
-			client.query("UPDATE users SET type = $1, username = $2 \
-										WHERE user_id = $3", 
-										[req.body.usuario_type, new_username, user_id], function(err, result) {
-				if(err) {
-					return console.error('error running query', err);
-				} else {
 
-				if(req.body.change_password){
+	 		client.query("SELECT user_id, username FROM users WHERE username = $1", 
+	  								[new_username], function(err, result) {
+	  		if(err) {
+	  			return console.error('error running query', err);
+	  		} else {
+
+	  			if(req.body.usuario_email == req.body.usuario_email_old)
+	  			{
+
+	  				console.log("this case lol");
+
+	  					  									// edit user table
+		  // use as username string content before '@' in usuario_email
+		  var new_username = req.body.usuario_email;
+		  var at_index = new_username.indexOf('@');
+		  new_username = new_username.substring(0, at_index);
+		  client.query("UPDATE users SET type = $1, username = $2 \
+		  	WHERE user_id = $3", 
+		  	[req.body.usuario_type, new_username, user_id], function(err, result) {
+		  		if(err) {
+		  			return console.error('error running query', err);
+		  		} else {
+
+		  			if(req.body.change_password){
 					// edit password 
-				console.log("changing password");
-	  			client.query("UPDATE users \
-												SET passhash = crypt($1, gen_salt('bf'::text)) \
-												WHERE user_id = $2", 
-	  										[req.body.usuario_password, user_id] , function(err, result) {
-						if(err) {
-							return console.error('error running query', err);
-						} else {
+					console.log("changing password");
+					client.query("UPDATE users \
+						SET passhash = crypt($1, gen_salt('bf'::text)) \
+						WHERE user_id = $2", 
+						[req.body.usuario_password, user_id] , function(err, result) {
+							if(err) {
+								return console.error('error running query', err);
+							} else {
 							// do nothing
 						}
 					});
-	  		}
+				}
 					// edit person table
 					client.query("UPDATE person \
-												SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6, middle_initial = $7 \
-												FROM users \
-												WHERE user_id = $3 and users.person_id = person.person_id",
-												[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono, req.body.usuario_middle_initial], function(err, result) {
+						SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6, middle_initial = $7 \
+						FROM users \
+						WHERE user_id = $3 and users.person_id = person.person_id",
+						[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono, req.body.usuario_middle_initial], function(err, result) {
 					//call `done()` to release the client back to the pool
 					done();
 					if(err) {
@@ -1784,9 +1791,70 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 				});   
 				}
 			});
+
+	  			}
+	  			else if(result.rowCount > 0)
+	  			{
+	  									console.log("ya hay algo aqui");
+	  				  					res.send({exists: true});	
+	  			}
+	  			else
+	  			{
+	  				console.log('ya algo aqui');
+	  							// edit user table
+		  // use as username string content before '@' in usuario_email
+		  var new_username = req.body.usuario_email;
+		  var at_index = new_username.indexOf('@');
+		  new_username = new_username.substring(0, at_index);
+		  client.query("UPDATE users SET type = $1, username = $2 \
+		  	WHERE user_id = $3", 
+		  	[req.body.usuario_type, new_username, user_id], function(err, result) {
+		  		if(err) {
+		  			return console.error('error running query', err);
+		  		} else {
+
+		  			if(req.body.change_password){
+					// edit password 
+					console.log("changing password");
+					client.query("UPDATE users \
+						SET passhash = crypt($1, gen_salt('bf'::text)) \
+						WHERE user_id = $2", 
+						[req.body.usuario_password, user_id] , function(err, result) {
+							if(err) {
+								return console.error('error running query', err);
+							} else {
+							// do nothing
+						}
+					});
+				}
+					// edit person table
+					client.query("UPDATE person \
+						SET first_name = $1, last_name1 = $2, last_name2 = $4, email = $5, phone_number = $6, middle_initial = $7 \
+						FROM users \
+						WHERE user_id = $3 and users.person_id = person.person_id",
+						[req.body.usuario_name, req.body.usuario_lastname_paternal, user_id, req.body.usuario_lastname_maternal, req.body.usuario_email,req.body.usuario_telefono, req.body.usuario_middle_initial], function(err, result) {
+					//call `done()` to release the client back to the pool
+					done();
+					if(err) {
+						return console.error('error running query', err);
+					} else {
+						res.json(true);
+					}
+				});   
+				}
+			});
+
+}
+	  		}
+
+
+});
+	//end db.connect
 		});
 	}
 });
+
+
 
 /* POST Admin User Specialties
  * Add new user specialty to database
@@ -2304,6 +2372,47 @@ router.put('/admin/associated/ganadero', function(req, res, next) {
 	}
 });
 
+/* Delete Admin Manejar Localizaciones associated ganadero
+ * Remove associated ganadero of location matching :id
+ */
+router.delete('/admin/associated/ganadero', function(req, res, next) {
+	if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('ganadero_id')
+				|| !req.body.hasOwnProperty('relation_type')) {
+			res.statusCode = 400;
+			return res.send('Error: Missing fields for put location associated ganadero.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		var query_config = {};
+	 		if(req.body.relation_type == 'owner'){
+	 			query_config = {
+	 				text: 'UPDATE location SET owner_id = $1 \
+									WHERE location_id = $2',
+					values: [null, req.body.location_id]
+	 			}
+	 		} else if(req.body.relation_type == 'manager'){
+	 			query_config = {
+	 				text: 'UPDATE location SET manager_id = $1 \
+									WHERE location_id = $2',
+					values: [null, req.body.location_id]
+	 			}
+	 		}
+	 		client.query(query_config, function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+ 				if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.json(true);
+		  	}
+	 		});
+	 	});
+	}
+});
+
 /* PUT Admin Manejar Localizaciones associated agent
  * Edit associated agent of location matching :id
  */
@@ -2319,6 +2428,33 @@ router.put('/admin/associated/agent', function(req, res, next) {
 	 		}
 	 		client.query('UPDATE location SET agent_id = $1 \
 										WHERE location_id = $2', [req.body.agent_id, req.body.location_id], function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+ 				if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.json(true);
+		  	}
+	 		});
+	 	});
+	}
+});
+
+/* Delete Admin Manejar Localizaciones associated agent
+ * Remove associated agent of location matching :id
+ */
+router.delete('/admin/associated/agent', function(req, res, next) {
+	if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('agent_id')) {
+			res.statusCode = 400;
+			return res.send('Error: Missing fields for put location associated agent.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		client.query('UPDATE location SET agent_id = $1 \
+										WHERE location_id = $2', [null, req.body.location_id], function(err, result) {
 				//call `done()` to release the client back to the pool
 				done();
  				if(err) {

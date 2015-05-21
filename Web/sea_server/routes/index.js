@@ -325,9 +325,11 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 								FROM ganaderos \
 								WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'), \
 							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
-								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id), \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id \
+								WHERE agent_id = $2), \
 							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
-								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id) \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id \
+								WHERE agent_id = $2) \
 					 		SELECT * \
 					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
 				values: [-1, user_id]
@@ -862,6 +864,36 @@ router.get('/specialties/:user_input', function(req, res, next) {
 	});
 });
 // SEARCH FUNCTIONS END
+
+/* GET all ganaderos
+ * returns ganaderos matching :user_input and their associated information 
+ */
+router.get('/all_ganaderos/:user_input', function(req, res, next) {
+	var user_input = req.params.user_input;
+	
+	var db = req.db;
+	db.connect(req.conString, function(err, client, done) {
+		if(err) {
+	  	return console.error('error fetching client from pool', err);
+		}
+		// get ganaderos matching user_input
+	  client.query("With matching_ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+										FROM person \
+										WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
+									SELECT * \
+									FROM matching_ganaderos \
+									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", [-1], function(err, result) {
+	  	//call `done()` to release the client back to the pool
+	  	done();
+    	if(err) {
+	      return console.error('error running query', err);
+	    } else {
+	    	res.json({ganaderos: result.rows});
+	    }
+	  });
+	});
+});
 
 /* GET flowchart element family 
  * returns family info of element matching :id
