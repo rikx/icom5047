@@ -56,4 +56,13 @@ public class SimpleStringListAdapter extends ArrayAdapter<Object> implements
         if (filter == null) filter = new SimpleStringFilter(objects);
         return filter;
     }
+
+	public List<Object> getList() {
+		return objects;
+	}
+
+	public void refreshList(List objects) {
+		this.objects = objects;
+		notifyDataSetChanged();
+	}
 }

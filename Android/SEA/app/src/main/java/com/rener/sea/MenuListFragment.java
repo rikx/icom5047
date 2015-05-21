@@ -201,7 +201,27 @@ public class MenuListFragment extends ListFragment implements TextWatcher, View.
      * Notifies the list adapter that data has changed and it should update it's views
      */
     public void onListDataChanged() {
-        adapter.notifyDataSetChanged();
+	    DBHelper db = ((MainActivity) getActivity()).getDBHelper();
+	    if(type.equals(TYPE_APPOINTMENTS)) {
+		    SimpleStringListAdapter sAdapter = (SimpleStringListAdapter) adapter;
+		    List theNew = db.getAllAppointments();
+		    sAdapter.refreshList(theNew);
+	    }
+	    else if(type.equals(TYPE_REPORTS)) {
+		    ReportListAdapter rAdapter = (ReportListAdapter) adapter;
+		    List theNew = db.getAllReports();
+		    rAdapter.refreshList(theNew);
+	    }
+	    else if(type.equals(TYPE_PEOPLE)) {
+		    SimpleStringListAdapter sAdapter = (SimpleStringListAdapter) adapter;
+		    List theNew = db.getAllPersons();
+		    sAdapter.refreshList(theNew);
+	    }
+	    else if(type.equals(TYPE_LOCATIONS)) {
+		    SimpleStringListAdapter sAdapter = (SimpleStringListAdapter) adapter;
+		    List theNew = db.getAllLocations();
+		    sAdapter.refreshList(theNew);
+	    }
     }
 
     /**
