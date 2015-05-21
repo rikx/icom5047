@@ -1712,6 +1712,8 @@ router.post('/admin/usuarios', function(req, res, next) {
 router.put('/admin/usuarios/:id', function(req, res, next) {
  	var user_id = req.params.id;
  	console.log(req.body.change_password);
+ 	console.log(req.body.usuario_name);
+ 	console.log(req.body.usuario_email);
  	if(!req.body.hasOwnProperty('usuario_email') 
  		|| !req.body.hasOwnProperty('usuario_name') 
  		|| !req.body.hasOwnProperty('usuario_lastname_maternal') 
@@ -1728,6 +1730,18 @@ router.put('/admin/usuarios/:id', function(req, res, next) {
 	 		if(err) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
+
+
+	 // 		client.query("SELECT * FROM users WHERE username = $1", 
+	 // 			[req.body.usuario_email] , function(err, result) {
+		// 	//call `done()` to release the client back to the pool
+		// 	done();
+		// 	if(err) {
+		// 		return console.error('error running query', err);
+		// 	} else {
+		// 		res.json(true);
+		// 	}
+		// });
 			// edit user table
 		  // use as username string content before '@' in usuario_email
 			var new_username = req.body.usuario_email;
@@ -2107,6 +2121,9 @@ router.post('/admin/localizaciones', function(req, res, next) {
  */
 router.put('/admin/localizaciones/:id', function(req, res, next) {
  	var location_id = req.params.id;
+ 	console.log("license from UI");
+ 	console.log(req.body.localizacion_license_old);
+ 	console.log(req.body.localizacion_license);
  	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
  			|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
  			|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
@@ -2118,7 +2135,48 @@ router.put('/admin/localizaciones/:id', function(req, res, next) {
 			if(err) {
 				return console.error('error fetching client from pool', err);
 			}
-			// Insert new ganadero into db
+
+			client.query("SELECT location_id, license FROM location WHERE license = $1", 
+	  								[req.body.localizacion_license], function(err, result) {
+  			if(err) {
+  				return console.error('error running query', err);
+  			} else {
+  				if(req.body.localizacion_license == req.body.localizacion_license_old)
+  				{	
+  					console.log("this case");
+  					client.query("UPDATE location SET name = $1, license = $2 \
+  						WHERE location_id = $3", 
+  						[req.body.localizacion_name, req.body.localizacion_license, location_id], function(err, result) {
+  							if(err) {
+  								return console.error('error running query', err);
+  							} else {
+  								client.query("UPDATE address \
+  									SET address_line1 = $1, address_line2 = $2, city = $3, zipcode = $4 \
+  									FROM location \
+  									WHERE location_id = $5 and location.address_id = address.address_id",
+  									[req.body.localizacion_address_line1, req.body.localizacion_address_line2, req.body.localizacion_address_city, 
+  									req.body.localizacion_address_zipcode, location_id], function(err, result) {
+						//call `done()` to release the client back to the pool
+						done();
+						if(err) {
+							return console.error('error running query', err);
+						} else {
+							res.json(true);
+						}
+					});   
+  							}
+  						});
+  				} 
+  				else if(result.rowCount > 0)
+  				{	
+  					console.log("license from query");
+  					console.log(result.rows[0].license);
+  					console.log("Location with that license number already exists nigga.");
+  					res.send({exists: true});	
+  				}
+  				else
+  				{
+  						// Insert new ganadero into db
 			client.query("UPDATE location SET name = $1, license = $2 \
 				WHERE location_id = $3", 
 				[req.body.localizacion_name, req.body.localizacion_license, location_id], function(err, result) {
@@ -2141,9 +2199,67 @@ router.put('/admin/localizaciones/:id', function(req, res, next) {
 					});   
 					}
 				});
+
+  				}
+  		}
+		});
+		//connect to DB end
 		});
 	}
 });
+
+// /* PUT Admin Manejar Localizaciones 
+//  * Edit information of location matching :id
+//  */
+// router.put('/admin/localizaciones/:id', function(req, res, next) {
+//  	var location_id = req.params.id;
+//  	if(!req.body.hasOwnProperty('localizacion_name') || !req.body.hasOwnProperty('localizacion_license')
+//  			|| !req.body.hasOwnProperty('localizacion_address_line1') || !req.body.hasOwnProperty('localizacion_address_line2')
+//  			|| !req.body.hasOwnProperty('localizacion_address_city') || !req.body.hasOwnProperty('localizacion_address_zipcode')) {
+//  		res.statusCode = 400;
+//  		return res.send('Error: Missing fields for put location.');
+// 	} else {
+// 		var db = req.db;
+// 		db.connect(req.conString, function(err, client, done) {
+// 			if(err) {
+// 				return console.error('error fetching client from pool', err);
+// 			}
+
+// 			// client.query("SELECT location_id, license FROM location WHERE license = $1", 
+// 	  // 								[req.body.localizacion_license], function(err, result) {
+//   	// 		if(err) {
+//   	// 			return console.error('error running query', err);
+//   	// 		} else {
+//   	// 			if(result.rowCount > 0){
+// 			// Insert new ganadero into db
+// 			client.query("UPDATE location SET name = $1, license = $2 \
+// 				WHERE location_id = $3", 
+// 				[req.body.localizacion_name, req.body.localizacion_license, location_id], function(err, result) {
+// 					if(err) {
+// 						return console.error('error running query', err);
+// 					} else {
+// 						client.query("UPDATE address \
+// 							SET address_line1 = $1, address_line2 = $2, city = $3, zipcode = $4 \
+// 							FROM location \
+// 							WHERE location_id = $5 and location.address_id = address.address_id",
+// 							[req.body.localizacion_address_line1, req.body.localizacion_address_line2, req.body.localizacion_address_city, 
+// 							req.body.localizacion_address_zipcode, location_id], function(err, result) {
+// 						//call `done()` to release the client back to the pool
+// 						done();
+// 						if(err) {
+// 							return console.error('error running query', err);
+// 						} else {
+// 							res.json(true);
+// 						}
+// 					});   
+// 					}
+// 				});
+
+
+// 		//connect to DB end
+// 		});
+// 	}
+// });
 
 /* PUT Admin Manejar Localizaciones associated ganadero
  * Edit associated ganadero of location matching :id
