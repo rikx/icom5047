@@ -328,7 +328,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID, DBSchema.REPORT_NAME},
-                null, null, null, null, "date(" + DBSchema.REPORT_DATE_FILED + ") DESC, " + DBSchema.REPORT_NAME + " COLLATE NOCASE", null);
+                DBSchema.STATUS + " !=? ", new String[]{String.valueOf(-1)}, null, null, "date(" + DBSchema.REPORT_DATE_FILED + ") DESC, " + DBSchema.REPORT_NAME + " COLLATE NOCASE", null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
