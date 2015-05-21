@@ -207,7 +207,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 //                null, null, null, null, DBSchema.PERSON_FIRST_NAME + " COLLATE NOCASE", null);
         Cursor cursor = db.rawQuery("SELECT " + DBSchema.PERSON_ID + ", " + DBSchema.PERSON_FIRST_NAME + ", " + DBSchema.PERSON_MIDDLE_INITIAL + ", " + DBSchema.PERSON_LAST_NAME1 + ", " + DBSchema.PERSON_LAST_NAME2 + " " +
                 "FROM " + DBSchema.TABLE_PERSON +
-                " WHERE " + DBSchema.STATUS + " != ? AND " + DBSchema.PERSON_ID + " NOT IN (SELECT " + DBSchema.USER_PERSON_ID + " FROM " + DBSchema.TABLE_USERS + ") " +
+                " WHERE " + DBSchema.STATUS + " !=? AND " + DBSchema.PERSON_ID + " NOT IN (SELECT " + DBSchema.USER_PERSON_ID + " FROM " + DBSchema.TABLE_USERS + ") " +
                 "ORDER BY " + DBSchema.PERSON_FIRST_NAME + " COLLATE NOCASE", new String[]{String.valueOf(-1)});
         ArrayList<Person> persons;
         persons = new ArrayList<>();
