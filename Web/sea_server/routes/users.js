@@ -303,7 +303,7 @@ router.get('/specialist', function(req, res, next) {
 	var user_type = req.session.user_type;
 
   if (username != null && user_type == 'specialist') {
-  	res.render('agente', { title: 'Especialista Home', username: username});
+  	res.render('specialist', { title: 'Especialista Home', username: username});
   } else {
   	res.redirect('/users');
   }

@@ -18,6 +18,9 @@ block content
 		.row
 			.col-md-2
 			.col-md-8
+				#btn_home(class='btn-group', role='group', aria-label='')
+					a(class='btn btn-success btn-block', data-toggle='tooltip')
+									i(class='glyphicon glyphicon-home')
 				.panel.panel-info
 					.panel-heading 
 						h3(class='panel-title')
@@ -93,7 +96,7 @@ block content
 		.row#row_home
 			.col-md-2
 			.col-md-8
-				button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
+				//button#btn_home(class='btn btn-sm btn-default btn-block', type='button') Regresar a Página Principal
 
 	//	Latest compiled and minified JavaScript
 	script(src='//code.jquery.com/jquery-1.11.2.min.js')

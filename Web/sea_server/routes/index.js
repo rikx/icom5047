@@ -107,7 +107,7 @@ router.post('/report', function(req, res, next) {
 		  client.query('INSERT into report (creator_id, location_id, flowchart_id, date_filed, name, status) \
 										VALUES ($1, $2, $3, $4, $5, $6) \
 										RETURNING report_id', 
-										[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date, req.body.report_name, 1], function(err, result) {
+										[req.body.take_survey_user_id, req.body.take_survey_location_id, req.body.take_survey_id, req.body.take_survey_date, req.body.report_name, -1], function(err, result) {
 		  	//call `done()` to release the client back to the pool
 		    done();
 	    	if(err) {
@@ -249,7 +249,19 @@ router.post('/cuestionario/path', function(req, res, next) {
 		      return console.error('error running query', err);
 		    } else {
 		    	var report_id = req.session.report_id;
-		    	res.json({report_id: report_id});
+		    	console.log(req.body.is_end)
+		    	console.log(typeof req.body.is_end)
+		    	if(req.body.is_end){
+		    		client.query("UPDATE report set status = $1 WHERE report_id = $2", [1, report_id], function(err, result){
+		    			if(err) {
+					      return console.error('error running query', err);
+					    } else {
+					    	res.json({report_id: report_id});
+					    }
+		    		});
+		    	} else {
+						res.json({report_id: report_id});
+		    	}
 		    }
 		  });
 		});

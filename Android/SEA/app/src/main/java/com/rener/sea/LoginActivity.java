@@ -218,11 +218,11 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
     private void successfulLogin() {
         saveLogin();
+	    Log.i(this.toString(), "login successful");
+	    progressDialog.dismiss();
 	    Intent intent = new Intent(this, MainActivity.class);
 	    intent.putExtra("LOGIN", true);
         startActivity(intent);
-        Log.i(this.toString(), "login successful");
-        progressDialog.dismiss();
         finish();
     }
 
@@ -246,6 +246,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
             progressDialog = new ProgressDialog(this);
             progressDialog.setIndeterminate(true);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	        String message = getString(R.string.login_progress_message);
+	        progressDialog.setMessage(message);
         }
         progressDialog.show();
     }

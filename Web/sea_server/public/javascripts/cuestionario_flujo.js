@@ -130,7 +130,7 @@ $(document).ready(function(){
 					$('#take_survey_start, #row_home').attr('disabled', true).hide();
 	      },
 	      error: function( xhr, status, errorThrown ) {
-	        alert( "Sorry, there was a problem!" );
+	        //alert( "Sorry, there was a problem!" );
 	        console.log( "Error: " + errorThrown );
 	        console.log( "Status: " + status );
 	        console.dir( xhr );
@@ -205,7 +205,8 @@ $(document).ready(function(){
 			var	new_path = {
 				report_id: $question_panel_answers.attr('data-report-id'),
 				option_id: the_answer.attr('data-answer-id'),
-				sequence: sequence_number
+				sequence: sequence_number,
+				is_end: false
 			}
 
 			// if answered cuestion is of type 'OPEN' or 'CONDITIONAL' 
@@ -235,7 +236,7 @@ $(document).ready(function(){
 					update_next_question(the_answer.attr('data-next-id'));
 	      },
 	      error: function( xhr, status, errorThrown ) {
-	        alert( "Sorry, there was a problem!" );
+	        //alert( "Sorry, there was a problem!" );
 	        console.log( "Error: " + errorThrown );
 	        console.log( "Status: " + status );
 	        console.dir( xhr );
@@ -376,7 +377,7 @@ $(document).ready(function(){
 			  }
 		  },
 		  error: function( xhr, status, errorThrown ) {
-		    alert( "Sorry, there was a problem!" );
+		    //alert( "Sorry, there was a problem!" );
 		    console.log( "Error: " + errorThrown );
 		    console.log( "Status: " + status );
 		    console.dir( xhr );
@@ -391,7 +392,8 @@ $(document).ready(function(){
 			report_id: $question_panel_answers.attr('data-report-id'),
 			option_id: $question_panel_answers.attr('data-answer-id'),
 			has_data: false,
-			sequence: sequence_number
+			sequence: sequence_number,
+			is_end: true
 		};
     $.ajax({
       url: "/cuestionario/path",
@@ -407,7 +409,7 @@ $(document).ready(function(){
 				window.location.href = '/users/reportes/'+report_id;
       },
       error: function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
+        //alert( "Sorry, there was a problem!" );
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );
         console.dir( xhr );
