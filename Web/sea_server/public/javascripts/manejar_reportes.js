@@ -132,6 +132,8 @@ $(document).ready(function(){
     success: function(data) {
       alert("Reporte fue eliminado");
       populate_reportes();
+      $('#edit_panel').hide();
+      $('#info_panel').show();
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );

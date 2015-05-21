@@ -229,6 +229,8 @@ $(document).ready(function(){
         // update ganadero list after posting 
         populate_ganaderos();
         $('#edit_panel').hide();
+        $('#info_panel').show();
+
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );

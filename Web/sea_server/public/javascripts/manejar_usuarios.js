@@ -317,6 +317,8 @@ $(document).ready(function(){
           // clear add form
           $the_form[0].reset();
         }
+        $('#edit_panel').hide();
+        $('#info_panel').show();
         // update ganadero list after posting 
         populate_usuarios();
       },
@@ -445,6 +447,8 @@ $('#btn_edit').on('click', function(){
         }
         else
         {
+          $('#edit_panel').hide();
+          $('#info_panel').show();
           alert("Se ha modificado usuario");
           populate_usuarios();
 

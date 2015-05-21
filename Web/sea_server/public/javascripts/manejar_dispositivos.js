@@ -301,6 +301,8 @@ $(document).ready(function(){
           alert("Dispositivo ha sido borrado del sistema.");
   
           // update devices list after posting 
+          $('#info_panel').show();
+          $('#edit_panel').hide();
           populate_dispositivos();
         },
         error: function( xhr, status, errorThrown ) {

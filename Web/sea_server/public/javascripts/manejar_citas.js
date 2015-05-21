@@ -259,6 +259,8 @@ $(document).ready(function(){
   
           // update citas list after posting 
           populate_citas();
+          $('#edit_panel').hide();
+          $('#info_panel').show();
         },
         error: function( xhr, status, errorThrown ) {
           alert( "Sorry, there was a problem!" );
