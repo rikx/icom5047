@@ -294,7 +294,11 @@ public class MainActivity extends FragmentActivity implements Toolbar.OnMenuItem
                 details = (LocationDetailsFragment) rightFragment;
             } else if (tag.equals("REPORT")) {
                 details = (ReportDetailsFragment) rightFragment;
-            } else {
+            }
+            else if(tag.equals("APPOINTMENT")) {
+	            details = (ReportDetailsFragment) rightFragment;
+            }
+            else {
                 details = (PersonDetailsFragment) rightFragment;
             }
             details.onDetailsChanged();

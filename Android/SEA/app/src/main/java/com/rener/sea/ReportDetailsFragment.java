@@ -304,7 +304,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
     private void inflateAppointmentLayout() {
         Appointment appointment = report.getAppointment();
-        if (appointment != null) {
+        if (appointment.getId() != -1) {
             displayAppointmentLayout(appointment);
         } else if (appointmentLayout == NO_APPOINTMENT_LAYOUT) {
             Button add = (Button) appointmentFlipper.findViewById(R.id
@@ -370,14 +370,23 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
             //Get the current user id
             MainActivity main = (MainActivity) getActivity();
             SharedPreferences sharedPref = main.getSharedPreferences(
-                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
             String sUsername = sharedPref.getString(getString(R.string.key_saved_username), null);
             DBHelper dbHelper = main.getDBHelper();
             User creator = dbHelper.findUserByUsername(sUsername);
 
             //Create the appointment and set the views for it
             String dateFormat = getString(R.string.date_format_medium);
-            new Appointment(-1, report.getId(), creator.getId(), calendar, purpose, dbHelper, dateFormat);
+	        Appointment appointment = report.getAppointment();
+	        long appointmentId = appointment.getId();
+	        if (appointmentId == -1) {
+		        new Appointment(appointmentId, report.getId(), creator.getId(), calendar, purpose, dbHelper,
+				        dateFormat);
+	        }
+	        else {
+		        appointment.setPurpose(purpose);
+		        appointment.setDate(calendar);
+	        }
             inflateAppointmentLayout();
             ((MainActivity) getActivity()).onDataChanged();
         } else {
