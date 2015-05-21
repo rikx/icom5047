@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -22,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -2640,134 +2644,746 @@ public final class DBHelper extends SQLiteOpenHelper {
     // send user id;
 
     public void syncDB() {
-        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (Looper.myLooper() == null)
+            Looper.prepare();
+        new ServerCalls().execute("SYNC");
+//        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//
+//        Log.i(this.toString(), "HTTP Sync called ");
+//        //Create AsycHttpClient object
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        RequestParams params = new RequestParams();
+//        params.put(DBSchema.POST_DEVICE_ID, device_id);
+//
+//        if (!isEmpty() || userSW) { // initial sync is FULL
+//            params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_FULL);
+//            client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                    SQLiteDatabase db = getWritableDatabase();
+//                    try {
+//
+//                        JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+//                        if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
+//                            setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+//                        } else {
+//
+//                            Log.i(this.toString(), "HTTP Sync success Transaction fail FULL");
+//                        }
+//
+//                    } catch (JSONException e) {
+//
+//                        e.printStackTrace();
+//                    }
+//                    try {
+//                        JSONObject localJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Intent intent = new Intent();
+//                    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                    intent.setAction("SYNC");
+//                    intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
+//                    context.sendBroadcast(intent);
+//
+//                }
+//
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+//                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                    switch (statusCode) {
+//                        case 404:
+//                            Intent intent404 = new Intent();
+//                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent404.setAction("SYNC");
+//                            intent404.putExtra("SYNC_RESULT", 404);
+//                            context.sendBroadcast(intent404);
+//                            Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+//                            break;
+//                        case 500:
+//                            Intent intent500 = new Intent();
+//                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent500.setAction("SYNC");
+//                            intent500.putExtra("SYNC_RESULT", 500);
+//                            context.sendBroadcast(intent500);
+//                            Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+//                            break;
+//                        default:
+//                            Intent intent = new Intent();
+//                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent.setAction("SYNC");
+//                            intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+//                            context.sendBroadcast(intent);
+//                            Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+//                            break;
+//
+//
+//                    }
+//                }
+//
+//
+//            });
+//
+////            result.isFinished();
+////            setSyncDone(data);
+//
+//        } else { // database incremental
+//            String prefKey = context.getResources().getString(R.string.preference_file_key);
+//            String usernameKey = context.getResources().getString(R.string.key_saved_username);
+//            SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
+//            String sUsername = sharedPref.getString(usernameKey, null);
+//            User currentUser = findUserByUsername(sUsername);
+//            long userID = currentUser.getId();
+//            String type = currentUser.getType();
+//            Log.i(this.toString(), "DEVICE ID = " + String.valueOf(device_id));
+//            params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_INC);
+//            params.put(DBSchema.POST_USER_ID, userID);
+//            params.put(DBSchema.POST_USER_TYPE, type);
+//
+//            dataSync = getData();
+//
+//            params.put(DBSchema.POST_LOCAL_DATA, dataSync);
+//
+//            client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                    SQLiteDatabase db = getWritableDatabase();
+//
+//                    try {
+//
+//
+//                        JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+//                        if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
+//
+//                            setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+//                            if (!userSW)
+//                                deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
+//
+//                        } else {
+//
+//                            Log.i(this.toString(), "HTTP Sync success Transaction fail INCREMENTAL");
+//                        }
+//
+//
+//                    } catch (JSONException e) {
+//
+//                        e.printStackTrace();
+//                    }
+//
+//                    Intent intent = new Intent();
+//                    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                    intent.setAction("SYNC");
+//                    intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
+//                    context.sendBroadcast(intent);
+//                    try {
+//                        JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
+//                        long status = syncInf.getLong(DBSchema.SYNC_STATUS);
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
+//                        String local_data = syncInf.getString("local_data");
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
+//                        if (status == DBSchema.STATUS_SUCCESS) {
+//                            setSyncDone();
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    try {
+//                        JSONObject syncJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
+//                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", sysncJSON = " + syncJSONObject.toString());
+//                    } catch (JSONException e) {
+//
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+//                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                    switch (statusCode) {
+//                        case 404:
+//                            Intent intent404 = new Intent();
+//                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent404.setAction("SYNC");
+//                            intent404.putExtra("SYNC_RESULT", 404);
+//                            context.sendBroadcast(intent404);
+//                            Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+//                            break;
+//                        case 500:
+//                            Intent intent500 = new Intent();
+//                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent500.setAction("SYNC");
+//                            intent500.putExtra("SYNC_RESULT", 500);
+//                            context.sendBroadcast(intent500);
+//                            Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+//                            break;
+//                        default:
+//                            Intent intent = new Intent();
+//                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent.setAction("SYNC");
+//                            intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+//                            context.sendBroadcast(intent);
+//                            Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+//                            break;
+//
+//
+//                    }
+//                }
+//
+//
+//            });
+//
+//        }
+    }
 
-        Log.i(this.toString(), "HTTP Sync called ");
-        //Create AsycHttpClient object
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put(DBSchema.POST_DEVICE_ID, device_id);
 
-        if (!isEmpty() || userSW) { // initial sync is FULL
-            params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_FULL);
-            client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+    public void syncDBFull() {
 
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
-                    SQLiteDatabase db = getWritableDatabase();
-                    try {
+        deleteDB();
+        getDummy();
+        if (Looper.myLooper() == null)
+            Looper.prepare();
+        new ServerCalls().execute("SYNC_FULL");
+//        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//        String prefKey = context.getResources().getString(R.string.preference_file_key);
+//        String usernameKey = context.getResources().getString(R.string.key_saved_username);
+//        SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
+//        String sUsername = sharedPref.getString(usernameKey, null);
+//        long userID = findUserByUsername(sUsername).getId();
+//        Log.i(this.toString(), "HTTP Sync called ");
+//
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        RequestParams params = new RequestParams();
+//
+//        params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_FULL);
+//        params.put(DBSchema.POST_DEVICE_ID, device_id);
+//
+//        client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//
+//
+//                try {
+//                    setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                // initialize sequences
+//                try {
+//                    JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+//                    if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
+//
+//                        setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+//
+//                    } else {
+//
+//                        Log.i(this.toString(), "HTTP Sync success Transaction fail syncDBFull");
+//                    }
+//
+//                } catch (JSONException e) {
+//
+//                    e.printStackTrace();
+//                }
+//
+//                Intent intent = new Intent();
+//                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                intent.setAction("SYNC_FULL");
+//                intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
+//                context.sendBroadcast(intent);
+//
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+////                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                switch (statusCode) {
+//                    case 404:
+//                        Intent intent404 = new Intent();
+//                        intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent404.setAction("SYNC_FULL");
+//                        intent404.putExtra("SYNC_RESULT", 404);
+//                        context.sendBroadcast(intent404);
+//                        Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+//                        break;
+//                    case 500:
+//                        Intent intent500 = new Intent();
+//                        intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent500.setAction("SYNC_FULL");
+//                        intent500.putExtra("SYNC_RESULT", 500);
+//                        context.sendBroadcast(intent500);
+//                        Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+//                        break;
+//                    default:
+//                        Intent intent = new Intent();
+//                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent.setAction("SYNC_FULL");
+//                        intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+//                        context.sendBroadcast(intent);
+//                        Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+//                        break;
+//
+//
+//                }
+//            }
+//
+//
+//        });
 
-                        JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
-                            setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
-                        } else {
+    }
 
-                            Log.i(this.toString(), "HTTP Sync success Transaction fail FULL");
+
+    // TODO: testing
+    public void loginAuthentication(String username, String password) {
+        if (Looper.myLooper() == null)
+            Looper.prepare();
+        new ServerCalls().execute("LOGIN",username,password);
+//        final String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//
+//        Log.i(this.toString(), "HTTP Login call");
+//
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        RequestParams params = new RequestParams();
+//
+//        params.put(DBSchema.AUTH_USER, username);
+//        params.put(DBSchema.AUTH_PASS, password);
+//        params.put(DBSchema.AUTH_DEVICE, device_id);
+//
+//        client.post(DBSchema.AUTH_URL, params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                //'device' => 0, 'user' => 0, 'hash' => 0, 'id' => $device, 'seq' => -1
+//                try {
+//                    boolean device = response.getBoolean("device");
+//                    boolean user = response.getBoolean("user");
+//                    boolean switchUser = response.getBoolean("flag");
+//                    String hash = response.getString("hash");
+//                    String deviceID = response.getString("id");
+//                    long seq = response.getLong("seq");
+//
+//                    if (device_id.equals(deviceID) && device && user) { // the responce come fro the server, user and passw corect
+//                        SharedPreferences sharedPref = context.getSharedPreferences(
+//                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = sharedPref.edit();
+//                        editor.putString(context.getString(R.string.key_saved_passhash), hash);
+//                        editor.apply();
+//                        // sync db
+//                        if (switchUser) {
+////                            syncDB();
+////                            syncDBFull();
+//                            Intent intent = new Intent();
+//                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent.setAction("AUTH");
+//                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
+//                            context.sendBroadcast(intent);
+//
+//                        } else {
+//                            Intent intent = new Intent();
+//                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent.setAction("AUTH");
+//                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS);
+//                            context.sendBroadcast(intent);
+//                        }
+//
+//                    }
+//                    if (device_id.equals(deviceID) && device && !user) { // the response come fro the server, the device exist but wrong credentials
+//
+//                        Intent intent = new Intent();
+//                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent.setAction("AUTH");
+//                        intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_FAIL);
+//                        context.sendBroadcast(intent);
+//
+//                    } else if (!device) { // new device
+//                        getDummy();
+//                        setSequence(seq);
+//                        if (user) { // user credentials are ok
+//                            SharedPreferences sharedPref = context.getSharedPreferences(
+//                                    context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                            SharedPreferences.Editor editor = sharedPref.edit();
+//                            editor.putString(context.getString(R.string.key_saved_passhash), hash);
+//                            editor.apply();
+//                            Intent intent = new Intent();
+//                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent.setAction("AUTH");
+//                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
+//                            context.sendBroadcast(intent);
+////                            syncDBFull();
+//
+//                        } else { // user credentials are wrong
+//                            Intent intent = new Intent();
+//                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                            intent.setAction("AUTH");
+//                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_FAIL);
+//                            context.sendBroadcast(intent);
+//                        }
+//                    } else {
+//                        Intent intent = new Intent();
+//                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent.setAction("AUTH");
+//                        intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
+//                        context.sendBroadcast(intent);
+//                    }
+//
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+////                Intent intent = new Intent();
+////                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+////                intent.setAction("SYNC");
+////                intent.putExtra("SYNC_RESULT", 200);
+////                context.sendBroadcast(intent);
+//
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+//                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                switch (statusCode) {
+//                    case 404:
+//                        Intent intent404 = new Intent();
+//                        intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent404.setAction("AUTH");
+//                        intent404.putExtra("AUTH_RESULT", 404);
+//                        context.sendBroadcast(intent404);
+//                        Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+//                        break;
+//                    case 500:
+//                        Intent intent500 = new Intent();
+//                        intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent500.setAction("AUTH");
+//                        intent500.putExtra("AUTH_RESULT", 500);
+//                        context.sendBroadcast(intent500);
+//                        Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+//                        break;
+//                    default:
+//                        Intent intent = new Intent();
+//                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+//                        intent.setAction("AUTH");
+//                        intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
+//                        context.sendBroadcast(intent);
+//                        Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+//                        break;
+//
+//
+//                }
+//            }
+//
+//
+//        });
+
+    }
+
+
+
+    private class ServerCalls extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            // params comes from the execute() call: params[0] is the url.
+            switch (strings[0]){
+                case "LOGIN":
+                    asyncLoginAuthentication(strings[1], strings[2]);
+                    return "Authentication Done";
+                case "SYNC":
+                    asyncSyncDB();
+                    return "Sync Done";
+                case "SYNC_FULL":
+                    asyncSyncDBFull();
+                    return "Sync Full Done";
+
+            }
+            return "Async Call Fail";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+//            if (result.equals("200")) internetAvailable = true;
+        }
+
+
+
+        public void asyncSyncDB() {
+            String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            Log.i(this.toString(), "HTTP Sync called ");
+            //Create AsycHttpClient object
+            SyncHttpClient client = new SyncHttpClient();
+            RequestParams params = new RequestParams();
+            params.put(DBSchema.POST_DEVICE_ID, device_id);
+
+            if (!isEmpty() || userSW) { // initial sync is FULL
+                params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_FULL);
+                client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                        SQLiteDatabase db = getWritableDatabase();
+                        try {
+
+                            JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                            if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
+                                setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+                            } else {
+
+                                Log.i(this.toString(), "HTTP Sync success Transaction fail FULL");
+                            }
+
+                        } catch (JSONException e) {
+
+                            e.printStackTrace();
                         }
-
-                    } catch (JSONException e) {
-
-                        e.printStackTrace();
-                    }
-                    try {
-                        JSONObject localJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    Intent intent = new Intent();
-                    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                    intent.setAction("SYNC");
-                    intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
-                    context.sendBroadcast(intent);
-
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
-                    switch (statusCode) {
-                        case 404:
-                            Intent intent404 = new Intent();
-                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent404.setAction("SYNC");
-                            intent404.putExtra("SYNC_RESULT", 404);
-                            context.sendBroadcast(intent404);
-                            Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
-                            break;
-                        case 500:
-                            Intent intent500 = new Intent();
-                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent500.setAction("SYNC");
-                            intent500.putExtra("SYNC_RESULT", 500);
-                            context.sendBroadcast(intent500);
-                            Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
-                            break;
-                        default:
-                            Intent intent = new Intent();
-                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent.setAction("SYNC");
-                            intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
-                            context.sendBroadcast(intent);
-                            Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
-                            break;
-
+                        try {
+                            JSONObject localJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Intent intent = new Intent();
+                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        intent.setAction("SYNC");
+                        intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
+                        context.sendBroadcast(intent);
 
                     }
-                }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                        switch (statusCode) {
+                            case 404:
+                                Intent intent404 = new Intent();
+                                intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent404.setAction("SYNC");
+                                intent404.putExtra("SYNC_RESULT", 404);
+                                context.sendBroadcast(intent404);
+                                Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+                                break;
+                            case 500:
+                                Intent intent500 = new Intent();
+                                intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent500.setAction("SYNC");
+                                intent500.putExtra("SYNC_RESULT", 500);
+                                context.sendBroadcast(intent500);
+                                Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+                                break;
+                            default:
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("SYNC");
+                                intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+                                context.sendBroadcast(intent);
+                                Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+                                break;
 
 
-            });
+                        }
+                    }
+
+
+                });
 
 //            result.isFinished();
 //            setSyncDone(data);
 
-        } else { // database incremental
+            } else { // database incremental
+                String prefKey = context.getResources().getString(R.string.preference_file_key);
+                String usernameKey = context.getResources().getString(R.string.key_saved_username);
+                SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
+                String sUsername = sharedPref.getString(usernameKey, null);
+                User currentUser = findUserByUsername(sUsername);
+                long userID = currentUser.getId();
+                String type = currentUser.getType();
+                Log.i(this.toString(), "DEVICE ID = " + String.valueOf(device_id));
+                params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_INC);
+                params.put(DBSchema.POST_USER_ID, userID);
+                params.put(DBSchema.POST_USER_TYPE, type);
+
+                dataSync = getData();
+
+                params.put(DBSchema.POST_LOCAL_DATA, dataSync);
+
+                client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+//                        SQLiteDatabase db = getWritableDatabase();
+
+                        try {
+
+
+                            JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                            if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
+
+                                setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
+                                if (!userSW)
+                                    deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
+
+                            } else {
+
+                                Log.i(this.toString(), "HTTP Sync success Transaction fail INCREMENTAL");
+                            }
+
+
+                        } catch (JSONException e) {
+
+                            e.printStackTrace();
+                        }
+
+
+                        try {
+                            JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                            long status = syncInf.getLong(DBSchema.SYNC_STATUS);
+                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
+                            String local_data = syncInf.getString("local_data");
+                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
+                            if (status == DBSchema.STATUS_SUCCESS) {
+//                                setSyncDone();
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("SYNC");
+                                intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
+                                context.sendBroadcast(intent);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            JSONObject syncJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
+                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", sysncJSON = " + syncJSONObject.toString());
+                        } catch (JSONException e) {
+
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                        switch (statusCode) {
+                            case 404:
+                                Intent intent404 = new Intent();
+                                intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent404.setAction("SYNC");
+                                intent404.putExtra("SYNC_RESULT", 404);
+                                context.sendBroadcast(intent404);
+                                Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+                                break;
+                            case 500:
+                                Intent intent500 = new Intent();
+                                intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent500.setAction("SYNC");
+                                intent500.putExtra("SYNC_RESULT", 500);
+                                context.sendBroadcast(intent500);
+                                Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+                                break;
+                            default:
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("SYNC");
+                                intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+                                context.sendBroadcast(intent);
+                                Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+                                break;
+
+
+                        }
+                    }
+
+
+                });
+
+            }
+        }
+
+
+        public void asyncSyncDBFull() {
+            String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             String prefKey = context.getResources().getString(R.string.preference_file_key);
             String usernameKey = context.getResources().getString(R.string.key_saved_username);
             SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
             String sUsername = sharedPref.getString(usernameKey, null);
-            User currentUser = findUserByUsername(sUsername);
-            long userID = currentUser.getId();
-            String type = currentUser.getType();
-            Log.i(this.toString(), "DEVICE ID = " + String.valueOf(device_id));
-            params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_INC);
-            params.put(DBSchema.POST_USER_ID, userID);
-            params.put(DBSchema.POST_USER_TYPE, type);
+            long userID = findUserByUsername(sUsername).getId();
+            Log.i(this.toString(), "HTTP Sync called ");
 
-            dataSync = getData();
+            SyncHttpClient client = new SyncHttpClient();
+            RequestParams params = new RequestParams();
 
-            params.put(DBSchema.POST_LOCAL_DATA, dataSync);
+            params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_FULL);
+            params.put(DBSchema.POST_DEVICE_ID, device_id);
 
             client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
-                    SQLiteDatabase db = getWritableDatabase();
+
 
                     try {
-
-
+                        setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    // initialize sequences
+                    try {
                         JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
                         if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
 
                             setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
-                            if (!userSW)
-                                deleteLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_DELETED));
 
                         } else {
 
-                            Log.i(this.toString(), "HTTP Sync success Transaction fail INCREMENTAL");
+                            Log.i(this.toString(), "HTTP Sync success Transaction fail syncDBFull");
                         }
-
 
                     } catch (JSONException e) {
 
@@ -2776,28 +3392,9 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                    intent.setAction("SYNC");
+                    intent.setAction("SYNC_FULL");
                     intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
                     context.sendBroadcast(intent);
-                    try {
-                        JSONObject syncInf = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        long status = syncInf.getLong(DBSchema.SYNC_STATUS);
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "server sync status response = " + status);
-                        String local_data = syncInf.getString("local_data");
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + "JSON of local data from server = " + local_data);
-                        if (status == DBSchema.STATUS_SUCCESS) {
-                            setSyncDone();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        JSONObject syncJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", sysncJSON = " + syncJSONObject.toString());
-                    } catch (JSONException e) {
-
-                        e.printStackTrace();
-                    }
 
                 }
 
@@ -2809,12 +3406,12 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
                     switch (statusCode) {
                         case 404:
                             Intent intent404 = new Intent();
                             intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent404.setAction("SYNC");
+                            intent404.setAction("SYNC_FULL");
                             intent404.putExtra("SYNC_RESULT", 404);
                             context.sendBroadcast(intent404);
                             Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
@@ -2822,7 +3419,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         case 500:
                             Intent intent500 = new Intent();
                             intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent500.setAction("SYNC");
+                            intent500.setAction("SYNC_FULL");
                             intent500.putExtra("SYNC_RESULT", 500);
                             context.sendBroadcast(intent500);
                             Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
@@ -2830,7 +3427,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         default:
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent.setAction("SYNC");
+                            intent.setAction("SYNC_FULL");
                             intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
                             context.sendBroadcast(intent);
                             Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
@@ -2844,206 +3441,106 @@ public final class DBHelper extends SQLiteOpenHelper {
             });
 
         }
-    }
 
 
-    public void syncDBFull() {
-        deleteDB();
-        getDummy();
-        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        String prefKey = context.getResources().getString(R.string.preference_file_key);
-        String usernameKey = context.getResources().getString(R.string.key_saved_username);
-        SharedPreferences sharedPref = context.getSharedPreferences(prefKey, Context.MODE_PRIVATE);
-        String sUsername = sharedPref.getString(usernameKey, null);
-        long userID = findUserByUsername(sUsername).getId();
-        Log.i(this.toString(), "HTTP Sync called ");
+        // TODO: testing
+        private void asyncLoginAuthentication(String username, String password) {
 
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
+            final String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        params.put(DBSchema.POST_SYNC_TYPE, DBSchema.SYNC_FULL);
-        params.put(DBSchema.POST_DEVICE_ID, device_id);
+            Log.i(this.toString(), "HTTP Login call");
 
-        client.post(DBSchema.SYNC_URL, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            SyncHttpClient client = new SyncHttpClient();
+            RequestParams params = new RequestParams();
 
-                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+            params.put(DBSchema.AUTH_USER, username);
+            params.put(DBSchema.AUTH_PASS, password);
+            params.put(DBSchema.AUTH_DEVICE, device_id);
 
+            client.post(DBSchema.AUTH_URL, params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                try {
-                    setUsers(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW).getJSONArray(DBSchema.TABLE_USERS));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                // initialize sequences
-                try {
-                    JSONObject status = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                    if (status.getInt(DBSchema.SYNC_STATUS) == DBSchema.STATUS_SUCCESS) {
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                    //'device' => 0, 'user' => 0, 'hash' => 0, 'id' => $device, 'seq' => -1
+                    try {
+                        boolean device = response.getBoolean("device");
+                        boolean user = response.getBoolean("user");
+                        boolean switchUser = response.getBoolean("flag");
+                        String hash = response.getString("hash");
+                        String deviceID = response.getString("id");
+                        long seq = response.getLong("seq");
 
-                        setLocalData(response.getJSONObject(DBSchema.POST_SERVER_DATA_NEW));
-
-                    } else {
-
-                        Log.i(this.toString(), "HTTP Sync success Transaction fail syncDBFull");
-                    }
-
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-                }
-
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                intent.setAction("SYNC_FULL");
-                intent.putExtra("SYNC_RESULT", DBSchema.SYNC_SUCCESS);
-                context.sendBroadcast(intent);
-
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-//                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
-                switch (statusCode) {
-                    case 404:
-                        Intent intent404 = new Intent();
-                        intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent404.setAction("SYNC_FULL");
-                        intent404.putExtra("SYNC_RESULT", 404);
-                        context.sendBroadcast(intent404);
-                        Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
-                        break;
-                    case 500:
-                        Intent intent500 = new Intent();
-                        intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent500.setAction("SYNC_FULL");
-                        intent500.putExtra("SYNC_RESULT", 500);
-                        context.sendBroadcast(intent500);
-                        Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
-                        break;
-                    default:
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent.setAction("SYNC_FULL");
-                        intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
-                        context.sendBroadcast(intent);
-                        Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
-                        break;
-
-
-                }
-            }
-
-
-        });
-
-    }
-
-
-    // TODO: testing
-    public void loginAuthentication(String username, String password) {
-
-        final String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        Log.i(this.toString(), "HTTP Login call");
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-
-        params.put(DBSchema.AUTH_USER, username);
-        params.put(DBSchema.AUTH_PASS, password);
-        params.put(DBSchema.AUTH_DEVICE, device_id);
-
-        client.post(DBSchema.AUTH_URL, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
-                //'device' => 0, 'user' => 0, 'hash' => 0, 'id' => $device, 'seq' => -1
-                try {
-                    boolean device = response.getBoolean("device");
-                    boolean user = response.getBoolean("user");
-                    boolean switchUser = response.getBoolean("flag");
-                    String hash = response.getString("hash");
-                    String deviceID = response.getString("id");
-                    long seq = response.getLong("seq");
-
-                    if (device_id.equals(deviceID) && device && user) { // the responce come fro the server, user and passw corect
+                        if (device_id.equals(deviceID) && device && user) { // the responce come fro the server, user and passw corect
                         String oldHash = context.getSharedPreferences(
                                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString(context.getString(R.string.key_saved_passhash), "");
-                        SharedPreferences sharedPref = context.getSharedPreferences(
-                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(context.getString(R.string.key_saved_passhash), hash);
-                        editor.apply();
-                        // sync db
-                        if (switchUser || oldHash.isEmpty()) {
-//                            syncDB();
-//                            syncDBFull();
-                            Intent intent = new Intent();
-                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
-                            context.sendBroadcast(intent);
-
-                        } else {
-                            Intent intent = new Intent();
-                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS);
-                            context.sendBroadcast(intent);
-                        }
-
-                    }
-                    if (device_id.equals(deviceID) && device && !user) { // the response come fro the server, the device exist but wrong credentials
-
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent.setAction("AUTH");
-                        intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_FAIL);
-                        context.sendBroadcast(intent);
-
-                    } else if (!device) { // new device
-                        getDummy();
-                        setSequence(seq);
-                        if (user) { // user credentials are ok
                             SharedPreferences sharedPref = context.getSharedPreferences(
                                     context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString(context.getString(R.string.key_saved_passhash), hash);
                             editor.apply();
-                            Intent intent = new Intent();
-                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                            intent.setAction("AUTH");
-                            intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
-                            context.sendBroadcast(intent);
+                            // sync db
+                        if (switchUser || oldHash.isEmpty()) {
+//                            syncDB();
 //                            syncDBFull();
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("AUTH");
+                                intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
+                                context.sendBroadcast(intent);
 
-                        } else { // user credentials are wrong
+                            } else {
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("AUTH");
+                                intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS);
+                                context.sendBroadcast(intent);
+                            }
+
+                        }
+                        if (device_id.equals(deviceID) && device && !user) { // the response come fro the server, the device exist but wrong credentials
+
                             Intent intent = new Intent();
                             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                             intent.setAction("AUTH");
                             intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_FAIL);
                             context.sendBroadcast(intent);
+
+                        } else if (!device) { // new device
+                            getDummy();
+                            setSequence(seq);
+                            if (user) { // user credentials are ok
+                                SharedPreferences sharedPref = context.getSharedPreferences(
+                                        context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString(context.getString(R.string.key_saved_passhash), hash);
+                                editor.apply();
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("AUTH");
+                                intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_SUCCESS_NEW_USER);
+                                context.sendBroadcast(intent);
+//                            syncDBFull();
+
+                            } else { // user credentials are wrong
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("AUTH");
+                                intent.putExtra("AUTH_RESULT", DBSchema.LOGIN_FAIL);
+                                context.sendBroadcast(intent);
+                            }
+                        } else {
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("AUTH");
+                            intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
+                            context.sendBroadcast(intent);
                         }
-                    } else {
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent.setAction("AUTH");
-                        intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
-                        context.sendBroadcast(intent);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
 //                Intent intent = new Intent();
 //                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
@@ -3051,49 +3548,51 @@ public final class DBHelper extends SQLiteOpenHelper {
 //                intent.putExtra("SYNC_RESULT", 200);
 //                context.sendBroadcast(intent);
 
-            }
+                }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
-                switch (statusCode) {
-                    case 404:
-                        Intent intent404 = new Intent();
-                        intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent404.setAction("AUTH");
-                        intent404.putExtra("AUTH_RESULT", 404);
-                        context.sendBroadcast(intent404);
-                        Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
-                        break;
-                    case 500:
-                        Intent intent500 = new Intent();
-                        intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent500.setAction("AUTH");
-                        intent500.putExtra("AUTH_RESULT", 500);
-                        context.sendBroadcast(intent500);
-                        Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
-                        break;
-                    default:
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-                        intent.setAction("AUTH");
-                        intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
-                        context.sendBroadcast(intent);
-                        Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
-                        break;
-
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
 
                 }
-            }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                    switch (statusCode) {
+                        case 404:
+                            Intent intent404 = new Intent();
+                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent404.setAction("AUTH");
+                            intent404.putExtra("AUTH_RESULT", 404);
+                            context.sendBroadcast(intent404);
+                            Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+                            break;
+                        case 500:
+                            Intent intent500 = new Intent();
+                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent500.setAction("AUTH");
+                            intent500.putExtra("AUTH_RESULT", 500);
+                            context.sendBroadcast(intent500);
+                            Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+                            break;
+                        default:
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("AUTH");
+                            intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
+                            context.sendBroadcast(intent);
+                            Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+                            break;
 
 
-        });
+                    }
+                }
+
+
+            });
+
+        }
 
     }
 
