@@ -724,6 +724,9 @@ $('#btn_submit').on('click', function(){
         // clear add form
         $the_form[0].reset();
         // update locations list after posting 
+        $('#info_panel').show();
+        $('#edit_panel').hide();
+        
         populate_localizaciones();
       }
     },
@@ -847,6 +850,10 @@ $('#btn_edit').on('click', function(){
       {
         alert("Localización ha sido modificada.");
       // update locations list after posting 
+      $('#info_panel').show();
+      $('#edit_panel').hide();
+
+
       populate_localizaciones();
 
     }
