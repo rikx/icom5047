@@ -83,6 +83,7 @@ $(document).ready(function(){
 	function valid_input(user_input, array) {
 		for(var i=0; i < array.length; i++){
 			if(user_input == array[i].location_name){
+				$('#take_survey_location_id').attr('value', array[i].location_id);
 				return true;
 			}
 		}
