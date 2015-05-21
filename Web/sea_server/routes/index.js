@@ -276,52 +276,58 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 		var query_config1, query_config2;
  		if(user_type == 'admin' || user_type=='specialist'){
  			query_config1 = {
- 				text: "SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
-							FROM person \
-							WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
-							ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC",
+ 				text: "With matching_ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+								FROM person \
+								WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+								ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
+							SELECT * \
+							FROM matching_ganaderos \
+							WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'",
  				values: [-1]
  			}
  			query_config2 = {
- 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-					 			FROM person \
-					 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
-					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-					 			LIMIT 20), \
+ 				text: "WITH matching_ganaderos AS (WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+																						FROM person \
+																						WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+																						ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
+								SELECT * \
+								FROM ganaderos \
+								WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'), \
 							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
-								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id), \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id), \
 							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
-								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id) \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id) \
 					 		SELECT * \
 					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
 				values: [-1]
  			}
  		} else if(user_type == 'agent'){
  			query_config1 = {
- 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
+ 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
 					 			FROM person \
-					 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
-					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC \
-							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name  \
+					 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
+							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, person_name \
 							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id \
-							WHERE agent_id = $2\
+							WHERE agent_id = $2 AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
 							UNION \
-							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, person_name \
 							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id \
-							WHERE agent_id = $2",
+							WHERE agent_id = $2 AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%')",
  				values: [-1, user_id]
  			}
  			query_config2 = {
- 				text: "WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number \
-					 			FROM person \
-					 			WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
-					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC), \
+ 				text: "WITH matching_ganaderos AS (WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+																						FROM person \
+																						WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+																						ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
+								SELECT * \
+								FROM ganaderos \
+								WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'), \
 							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
-								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id \
-								WHERE agent_id = $2), \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id), \
 							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
-								FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id \
-								WHERE agent_id = $2) \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id) \
 					 		SELECT * \
 					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
 				values: [-1, user_id]
@@ -332,7 +338,11 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	ganaderos_list = result.rows;
+/*	    	if(result.rowCount < 1){
+	    		res.json(true)
+	    	} else {*/
+	    		ganaderos_list = result.rows;
+	    	//}
 	    }
 	  });
 	  // get associated locations
