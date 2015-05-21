@@ -328,7 +328,7 @@ public final class DBHelper extends SQLiteOpenHelper {
     public List<Report> getAllReports() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(DBSchema.TABLE_REPORT, new String[]{DBSchema.REPORT_ID, DBSchema.REPORT_NAME},
-                DBSchema.STATUS + " !=? ", new String[]{String.valueOf(-1)}, null, null, "date(" + DBSchema.REPORT_DATE_FILED + ") DESC, " + DBSchema.REPORT_NAME + " COLLATE NOCASE", null);
+                DBSchema.REPORT_STATUS + " !=? ", new String[]{String.valueOf(-1)}, null, null, "date(" + DBSchema.REPORT_DATE_FILED + ") DESC, " + DBSchema.REPORT_NAME + " COLLATE NOCASE", null);
         ArrayList<Report> reports;
         reports = new ArrayList<>();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -1763,7 +1763,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         e.printStackTrace();
                     }
                     try {
-                        if (!cursor.isNull(6))
+                        if (!cursor.isNull(7))
                             map.put(DBSchema.REPORT_STATUS, cursor.getString(7));
                     } catch (JSONException e) {
                         e.printStackTrace();
