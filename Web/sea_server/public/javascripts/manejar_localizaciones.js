@@ -838,6 +838,10 @@ function populate_info_panel($this_location){
   $('#localizacion_info_ciudad').text($this_location.city);
   $('#localizacion_info_zipcode').text($this_location.zipcode);
 
+  $('#btn_edit_localizacion').attr("data-id", $this_location.location_id);
+  $('#btn_add_associates').attr("data-id", $this_location.location_id);
+  $('#btn_delete').attr("data-id", $this_location.location_id);
+  
   // populate local array with ganaderos associated to this location
   var selectedGanaderos = [];
   $.each(ganaderos_array, function(i){
@@ -903,6 +907,7 @@ function populate_info_panel($this_location){
   agent_found = false;  
 
   console.log("Categorias Panel Title");
+
   //var currentText = $('#categoria_panel_title').text();
   //$('#categoria_panel_title').text("Categoria de Localizacion")
   //$('#categoria_panel_title').text('');
