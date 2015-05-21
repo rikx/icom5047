@@ -230,6 +230,8 @@ $(document).ready(function(){
           alert("Informacion de cita ha sido editada en el sistema.");
           // update cita list
           populate_citas();
+          $('#edit_panel').hide();
+          $('#info_panel').show();
         }
       },
       error: function( xhr, status, errorThrown ) {
