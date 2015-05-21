@@ -82,13 +82,15 @@ $(document).ready(function(){
       url: '/localizaciones/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
-        localizaciones_array = list.locations;
-        categorias_array = list.location_categories;
-        agents_array = list.agents;
-        ganaderos_array = list.ganaderos;
+        if(list.locations.length > 0) {
+          localizaciones_array = list.locations;
+          categorias_array = list.location_categories;
+          agents_array = list.agents;
+          ganaderos_array = list.ganaderos;
+          // populate list with matching results
+          populate_list(localizaciones_array);
+        }
 
-        // populate list with matching results
-        populate_list(list.locations);
         return $.map(list.locations, function(location) { 
           return location;
         });
