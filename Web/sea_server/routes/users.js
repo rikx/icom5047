@@ -2397,6 +2397,33 @@ router.put('/admin/associated/agent', function(req, res, next) {
 	}
 });
 
+/* Delete Admin Manejar Localizaciones associated agent
+ * Edit associated agent of location matching :id
+ */
+router.delete('/admin/associated/agent', function(req, res, next) {
+	if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('agent_id')) {
+			res.statusCode = 400;
+			return res.send('Error: Missing fields for put location associated agent.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		client.query('UPDATE location SET agent_id = $1 \
+										WHERE location_id = $2', [null, req.body.location_id], function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+ 				if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.json(true);
+		  	}
+	 		});
+	 	});
+	}
+});
+
 /* POST Admin Manejar Localizaciones
  * Add new ganadero to database
  */
