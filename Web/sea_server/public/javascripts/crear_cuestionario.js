@@ -507,6 +507,8 @@ jsPlumb.ready(function() {
   	    	if(check_item_connections()){
   	    		if(check_conditionals()){
   						// add missing flowchart fields
+              new_flowchart.flowchart_name = new_flowchart.flowchart_name.trim();
+              new_flowchart.flowchart_version = new_flowchart.flowchart_version.trim();
   						new_flowchart.first_id = end_points.first_id;
   						new_flowchart.end_id = end_points.end_id;
   						new_flowchart.status = $("input[name=ready_radios]:checked").val();
