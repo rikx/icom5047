@@ -470,58 +470,94 @@ jsPlumb.ready(function() {
     var $the_form = $('#form_create_flowchart');
     var form_data = $the_form.serializeArray();
     var new_flowchart = ConverToJSON(form_data);
+    // trim input and add missing key-value pairs
+    new_flowchart.flowchart_name = new_flowchart.flowchart_name.trim();
+    new_flowchart.flowchart_version = new_flowchart.flowchart_version.trim();
+    new_flowchart.first_id = end_points.first_id;
+    new_flowchart.end_id = end_points.end_id;
+    new_flowchart.status = $("input[name=ready_radios]:checked").val();
+
     // checks created flowchart has a first item
     if(!empty_field_check(form_data) && ($('input[name=ready_radios]:checked').length > 0)){
-      // check that endpoints are valid
-      if(end_points.first_id != -1 && end_points.end_id != -1){
-        if(($('#container_plumbjs').find("textarea")).length == 0){
-          if(check_item_connections()){
-            if(check_conditionals()){
-              // add missing flowchart fields
-              new_flowchart.first_id = end_points.first_id;
-              new_flowchart.end_id = end_points.end_id;
-              new_flowchart.status = $("input[name=ready_radios]:checked").val();
+      // check there are no text areas
+      if(($('#container_plumbjs').find("textarea")).length == 0){
+        // do further checks depending on flowchart being 'complete' or incomplete
+        if($('input[name=ready_radios]:checked').val() == 1){
+          // check that endpoints are valid
+          if(end_points.first_id != -1 && end_points.end_id != -1){
+            if(check_item_connections()){
+              if(check_conditionals()){
+                // ajax call to post new cuestionario
+                $.ajax({
+                  url: "/users/admin/cuestionarios/crear",
+                  method: "POST",
+                  data: JSON.stringify({
+                    info: new_flowchart,
+                    items: elements_array,
+                    options: connections_array
+                  }),
+                  contentType: "application/json",
+                  dataType: "json",
 
-              // ajax call to post new ganadero
-              $.ajax({
-                url: "/users/admin/cuestionarios/crear",
-                method: "POST",
-                data: JSON.stringify({
-                  info: new_flowchart,
-                  items: elements_array,
-                  options: connections_array
-                }),
-                contentType: "application/json",
-                dataType: "json",
-
-                success: function(data) {
-                  if(data.exists){
-                    alert("Cuestionario con este nombre y versión ya existe.");
-                  } else {
-                    alert("Cuestionario ha sido añadido al sistema.");
-                    if(typeof data.redirect == 'string') {
-                      window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+                  success: function(data) {
+                    if(data.exists){
+                      alert("Cuestionario con este nombre y versión ya existe.");
+                    } else {
+                      alert("Cuestionario ha sido añadido al sistema.");
+                      if(typeof data.redirect == 'string') {
+                        window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+                      }
                     }
+                  },
+                  error: function( xhr, status, errorThrown ) {
+                    alert( "Sorry, there was a problem!" );
+                    console.log( "Error: " + errorThrown );
+                    console.log( "Status: " + status );
+                    console.dir( xhr );
                   }
-                },
-                error: function( xhr, status, errorThrown ) {
-                  alert( "Sorry, there was a problem!" );
-                  console.log( "Error: " + errorThrown );
-                  console.log( "Status: " + status );
-                  console.dir( xhr );
-                }
-              }); 
-            } else {
-              alert('Condicionales no estan escritos correctamente.');
+                }); 
+              } else {
+                alert('Condicionales no estan escritos correctamente. Los códigos válidos son: lt#, gt#, le#, ge#, eq#, ne#, ra[#,#], ra[#,#), ra(#,#], ra(#,#) ó !r.');
+              }
+            } else{
+              alert('Verifique que todas las preguntas y recomendaciones tienen una conexión hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conexiones y las condicionales exactamente 2 conexiones.');
             }
           } else {
-            alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
+            alert('Cuestionario no tiene elemento inicial o final, o estos tienen conexiones existentes.');
           }
         } else {
-          alert("Verifique que todos los elementos tienen nombre");
+          // ajax call to post new cuestionario
+          $.ajax({
+            url: "/users/admin/cuestionarios/crear",
+            method: "POST",
+            data: JSON.stringify({
+              info: new_flowchart,
+              items: elements_array,
+              options: connections_array
+            }),
+            contentType: "application/json",
+            dataType: "json",
+
+            success: function(data) {
+              if(data.exists){
+                alert("Cuestionario con este nombre y versión ya existe.");
+              } else {
+                alert("Cuestionario ha sido añadido al sistema.");
+                if(typeof data.redirect == 'string') {
+                  window.location.replace(window.location.protocol + "//" + window.location.host + data.redirect);
+                }
+              }
+            },
+            error: function( xhr, status, errorThrown ) {
+              alert( "Sorry, there was a problem!" );
+              console.log( "Error: " + errorThrown );
+              console.log( "Status: " + status );
+              console.dir( xhr );
+            }
+          }); 
         }
       } else {
-        alert('Cuestionario no tiene elemento inicial o final, o estos tienen conecciones existentes.');
+        alert("Verifique que todos los elementos tienen nombre");
       }
     } else {
       alert('Ingrese nombre y version de cuestionario e indique si el cuestionario está listo para uso.');
