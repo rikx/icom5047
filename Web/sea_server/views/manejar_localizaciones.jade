@@ -124,7 +124,7 @@ block content
 
 						.panel.panel-info
 							.panel-heading Ganaderos Asociados
-							.panel-body
+							.panel-body(data-localizaciones=localizaciones)
 								table#localizacion_ganaderos(class='table')
 									tr
 										td 
@@ -140,7 +140,7 @@ block content
 									table#localizacion_agentes(class='table')
 						if(user.user_type != 'agent')
 							button#btn_add_associates(class='btn btn-sm btn-info btn-block' type='button', data-id='') Editar Personas Asociadas
-						button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button', data-id='') Editar
+						button#btn_edit_localizacion(class='btn btn-sm btn-success btn-block' type='button', data-id=localizaciones[0].location_id) Editar
 						if(user.user_type == 'admin')
 							a#btn_delete(class='btn btn-danger btn-block', data-toggle='tooltip')
 								i(class='glyphicon glyphicon-trash')

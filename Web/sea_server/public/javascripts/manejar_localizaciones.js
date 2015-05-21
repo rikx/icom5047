@@ -826,6 +826,7 @@ $.ajax({
 function populate_info_panel($this_location){
   var missing_owner = false;
   var missing_manager = false;
+  console.log($this_location);
   populate_categories_info($this_location.location_id);
   $('#info_panel_heading').text($this_location.location_name);
   $('#localizacion_info_name').text($this_location.location_name);

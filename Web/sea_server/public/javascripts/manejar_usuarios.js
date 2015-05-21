@@ -2,15 +2,15 @@ $(document).ready(function(){
   // usuarios list
   $usuarios_list = $('#usuarios_list');
 
+  $('#usuario_email_old').hide();
+
   // initial population of usuarios list
   //populate_usuarios();
-  
   // store data for 20 initial usuarios
   var usuarios_array = [];
   var specialties_array = [];
   var locations_array = [];
   var all_specialties_array =[];
-
   var data_usuarios = $usuarios_list.attr('data-usuarios');
   var data_locations = $usuarios_list.attr('data-locations');
   var data_specialties = $usuarios_list.attr('data-specialties');
@@ -67,7 +67,6 @@ $(document).ready(function(){
       filter: function(list) {
         // populate global arrays with matching results
         usuarios_array = list.usuarios;
-  
         // populate list with matching results
         populate_list(list.usuarios);
         return $.map(list.usuarios, function(usuario) { 
@@ -349,6 +348,7 @@ $('#btn_edit_panel').on('click', function(){
     $('#usuario_lastname_paternal').val(this_usuario.last_name1);
     $('#usuario_lastname_maternal').val(this_usuario.last_name2);
     $('#usuario_email').val(this_usuario.email);
+    $('#usuario_email_old').val(this_usuario.email);
     $('#usuario_telefono').val(this_usuario.phone_number);
     $('#usuario_middle_initial').val(this_usuario.middle_initial);
     if(this_usuario.type == 'agent')
@@ -433,9 +433,19 @@ $('#btn_edit').on('click', function(){
       dataType: "json",
 
       success: function(data) {
+        if(data.exists)
+        {
+          alert("Ya existe ususario con ese correo electrónico");
+        }
+        else
+        {
+          alert("Se ha modificado usuario");
+          populate_usuarios();
+
+        }
         //alert("Informacion de usuario ha sido editada en el sistema.");
       // update ganadero list after posting 
-      populate_usuarios();
+  
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
@@ -469,9 +479,9 @@ $.ajax({
 
   success: function(data) {
 
-    alert("Se ha modificado usuario.");
-    console.log("the specialties are");
-    console.log(data.users_specialization);
+    //alert("Se ha modificado usuario.");
+    //console.log("the specialties are");
+    //console.log(data.users_specialization);
     repopulate_specialties(data.users_specialization);
 
   },
@@ -563,6 +573,7 @@ $usuarios_list.on('click', 'tr td a.btn_delete_user', function(e){
 /* Populates info panel with $this_usuario information */
 function populate_info_panel($this_usuario){
     // populate basic information panel
+    
     var type;
     $('#info_panel_heading').text($this_usuario.first_name + " " + $this_usuario.last_name1 + " " + $this_usuario.last_name2);
     if($this_usuario.middle_initial == null) {
@@ -638,7 +649,7 @@ function populate_info_panel($this_usuario){
       locations_array = data.locations;
       specialties_array = data.user_specialties;
       populate_list(data.usuarios);
-
+     // alert("hello world");
       populate_info_panel(data.usuarios[0]);
     });
   };
@@ -685,7 +696,6 @@ function populate_info_panel($this_usuario){
 
     // inject content string into html
     $usuarios_list.html(table_content);
-
     populate_info_panel(usuarios_set[0]);
   };
 
