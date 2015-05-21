@@ -2876,6 +2876,7 @@ router.get('/admin/dispositivos', function(req, res, next) {
 	var user_id = req.session.user_id;
 	var username = req.session.username;
 	var user_type = req.session.user_type;
+	console.log('get dispositivos user');
 
 	if (!username) {
 		user_id = req.session.user_id = '';
@@ -2892,10 +2893,10 @@ router.get('/admin/dispositivos', function(req, res, next) {
 	 			return console.error('error fetching client from pool', err);
 	 		}
 			// to populate dispositivo list
-			client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
-										FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
+			client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username, last_user_id, (SELECT username FROM users WHERE devices.last_user_id = users.user_id) AS lastUser \
+										FROM devices INNER JOIN users ON devices.user_id = users.user_id \
 										ORDER BY devices.name ASC \
-										LIMIT 20", function(err, result) {
+										LIMIT 20;", function(err, result) {
 				if(err) {
 					return console.error('error running query', err);
 				} else {

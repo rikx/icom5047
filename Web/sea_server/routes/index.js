@@ -1598,10 +1598,10 @@ router.get('/list_dispositivos', function(req, res, next) {
 	  	return console.error('error fetching client from pool', err);
 		}
 		// get devices and their assigned user (if any)
-	  client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
-									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
-									ORDER BY devices.name ASC \
-									LIMIT 20", function(err, result) {
+	  client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username, last_user_id, (SELECT username FROM users WHERE devices.last_user_id = users.user_id) AS lastUser \
+										FROM devices INNER JOIN users ON devices.user_id = users.user_id \
+										ORDER BY devices.name ASC \
+										LIMIT 20;", function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
     	if(err) {

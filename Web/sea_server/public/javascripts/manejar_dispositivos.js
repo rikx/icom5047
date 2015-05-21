@@ -1,6 +1,8 @@
 $(document).ready(function(){
   // dispositivos list
   $dispositivos_list = $('#dispositivos_list');
+
+
   var data_username = $dispositivos_list.attr('data-username');
   var data_user_type = $dispositivos_list.attr('data-type');
   // store data for initial 20 dispositivos
@@ -11,6 +13,7 @@ $(document).ready(function(){
     dispositivos_array=  JSON.parse(data_dispositivos);
     
     // initial population of dispositivos list
+    console.log(dispositivos_array);
     populate_list(dispositivos_array)
     // initial info panel population
     populate_info_panel(dispositivos_array[0]);
@@ -271,6 +274,8 @@ $(document).ready(function(){
         } else {
           alert("Informacion de dispositivo ha sido editada en el sistema.");
           // update dispositivo list after posting 
+          $('#info_panel').show();
+          $('#edit_panel').hide();
           populate_dispositivos();
         }
       },
@@ -332,6 +337,7 @@ $(document).ready(function(){
     $('#dispositivo_info_name').text(name);
     $('#dispositivo_info_id_num').text($this_dispositivo.id_number);
     $('#dispositivo_info_usuario').text($this_dispositivo.username);
+    $('#dispositivo_info_last_user').text($this_dispositivo.lastuser);
     if($this_dispositivo.last_sync == null)
     {
       $('#dispositivo_info_last_sync').text("Nunca se ha sincronizado");
