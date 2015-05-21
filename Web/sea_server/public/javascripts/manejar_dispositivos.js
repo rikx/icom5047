@@ -48,10 +48,12 @@ $(document).ready(function(){
     remote: {
       url: '/dispositivos/%QUERY',
       filter: function(list) {
-        // populate global array with matching results
-        dispositivos_array = list.devices;
-        // populate list with matching results
-        populate_list(list.devices);
+        if(list.devices.length >0){
+          // populate global array with matching results
+          dispositivos_array = list.devices;
+          // populate list with matching results
+          populate_list(dispositivos_array);
+        }
         return $.map(list.devices, function(device) { 
           return device;
         });

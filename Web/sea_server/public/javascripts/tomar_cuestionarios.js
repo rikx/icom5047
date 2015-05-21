@@ -43,10 +43,12 @@ $(document).ready(function(){
     remote: {
       url: '/cuestionarios/take/%QUERY',
       filter: function(list) {
-        // populate global arrays with matching results
-        cuestionarios_array = list.cuestionarios;
-        // populate list with matching results
-        populate_list(list.cuestionarios);
+        if(list.cuestionarios.length > 0){
+          // populate global arrays with matching results
+          cuestionarios_array = list.cuestionarios;
+          // populate list with matching results
+          populate_list(cuestionarios_array);
+        }
         return $.map(list.cuestionarios, function(cuestionario) { 
           return cuestionario;
         });

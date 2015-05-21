@@ -65,10 +65,12 @@ $(document).ready(function(){
     remote: {
       url: '/usuarios/%QUERY',
       filter: function(list) {
-        // populate global arrays with matching results
-        usuarios_array = list.usuarios;
-        // populate list with matching results
-        populate_list(list.usuarios);
+        if(list.usuarios > 0){
+          // populate global arrays with matching results
+          usuarios_array = list.usuarios;
+          // populate list with matching results
+          populate_list(usuarios_array);
+        }
         return $.map(list.usuarios, function(usuario) { 
           return usuario;
         });

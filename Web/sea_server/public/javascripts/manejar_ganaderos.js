@@ -56,15 +56,13 @@ $(document).ready(function(){
       url: '/ganaderos/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
-        console.log('list ganaderos length')
-        console.log(list.ganaderos.length)
         if(list.ganaderos.length > 0) {
           ganaderos_array = list.ganaderos;
           localizaciones_array = list.locations;
+          
+          // populate list with matching results
+          populate_list(ganaderos_array);
         }
-
-        // populate list with matching results
-        populate_list(ganaderos_array);
         return $.map(list.ganaderos, function(ganadero) { 
           return ganadero;
         });
