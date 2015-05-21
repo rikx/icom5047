@@ -20,7 +20,7 @@
 	    method: "GET",
 
 	    success: function() {
-	    	alert("Has sido deslogeado, del verbo logout");
+	    	alert("Usuario ha cerrado la sesión");
 	    	window.location.href = '/';
 	    },
 	    error: function( xhr, status, errorThrown ) {

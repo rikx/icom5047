@@ -2372,6 +2372,47 @@ router.put('/admin/associated/ganadero', function(req, res, next) {
 	}
 });
 
+/* Delete Admin Manejar Localizaciones associated ganadero
+ * Remove associated ganadero of location matching :id
+ */
+router.delete('/admin/associated/ganadero', function(req, res, next) {
+	if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('ganadero_id')
+				|| !req.body.hasOwnProperty('relation_type')) {
+			res.statusCode = 400;
+			return res.send('Error: Missing fields for put location associated ganadero.');
+	} else {
+		var db = req.db;
+		db.connect(req.conString, function(err, client, done) {
+	 		if(err) {
+	 			return console.error('error fetching client from pool', err);
+	 		}
+	 		var query_config = {};
+	 		if(req.body.relation_type == 'owner'){
+	 			query_config = {
+	 				text: 'UPDATE location SET owner_id = $1 \
+									WHERE location_id = $2',
+					values: [null, req.body.location_id]
+	 			}
+	 		} else if(req.body.relation_type == 'manager'){
+	 			query_config = {
+	 				text: 'UPDATE location SET manager_id = $1 \
+									WHERE location_id = $2',
+					values: [null, req.body.location_id]
+	 			}
+	 		}
+	 		client.query(query_config, function(err, result) {
+				//call `done()` to release the client back to the pool
+				done();
+ 				if(err) {
+		  		return console.error('error running query', err);
+		  	} else {
+		  		res.json(true);
+		  	}
+	 		});
+	 	});
+	}
+});
+
 /* PUT Admin Manejar Localizaciones associated agent
  * Edit associated agent of location matching :id
  */
@@ -2400,7 +2441,7 @@ router.put('/admin/associated/agent', function(req, res, next) {
 });
 
 /* Delete Admin Manejar Localizaciones associated agent
- * Edit associated agent of location matching :id
+ * Remove associated agent of location matching :id
  */
 router.delete('/admin/associated/agent', function(req, res, next) {
 	if(!req.body.hasOwnProperty('location_id') || !req.body.hasOwnProperty('agent_id')) {

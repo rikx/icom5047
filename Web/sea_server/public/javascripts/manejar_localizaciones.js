@@ -227,10 +227,14 @@ $(document).ready(function(){
       var the_content = '';
       var relation_content; 
       if(this.relation_owner != null) {
-        owner_content += "<a class='btn_change_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.owner_id+"' data-relation-type='"+this.relation_owner+"'><i class='glyphicon glyphicon-edit'></i></a><span>"+this.owner_name+"</span>";
+        owner_content += "<a class='btn_change_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.owner_id+"' data-relation-type='"+this.relation_owner+"'><i class='glyphicon glyphicon-edit'></i></a>";
+        owner_content += "<a class='btn_remove_ganadero btn btn-sm btn-danger' data-toggle='tooltip' type='button' href='#' data-id='"+this.owner_id+"' data-relation-type='"+this.relation_owner+"'><i class='glyphicon glyphicon-minus'></i></a>";
+        owner_content += "<span>"+this.owner_name+"</span>"
       }
       if(this.relation_manager != null) {
-        manager_content += "<a class='btn_change_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.manager_id+"' data-relation-type='"+this.relation_manager+"'><i class='glyphicon glyphicon-edit'></i></a><span>"+this.manager_name+"</span>";
+        manager_content += "<a class='btn_change_ganadero btn btn-sm btn-success' data-toggle='tooltip' type='button' href='#' data-id='"+this.manager_id+"' data-relation-type='"+this.relation_manager+"'><i class='glyphicon glyphicon-edit'></i></a>";
+        manager_content += "<a class='btn_remove_ganadero btn btn-sm btn-danger' data-toggle='tooltip' type='button' href='#' data-id='"+this.manager_id+"' data-relation-type='"+this.relation_manager+"'><i class='glyphicon glyphicon-minus'></i></a>";
+        manager_content += "<span>"+this.manager_name+"</span>";
       }
     });
     // if location has no associated owner and/or manager
@@ -347,6 +351,8 @@ function valid_input_agents(user_input, array) {
 
 /* Ajax PUT call to assign ganadero as owner or manager of location */
 $('#btn_submit_ganadero').on('click', function(){
+    // disable edit associates button until populate localizaciones is done
+    $('#btn_add_associates').addClass('disabled');
     // creat ganadero JSON to submit
     var this_input = $('#change_ganadero');
     var ganadero_association = {
@@ -377,8 +383,8 @@ $('#btn_submit_ganadero').on('click', function(){
         $('#add_ganaderos_dropdown_panel').hide();
 
         // reset typeahead input
-        this_input.val('');
-        this_input.removeAttr('data-id');
+        $('#change_ganadero').val('');
+        $('#change_ganadero').removeAttr('data-id');
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -390,6 +396,41 @@ $('#btn_submit_ganadero').on('click', function(){
     }
   });
 
+  /* Ajax DELETE call to assign ganadero as owner or manager of location */
+  $('#associated_ganaderos').on('click', 'tr td a.btn_remove_ganadero', function(){
+    
+    // disable edit associates button until populate localiaciones is done
+    $('#btn_add_associates').addClass('disabled');
+    // creat ganadero JSON to submit
+    var ganadero_association = {
+      location_id: $('#add_associates_panel').attr('data-location-id'),
+      ganadero_id: $(this).attr('data-id'),
+      relation_type: $(this).attr('data-relation-type')
+    };
+
+    $.ajax({
+      url: "/users/admin/associated/ganadero",
+      method: "DELETE",
+      data: JSON.stringify(ganadero_association),
+      contentType: "application/json",
+      dataType: "json",
+
+      success: function() {
+        alert("Asociación de ganadero a ésta localización ha sido eliminada.");
+        $('#info_panel').show();
+        // update locations list after posting 
+        populate_localizaciones();
+        $('#add_associates_panel').hide();
+        $('#add_ganaderos_dropdown_panel').hide();
+      },
+      error: function( xhr, status, errorThrown ) {
+        alert( "Sorry, there was a problem!" );
+        console.log( "Error: " + errorThrown );
+        console.log( "Status: " + status );
+        console.dir( xhr );
+      }
+    });
+  });
 
   /* Add/change associated agente  */
   $('#associated_agentes').on('click', 'tr td a.btn_add_associate_agent, tr td a.btn_change_agent', function(e){
@@ -446,9 +487,11 @@ $('#btn_submit_ganadero').on('click', function(){
 
   /* Ajax PUT call to assign an agent to a location  */
   $('#btn_submit_agent').on('click', function(){
+    // disable edit associates button until populate localizaciones is done
+    $('#btn_add_associates').addClass('disabled');
     // creat agent JSON to submit
     var this_input = $('#change_agent');
-    console.log(all_agentes);
+
     var agent_association = {
       location_id: $('#add_associates_panel').attr('data-location-id'),
       agent_id: this_input.attr('data-id')
@@ -475,8 +518,8 @@ $('#btn_submit_ganadero').on('click', function(){
         $('#info_panel').show();
 
         // reset typeahead input
-        this_input.val('');
-        this_input.removeAttr('data-id');
+        $('#change_agent').val('');
+        $('#change_agent').removeAttr('data-id');
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -490,8 +533,9 @@ $('#btn_submit_ganadero').on('click', function(){
 
   /* Ajax DELETE call to remove an assigned agent from a location  */
   $('#associated_agentes').on('click', 'tr td a.btn_remove_agent', function(){
+    // disable edit associates button until populate localizaciones is done
+    $('#btn_add_associates').addClass('disabled');
     // creat agent JSON to submit
-
     var agent_association = {
       location_id: $('#add_associates_panel').attr('data-location-id'),
       agent_id: $(this).attr('data-id')
@@ -512,9 +556,6 @@ $('#btn_submit_ganadero').on('click', function(){
         $('#add_agent_dropdown_panel').hide();
         $('#info_panel').show();
 
-        // reset typeahead input
-        this_input.val('');
-        this_input.removeAttr('data-id');
       },
       error: function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -966,6 +1007,7 @@ function populate_localizaciones(){
 
     populate_list(data.localizaciones);
     populate_info_panel(data.localizaciones[0]);
+    $('#btn_add_associates').removeClass('disabled');
   });
 };
 
