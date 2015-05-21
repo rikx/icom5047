@@ -3151,7 +3151,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONObject = " + response.toString());
 //                        SQLiteDatabase db = getWritableDatabase();
                         try {
 
@@ -3169,7 +3169,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         }
                         try {
                             JSONObject localJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", localJSON = " + localJSONObject.toString());
+                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", localJSON = " + localJSONObject.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -3183,13 +3183,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONArray = " + response.toString());
 
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
                         switch (statusCode) {
                             case 404:
                                 Intent intent404 = new Intent();
@@ -3197,7 +3197,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                                 intent404.setAction("SYNC");
                                 intent404.putExtra("SYNC_RESULT", 404);
                                 context.sendBroadcast(intent404);
-                                Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
                                 break;
                             case 500:
                                 Intent intent500 = new Intent();
@@ -3205,7 +3204,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                                 intent500.setAction("SYNC");
                                 intent500.putExtra("SYNC_RESULT", 500);
                                 context.sendBroadcast(intent500);
-                                Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
                                 break;
                             default:
                                 Intent intent = new Intent();
@@ -3213,7 +3211,34 @@ public final class DBHelper extends SQLiteOpenHelper {
                                 intent.setAction("SYNC");
                                 intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
                                 context.sendBroadcast(intent);
-                                Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+                                break;
+
+
+                        }
+                    }
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response){
+                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
+                        switch (statusCode) {
+                            case 404:
+                                Intent intent404 = new Intent();
+                                intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent404.setAction("SYNC");
+                                intent404.putExtra("SYNC_RESULT", 404);
+                                context.sendBroadcast(intent404);
+                                break;
+                            case 500:
+                                Intent intent500 = new Intent();
+                                intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent500.setAction("SYNC");
+                                intent500.putExtra("SYNC_RESULT", 500);
+                                context.sendBroadcast(intent500);
+                                break;
+                            default:
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("SYNC");
+                                intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+                                context.sendBroadcast(intent);
                                 break;
 
 
@@ -3247,7 +3272,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONObject = " + response.toString());
 //                        SQLiteDatabase db = getWritableDatabase();
 
                         try {
@@ -3292,7 +3317,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                         }
                         try {
                             JSONObject syncJSONObject = response.getJSONObject(DBSchema.POST_SYNC_INF);
-                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", sysncJSON = " + syncJSONObject.toString());
+                            Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", sysncJSON = " + syncJSONObject.toString());
                         } catch (JSONException e) {
 
                             e.printStackTrace();
@@ -3302,13 +3327,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+                        Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONArray = " + response.toString());
 
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
                         switch (statusCode) {
                             case 404:
                                 Intent intent404 = new Intent();
@@ -3316,7 +3341,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                                 intent404.setAction("SYNC");
                                 intent404.putExtra("SYNC_RESULT", 404);
                                 context.sendBroadcast(intent404);
-                                Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
                                 break;
                             case 500:
                                 Intent intent500 = new Intent();
@@ -3324,7 +3348,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                                 intent500.setAction("SYNC");
                                 intent500.putExtra("SYNC_RESULT", 500);
                                 context.sendBroadcast(intent500);
-                                Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
                                 break;
                             default:
                                 Intent intent = new Intent();
@@ -3332,7 +3355,34 @@ public final class DBHelper extends SQLiteOpenHelper {
                                 intent.setAction("SYNC");
                                 intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
                                 context.sendBroadcast(intent);
-                                Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+                                break;
+
+
+                        }
+                    }
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response){
+                        Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
+                        switch (statusCode) {
+                            case 404:
+                                Intent intent404 = new Intent();
+                                intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent404.setAction("SYNC");
+                                intent404.putExtra("SYNC_RESULT", 404);
+                                context.sendBroadcast(intent404);
+                                break;
+                            case 500:
+                                Intent intent500 = new Intent();
+                                intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent500.setAction("SYNC");
+                                intent500.putExtra("SYNC_RESULT", 500);
+                                context.sendBroadcast(intent500);
+                                break;
+                            default:
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                                intent.setAction("SYNC");
+                                intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+                                context.sendBroadcast(intent);
                                 break;
 
 
@@ -3365,7 +3415,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONObject = " + response.toString());
 
 
                     try {
@@ -3400,13 +3450,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONArray = " + response.toString());
 
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-//                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+//                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
                     switch (statusCode) {
                         case 404:
                             Intent intent404 = new Intent();
@@ -3414,7 +3464,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                             intent404.setAction("SYNC_FULL");
                             intent404.putExtra("SYNC_RESULT", 404);
                             context.sendBroadcast(intent404);
-                            Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
                             break;
                         case 500:
                             Intent intent500 = new Intent();
@@ -3422,7 +3471,6 @@ public final class DBHelper extends SQLiteOpenHelper {
                             intent500.setAction("SYNC_FULL");
                             intent500.putExtra("SYNC_RESULT", 500);
                             context.sendBroadcast(intent500);
-                            Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
                             break;
                         default:
                             Intent intent = new Intent();
@@ -3430,7 +3478,35 @@ public final class DBHelper extends SQLiteOpenHelper {
                             intent.setAction("SYNC_FULL");
                             intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
                             context.sendBroadcast(intent);
-                            Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+                            break;
+
+
+                    }
+                }
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response){
+                    //                Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
+                    switch (statusCode) {
+                        case 404:
+                            Intent intent404 = new Intent();
+                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent404.setAction("SYNC_FULL");
+                            intent404.putExtra("SYNC_RESULT", 404);
+                            context.sendBroadcast(intent404);
+                            break;
+                        case 500:
+                            Intent intent500 = new Intent();
+                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent500.setAction("SYNC_FULL");
+                            intent500.putExtra("SYNC_RESULT", 500);
+                            context.sendBroadcast(intent500);
+                            break;
+                        default:
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("SYNC_FULL");
+                            intent.putExtra("SYNC_RESULT", DBSchema.STATUS_ERROR);
+                            context.sendBroadcast(intent);
+
                             break;
 
 
@@ -3461,7 +3537,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONObject = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONObject = " + response.toString());
                     //'device' => 0, 'user' => 0, 'hash' => 0, 'id' => $device, 'seq' => -1
                     try {
                         boolean device = response.getBoolean("device");
@@ -3552,13 +3628,13 @@ public final class DBHelper extends SQLiteOpenHelper {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + headers.toString() + ", JSONArray = " + response.toString());
+                    Log.i(this.toString(), "HTTP Sync success : i = " + statusCode + ", Header = " + " DEMO " + ", JSONArray = " + response.toString());
 
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
-                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + headers.toString() + ", response = " + response);
+                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
                     switch (statusCode) {
                         case 404:
                             Intent intent404 = new Intent();
@@ -3566,7 +3642,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                             intent404.setAction("AUTH");
                             intent404.putExtra("AUTH_RESULT", 404);
                             context.sendBroadcast(intent404);
-                            Toast.makeText(context, "Requested resource not found", Toast.LENGTH_LONG).show();// resource Not Found
+
                             break;
                         case 500:
                             Intent intent500 = new Intent();
@@ -3574,7 +3650,7 @@ public final class DBHelper extends SQLiteOpenHelper {
                             intent500.setAction("AUTH");
                             intent500.putExtra("AUTH_RESULT", 500);
                             context.sendBroadcast(intent500);
-                            Toast.makeText(context, "Internal server error", Toast.LENGTH_LONG).show();// Internal Server Error
+
                             break;
                         default:
                             Intent intent = new Intent();
@@ -3582,7 +3658,36 @@ public final class DBHelper extends SQLiteOpenHelper {
                             intent.setAction("AUTH");
                             intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
                             context.sendBroadcast(intent);
-                            Toast.makeText(context, "NPI", Toast.LENGTH_LONG).show();// no se que paso
+
+                            break;
+
+
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response){
+                    Log.i(this.toString(), "HTTP Sync failure : statusCode = " + statusCode + ", Header = " + " DEMO " + ", response = " + response);
+                    switch (statusCode) {
+                        case 404:
+                            Intent intent404 = new Intent();
+                            intent404.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent404.setAction("AUTH");
+                            intent404.putExtra("AUTH_RESULT", 404);
+                            context.sendBroadcast(intent404);
+                            break;
+                        case 500:
+                            Intent intent500 = new Intent();
+                            intent500.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent500.setAction("AUTH");
+                            intent500.putExtra("AUTH_RESULT", 500);
+                            context.sendBroadcast(intent500);
+                            break;
+                        default:
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                            intent.setAction("AUTH");
+                            intent.putExtra("AUTH_RESULT", DBSchema.STATUS_ERROR);
+                            context.sendBroadcast(intent);
                             break;
 
 
