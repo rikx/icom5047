@@ -255,6 +255,8 @@ $(document).ready(function(){
     $('#edit_panel').show();
     $('#info_panel').hide();
     $('#specialty_panel_edit').hide();
+    $('#btn_user_type_text').text('Tipo de Cuenta');
+
 
 
     // clear add form
