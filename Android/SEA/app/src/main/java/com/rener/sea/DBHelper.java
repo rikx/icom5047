@@ -780,6 +780,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.PERSON_MIDDLE_INITIAL, item.getString(DBSchema.PERSON_MIDDLE_INITIAL));
                 if (!item.isNull(DBSchema.PERSON_PHONE_NUMBER))
                     values.put(DBSchema.PERSON_PHONE_NUMBER, item.getString(DBSchema.PERSON_PHONE_NUMBER));
+                if (!item.isNull(DBSchema.STATUS))
+                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_PERSON, null, values, 5);
@@ -811,6 +813,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.APPOINTMENT_PURPOSE, item.getString(DBSchema.APPOINTMENT_PURPOSE));
                 if (!item.isNull(DBSchema.APPOINTMENT_MAKER_ID))
                     values.put(DBSchema.APPOINTMENT_MAKER_ID, item.getLong(DBSchema.APPOINTMENT_MAKER_ID));
+                if (!item.isNull(DBSchema.STATUS))
+                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_APPOINTMENTS, null, values, 5);
@@ -918,6 +922,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.LOCATION_CATEGORY_LOCATION_ID, item.getLong(DBSchema.LOCATION_CATEGORY_LOCATION_ID));
                 if (!item.isNull(DBSchema.LOCATION_CATEGORY_CATEGORY_ID))
                     values.put(DBSchema.LOCATION_CATEGORY_CATEGORY_ID, item.getLong(DBSchema.LOCATION_CATEGORY_CATEGORY_ID));
+                if (!item.isNull(DBSchema.STATUS))
+                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
                 db.insertWithOnConflict(DBSchema.TABLE_LOCATION_CATEGORY, null, values, 5);
             }
@@ -1021,6 +1027,8 @@ public final class DBHelper extends SQLiteOpenHelper {
                     values.put(DBSchema.USER_SALT, item.getString(DBSchema.USER_SALT));
                 if (!item.isNull(DBSchema.USER_TYPE))
                     values.put(DBSchema.USER_TYPE, item.getString(DBSchema.USER_TYPE));
+                if (!item.isNull(DBSchema.STATUS))
+                    values.put(DBSchema.STATUS, item.getString(DBSchema.STATUS));
                 values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_NO);
 
                 db.insertWithOnConflict(DBSchema.TABLE_USERS, null, values, 5);
