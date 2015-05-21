@@ -294,8 +294,8 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 								ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 							SELECT * \
 							FROM matching_ganaderos \
-							WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'",
- 				values: [-1]
+							WHERE LOWER(person_name) LIKE LOWER($2) OR email LIKE $2",
+ 				values: [-1, "'%"+user_input+"%'"]
  			}
  			query_config2 = {
  				text: "WITH matching_ganaderos AS (WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
@@ -304,14 +304,14 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 																						ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 								SELECT * \
 								FROM ganaderos \
-								WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'), \
+								WHERE LOWER(person_name) LIKE LOWER($2) OR email LIKE $2), \
 							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
 								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id), \
 							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
 								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id) \
 					 		SELECT * \
 					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
-				values: [-1]
+				values: [-1, "'%"+user_input+"%'"]
  			}
  		} else if(user_type == 'agent'){
  			query_config1 = {
@@ -321,12 +321,12 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 					 			ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, person_name \
 							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.owner_id \
-							WHERE agent_id = $2 AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%') \
+							WHERE agent_id = $2 AND (LOWER(person_name) LIKE LOWER($3) OR email LIKE $3) \
 							UNION \
 							SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, person_name \
 							FROM ganaderos INNER JOIN location ON ganaderos.person_id = location.manager_id \
-							WHERE agent_id = $2 AND (LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%')",
- 				values: [-1, user_id]
+							WHERE agent_id = $2 AND (LOWER(person_name) LIKE LOWER($3) OR email LIKE $3)",
+ 				values: [-1, user_id, "'%"+user_input+"%'"]
  			}
  			query_config2 = {
  				text: "WITH matching_ganaderos AS (WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
@@ -335,7 +335,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 																						ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 								SELECT * \
 								FROM ganaderos \
-								WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'), \
+								WHERE LOWER(person_name) LIKE LOWER($3) OR email LIKE $3), \
 							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
 								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id \
 								WHERE agent_id = $2), \
@@ -344,7 +344,7 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 								WHERE agent_id = $2) \
 					 		SELECT * \
 					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
-				values: [-1, user_id]
+				values: [-1, user_id, "'%"+user_input+"%'"]
  			}
  		}
 		// get ganaderos
@@ -394,8 +394,8 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 		// get users
 	  client.query("SELECT user_id, username \
 									FROM users \
-									WHERE users.status != $1 AND username LIKE '%"+user_input+"%'\
-									ORDER BY username ASC", [-1], function(err, result) {
+									WHERE users.status != $1 AND username LIKE $2 \
+									ORDER BY username ASC", [-1, "'%"+user_input+"%'"], function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -406,12 +406,12 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 	  // get user associated specialties
 	  client.query("WITH usuarios AS (SELECT user_id, username \
 								  	FROM users \
-								  	WHERE users.status != $1 AND username LIKE '%"+user_input+"%'\
+								  	WHERE users.status != $1 AND username LIKE $2\
 								  	ORDER BY username ASC) \
 									SELECT usuarios.user_id, us.spec_id, spec.name \
 									FROM usuarios \
 									LEFT JOIN users_specialization AS us ON us.user_id = usuarios.user_id \
-									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id", [-1], function(err, result){
+									LEFT JOIN specialization AS spec ON us.spec_id = spec.spec_id", [-1, "'%"+user_input+"%'"], function(err, result){
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -422,11 +422,11 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 	  // get user associated locations
 	  client.query("WITH usuarios AS (SELECT user_id, username \
 								  	FROM users \
-								  	WHERE users.status != $1 AND username LIKE '%"+user_input+"%' \
-								  	ORDER BY username ASC \
+								  	WHERE users.status != $1 AND username LIKE $2 \
+								  	ORDER BY username ASC) \
 								  SELECT user_id, location_id, location.name AS location_name \
 								  FROM usuarios \
-								  INNER JOIN location ON user_id = agent_id", [-1], function(err, result){
+								  INNER JOIN location ON user_id = agent_id", [-1, "'%"+user_input+"%'"], function(err, result){
 	  	//call `done()` to release the client back to the pool
 	    done();
     	if(err) {
@@ -457,8 +457,8 @@ router.get('/agents/:user_input', function(req, res, next) {
 		// get all users 
 		client.query("SELECT user_id, username \
 									FROM users \
-									WHERE type = 'agent' AND users.status != $1 AND username LIKE '%"+req.params.user_input+"%' \
-									ORDER BY username", [-1], function(err, result){
+									WHERE type = 'agent' AND users.status != $1 AND username LIKE $2 \
+									ORDER BY username", [-1, "'%"+user_input+"%'"], function(err, result){
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -482,8 +482,8 @@ router.get('/cuestionarios/:user_input', function(req, res, next){
 		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username, flowchart.status \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
-									WHERE LOWER(name) LIKE LOWER('%"+user_input+"%') AND flowchart.status != $1 \
-									ORDER BY flowchart_name", [-1], function(err, result){
+									WHERE LOWER(name) LIKE LOWER($2) AND flowchart.status != $1 \
+									ORDER BY flowchart_name", [-1, "'%"+user_input+"%'"], function(err, result){
 		if(err) {
       return console.error('error running query', err);
     } else {
@@ -507,8 +507,8 @@ router.get('/cuestionarios/take/:user_input', function(req, res, next){
 		client.query("SELECT flowchart_id, name AS flowchart_name, version, creator_id, username \
 									FROM flowchart \
 									INNER JOIN users ON user_id = creator_id \
-									WHERE LOWER(name) LIKE LOWER('%"+user_input+"%') AND flowchart.status = $1\
-									ORDER BY flowchart_name", [1], function(err, result){
+									WHERE LOWER(name) LIKE LOWER($2) AND flowchart.status = $1\
+									ORDER BY flowchart_name", [1, "'%"+user_input+"%'"], function(err, result){
 		if(err) {
       return console.error('error running query', err);
     } else {
@@ -542,9 +542,9 @@ router.get('/reportes/:user_input', function(req, res, next){
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
-								WHERE report.status != $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%') \
+								WHERE report.status != $1 AND (LOWER(report.name) LIKE LOWER($2) OR users.username LIKE $2 OR LOWER(location.name) LIKE LOWER($2) OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE $2) \
 					 			ORDER BY report_name ASC",
-				values: [-1]
+				values: [-1, "'%"+user_input+"%'"]
 			}
  		} else {
  			// get first 20 reports created by this user
@@ -553,9 +553,9 @@ router.get('/reportes/:user_input', function(req, res, next){
 								FROM report INNER JOIN location ON report.location_id = location.location_id \
 								INNER JOIN flowchart ON report.flowchart_id = flowchart.flowchart_id \
 								INNER JOIN users ON report.creator_id = user_id \
-								WHERE report.creator_id = $1 AND report.status != $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR users.username LIKE '%"+user_input+"%' OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE '%"+user_input+"%') \
+								WHERE report.creator_id = $1 AND report.status != $1 AND (LOWER(report.name) LIKE LOWER($3) OR users.username LIKE $3 OR LOWER(location.name) LIKE LOWER($3) OR to_char(report.date_filed, 'DD/MM/YYYY') LIKE $3) \
 					 			ORDER BY report_name ASC",
-				values: [user_id, -1]
+				values: [user_id, -1, "'%"+user_input+"%'"]
 			};
 	 	}
  		// get reports matching user_type
@@ -595,9 +595,9 @@ router.get('/citas/:user_input', function(req, res, next) {
 								FROM appointments INNER JOIN report ON appointments.report_id = report.report_id \
 								LEFT JOIN users ON user_id = maker_id \
 								INNER JOIN location ON report.location_id = location.location_id \
-								WHERE appointments.status != $1 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%') \
+								WHERE appointments.status != $1 AND (LOWER(report.name) LIKE LOWER($2) OR LOWER(location.name) LIKE LOWER($2) OR to_char(appointments.date, 'DD/MM/YYYY') LIKE $2 OR to_char(appointments.time, 'HH12:MI AM') LIKE $2) \
 								ORDER BY location.name ASC, date ASC, time ASC",
-				values: [-1]
+				values: [-1, "'%"+user_input+"%'"]
  			}
  		} else {
  			//get first 20 citas created by this user
@@ -606,9 +606,9 @@ router.get('/citas/:user_input', function(req, res, next) {
 								FROM appointments INNER JOIN report ON appointments.report_id = report.report_id \
 								LEFT JOIN users ON user_id = maker_id \
 								INNER JOIN location ON report.location_id = location.location_id \
-								WHERE appointments.maker_id = $1 AND appointments.status != $2 AND (LOWER(report.name) LIKE LOWER('%"+user_input+"%') OR LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR to_char(appointments.date, 'DD/MM/YYYY') LIKE '%"+user_input+"%' OR to_char(appointments.time, 'HH12:MI AM') LIKE '%"+user_input+"%') \
+								WHERE appointments.maker_id = $1 AND appointments.status != $2 AND (LOWER(report.name) LIKE LOWER($3) OR LOWER(location.name) LIKE LOWER($3) OR to_char(appointments.date, 'DD/MM/YYYY') LIKE $3 OR to_char(appointments.time, 'HH12:MI AM') LIKE $3) \
 								ORDER BY location.name ASC, date ASC, time ASC",
-				values: [user_id, -1]
+				values: [user_id, -1, "'%"+user_input+"%'"]
  			}
  		}
  		client.query(query_config, function(err, result) {
@@ -643,37 +643,37 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		query_config_1 = {
 			text: "SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 							FROM location INNER JOIN address ON location.address_id = address.address_id \
-							WHERE location.status != $1 AND agent_id =$2 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
+							WHERE location.status != $1 AND agent_id =$2 AND (LOWER(location.name) LIKE LOWER($3) OR location.license LIKE $3) \
 							ORDER BY location_name",
-			values: [-1, user_id]
+			values: [-1, user_id, "'%"+user_input+"%'"]
 		}
 		query_config_2 = {
 			text: "WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 								FROM location \
-								WHERE location.status != $1 AND agent_id = $2 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%')\
+								WHERE location.status != $1 AND agent_id = $2 AND (LOWER(location.name) LIKE LOWER($3) OR location.license LIKE $3)\
 								ORDER BY location_name) \
 							SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
 							FROM locations \
 							LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
 							LEFT JOIN category AS cat ON lc.category_id = cat.category_id",
-			values: [-1, user_id]
+			values: [-1, user_id, "'%"+user_input+"%'"]
 		}
 
 		query_config_3 = {
 			text: "WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
 								FROM location \
-								WHERE location.status != $1 AND agent_id =$2 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
+								WHERE location.status != $1 AND agent_id =$2 AND (LOWER(location.name) LIKE LOWER($3) OR location.license LIKE $3) \
 								ORDER BY location_name) \
 							SELECT locations.location_id, agent_id, username \
 							FROM locations,users \
 							WHERE user_id = agent_id",
-			values: [-1, user_id]
+			values: [-1, user_id, "'%"+user_input+"%'"]
 		}
 
 		query_config_4 = {
 			text: "WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
 											FROM location \
-											WHERE location.status != $1 AND agent_id = $2 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
+											WHERE location.status != $1 AND agent_id = $2 AND (LOWER(location.name) LIKE LOWER($3) OR location.license LIKE $3) \
 											ORDER BY location_name), \
 								owners AS ( \
 														SELECT owner_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as owner_name, locations.location_id AS owner_location, \
@@ -690,7 +690,7 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 								SELECT * \
 								FROM owners \
 								FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
-			values: [-1, user_id]
+			values: [-1, user_id, "'%"+user_input+"%'"]
 		}
 	}
 	else if (user_type == 'admin' || user_type == 'specialist')
@@ -698,38 +698,38 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 		query_config_1 = {
 	 				text: "SELECT location.location_id, location.name AS location_name, location.address_id, license, address_line1, address_line2, city, zipcode \
 									FROM location INNER JOIN address ON location.address_id = address.address_id \
-									WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%')\
+									WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER($2) OR location.license LIKE $2)\
 									ORDER BY location_name",
-					values: [-1]
+					values: [-1, "'%"+user_input+"%'"]
 	 			}
 
 	 	query_config_2 = {
 			text: "WITH locations AS (SELECT location_id, location.name AS location_name, agent_id \
 										FROM location \
-										WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%')\
+										WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER($2) OR location.license LIKE '$2)\
 										ORDER BY location_name) \
 									SELECT locations.location_id, locations.location_name, lc.category_id, cat.name \
 									FROM locations \
 									LEFT JOIN location_category AS lc ON lc.location_id = locations.location_id \
 									LEFT JOIN category AS cat ON lc.category_id = cat.category_id",
-			values: [-1]
+			values: [-1, "'%"+user_input+"%'"]
 		}
 
 		query_config_3 = {
 			text: "WITH locations AS (SELECT location.location_id, location.name AS location_name, agent_id \
 										FROM location \
-										WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
+										WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER($2) OR location.license LIKE $2) \
 										ORDER BY location_name) \
 									SELECT locations.location_id, agent_id, username \
 									FROM locations,users \
 									WHERE user_id = agent_id",
-			values: [-1]
+			values: [-1, "'%"+user_input+"%'"]
 		}
 
 		query_config_4 = {
 			text: "WITH locations AS (SELECT location.location_id, location.name AS location_name, owner_id, manager_id \
 											FROM location \
-											WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER('%"+user_input+"%') OR location.license LIKE '%"+user_input+"%') \
+											WHERE location.status != $1 AND (LOWER(location.name) LIKE LOWER($2) OR location.license LIKE $2) \
 											ORDER BY location_name), \
 								owners AS ( \
 														SELECT owner_id, (first_name || ' ' || last_name1 || ' ' || COALESCE(last_name2, '')) as owner_name, locations.location_id AS owner_location, \
@@ -746,7 +746,7 @@ router.get('/localizaciones/:user_input', function(req, res, next) {
 								SELECT * \
 								FROM owners \
 								FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
-			values: [-1]
+			values: [-1, "'%"+user_input+"%'"]
 		}
 	}
 
@@ -812,8 +812,8 @@ router.get('/dispositivos/:user_input', function(req, res, next) {
 		// get devices and their assigned user (if any)
 	  client.query("SELECT device_id, devices.name as device_name, id_number, to_char(latest_sync, 'DD/MM/YYYY @ HH12:MI PM') AS last_sync, devices.user_id as assigned_user, username \
 									FROM devices LEFT JOIN users ON devices.user_id = users.user_id \
-									WHERE id_number LIKE '%"+req.params.user_input+"%' OR username LIKE '%"+req.params.user_input+"%' OR LOWER(name) LIKE LOWER('%"+req.params.user_input+"%') \
-									ORDER BY username ASC ", function(err, result) {
+									WHERE id_number LIKE $1 OR username LIKE $1 OR LOWER(name) LIKE LOWER($1) \
+									ORDER BY username ASC ", ["'%"+user_input+"%'"], function(err, result) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
@@ -837,8 +837,8 @@ router.get('/categories/:user_input', function(req, res, next) {
 		}
 		// get categories
 	  client.query("SELECT * FROM category \
-	  							WHERE LOWER(name) LIKE '%"+user_input+"%' \
-	  							ORDER BY name", function(err, result) {
+	  							WHERE LOWER(name) LIKE $1 \
+	  							ORDER BY name", ["'%"+user_input+"%'"] , function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
     	if(err) {
@@ -863,8 +863,8 @@ router.get('/specialties/:user_input', function(req, res, next) {
 		}
 		// get categories
 	  client.query("SELECT * FROM specialization \
-	  							WHERE LOWER(name) LIKE '%"+user_input+"%' \
-	  							ORDER BY name", function(err, result) {
+	  							WHERE LOWER(name) LIKE $1 \
+	  							ORDER BY name", ["'%"+user_input+"%'"], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
     	if(err) {
@@ -895,7 +895,7 @@ router.get('/all_ganaderos/:user_input', function(req, res, next) {
 										ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
 									SELECT * \
 									FROM matching_ganaderos \
-									WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'", [-1], function(err, result) {
+									WHERE LOWER(person_name) LIKE LOWER($2) OR email LIKE $2", [-1, "'%"+user_input+"%'"], function(err, result) {
 	  	//call `done()` to release the client back to the pool
 	  	done();
     	if(err) {

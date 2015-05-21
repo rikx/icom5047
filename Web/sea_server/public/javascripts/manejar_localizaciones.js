@@ -1006,7 +1006,6 @@ function populate_localizaciones(){
     categorias_array = data.location_categories;
 
     populate_list(data.localizaciones);
-    populate_info_panel(data.localizaciones[0]);
     $('#btn_add_associates').removeClass('disabled');
   });
 };
@@ -1035,7 +1034,8 @@ function populate_list(locations_set){
   $localizaciones_list.html(table_content);
 
   // populate info panel with first location's information
-  populate_info_panel(locations_set[0]);
+  if(locations_set.length > 0)
+    populate_info_panel(locations_set[0]);
 };
 
   function populate_categories_info(variable){
