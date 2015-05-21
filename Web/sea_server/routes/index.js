@@ -423,7 +423,7 @@ router.get('/usuarios/:user_input', function(req, res, next) {
 	  client.query("WITH usuarios AS (SELECT user_id, username \
 								  	FROM users \
 								  	WHERE users.status != $1 AND username LIKE '%"+user_input+"%' \
-								  	ORDER BY username ASC \
+								  	ORDER BY username ASC) \
 								  SELECT user_id, location_id, location.name AS location_name \
 								  FROM usuarios \
 								  INNER JOIN location ON user_id = agent_id", [-1], function(err, result){
