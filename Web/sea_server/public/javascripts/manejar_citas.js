@@ -44,12 +44,11 @@ $(document).ready(function(){
     remote: {
       url: '/citas/%QUERY',
       filter: function(list) {
-        if(list.citas.length > 0){
           // populate global arrays with matching results
           citas_array = list.citas;
           // populate list with matching results
           populate_list(citas_array);
-        }
+
         return $.map(list.citas, function(cita) { 
           return cita;
         });

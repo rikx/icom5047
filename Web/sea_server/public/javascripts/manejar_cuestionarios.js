@@ -44,12 +44,12 @@ $(document).ready(function(){
     remote: {
       url: '/cuestionarios/%QUERY',
       filter: function(list) {
-        if(list.cuestionarios.length >0){
+
           // populate global arrays with matching results
           cuestionarios_array = list.cuestionarios;
           // populate list with matching results
           populate_list(cuestionarios_array);
-        }
+
         return $.map(list.cuestionarios, function(cuestionario) { 
           return cuestionario;
         });

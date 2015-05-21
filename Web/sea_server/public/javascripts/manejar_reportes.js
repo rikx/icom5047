@@ -46,13 +46,13 @@ $(document).ready(function(){
     remote: {
       url: '/reportes/%QUERY',
       filter: function(list) {
-        if(list.reports.length>0){
+
           // populate global arrays with matching results
           reportes_array = list.reports;
 
           // populate list with matching results
           populate_list(reportes_array);
-        }
+    
         return $.map(list.reports, function(reporte) { 
           return reporte;
         });
