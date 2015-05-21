@@ -294,7 +294,8 @@ $(document).ready(function(){
     remote: {
       url: '/all_ganaderos/%QUERY',
       filter: function(list) {
-        all_ganaderos = list.ganaderos;
+        if(list.ganaderos.length > 0)
+          all_ganaderos = list.ganaderos;
         return $.map(list.ganaderos, function(ganadero) { 
           return ganadero;
         });
