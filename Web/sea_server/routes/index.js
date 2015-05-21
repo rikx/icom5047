@@ -882,6 +882,7 @@ router.get('/specialties/:user_input', function(req, res, next) {
  */
 router.get('/all_ganaderos/:user_input', function(req, res, next) {
 	var user_input = req.params.user_input;
+	var ganaderos_list, locations_list;
 	
 	var db = req.db;
 	db.connect(req.conString, function(err, client, done) {
@@ -901,9 +902,31 @@ router.get('/all_ganaderos/:user_input', function(req, res, next) {
     	if(err) {
 	      return console.error('error running query', err);
 	    } else {
-	    	res.json({ganaderos: result.rows});
+	    	ganaderos_list = result.rows;
 	    }
 	  });
+ 		client.query("WITH matching_ganaderos AS (WITH ganaderos AS (SELECT person_id, first_name, middle_initial, last_name1, last_name2, email, phone_number, (first_name || ' ' || last_name1 || ' ' || last_name2) as person_name \
+																						FROM person \
+																						WHERE person.status != $1 AND person_id NOT IN (SELECT person_id FROM users) \
+																						ORDER BY first_name ASC, last_name1 ASC, last_name2 ASC) \
+								SELECT * \
+								FROM ganaderos \
+								WHERE LOWER(person_name) LIKE LOWER($2) OR email LIKE $2), \
+							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id), \
+							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id) \
+					 		SELECT * \
+					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location", function(err, result) {
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.json({
+					ganaderos: ganaderos_list,
+					locations: result.rows
+				});
+			}
+		});
 	});
 });
 

@@ -56,11 +56,15 @@ $(document).ready(function(){
       url: '/ganaderos/%QUERY',
       filter: function(list) {
         // populate global arrays with matching results
-        ganaderos_array = list.ganaderos;
-        localizaciones_array = list.locations;
-        // populate list with matching results
+        console.log('list ganaderos length')
+        console.log(list.ganaderos.length)
+        if(list.ganaderos.length > 0) {
+          ganaderos_array = list.ganaderos;
+          localizaciones_array = list.locations;
+        }
 
-        populate_list(list.ganaderos);
+        // populate list with matching results
+        populate_list(ganaderos_array);
         return $.map(list.ganaderos, function(ganadero) { 
           return ganadero;
         });
@@ -163,6 +167,7 @@ $(document).ready(function(){
     var arrayPosition = ganaderos_array.map(function(arrayItem) { return arrayItem.person_id; }).indexOf(ganadero_id);
     var this_ganadero = ganaderos_array[arrayPosition];
 
+    console.log(ganaderos_array)
     // populate info panel with this_ganadero info
     populate_info_panel(this_ganadero);
 
@@ -357,8 +362,8 @@ $(document).ready(function(){
       }
     }); 
 
-    console.log('table content')
-    console.log(table_content.length)
+    //console.log('table content')
+    //console.log(table_content.length)
     if(table_content.length == 0)
     {
       table_content = 'Ganadero no tiene localizaciones asignadas.';
