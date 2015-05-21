@@ -25,7 +25,8 @@ block content
 			.col-md-5
 				small
 					| Buscar localizaciones por nombre o # de licencia
-				input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
+				#scrollable-dropdown-menu
+					input#search_bar(class='form-control typeahead', name='search_bar', type='text', placeholder='Buscar')
 			.col-md-4
 			.col-md-1
 
@@ -173,7 +174,8 @@ block content
 						.panel-body
 							.form-group
 								label(for='change_ganadero') Ganaderos:
-								input#change_ganadero(class='typeahead form-control', name='change_ganadero', type='text', placeholder='Buscar por nombre o correo electrónico')
+								#scrollable-dropdown-menu
+									input#change_ganadero(class='typeahead form-control', name='change_ganadero', type='text', placeholder='Buscar por nombre o correo electrónico')
 							button#btn_submit_ganadero(class='btn btn-default btn-success', type='button') Someter
 					#agentes_asginados_panel(data-user=user)
 						if user.user_type != 'agent'
@@ -187,7 +189,8 @@ block content
 						.panel-body
 							.form-group
 								label(for='change_agent') Agentes:
-								input#change_agent(class='typeahead form-control', name='change_agent', type='text', placeholder='Buscar por correo electrónico')
+								#scrollable-dropdown-menu
+									input#change_agent(class='typeahead form-control', name='change_agent', type='text', placeholder='Buscar por correo electrónico')
 							button#btn_submit_agent(class='btn btn-default btn-success', type='button') Someter
 
 
