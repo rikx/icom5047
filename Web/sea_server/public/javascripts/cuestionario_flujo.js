@@ -205,7 +205,8 @@ $(document).ready(function(){
 			var	new_path = {
 				report_id: $question_panel_answers.attr('data-report-id'),
 				option_id: the_answer.attr('data-answer-id'),
-				sequence: sequence_number
+				sequence: sequence_number,
+				is_end: false
 			}
 
 			// if answered cuestion is of type 'OPEN' or 'CONDITIONAL' 
@@ -391,7 +392,8 @@ $(document).ready(function(){
 			report_id: $question_panel_answers.attr('data-report-id'),
 			option_id: $question_panel_answers.attr('data-answer-id'),
 			has_data: false,
-			sequence: sequence_number
+			sequence: sequence_number,
+			is_end: true
 		};
     $.ajax({
       url: "/cuestionario/path",
