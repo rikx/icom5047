@@ -325,9 +325,11 @@ router.get('/ganaderos/:user_input', function(req, res, next) {
 								FROM ganaderos \
 								WHERE LOWER(person_name) LIKE LOWER('%"+user_input+"%') OR email LIKE '%"+user_input+"%'), \
 							owners AS (SELECT person_id AS owner_id, location_id AS owner_location, location.name AS location_owner_name \
-								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id), \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.owner_id \
+								WHERE agent_id = $2), \
 							managers AS(SELECT person_id AS manager_id, location_id AS manager_location, location.name AS location_manager_name \
-								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id) \
+								FROM matching_ganaderos INNER JOIN location ON matching_ganaderos .person_id = location.manager_id \
+								WHERE agent_id = $2) \
 					 		SELECT * \
 					 		FROM owners FULL OUTER JOIN managers ON owners.owner_location = managers.manager_location",
 				values: [-1, user_id]
