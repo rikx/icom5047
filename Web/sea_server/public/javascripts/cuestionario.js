@@ -7,17 +7,27 @@ jsPlumb.ready(function() {
   var state_count = 0;
   var trigger = true;
   //var j =0; // item id
+  console.log("hello 1");
 
   // store data for flowchart
   var user_info = JSON.parse($('#flowchart_jumbotron').attr('data-user'));
   var data_items = $preguntas_list.attr('data-items');
+  //console.log(data_items);
   var data_connections = $preguntas_list.attr('data-connections');
+  console.log(data_connections);
+
+
+    console.log("hello 2");
+
   if(data_items.length >2){
+    console.log('ramon');
     elements_array = JSON.parse($preguntas_list.attr('data-items'));
+    console.log('ramon after');
     if(data_connections.length >2){
+      console.log('enrique');
       connections_array = JSON.parse($preguntas_list.attr('data-connections'));
     }
-    
+    console.log('nelson');
     // initial info panel population
     populate_info_panel(elements_array[0]);
     //console.log(elements_array)
@@ -40,6 +50,8 @@ jsPlumb.ready(function() {
   $('#btn_home').on('click', function(){
     window.location.href = '/users';
   });
+
+    console.log("hello 3");
 
 /*  // Close info panel
   $('#btn_close_info_panel').on('click', function(){

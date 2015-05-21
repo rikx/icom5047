@@ -8,7 +8,7 @@ $(document).ready(function(){
   $('#btn_edit_title').on('click', function(e) {
     $('#title_panel').show();
     $('#title').hide();
-    $('#btn_edit_title').hide();
+    $('#btn_edit_title').show();
   }); 
 
   // user_data is of the currently signed in user
