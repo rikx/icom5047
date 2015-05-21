@@ -245,7 +245,6 @@ $(document).ready(function(){
       reportes_array = data.reports;
 
       populate_list(data.reports);
-      populate_info_panel(data.reports[0]);
     });
   };
 
@@ -278,5 +277,8 @@ $(document).ready(function(){
     
     // inject content string into html
     $reportes_list.html(table_content);
+
+    if(reportes_set.length>0)
+      populate_info_panel(reportes_set[0]);
   }
 });

@@ -396,6 +396,7 @@ function populate_location_panel($this_location, location_ganaderos, location_ag
     // inject content string into html
     $citas_list.html(table_content);
 
-    populate_info_panel(cita_set[0]);
+    if(cita_set.length > 0)
+      populate_info_panel(cita_set[0]);
   }
 });

@@ -687,9 +687,9 @@ function populate_info_panel($this_usuario){
       usuarios_array = data.usuarios;
       locations_array = data.locations;
       specialties_array = data.user_specialties;
+
       populate_list(data.usuarios);
      // alert("hello world");
-      populate_info_panel(data.usuarios[0]);
     });
   };
 
@@ -744,7 +744,9 @@ function populate_info_panel($this_usuario){
 
     // inject content string into html
     $usuarios_list.html(table_content);
-    populate_info_panel(usuarios_set[0]);
+    
+    if(usuarios_set.length > 0)
+      populate_info_panel(usuarios_set[0]);
   };
 
 function populate_specialties_edit(){

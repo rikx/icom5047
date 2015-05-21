@@ -394,7 +394,8 @@ $(document).ready(function(){
     // inject content string into html
     $dispositivos_list.html(table_content);
 
-    populate_info_panel(devices_set[0]);
+    if(devices_set.length > 0)
+      populate_info_panel(devices_set[0]);
     // close current info panel 
     //$('#btn_close_info_panel').trigger('click');
   };

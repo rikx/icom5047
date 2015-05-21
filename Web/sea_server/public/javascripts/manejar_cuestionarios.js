@@ -234,7 +234,8 @@ $(document).ready(function(){
     // inject content string into html
     $cuestionarios_list.html(table_content);
 
-    populate_info_panel(cuestionarios_set[0]);
+    if(cuestionarios_set.length > 0)
+      populate_info_panel(cuestionarios_set[0]);
     // close current info panel 
    // $('#info_panel').hide();
   };

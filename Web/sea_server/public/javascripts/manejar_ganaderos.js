@@ -401,6 +401,7 @@ $(document).ready(function(){
     // close current info panel 
     //$('#btn_close_info_panel').trigger('click');
     
-    populate_info_panel(ganaderos_set[0]);
+    if(ganaderos_set.length > 0)
+      populate_info_panel(ganaderos_set[0]);
   };
 });
