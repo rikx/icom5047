@@ -941,11 +941,11 @@ jsPlumb.ready(function() {
         if(source_type == 'START'){
           mylabel = 'con-inicio';
         } else if(source_type == 'OPEN'){
-          mylabel = 'con-abierta';
+          mylabel = 'con-abierta-elemento-'+state_number;
         } else if(target_type == 'END' && (source_type == 'OPEN' || source_type == 'RECOM')){
-          mylabel = 'con-fin';
+          mylabel = 'con-fin-elemento-'+state_number;
         } else if(source_type == 'RECOM'){
-          mylabel = 'con-recom';
+          mylabel = 'con-recom-elemento-'+state_number;
         } else {
           mylabel = prompt("Escriba la posible respuesta a la pregunta.");
           while(mylabel == null){

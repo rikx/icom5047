@@ -130,7 +130,7 @@ $(document).ready(function(){
 					$('#take_survey_start, #row_home').attr('disabled', true).hide();
 	      },
 	      error: function( xhr, status, errorThrown ) {
-	        alert( "Sorry, there was a problem!" );
+	        //alert( "Sorry, there was a problem!" );
 	        console.log( "Error: " + errorThrown );
 	        console.log( "Status: " + status );
 	        console.dir( xhr );
@@ -235,7 +235,7 @@ $(document).ready(function(){
 					update_next_question(the_answer.attr('data-next-id'));
 	      },
 	      error: function( xhr, status, errorThrown ) {
-	        alert( "Sorry, there was a problem!" );
+	        //alert( "Sorry, there was a problem!" );
 	        console.log( "Error: " + errorThrown );
 	        console.log( "Status: " + status );
 	        console.dir( xhr );
@@ -376,7 +376,7 @@ $(document).ready(function(){
 			  }
 		  },
 		  error: function( xhr, status, errorThrown ) {
-		    alert( "Sorry, there was a problem!" );
+		    //alert( "Sorry, there was a problem!" );
 		    console.log( "Error: " + errorThrown );
 		    console.log( "Status: " + status );
 		    console.dir( xhr );
@@ -407,7 +407,7 @@ $(document).ready(function(){
 				window.location.href = '/users/reportes/'+report_id;
       },
       error: function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
+        //alert( "Sorry, there was a problem!" );
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );
         console.dir( xhr );
