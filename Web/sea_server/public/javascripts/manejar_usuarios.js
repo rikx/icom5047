@@ -696,22 +696,31 @@ function populate_info_panel($this_usuario){
     //Delete User
     $('#btn_delete').on('click', function(){
       var user_id = $('#btn_delete').attr("data-id");
-      $.ajax({
-        url: "/users/admin/delete_user/" + user_id,
-        method: "PUT",
-        contentType: "application/json",
-        dataType: "json",
-        success: function(data) {
-          alert("Usuario fue eliminado");
-          populate_usuarios();
-        },
-        error: function( xhr, status, errorThrown ) {
-          alert( "Sorry, there was a problem!" );
-          console.log( "Error: " + errorThrown );
-          console.log( "Status: " + status );
-          console.dir( xhr );
-        }
-      });
+      console.log('delete user: ' + user_id);
+      if(user_id == 1)
+      {
+        alert('No se puede borrar a usuario sea_admin.');
+      }
+      else
+      {
+        $.ajax({
+          url: "/users/admin/delete_user/" + user_id,
+          method: "PUT",
+          contentType: "application/json",
+          dataType: "json",
+          success: function(data) {
+            alert("Usuario fue eliminado");
+            populate_usuarios();
+          },
+          error: function( xhr, status, errorThrown ) {
+            alert( "Sorry, there was a problem!" );
+            console.log( "Error: " + errorThrown );
+            console.log( "Status: " + status );
+            console.dir( xhr );
+          }
+        });
+      }
+
     });
 
   /* Populate list with usuarios_set information */
