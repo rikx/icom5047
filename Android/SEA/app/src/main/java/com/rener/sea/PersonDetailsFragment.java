@@ -203,7 +203,7 @@ public class PersonDetailsFragment extends Fragment implements DetailsFragment, 
         }
 
         //Validate email
-        boolean validEmail = strEmail.matches(EMAIL_REGEX) || strEmail.isEmpty();
+        boolean validEmail = strEmail.matches(EMAIL_REGEX) || !strEmail.isEmpty();
         if (!validEmail) {
             String message = getString(R.string.invalid_email);
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
