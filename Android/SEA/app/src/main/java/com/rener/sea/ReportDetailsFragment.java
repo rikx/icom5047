@@ -43,7 +43,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
     public static final int VIEW_APPOINTMENT_LAYOUT = 1;
     private Report report;
     private TextView textName, textLocation, textDate, textCreator,
-            textFlowchart, textNotes;
+            textFlowchart, textNotes, textType;
     private LinearLayout interviewLayout;
     private ViewFlipper appointmentFlipper;
     private View appointmentView;
@@ -75,6 +75,7 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
         textDate = (TextView) view.findViewById(R.id.report_text_date);
         textCreator = (TextView) view.findViewById(R.id.report_text_creator);
         textFlowchart = (TextView) view.findViewById(R.id.report_text_flowchart);
+	    textType = (TextView) view.findViewById(R.id.report_text_type);
 
         //Set the edit views
         textNotes = (TextView) view.findViewById(R.id.report_text_notes);
@@ -154,6 +155,12 @@ public class ReportDetailsFragment extends Fragment implements View.OnClickListe
 
             String fcName = report.getFlowchart().toString();
             textFlowchart.setText(fcName);
+
+	        long status = report.getStatus();
+	        String open = getString(R.string.method_open);
+	        String flow = getString(R.string.method_flow);
+	        String type = status == 1 ? flow : open ;
+	        textType.setText(type);
 
             //Set the path through the flowchart
             Path path = report.getPath();
