@@ -146,4 +146,5 @@
 	<string name="confirm_submit_title">Report Submission Confirmation</string>
 	<string name="confirm_submit_message">Are you sure you wish to submit this report?</string>
 	<string name="cond_hint">Enter a valid number here</string>
+	<string name="login_progress_message">Logging in…</string>
 </resources>

@@ -4,9 +4,9 @@
 	<string name="action_settings">Preferencias</string>
 	<string name="address_city">ciudad</string>
 	<string name="location_label">Localización</string>
-	<string name="address_line1">dirección linea 1</string>
+	<string name="address_line1">dirección línea 1</string>
 	<string name="location_name">nombre de localización</string>
-	<string name="address_line2">dirección linea 2</string>
+	<string name="address_line2">dirección línea 2</string>
 	<string name="address_zip_code">código postal</string>
 	<string name="agent_label">Agente asignado</string>
 	<string name="button_login">Iniciar</string>
@@ -50,7 +50,7 @@
 	<string name="no_manager">No hay gerente asignado</string>
 	<string name="no_owner">No hay dueño asignado</string>
 	<string name="no_username">No hay usuario</string>
-	<string name="open_hint">Entre los datos aqui</string>
+	<string name="open_hint">Entre los datos aquí</string>
 	<string name="people">Ganaderos</string>
 	<string name="reports">Reportes</string>
 	<string name="save_location">Guardar Localización</string>
@@ -85,8 +85,8 @@
 	<string name="appointment_label">Cita</string>
 	<string name="appointment_set_by_label">Hecho por:</string>
 	<string name="purpose_label">Propósito</string>
-	<string name="no_connection">No hay conección</string>
-	<string name="synchronizing">Sincronizando...</string>
+	<string name="no_connection">No hay conexión</string>
+	<string name="synchronizing">Sincronizando…</string>
 	<string name="sync_success">Sincronización exitosa!</string>
 	<string name="sync_fail">Sincronización fracasada!</string>
 	<string name="duplicate_license_message">La licencia ya existe</string>
@@ -106,7 +106,7 @@
 	<string name="survey_completed">Cuestionario completado</string>
 	<string name="default_report_name">Reporte sin nombre</string>
 	<string name="no_location">Localización no asignada</string>
-	<string name="search_hint">Buscar...</string>
+	<string name="search_hint">Buscar…</string>
 	<string name="empty_first_name">Nombre no puede estar vacio</string>
 	<string name="empty_last_name">Apellido no puede estar vacio</string>
 	<string name="empty_licence">La licencia está vacia</string>
@@ -141,5 +141,6 @@
 	<string name="invalid_decimal">Por favor entre un número decimal válido</string>
 	<string name="confirm_submit_message">¿Está seguro que desea someter este reporte?</string>
 	<string name="confirm_submit_title">Someter reporte</string>
-	<string name="cond_hint">Entre un número válido aqui</string>
+	<string name="cond_hint">Entre un número válido aquí</string>
+	<string name="login_progress_message">Iniciando…</string>
 </resources>
