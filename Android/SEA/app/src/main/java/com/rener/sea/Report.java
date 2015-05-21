@@ -479,6 +479,24 @@ public class Report implements Comparable<Report> {
         db.close();
         return id;// if -1 error during update
     }
+    public long setOpen() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.REPORT_STATUS, 0);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
+        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
+    public long setFlow() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBSchema.REPORT_STATUS, 1);
+        values.put(DBSchema.MODIFIED, DBSchema.MODIFIED_YES);
+        long id = db.update(DBSchema.TABLE_REPORT, values, DBSchema.REPORT_ID + "=?", new String[]{String.valueOf(this.id)});
+        db.close();
+        return id;// if -1 error during update
+    }
 
     // TODO: test this method
     public long destroy() {

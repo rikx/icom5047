@@ -171,7 +171,7 @@ public class DBSchema {
             REPORT_NOTE + " TEXT," +
             REPORT_NAME + " TEXT," +
             REPORT_DATE_FILED + " TEXT," +
-            REPORT_STATUS + " INTEGER DEFAULT 0," +
+            REPORT_STATUS + " INTEGER DEFAULT -1," +
             MODIFIED + " TEXT NOT NULL DEFAULT '" + MODIFIED_YES + "')";
     public static final String TABLE_PATH = "path";
     public static final String PATH_REPORT_ID = "report_id";

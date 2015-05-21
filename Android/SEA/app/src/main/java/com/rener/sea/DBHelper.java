@@ -33,7 +33,7 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     // declaration of all keys for the DB
     public static final String DATABASE_NAME = "seadb";
-    private static int DATABASE_VERSION = 6;
+    private static int DATABASE_VERSION = 7;
     //    public static int SYNC_STATUS = 0;
     private static JSONObject dataSync = new JSONObject();
     private boolean dummyDB = false;
@@ -2975,13 +2975,15 @@ public final class DBHelper extends SQLiteOpenHelper {
                     long seq = response.getLong("seq");
 
                     if (device_id.equals(deviceID) && device && user) { // the responce come fro the server, user and passw corect
+                        String oldHash = context.getSharedPreferences(
+                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString(context.getString(R.string.key_saved_passhash), "");
                         SharedPreferences sharedPref = context.getSharedPreferences(
                                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(context.getString(R.string.key_saved_passhash), hash);
                         editor.apply();
                         // sync db
-                        if (switchUser) {
+                        if (switchUser || oldHash.isEmpty()) {
 //                            syncDB();
 //                            syncDBFull();
                             Intent intent = new Intent();
