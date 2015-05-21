@@ -520,10 +520,10 @@ jsPlumb.ready(function() {
                 alert('Condicionales no estan escritos correctamente. Los códigos válidos son: lt#, gt#, le#, ge#, eq#, ne#, ra[#,#], ra[#,#), ra(#,#], ra(#,#) ó !r.');
               }
             } else{
-              alert('Verifique que todas las preguntas y recomendaciones tienen una conección hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conecciones y las conditionales exactamente 2 conecciones.');
+              alert('Verifique que todas las preguntas y recomendaciones tienen una conexión hacia otro elemento. Las preguntas de selección multiple necesitan por lo menos 2 conexiones y las condicionales exactamente 2 conexiones.');
             }
           } else {
-            alert('Cuestionario no tiene elemento inicial o final, o estos tienen conecciones existentes.');
+            alert('Cuestionario no tiene elemento inicial o final, o estos tienen conexiones existentes.');
           }
         } else {
           // ajax call to post new cuestionario
