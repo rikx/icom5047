@@ -4,6 +4,7 @@ $(document).ready(function(){
 
   // initial population of localizaciones list
   //populate_localizaciones();
+  $('#localizacion_license_old').hide();
 
   // store data for initial 20 locations
   var localizaciones_array = [];
@@ -706,6 +707,7 @@ $('#btn_edit_localizacion').on('click', function(){
   $('#btn_edit').attr('data-id', location_id);
   $('#localizacion_name').val(this_location.location_name);
   $('#localizacion_license').val(this_location.license);
+  $('#localizacion_license_old').val(this_location.license);
   $('#localizacion_address_line1').val(this_location.address_line1);
   $('#localizacion_address_line2').val(this_location.address_line2);
   $('#localizacion_address_city').val(this_location.city);
@@ -753,9 +755,19 @@ $('#btn_edit').on('click', function(){
     dataType: "json",
 
     success: function(data) {
-      alert("Localización ha sido modificada.");
+
+      if(data.exists)
+      {
+        alert("Localización con ese número de licensia ya existe en el sistema.");
+      }
+      else
+      {
+        alert("Localización ha sido modificada.");
       // update locations list after posting 
       populate_localizaciones();
+
+    }
+
     },
     error: function( xhr, status, errorThrown ) {
       alert( "Sorry, there was a problem!" );
