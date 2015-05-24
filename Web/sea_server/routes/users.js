@@ -1328,10 +1328,18 @@ router.get('/reportes/:id', function(req, res, next) {
 		  			user_id: user_id,
 		  			username: username
 		  		}
+		  		// determines if survey was finished or not
+		  		var survey_complete = false;
+		  		var last_answer_label = result.rows[result.rows.length-1].answer;
+		  		if(last_answer_label.substring(0,7) == 'con-fin'){
+		  			survey_complete = true;
+		  		}
+
 		  		res.render('reporte', { 
 		  			title: 'Reporte ' + report_id,
 		  			reporte: report_details,
 		  			survey: survey_details,
+		  			survey_complete: survey_complete,
 		  			appointment: appointment_details,
 		  			current_user: current_user
 		  		});

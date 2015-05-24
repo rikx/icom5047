@@ -48,7 +48,6 @@ block content
 						center
 							h4 Entrevista Contestada
 					.panel-body
-						- var has_recom = false;
 						if survey.length > 0
 							ol
 								each item in survey
@@ -72,9 +71,9 @@ block content
 											em
 												= item.answer
 
-						//if !has_recom
-						//	center
-						//		button(class='btn_continue_survey btn btn-sm btn-success') Continuar Entrevista
+						if !survey_complete
+							center
+								button(class='btn_continue_survey btn btn-sm btn-success', data-id=reporte.report_id) Continuar Entrevista
 			.col-md-6
 				center
 					.panel.panel-success

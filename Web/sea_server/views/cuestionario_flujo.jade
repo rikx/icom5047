@@ -74,11 +74,13 @@ block content
 						#next_question_answers
 					.row#row_buttons(style="display: none;")
 						.col-md-3
-							button#btn_next_question(class='btn btn-sm btn-default btn-block', type='button') Próxima Pregunta
+							button#btn_cancel(class='btn btn-sm btn-default btn-block', type='button') Cancelar
 						//.col-md-2
-							//button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button', disabled) Guardar Progreso (Abort)
+							//button#btn_save_progress(class='btn btn-sm btn-default btn-block', type='button', disabled) Guardar (Abortar)
 						.col-md-3
-							button#btn_cancel(class='btn btn-sm btn-default btn-block', type='button') Cancelar Progreso
+							button#btn_cancel(class='btn btn-sm btn-default btn-block', type='button') Pausar
+						.col-md-3
+							button#btn_next_question(class='btn btn-sm btn-default btn-block', type='button') Próxima Pregunta
 						.col-md-4
 							button#btn_end_survey(class='btn btn-sm btn-default btn-block', type='button', style="display: none;") Finalizar Cuestionario
 		br
