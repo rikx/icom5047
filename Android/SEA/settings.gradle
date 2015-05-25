@@ -1,1 +1,1 @@
-include ':app', ':gcm'
+include ':app', ':gcm', ':gcm-client'
