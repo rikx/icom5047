@@ -13,14 +13,7 @@
         android:id="@+id/btnGetRegId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/get_reg_id"
-	    />
-
-    <EditText
-        android:id="@+id/etRegId"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:inputType="text"
+        android:text="@string/register_id"
 	    />
 
 </LinearLayout>
