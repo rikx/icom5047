@@ -1,7 +1,9 @@
 package com.rener.gcm_client;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -12,14 +14,15 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.rener.sea.backend.registration.Registration;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GcmRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
+
+	public static final String EXTRA_MESSAGE = "message";
 
 	private static Registration regService;
 	private GoogleCloudMessaging gcm;
 	private Context context;
+	String regid;
 
 	private static final String SENDER_ID = "646747748285";
 
@@ -29,41 +32,29 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
 
 	@Override
 	protected String doInBackground(Void... params) {
-		if (regService == null) {
-			Registration.Builder builder = new Registration.Builder(AndroidHttp.newCompatibleTransport(),
-					new AndroidJsonFactory(), null)
-					// Need setRootUrl and setGoogleClientRequestInitializer only for local testing,
-					// otherwise they can be skipped
-					.setRootUrl("http://localhost:8080/_ah/api/")
-					.setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-						@Override
-						public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest)
-								throws IOException {
-							abstractGoogleClientRequest.setDisableGZipContent(true);
-						}
-					});
-			// end of optional local run code
-
-			regService = builder.build();
-		}
-
 		String msg = "";
 		try {
 			if (gcm == null) {
 				gcm = GoogleCloudMessaging.getInstance(context);
 			}
-			String regId = gcm.register(SENDER_ID);
-			msg = "Device registered, registration ID=" + regId;
+			regid = gcm.register(SENDER_ID);
+			msg = "Device registered, registration ID=" + regid;
 
-			// You should send the registration ID to your server over HTTP,
-			// so it can use GCM/HTTP or CCS to send messages to your app.
-			// The request to your server should be authenticated if your app
-			// is using accounts.
-			regService.register(regId).execute();
+			// You should send the registration ID to your server over HTTP, so it
+			// can use GCM/HTTP or CCS to send messages to your app.
+			sendRegistrationIdToBackend();
 
+			// For this demo: we don't need to send it because the device will send
+			// upstream messages to a server that echo back the message using the
+			// 'from' address in the message.
+
+			// Persist the regID - no need to register again.
+			//storeRegistrationId(context, regid);
 		} catch (IOException ex) {
-			ex.printStackTrace();
-			msg = "Error: " + ex.getMessage();
+			msg = "Error :" + ex.getMessage();
+			// If there is an error, don't just keep trying to register.
+			// Require the user to click a button again, or perform
+			// exponential back-off.
 		}
 		return msg;
 	}
@@ -71,6 +62,10 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
 	@Override
 	protected void onPostExecute(String msg) {
 		Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-		Logger.getLogger("REGISTRATION").log(Level.INFO, msg);
+		Log.i(this.toString(), msg);
+	}
+
+	private void sendRegistrationIdToBackend() {
+		// Your implementation here.
 	}
 }
