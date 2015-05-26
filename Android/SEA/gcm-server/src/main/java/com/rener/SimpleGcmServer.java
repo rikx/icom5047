@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class SimpleGcmServer {
 
@@ -29,54 +30,66 @@ public class SimpleGcmServer {
 		SimpleGcmServer server = new SimpleGcmServer();
 
 		Scanner scanner = new Scanner(System.in);
+		System.out.print(">");
 		while(scanner.hasNextLine()) {
 			String input = scanner.nextLine().trim();
-			String[] pair = input.split("\\s", 2);
-			String command = pair[0];
-			String options = pair[1];
-			switch(command) {
-				case "stop":
-					server.stop();
-					break;
-				case "start":
-					server.start();
-					break;
-				case "gcm":
-					gcmSend(options);
-					break;
-				default:
-					System.out.println(command + ": Command not found");
+			if(input.matches("^[A-Z0-9a-z]+((\\s+\\S+)+)?")) {
+				String[] tokens = input.split("\\s", 2);
+				String command = tokens[0];
+				String options = tokens.length > 1 ? tokens[1] : null;
+				switch (command) {
+					case "stop":
+						server.stop();
+						break;
+					case "start":
+						server.start();
+						break;
+					case "gcm":
+						gcmSend(options);
+						break;
+					default:
+						System.out.println(command + ": Command not found");
+				}
 			}
+			System.out.print(">");
 		}
-
 	}
 
 	private HttpServer server;
+	private boolean isStopped = true;
 
 	private void start() throws IOException {
 
-		System.out.println("Starting HTTP server...");
-
-		server = HttpServer.create(new InetSocketAddress(LISTEN_PORT), 0);
-		server.createContext("/", new SimpleHttpHandler());
-		server.setExecutor(null);
-		server.start();
-		System.out.println("Listening on port " + LISTEN_PORT);
+		if (isStopped) {
+			System.out.println("Starting HTTP server...");
+			server = HttpServer.create(new InetSocketAddress(LISTEN_PORT), 0);
+			server.createContext("/", new SimpleHttpHandler());
+			server.setExecutor(null);
+			server.start();
+			System.out.println("Listening on port " + LISTEN_PORT);
+			isStopped = false;
+		}
 	}
 
 	private void stop() {
 		server.stop(0);
 		System.out.println("Server stopped.");
+		isStopped = true;
 	}
 
-	private static void gcmSend(String args) {
+	private static void gcmSend(String data) {
+
+		if(data == null || data.isEmpty()) {
+			System.out.println("GCM: Nothing to send");
+			return;
+		}
 
 		List<String> regIds = new ArrayList<>();
 		regIds.add(TEST_REGID);
 
 		Message.Builder builder = new Message.Builder();
 
-		String[] pair = args.split("=", 2);
+		String[] pair = data.split("=", 2);
 		builder.addData(pair[0], pair[1]);
 
 		Message message = builder.build();
