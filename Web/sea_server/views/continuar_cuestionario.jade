@@ -1,0 +1,22 @@
+extends layout
+block css
+	link(rel='stylesheet', href='/stylesheets/style.css')
+
+block content
+	.container
+		.row
+			.col-md-2
+			.col-md-8
+				.jumbotron
+					center
+						h2 Servicio de Extensión Agrícola
+						h3#flowchart(data-flowchart-id=flowchart.flowchart_id, data-end-id=flowchart.end_id) 
+							| Continuar Cuestionario 
+							= flowchart.flowchart_name
+			.col-md-2
+
+	//	Latest compiled and minified JavaScript
+	script(src='//code.jquery.com/jquery-1.11.2.min.js')
+	script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js')
+	script(src='/javascripts/continuar_cuestionario.js')
+	script(src='/javascripts/helpers.js')

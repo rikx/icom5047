@@ -143,12 +143,12 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 
 		// query for all locations data
 		client.query(query_config, function(err, result){
-				if(err) {
-					return console.error('error running query', err);
-				} else {
-					locations_list = result.rows;
-				}
-			});
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				locations_list = result.rows;
+			}
+		});
 	  // query for flowchart info and first question
 	  client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, first_id, end_id \
 									FROM flowchart \
@@ -179,6 +179,31 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 	});
 });
 
+/* GET Continue Cuestionario Metodo Flujo
+ * Responds with take survey page for survey data of report matching :id
+ */
+router.post('/cuestionarios/flow/continue/:id', function(req, res, next) {
+	var report_id = req.params.id;
+ 	var db = req.db;
+ 	db.connect(req.conString, function(err, client, done) {
+ 		if(err) {
+ 			return console.error('error fetching client from pool', err);
+ 		}
+ 		// query for 
+		client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, first_id, end_id \
+									FROM flowchart \
+									WHERE flowchart.flowchart_id = 1', function(err, result){
+			if(err) {
+				return console.error('error running query', err);
+			} else {
+				res.render('continuar_cuestionario', {
+					title: 'Continuar Cuestionario',
+					survey_data: result.rows
+				});
+			}
+		});
+	});
+});
 /* GET Tomar Cuestionario Metodo Abierto
  * Responds with take survey page for matching survey :id
  */
