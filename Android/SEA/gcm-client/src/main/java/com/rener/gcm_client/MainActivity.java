@@ -1,23 +1,23 @@
 package com.rener.gcm_client;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -47,6 +47,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			Log.i(this.toString(), "No valid Google Play Services APK found.");
 			btnRegId.setEnabled(false);
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		registerGcmMessageReceiver();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		registerGcmMessageReceiver();
 	}
 
 	@Override
@@ -118,5 +130,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		editor.putString(PROPERTY_REG_ID, regId);
 		editor.putInt(PROPERTY_APP_VERSION, appVersion);
 		editor.apply();
+	}
+
+	private void registerGcmMessageReceiver() {
+		String action = getPackageName()+GcmIntentService.HANDLE_GCM_MESSAGE_ACTION;
+		IntentFilter filter = new IntentFilter(action);
+		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+		final BroadcastReceiver mainGcmReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				unregisterReceiver(this);
+				abortBroadcast();
+				//TODO: handle the broadcast
+				Log.i(this.toString(), "activity received GCM message");
+			}
+		};
+		registerReceiver(mainGcmReceiver, filter);
 	}
 }

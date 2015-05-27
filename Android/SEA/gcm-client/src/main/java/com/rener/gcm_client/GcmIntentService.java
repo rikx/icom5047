@@ -1,15 +1,18 @@
 package com.rener.gcm_client;
 
+import android.app.Activity;
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmIntentService extends IntentService {
+
+	public static final String HANDLE_GCM_MESSAGE_ACTION = ".HandleGcmMessage";
 
 	public GcmIntentService() {
 		super("GcmMessageHandler");
@@ -31,6 +34,7 @@ public class GcmIntentService extends IntentService {
              */
 			if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 				String message = extras.getString("message");
+				Log.i(this.toString(), "handling GCM message");
 				handleGcmMessage(message);
 			}
 		}
@@ -39,6 +43,16 @@ public class GcmIntentService extends IntentService {
 	}
 
 	private void handleGcmMessage(String message) {
-
+		String action = getPackageName()+HANDLE_GCM_MESSAGE_ACTION;
+		Intent intent = new Intent(action);
+		intent.putExtra("message", message);
+		final BroadcastReceiver finalReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				abortBroadcast();
+				Log.i(this.toString(), "GCM message dumped");
+			}
+		};
+		sendOrderedBroadcast(intent, null, finalReceiver, null, Activity.RESULT_OK, null, null);
 	}
 }

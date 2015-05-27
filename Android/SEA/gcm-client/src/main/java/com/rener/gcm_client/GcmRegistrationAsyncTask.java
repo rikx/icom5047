@@ -1,17 +1,11 @@
 package com.rener.gcm_client;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-import com.rener.sea.backend.registration.Registration;
 
 import java.io.IOException;
 
@@ -19,7 +13,6 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
 
 	public static final String EXTRA_MESSAGE = "message";
 
-	private static Registration regService;
 	private GoogleCloudMessaging gcm;
 	private Context context;
 	String regid;
