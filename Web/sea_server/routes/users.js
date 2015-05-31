@@ -182,7 +182,7 @@ router.get('/cuestionarios/flow/:id', function(req, res, next) {
 /* GET Continue Cuestionario Metodo Flujo
  * Responds with take survey page for survey data of report matching :id
  */
-router.post('/cuestionarios/flow/continue/:id', function(req, res, next) {
+/*router.post('/cuestionarios/flow/continue/:id', function(req, res, next) {
 	var report_id = req.params.id;
  	var db = req.db;
  	db.connect(req.conString, function(err, client, done) {
@@ -190,9 +190,7 @@ router.post('/cuestionarios/flow/continue/:id', function(req, res, next) {
  			return console.error('error fetching client from pool', err);
  		}
  		// query for 
-		client.query('SELECT flowchart.flowchart_id, flowchart.name AS flowchart_name, first_id, end_id \
-									FROM flowchart \
-									WHERE flowchart.flowchart_id = 1', function(err, result){
+		client.query('', function(err, result){
 			if(err) {
 				return console.error('error running query', err);
 			} else {
@@ -203,7 +201,8 @@ router.post('/cuestionarios/flow/continue/:id', function(req, res, next) {
 			}
 		});
 	});
-});
+});*/
+
 /* GET Tomar Cuestionario Metodo Abierto
  * Responds with take survey page for matching survey :id
  */
