@@ -1,4 +1,4 @@
 # icom5047
 Capstone Project
 
-made public so Ramon can copy pasta
+made public so Ramon can remember the good times
